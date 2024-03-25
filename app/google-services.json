@@ -7,26 +7,18 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:720666228102:android:30a3827175d560146ea807",
+        "mobilesdk_app_id": "1:720666228102:android:29fe5e796cc7c7f36ea807",
         "android_client_info": {
-          "package_name": "com.android.sample"
+          "package_name": "com.lastaoutdoor.lasta"
         }
       },
       "oauth_client": [
         {
-          "client_id": "720666228102-6jkd6nrnpquoto463966mdd3mmfnnn8h.apps.googleusercontent.com",
+          "client_id": "720666228102-jgdutctv25el09muotlfuabtk9fulc91.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.android.sample",
-            "certificate_hash": "ffd400dd947519e6e0504460c7c09bad8fb57010"
-          }
-        },
-        {
-          "client_id": "720666228102-8euu9fd6m59gc42e3s45rnroq7uoj4cl.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.android.sample",
-            "certificate_hash": "f5827d479df07d0327112fbc503ed74b0905040e"
+            "package_name": "com.lastaoutdoor.lasta",
+            "certificate_hash": "485f444266de2237287727fe047fa92b01ef1a72"
           }
         },
         {

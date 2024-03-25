@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.android.sample"
+    namespace = "com.lastaoutdoor.lasta"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.android.sample"
+        applicationId = "com.lastaoutdoor.lasta"
         minSdk = 28
         targetSdk = 34
         versionCode = 1
