@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "720666228102",
+    "project_id": "lasta-e92ca",
+    "storage_bucket": "lasta-e92ca.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:720666228102:android:30a3827175d560146ea807",
+        "android_client_info": {
+          "package_name": "com.android.sample"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "720666228102-6jkd6nrnpquoto463966mdd3mmfnnn8h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.android.sample",
+            "certificate_hash": "ffd400dd947519e6e0504460c7c09bad8fb57010"
+          }
+        },
+        {
+          "client_id": "720666228102-8euu9fd6m59gc42e3s45rnroq7uoj4cl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.android.sample",
+            "certificate_hash": "f5827d479df07d0327112fbc503ed74b0905040e"
+          }
+        },
+        {
+          "client_id": "720666228102-mtt8qsp3fuljeatb9128qss6c2qf91t2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSlfP6OWaK12W02HeDOS33ipriSj53nWU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "720666228102-mtt8qsp3fuljeatb9128qss6c2qf91t2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
