@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta
+package com.lastaoutdoor.lasta.model.data
 
 import kotlin.math.sqrt
 

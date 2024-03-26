@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta
+package com.lastaoutdoor.lasta.view
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -34,7 +34,8 @@ import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.auth.FirebaseAuth
-import com.lastaoutdoor.lasta.ui.theme.LastaTheme
+import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.view.theme.LastaTheme
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -99,9 +100,9 @@ class MainActivity : ComponentActivity() {
                 painter = painterResource(id = R.drawable.app_logo),
                 contentDescription = "App Logo",
                 modifier = Modifier.size(189.dp))
-            Spacer(modifier = Modifier.size(10.dp))
+            Spacer(modifier = Modifier.size(35.dp))
             Text(
-                text = "Welcome",
+                text = "LASTA",
                 modifier = Modifier.width(256.dp).height(65.dp),
                 style =
                     TextStyle(

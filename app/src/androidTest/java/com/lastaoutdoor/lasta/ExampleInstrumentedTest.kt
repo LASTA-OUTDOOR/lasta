@@ -4,8 +4,8 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
 import com.lastaoutdoor.lasta.screen.MainScreen
+import com.lastaoutdoor.lasta.view.MainActivity
 import io.github.kakaocup.compose.node.element.ComposeScreen
-import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith

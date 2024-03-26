@@ -1,5 +1,6 @@
 package com.lastaoutdoor.lasta
 
+import com.lastaoutdoor.lasta.model.data.Point
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
