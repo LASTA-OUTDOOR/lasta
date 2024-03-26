@@ -4,6 +4,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
 import com.lastaoutdoor.lasta.screen.SecondScreen
+import com.lastaoutdoor.lasta.view.MainActivity
 import io.github.kakaocup.compose.node.element.ComposeScreen
 import org.junit.Rule
 import org.junit.Test
@@ -17,7 +18,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class SecondActivityTest : TestCase() {
 
-  @get:Rule val composeTestRule = createAndroidComposeRule<SecondActivity>()
+  @get:Rule val composeTestRule = createAndroidComposeRule<MainActivity>()
 
   @Test
   fun test() = run {
