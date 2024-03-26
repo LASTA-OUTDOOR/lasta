@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.ui.theme
+package com.lastaoutdoor.lasta.view.theme
 
 import androidx.compose.ui.graphics.Color
 

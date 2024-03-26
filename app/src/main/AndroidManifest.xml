@@ -13,12 +13,7 @@
         android:theme="@style/Theme.Lasta"
         tools:targetApi="31">
         <activity
-            android:name="com.lastaoutdoor.lasta.SecondActivity"
-            android:exported="false"
-            android:label="@string/title_activity_second"
-            android:theme="@style/Theme.Lasta" />
-        <activity
-            android:name="com.lastaoutdoor.lasta.MainActivity"
+            android:name="com.lastaoutdoor.lasta.view.MainActivity"
             android:exported="true"
             android:label="@string/title_activity_main"
             android:theme="@style/Theme.Lasta">
