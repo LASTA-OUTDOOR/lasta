@@ -36,60 +36,57 @@ data class TopLevelDestination(
     @StringRes val textId: Int
 )
 
+val TOP_LEVEL_DESTINATIONS =
+    listOf(
+        TopLevelDestination("map", R.drawable.map_icon, R.string.tab_map),
+        TopLevelDestination("discover", R.drawable.discover_icon, R.string.tab_discover),
+        TopLevelDestination("profile", R.drawable.profile_icon, R.string.tab_profile))
 
-val TOP_LEVEL_DESTINATIONS = listOf(
-    TopLevelDestination("map", R.drawable.map_icon, R.string.tab_map),
-    TopLevelDestination("discover",R.drawable.discover_icon, R.string.tab_discover),
-    TopLevelDestination("profile",R.drawable.profile_icon, R.string.tab_profile)
-)
 @Composable
-fun MainMenu(){
-    val navController = rememberNavController()
-    Scaffold(
-        bottomBar = {
-            BottomNavigation {
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentDestination = navBackStackEntry?.destination
-                TOP_LEVEL_DESTINATIONS.forEach { screen ->
-                    BottomNavigationItem(
-                        icon = { Icon(painter = painterResource(id = screen.icon),contentDescription = null, modifier = Modifier
-                            .padding(1.dp)
-                            .width(24.dp)
-                            .height(24.dp),tint= Color.Black) },
-                        label = { Text(stringResource(screen.textId)) },
-                        selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                        modifier = Modifier
-                            .width(412.dp)
-                            .height(80.dp)
-                            .background(
-                                color = Color(0xFFEDEEF0),
-                                shape = RoundedCornerShape(size = 0.dp)
-                            )
-                            .padding(start = 8.dp, end = 8.dp),
-                        onClick = {
-                            navController.navigate(screen.route) {
-                                // Pop up to the start destination of the graph to
-                                // avoid building up a large stack of destinations
-                                // on the back stack as users select items
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                // Avoid multiple copies of the same destination when
-                                // reselecting the same item
-                                launchSingleTop = true
-                                // Restore state when reselecting a previously selected item
-                                restoreState = true
-                            }
-                        }
-                    )
-                }
-            }
+fun MainMenu() {
+  val navController = rememberNavController()
+  Scaffold(
+      bottomBar = {
+        BottomNavigation {
+          val navBackStackEntry by navController.currentBackStackEntryAsState()
+          val currentDestination = navBackStackEntry?.destination
+          TOP_LEVEL_DESTINATIONS.forEach { screen ->
+            BottomNavigationItem(
+                icon = {
+                  Icon(
+                      painter = painterResource(id = screen.icon),
+                      contentDescription = null,
+                      modifier = Modifier.padding(1.dp).width(24.dp).height(24.dp),
+                      tint = Color.Black)
+                },
+                label = { Text(stringResource(screen.textId)) },
+                selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                modifier =
+                    Modifier.width(412.dp)
+                        .height(80.dp)
+                        .background(
+                            color = Color(0xFFEDEEF0), shape = RoundedCornerShape(size = 0.dp))
+                        .padding(start = 8.dp, end = 8.dp),
+                onClick = {
+                  navController.navigate(screen.route) {
+                    // Pop up to the start destination of the graph to
+                    // avoid building up a large stack of destinations
+                    // on the back stack as users select items
+                    popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                    // Avoid multiple copies of the same destination when
+                    // reselecting the same item
+                    launchSingleTop = true
+                    // Restore state when reselecting a previously selected item
+                    restoreState = true
+                  }
+                })
+          }
         }
-    ) { innerPadding ->
+      }) { innerPadding ->
         NavHost(navController, startDestination = "map", Modifier.padding(innerPadding)) {
-            composable("map") { MapScreen() }
-            composable("discover") { DiscoveryScreen() }
-            composable("profile"){ ProfileScreen()}
+          composable("map") { MapScreen() }
+          composable("discover") { DiscoveryScreen() }
+          composable("profile") { ProfileScreen() }
         }
-    }
+      }
 }

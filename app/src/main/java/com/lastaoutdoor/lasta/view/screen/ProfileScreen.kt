@@ -6,5 +6,5 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun ProfileScreen() {
-    Column { Text("Profile screen") }
+  Column { Text("Profile screen") }
 }

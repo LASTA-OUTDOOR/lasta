@@ -6,5 +6,5 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun DiscoveryScreen() {
-    Column { Text("Discovery screen") }
+  Column { Text("Discovery screen") }
 }
