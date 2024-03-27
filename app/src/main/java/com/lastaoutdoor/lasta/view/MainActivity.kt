@@ -17,7 +17,7 @@ class MainActivity : ComponentActivity() {
       // The navcontroller that allows to go from the login screen to the main menu screen
       val navController = rememberNavController()
       NavHost(navController = navController, startDestination = "login") {
-        composable("mainMenu") { MapScreen() } // The map is the main screen for now
+        composable("mainMenu") { MainMenu() } // The map is the main screen for now
         composable("login") {
           LoginScreen(onNavigateToMain = { navController.navigate("mainMenu") })
         }
