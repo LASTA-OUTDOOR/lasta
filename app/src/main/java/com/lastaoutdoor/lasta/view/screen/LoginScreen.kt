@@ -29,6 +29,7 @@ import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.google.firebase.auth.FirebaseAuth
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.database.DatabaseFunctions
 import com.lastaoutdoor.lasta.view.theme.LastaTheme
 
 @Composable
@@ -40,6 +41,9 @@ fun LoginScreen(onNavigateToMain: () -> Unit) {
         if (result.resultCode == Activity.RESULT_OK) {
           // Successfully signed in
           val user = FirebaseAuth.getInstance().currentUser
+          if (user != null) {
+            DatabaseFunctions().addUserToDatabase(user)
+          }
           onNavigateToMain()
         } else {
           // we do nothing, failed to login
