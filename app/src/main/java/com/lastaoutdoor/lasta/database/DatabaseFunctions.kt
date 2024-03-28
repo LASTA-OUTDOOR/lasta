@@ -1,69 +1,64 @@
 package com.lastaoutdoor.lasta.database
 
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
 
 class DatabaseFunctions {
 
-    //Attributes
-    private val database = Firebase.firestore
+  // Attributes
+  private val database = Firebase.firestore
 
-    fun addUserToDatabase(user: FirebaseUser) {
+  fun addUserToDatabase(user: FirebaseUser) {
 
-        val userDocumentRef = database.collection("users").document(user.uid)
+    val userDocumentRef = database.collection("users").document(user.uid)
 
-        // Create a data map with the user's information
-        val userData = hashMapOf(
-            "email" to user.email,
-            "displayName" to user.displayName
+    // Create a data map with the user's information
+    val userData =
+        hashMapOf(
+            "email" to user.email, "displayName" to user.displayName
             // Add any other user information you want to store here
-        )
+            )
 
-        userDocumentRef.set(userData, SetOptions.merge())
-    }
+    userDocumentRef.set(userData, SetOptions.merge())
+  }
 
-    suspend fun getFieldFromUser(uid: String, field: String): String {
-        // Create a reference to the document with the user's UID
-        val userDocumentRef = database.collection("users").document(uid)
+  suspend fun getFieldFromUser(uid: String, field: String): String {
+    // Create a reference to the document with the user's UID
+    val userDocumentRef = database.collection("users").document(uid)
 
-        // Get the document snapshot
-        val documentSnapshot = userDocumentRef.get().await()
+    // Get the document snapshot
+    val documentSnapshot = userDocumentRef.get().await()
 
-        // Get the field from the document snapshot
-        return documentSnapshot.getString(field) ?: ""
-    }
+    // Get the field from the document snapshot
+    return documentSnapshot.getString(field) ?: ""
+  }
 
-    fun addFieldToUser(uid: String, field: String, value: String) {
-        // Create a reference to the document with the user's UID
-        val userDocumentRef = database.collection("users").document(uid)
+  fun addFieldToUser(uid: String, field: String, value: String) {
+    // Create a reference to the document with the user's UID
+    val userDocumentRef = database.collection("users").document(uid)
 
-        // Create a data map with the field and value
-        val data = hashMapOf(field to value)
+    // Create a data map with the field and value
+    val data = hashMapOf(field to value)
 
-        // Set the field in the document
-        userDocumentRef.set(data, SetOptions.merge())
-    }
+    // Set the field in the document
+    userDocumentRef.set(data, SetOptions.merge())
+  }
 
-    fun updateFieldInUser(uid: String, field: String, value: String) {
-        // Create a reference to the document with the user's UID
-        val userDocumentRef = database.collection("users").document(uid)
+  fun updateFieldInUser(uid: String, field: String, value: String) {
+    // Create a reference to the document with the user's UID
+    val userDocumentRef = database.collection("users").document(uid)
 
-        // Create a data map with the field and value
-        val data = hashMapOf(field to value)
+    // Create a data map with the field and value
+    val data = hashMapOf(field to value)
 
-        // Update the field in the document
-        userDocumentRef.update(data as Map<String, Any>)
-    }
+    // Update the field in the document
+    userDocumentRef.update(data as Map<String, Any>)
+  }
 
-    fun createCollection(collectionName: String) {
-        database.collection(collectionName)
-    }
-
+  fun createCollection(collectionName: String) {
+    database.collection(collectionName)
+  }
 }
-
-
