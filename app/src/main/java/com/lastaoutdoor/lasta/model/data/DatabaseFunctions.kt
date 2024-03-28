@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.database
+package com.lastaoutdoor.lasta.model.data
 
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseUser
