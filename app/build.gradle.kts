@@ -160,8 +160,13 @@ dependencies {
 
     //navigation with compose
     val nav_version = "2.7.7"
-
     implementation("androidx.navigation:navigation-compose:$nav_version")
+
+    //Google maps & Location
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation("com.google.maps.android:maps-compose:4.3.0")
+    implementation("com.google.android.gms:play-services-location:21.2.0")
+
 }
 
 tasks.withType<Test> {
