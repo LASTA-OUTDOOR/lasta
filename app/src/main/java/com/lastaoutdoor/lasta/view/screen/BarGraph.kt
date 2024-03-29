@@ -29,10 +29,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlin.math.round
 
+enum class BarType {
+  CIRCULAR_TYPE,
+  TOP_CURVED
+}
+
+enum class WeekDay {
+  Mon,
+  Tue,
+  Wed,
+  Thu,
+  Fri,
+  Sat,
+  Sun
+}
+
 @Composable
-fun BarGraph(
+fun <T : Enum<T>> BarGraph(
     graphBarData: List<Float>,
-    xAxisScaleData: List<Int>,
+    xAxisScaleData: List<T>,
     barData_: List<Int>,
     height: Dp,
     roundType: BarType,
@@ -45,23 +60,25 @@ fun BarGraph(
 
   // for getting screen width and height you can use LocalConfiguration
   val configuration = LocalConfiguration.current
+
   // getting screen width
   val width = configuration.screenWidthDp.dp
 
   // bottom height of the X-Axis Scale
   val xAxisScaleHeight = 40.dp
 
-  val yAxisScaleSpacing by remember { mutableStateOf(100f) }
+  val yAxisScaleSpacing by remember { mutableFloatStateOf(100f) }
   val yAxisTextWidth by remember { mutableStateOf(100.dp) }
 
   // bar shape
-  val barShap =
+  val barShape =
       when (roundType) {
         BarType.CIRCULAR_TYPE -> CircleShape
         BarType.TOP_CURVED -> RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp)
       }
 
   val density = LocalDensity.current
+
   // y-axis scale text paint
   val textPaint =
       remember(density) {
@@ -74,10 +91,13 @@ fun BarGraph(
 
   // for y coordinates of y-axis scale to create horizontal dotted line indicating y-axis scale
   val yCoordinates = mutableListOf<Float>()
+
   // for dotted line effect
   val pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
+
   // height of vertical line over x-axis scale connecting x-axis horizontal line
   val lineHeightXAxis = 10.dp
+
   // height of horizontal line over x-axis scale
   val horizontalLineHeight = 5.dp
 
@@ -121,7 +141,7 @@ fun BarGraph(
             Modifier.padding(start = 50.dp)
                 .width(width - yAxisTextWidth)
                 .height(height + xAxisScaleHeight),
-        contentAlignment = Alignment.BottomCenter) {
+        contentAlignment = BottomCenter) {
           Row(
               modifier = Modifier.width(width - yAxisTextWidth),
               verticalAlignment = Alignment.Top,
@@ -145,14 +165,14 @@ fun BarGraph(
                         Box(
                             modifier =
                                 Modifier.padding(bottom = 5.dp)
-                                    .clip(barShap)
+                                    .clip(barShape)
                                     .width(barWidth)
                                     .height(height - 10.dp)
                                     .background(Color.Transparent),
                             contentAlignment = BottomCenter) {
                               Box(
                                   modifier =
-                                      Modifier.clip(barShap)
+                                      Modifier.clip(barShape)
                                           .fillMaxWidth()
                                           .fillMaxHeight(graphBarHeight)
                                           .background(barColor))
