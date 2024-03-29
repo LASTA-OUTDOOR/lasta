@@ -1,13 +1,10 @@
-
 package com.lastaoutdoor.lasta.model.api
 
 import com.google.gson.annotations.SerializedName
-import com.lastaoutdoor.lasta.model.data.Node
+import com.lastaoutdoor.lasta.model.data.OutdoorActivity
 
-
-data class OutdoorActivityResponse(
-    @SerializedName("version")
-    val version : Float,
-    @SerializedName("elements")
-    val elements : List<Node>
+// class used by gson to convert api responses to KotlinClasses
+data class OutdoorActivityResponse<T : OutdoorActivity>(
+    @SerializedName("version") val version: Float,
+    @SerializedName("elements") val elements: List<T>
 )
