@@ -1,11 +1,12 @@
 package com.lastaoutdoor.lasta.view.screen
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -34,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lastaoutdoor.lasta.R
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 @Preview
 fun ProfileScreen() {
@@ -79,10 +80,32 @@ fun ProfileScreen() {
       }
     }
 
-      Row {
-          Text("Activity")
-      }
-    
+    Row { Text("Activity") }
+
+    // Add a vertical space between the author and message texts
+    Spacer(modifier = Modifier.height(4.dp))
+    Column(
+        modifier = Modifier.padding(horizontal = 30.dp).fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally) {
+          val dataList = mutableListOf(5, 10, 15, 0, 5, 7, 11)
+          val floatValue = mutableListOf<Float>()
+          val datesList = mutableListOf(1, 2, 3, 4, 5, 6, 7) // needs to be an enum
+
+          dataList.forEachIndexed { index, value ->
+            floatValue.add(index = index, element = value.toFloat() / dataList.max().toFloat())
+          }
+
+          BarGraph(
+              graphBarData = floatValue,
+              xAxisScaleData = datesList,
+              barData_ = dataList,
+              height = 300.dp,
+              roundType = BarType.TOP_CURVED,
+              barWidth = 20.dp,
+              barColor = MaterialTheme.colorScheme.primary,
+              barArrangement = Arrangement.SpaceEvenly)
+        }
   }
   // Add a horizontal space between the image and the column
   Spacer(modifier = Modifier.width(8.dp))
