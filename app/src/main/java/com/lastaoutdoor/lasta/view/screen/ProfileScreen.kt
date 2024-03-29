@@ -84,22 +84,23 @@ fun ProfileScreen() {
 
     // Add a vertical space between the author and message texts
     Spacer(modifier = Modifier.height(4.dp))
+
+    // Bar graph layout
     Column(
         modifier = Modifier.padding(horizontal = 30.dp).fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
-          val dataList = mutableListOf(5, 10, 15, 0, 5, 7, 11)
-          val floatValue = mutableListOf<Float>()
-          val datesList = mutableListOf(1, 2, 3, 4, 5, 6, 7) // needs to be an enum
 
-          dataList.forEachIndexed { index, value ->
-            floatValue.add(index = index, element = value.toFloat() / dataList.max().toFloat())
-          }
+          // Bar graph x and y data
+          val ordinate = mutableListOf(5, 10, 15, 0, 5, 7, 11)
+          val abscissa = WeekDay.values().toList() // needs to be an enum
+
+          val ordinateFloat: List<Float> = ordinate.map { it.toFloat() / ordinate.max() }
 
           BarGraph(
-              graphBarData = floatValue,
-              xAxisScaleData = datesList,
-              barData_ = dataList,
+              graphBarData = ordinateFloat,
+              xAxisScaleData = abscissa,
+              barData_ = ordinate,
               height = 300.dp,
               roundType = BarType.TOP_CURVED,
               barWidth = 20.dp,
@@ -107,9 +108,10 @@ fun ProfileScreen() {
               barArrangement = Arrangement.SpaceEvenly)
         }
   }
+
   // Add a horizontal space between the image and the column
   Spacer(modifier = Modifier.width(8.dp))
 
-  // Recent activities
+  // Recent activities layout
   LazyVerticalGrid(modifier = Modifier, columns = GridCells.Adaptive(100.dp)) {}
 }
