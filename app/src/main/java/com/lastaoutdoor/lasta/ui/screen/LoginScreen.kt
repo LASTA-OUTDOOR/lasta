@@ -1,7 +1,10 @@
 package com.lastaoutdoor.lasta.ui.screen
 
-import android.app.Activity
+import android.content.IntentSender
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +20,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,30 +31,27 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.firebase.ui.auth.AuthUI
-import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
-import com.google.firebase.auth.FirebaseAuth
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.db.DatabaseFunctions
 import com.lastaoutdoor.lasta.ui.theme.LastaTheme
+import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 
 @Composable
-fun LoginScreen(onNavigateToMain: () -> Unit) {
-  // Create and launch sign-in intent
-  val startForResult =
-      rememberLauncherForActivityResult(FirebaseAuthUIActivityResultContract()) { result ->
-        val response = result.idpResponse
-        if (result.resultCode == Activity.RESULT_OK) {
-          // Successfully signed in
-          val user = FirebaseAuth.getInstance().currentUser
-          if (user != null) {
-            DatabaseFunctions().addUserToDatabase(user)
-          }
-          onNavigateToMain()
-        } else {
-          // we do nothing, failed to login
-        }
-      }
+fun LoginScreen(authViewModel: AuthViewModel, onNavigateToMain: () -> Unit) {
+  val state by authViewModel.authStateFlow.collectAsState()
+  val launcher =
+      rememberLauncherForActivityResult(
+          contract = ActivityResultContracts.StartIntentSenderForResult(),
+          onResult = { result ->
+            if (result.resultCode == ComponentActivity.RESULT_OK) {
+              authViewModel.handleGoogleSignInResult(
+                  result.data ?: return@rememberLauncherForActivityResult)
+            }
+          })
+  LaunchedEffect(key1 = state) {
+    if (authViewModel.authStateFlow.value is AuthViewModel.AuthState.Authenticated) {
+      onNavigateToMain()
+    }
+  }
   LastaTheme {
     Column(
         modifier = Modifier.fillMaxSize().padding(15.dp),
@@ -72,15 +75,12 @@ fun LoginScreen(onNavigateToMain: () -> Unit) {
           Spacer(modifier = Modifier.size(150.dp))
           Button(
               onClick = {
-                val providers = arrayListOf(AuthUI.IdpConfig.GoogleBuilder().build())
-
-                val signInIntent =
-                    AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(providers)
-                        .build()
-
-                startForResult.launch(signInIntent)
+                authViewModel.startGoogleSignIn()
+                val intentSender: IntentSender? =
+                    (authViewModel.authStateFlow.value
+                            as? AuthViewModel.AuthState.GoogleSignInIntent)
+                        ?.intentSender
+                launcher.launch(IntentSenderRequest.Builder(intentSender ?: return@Button).build())
               },
               shape = RoundedCornerShape(30.dp),
               colors = ButtonDefaults.buttonColors(containerColor = Color.White),

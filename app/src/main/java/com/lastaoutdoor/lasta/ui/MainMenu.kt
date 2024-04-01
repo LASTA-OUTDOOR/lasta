@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -29,6 +30,7 @@ import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.ui.screen.DiscoveryScreen
 import com.lastaoutdoor.lasta.ui.screen.MapScreen
 import com.lastaoutdoor.lasta.ui.screen.ProfileScreen
+import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 
 data class TopLevelDestination(
     val route: String,
@@ -43,7 +45,7 @@ val TOP_LEVEL_DESTINATIONS =
         TopLevelDestination("profile", R.drawable.profile_icon, R.string.tab_profile))
 
 @Composable
-fun MainMenu() {
+fun MainMenu(authViewModel: AuthViewModel, nav: NavHostController) {
   val navController = rememberNavController()
   Scaffold(
       bottomBar = {
@@ -86,7 +88,15 @@ fun MainMenu() {
         NavHost(navController, startDestination = "map", Modifier.padding(innerPadding)) {
           composable("map") { MapScreen() }
           composable("discover") { DiscoveryScreen() }
-          composable("profile") { ProfileScreen() }
+          composable("profile") {
+            ProfileScreen(
+                null,
+                onSignOut = {
+                  authViewModel.signOut()
+                  nav.navigate("login")
+                },
+                goToPreferences = {})
+          }
         }
       }
 }

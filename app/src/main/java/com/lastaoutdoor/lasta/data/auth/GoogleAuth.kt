@@ -11,72 +11,72 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.model.UserModel
-import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.cancellation.CancellationException
+import kotlinx.coroutines.tasks.await
 
 data class SignInResult(val user: UserModel?, val errorMessage: String?)
 
 class GoogleAuth(private val context: Context) {
-    private val auth = Firebase.auth
+  private val auth = Firebase.auth
 
-    private val signInClient: SignInClient = Identity.getSignInClient(context)
+  private val signInClient: SignInClient = Identity.getSignInClient(context)
 
-    private fun buildSignInRequest(): BeginSignInRequest {
-        return BeginSignInRequest.Builder()
-            .setGoogleIdTokenRequestOptions(
-                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                    .setSupported(true)
-                    .setFilterByAuthorizedAccounts(false)
-                    .setServerClientId(R.string.web_client_id.toString())
-                    .build())
-            .setAutoSelectEnabled(true)
-            .build()
-    }
+  private fun buildSignInRequest(): BeginSignInRequest {
+    return BeginSignInRequest.Builder()
+        .setGoogleIdTokenRequestOptions(
+            BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                .setSupported(true)
+                .setFilterByAuthorizedAccounts(false)
+                .setServerClientId(context.getString(R.string.web_client_id))
+                .build())
+        .setAutoSelectEnabled(true)
+        .build()
+  }
 
-    suspend fun signIn(): IntentSender? {
-        val result =
-            try {
-                signInClient.beginSignIn(buildSignInRequest()).await()
-            } catch (e: Exception) {
-                e.printStackTrace()
-                if (e is CancellationException) throw e
-                null
-            }
-        return result?.pendingIntent?.intentSender
-    }
-
-    suspend fun signInWithIntent(intent: Intent): SignInResult {
-        val credential = signInClient.getSignInCredentialFromIntent(intent)
-        val googleIdToken = credential.googleIdToken
-        val googleCredentials = GoogleAuthProvider.getCredential(googleIdToken, null)
-        return try {
-            val user = auth.signInWithCredential(googleCredentials).await().user
-            SignInResult(
-                user =
-                user?.run {
-                    UserModel(
-                        userId = uid, username = displayName, profilePictureUrl = photoUrl?.toString())
-                },
-                errorMessage = null)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            if (e is CancellationException) throw e
-            SignInResult(user = null, errorMessage = e.message)
-        }
-    }
-
-    suspend fun signOut() {
+  suspend fun signIn(): IntentSender? {
+    val result =
         try {
-            signInClient.signOut().await()
-            auth.signOut()
+          signInClient.beginSignIn(buildSignInRequest()).await()
         } catch (e: Exception) {
-            e.printStackTrace()
-            if (e is CancellationException) throw e
+          e.printStackTrace()
+          if (e is CancellationException) throw e
+          null
         }
-    }
+    return result?.pendingIntent?.intentSender
+  }
 
-    fun getSignedInUser(): UserModel? =
-        auth.currentUser?.run {
-            UserModel(userId = uid, username = displayName, profilePictureUrl = photoUrl?.toString())
-        }
+  suspend fun signInWithIntent(intent: Intent): SignInResult {
+    val credential = signInClient.getSignInCredentialFromIntent(intent)
+    val googleIdToken = credential.googleIdToken
+    val googleCredentials = GoogleAuthProvider.getCredential(googleIdToken, null)
+    return try {
+      val user = auth.signInWithCredential(googleCredentials).await().user
+      SignInResult(
+          user =
+              user?.run {
+                UserModel(
+                    userId = uid, username = displayName, profilePictureUrl = photoUrl?.toString())
+              },
+          errorMessage = null)
+    } catch (e: Exception) {
+      e.printStackTrace()
+      if (e is CancellationException) throw e
+      SignInResult(user = null, errorMessage = e.message)
+    }
+  }
+
+  suspend fun signOut() {
+    try {
+      signInClient.signOut().await()
+      auth.signOut()
+    } catch (e: Exception) {
+      e.printStackTrace()
+      if (e is CancellationException) throw e
+    }
+  }
+
+  fun getCurrentUser(): UserModel? =
+      auth.currentUser?.run {
+        UserModel(userId = uid, username = displayName, profilePictureUrl = photoUrl?.toString())
+      }
 }
