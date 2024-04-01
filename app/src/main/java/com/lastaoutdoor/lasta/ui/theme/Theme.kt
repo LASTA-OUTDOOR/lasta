@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.view.theme
+package com.lastaoutdoor.lasta.ui.theme
 
 import android.app.Activity
 import android.os.Build
@@ -49,14 +49,6 @@ fun LastaTheme(
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
       }
-  val view = LocalView.current
-  if (!view.isInEditMode) {
-    SideEffect {
-      val window = (view.context as Activity).window
-      window.statusBarColor = colorScheme.primary.toArgb()
-      WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
-    }
-  }
 
   MaterialTheme(colorScheme = colorScheme, typography = Typography, content = content)
 }
