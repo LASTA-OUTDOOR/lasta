@@ -1,6 +1,5 @@
 package com.lastaoutdoor.lasta.ui.screen
 
-import android.content.IntentSender
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
@@ -31,12 +30,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.ui.theme.LastaTheme
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 
 @Composable
-fun LoginScreen(authViewModel: AuthViewModel, onNavigateToMain: () -> Unit) {
+fun LoginScreen(authViewModel: AuthViewModel, navController: NavHostController) {
   val state by authViewModel.authStateFlow.collectAsState()
   val launcher =
       rememberLauncherForActivityResult(
@@ -48,8 +48,8 @@ fun LoginScreen(authViewModel: AuthViewModel, onNavigateToMain: () -> Unit) {
             }
           })
   LaunchedEffect(key1 = state) {
-    if (authViewModel.authStateFlow.value is AuthViewModel.AuthState.Authenticated) {
-      onNavigateToMain()
+    if (authViewModel.getCurrentUser() != null) {
+      navController.navigate("main")
     }
   }
   LastaTheme {
@@ -76,11 +76,9 @@ fun LoginScreen(authViewModel: AuthViewModel, onNavigateToMain: () -> Unit) {
           Button(
               onClick = {
                 authViewModel.startGoogleSignIn()
-                val intentSender: IntentSender? =
-                    (authViewModel.authStateFlow.value
-                            as? AuthViewModel.AuthState.GoogleSignInIntent)
-                        ?.intentSender
-                launcher.launch(IntentSenderRequest.Builder(intentSender ?: return@Button).build())
+                launcher.launch(
+                    IntentSenderRequest.Builder(authViewModel.getIntentSender() ?: return@Button)
+                        .build())
               },
               shape = RoundedCornerShape(30.dp),
               colors = ButtonDefaults.buttonColors(containerColor = Color.White),

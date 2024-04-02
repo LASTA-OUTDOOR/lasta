@@ -56,7 +56,7 @@ class AuthViewModel @Inject constructor(private val googleAuth: GoogleAuth) : Vi
     }
   }
 
-  fun getCurrentUser() {
+  fun fetchAuthInfo() {
     viewModelScope.launch {
       try {
         val user = googleAuth.getCurrentUser()
@@ -69,6 +69,14 @@ class AuthViewModel @Inject constructor(private val googleAuth: GoogleAuth) : Vi
         _authStateFlow.value = AuthState.Error(e.message ?: "An error occurred")
       }
     }
+  }
+
+  fun getIntentSender(): IntentSender? {
+    return (authStateFlow.value as? AuthState.GoogleSignInIntent)?.intentSender
+  }
+
+  fun getCurrentUser(): UserModel? {
+    return (authStateFlow.value as? AuthState.Authenticated)?.user
   }
 
   // Enum class to represent the authentication state

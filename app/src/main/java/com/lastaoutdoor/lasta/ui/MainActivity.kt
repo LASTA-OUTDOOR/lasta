@@ -9,6 +9,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.lastaoutdoor.lasta.ui.navigation.MenuNavigation
 import com.lastaoutdoor.lasta.ui.screen.LoginScreen
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,11 +27,11 @@ class MainActivity : ComponentActivity() {
       val navController = rememberNavController()
 
       NavHost(navController = navController, startDestination = "login") {
-        composable("mainMenu") { MainMenu(authViewModel, navController) } // The map is the main screen for now
         composable("login") {
-          LaunchedEffect(key1 = Unit) { authViewModel.getCurrentUser() }
-          LoginScreen(authViewModel, onNavigateToMain = { navController.navigate("mainMenu") })
+          LaunchedEffect(key1 = Unit) { authViewModel.fetchAuthInfo() }
+          LoginScreen(authViewModel, navController)
         }
+        composable("main") { MenuNavigation() }
       }
     }
   }
