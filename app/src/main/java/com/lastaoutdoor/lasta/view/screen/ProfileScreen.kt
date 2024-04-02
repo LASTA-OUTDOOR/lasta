@@ -1,5 +1,7 @@
 package com.lastaoutdoor.lasta.view.screen
 
+import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -34,12 +36,17 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.firebase.ui.auth.AuthUI.getApplicationContext
 import com.lastaoutdoor.lasta.R
 
+@SuppressLint("RestrictedApi")
 @Composable
 @Preview
 fun ProfileScreen() {
   var text by remember { mutableStateOf("Add a few words about yourself") }
+  var sport by remember { mutableStateOf(false) }
+  var timeFrame by remember { mutableStateOf(false) }
+
   Column {
     Row(modifier = Modifier.fillMaxWidth().padding(15.dp)) {
       Image(
@@ -75,12 +82,31 @@ fun ProfileScreen() {
             singleLine = false,
             textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            maxLines = 4 // Adjust maxLines as needed
+            maxLines = 8 // Adjust maxLines as needed
             )
       }
     }
 
-    Row { Text("Activity") }
+    Row {
+      Text("Activity")
+
+      Sports(
+          sportsName = "Select a sport",
+          dropDownItems =
+              listOf(
+                  Sport("Hiking"),
+                  Sport("Biking"),
+                  Sport("Skiiing"),
+              ),
+          onItemClick = {
+            Toast.makeText(getApplicationContext(), it.name, Toast.LENGTH_LONG).show()
+          })
+    }
+
+    // Add a vertical space between the author and message texts
+    Spacer(modifier = Modifier.height(4.dp))
+
+    TimeFrameSelector()
 
     // Add a vertical space between the author and message texts
     Spacer(modifier = Modifier.height(4.dp))
