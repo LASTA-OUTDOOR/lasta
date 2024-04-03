@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,6 +36,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
@@ -116,7 +118,10 @@ fun OutdoorActivityItem(outdoorActivity: OutdoorActivity) {
     Card(
         modifier = Modifier.padding(8.dp)
     ) {
-        Column(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Row(
                 //modifier = Modifier.fillMaxWidth(),
             ) {
@@ -125,16 +130,22 @@ fun OutdoorActivityItem(outdoorActivity: OutdoorActivity) {
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp
                 )
-                Column {
+                Column (
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.End
+                ) {
                     Text(text = outdoorActivity.locationName)
                     Text(
                         text = "Difficulty : ${outdoorActivity.difficulty}/10"
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(25.dp))
+
             Button (
                 onClick = { /* Switch page and start activity itinerary */ },
+                //set its theme from themes.xml
+
                 modifier = Modifier
                     .border(
                         width = 1.dp,
@@ -154,26 +165,40 @@ fun OutdoorActivityItem(outdoorActivity: OutdoorActivity) {
                         textAlign = TextAlign.Center,
                     )
                 )
+                Spacer(modifier = Modifier.width(10.dp))
                 Image(
                     modifier = Modifier
-                        .shadow(elevation = 4.dp, spotColor = Color(0x40000000), ambientColor = Color(0x40000000))
-                        .border(width = 1.dp, color = Color(0xFFFFFFFF))
+                        .shadow(
+                            elevation = 4.dp,
+                            spotColor = Color(0x40000000),
+                            ambientColor = Color(0x40000000)
+                        )
                         .padding(1.dp)
-                        .width(22.dp)
-                        .height(23.dp)
-                        .background(color = Color(0xFFFFFFFF)),
+                        .width(16.dp)
+                        .height(19.dp),
                     painter = painterResource(id = R.drawable.play_button),
-                    contentDescription = "image description",
-                    contentScale = ContentScale.None
+                    contentDescription = "play image for button",
+                    contentScale = ContentScale.Crop
                 )
+
             }
-            Row {
+            Row (
+
+            ) {
                 Button(
                     onClick = { /* Display more information on the selected activity */ },
-                    modifier = Modifier.border(width = 1.dp, color = Color(0xFF6609FF), shape = RoundedCornerShape(size = 20.dp))
+                    modifier = Modifier
+                        .border(
+                            width = 1.dp,
+                            color = Color(0xFF6609FF),
+                            shape = RoundedCornerShape(size = 20.dp)
+                        )
                         //.width(104.dp)
                         //.height(30.dp)
-                        .background(color = Color(0xFF6609FF), shape = RoundedCornerShape(size = 20.dp))
+                        .background(
+                            color = Color(0xFF6609FF),
+                            shape = RoundedCornerShape(size = 20.dp)
+                        )
                 ) {
                     Text(
                         text = "MORE INFO",
@@ -188,10 +213,18 @@ fun OutdoorActivityItem(outdoorActivity: OutdoorActivity) {
 
                 Button(
                     onClick = { /* Switch to map view and see location of activity */ },
-                    modifier = Modifier.border(width = 1.dp, color = Color(0xFF0989FF), shape = RoundedCornerShape(size = 20.dp))
+                    modifier = Modifier
+                        .border(
+                            width = 1.dp,
+                            color = Color(0xFF0989FF),
+                            shape = RoundedCornerShape(size = 20.dp)
+                        )
                         //.width(104.dp)
                         //.height(30.dp)
-                        .background(color = Color(0xFF0989FF), shape = RoundedCornerShape(size = 20.dp))
+                        .background(
+                            color = Color(0xFF0989FF),
+                            shape = RoundedCornerShape(size = 20.dp)
+                        )
                 ) {
                     Text(
                         text = "VIEW ON MAP",
@@ -205,6 +238,34 @@ fun OutdoorActivityItem(outdoorActivity: OutdoorActivity) {
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun OutdoorActivityExample() {
+    MaterialTheme {
+        OutdoorActivityItem(
+            OutdoorActivity(
+                "Hiking", 3, 5.0f, "2 hours", "Zurich",
+                Vector(listOf(47.0f, 8.0f)
+            )
+        ))
+    }
+}
+
+@Preview
+@Composable
+fun OutdoorActivityListExample() {
+    MaterialTheme {
+        OutdoorActivityList(
+            List(10) { index ->
+                OutdoorActivity(
+                    "Hiking", 3, 5.0f, "2 hours", "Zurich",
+                    Vector(listOf(47.0f, 8.0f)))
+
+            }
+        )
     }
 }
 
