@@ -2,7 +2,11 @@ package com.lastaoutdoor.lasta.model.repository
 
 import com.lastaoutdoor.lasta.model.api.ApiService
 import com.lastaoutdoor.lasta.model.api.OutdoorActivityResponse
+import com.lastaoutdoor.lasta.model.data.ActivityType
+
 import com.lastaoutdoor.lasta.model.data.Node
+import com.lastaoutdoor.lasta.model.data.Relation
+import com.lastaoutdoor.lasta.model.data.Way
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -17,11 +21,31 @@ class OutdoorActivityRepository(/*context: Context*/ ) {
         .create(ApiService::class.java)
   }
   // Gets Nodes of type climbing
-  suspend fun getClimbingActivities(): OutdoorActivityResponse<Node> {
-
-    val call = apiService.getClimbingActivity()
+  suspend fun getClimbingActivitiesNode(range: Int, lat:Float,lon:Float): OutdoorActivityResponse<Node> {
+    val call = apiService.getNode(getDataStringClimbing(range,lat,lon, "node"))
     val pr = call.execute()
-    return OutdoorActivityResponse(pr.body()!!.version, (pr.body()!!.elements))
+    return OutdoorActivityResponse(pr.body()!!.version, (pr.body()!!.elements).map{it.setActivityType(ActivityType.CLIMBING); it})
+  }
+  suspend fun getClimbingActivitiesWay(range: Int, lat:Float,lon:Float): OutdoorActivityResponse<Way> {
+      val call = apiService.getWay(getDataStringClimbing(range, lat, lon, "way"))
+      val pr = call.execute()
+      return OutdoorActivityResponse(
+          pr.body()!!.version,
+          (pr.body()!!.elements).map { it.setActivityType(ActivityType.CLIMBING); it })
+  }
+  suspend fun getHikingActivities(range: Int, lat:Float,lon:Float): OutdoorActivityResponse<Relation>{
+      val call = apiService.getRelation(getDataStringHiking(range, lat, lon))
+      val pr = call.execute()
+      return OutdoorActivityResponse(
+          pr.body()!!.version,
+          (pr.body()!!.elements).map { it.setActivityType(ActivityType.HIKING); it })
+  }
+
+  fun getDataStringClimbing(range: Int, lat:Float,lon:Float, type:String): String{
+      return "[out:json];$type(around:$range,$lat,$lon)[sport=climbing];out geom;"
+  }
+  fun getDataStringHiking(range: Int, lat:Float,lon:Float): String{
+      return "[out:json];relation(around:$range,$lat,$lon)[route][route=\"hiking\"];out geom;"
   }
   /**
    * private val database = OutdoorActivityDatabase.getInstance(context) private val
@@ -33,6 +57,6 @@ class OutdoorActivityRepository(/*context: Context*/ ) {
 // main function to test calls
 suspend fun main() {
   val f = OutdoorActivityRepository()
-  val q = f.getClimbingActivities()
+  val q = f.getHikingActivities(1000, 47.447227f, 7.617517f)
   println(q.elements.toString())
 }
