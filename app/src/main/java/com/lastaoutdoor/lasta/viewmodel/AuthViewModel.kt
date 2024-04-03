@@ -10,6 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -22,9 +23,9 @@ class AuthViewModel @Inject constructor(private val googleAuth: GoogleAuth) : Vi
     viewModelScope.launch {
       try {
         val intentSender = googleAuth.signIn()
-        _authStateFlow.value = AuthState.GoogleSignInIntent(intentSender)
+        _authStateFlow.update { AuthState.GoogleSignInIntent(intentSender) }
       } catch (e: Exception) {
-        _authStateFlow.value = AuthState.Error(e.message ?: "An error occurred")
+        _authStateFlow.update { AuthState.Error(e.message ?: "An error occurred") }
       }
     }
   }
@@ -34,13 +35,14 @@ class AuthViewModel @Inject constructor(private val googleAuth: GoogleAuth) : Vi
       try {
         val signInResult = googleAuth.signInWithIntent(intent)
         if (signInResult.user != null) {
-          _authStateFlow.value = AuthState.Authenticated(signInResult.user)
+          _authStateFlow.update { AuthState.Authenticated(signInResult.user) }
         } else {
-          _authStateFlow.value =
-              AuthState.Error(signInResult.errorMessage ?: "Authentication failed")
+          _authStateFlow.update {
+            AuthState.Error(signInResult.errorMessage ?: "Authentication failed")
+          }
         }
       } catch (e: Exception) {
-        _authStateFlow.value = AuthState.Error(e.message ?: "An error occurred")
+        _authStateFlow.update { AuthState.Error(e.message ?: "An error occurred") }
       }
     }
   }
@@ -49,9 +51,9 @@ class AuthViewModel @Inject constructor(private val googleAuth: GoogleAuth) : Vi
     viewModelScope.launch {
       try {
         googleAuth.signOut()
-        _authStateFlow.value = AuthState.SignedOut
+        _authStateFlow.update { AuthState.SignedOut }
       } catch (e: Exception) {
-        _authStateFlow.value = AuthState.Error(e.message ?: "Failed to sign out")
+        _authStateFlow.update { AuthState.Error(e.message ?: "Failed to sign out") }
       }
     }
   }
@@ -61,12 +63,12 @@ class AuthViewModel @Inject constructor(private val googleAuth: GoogleAuth) : Vi
       try {
         val user = googleAuth.getCurrentUser()
         if (user != null) {
-          _authStateFlow.value = AuthState.Authenticated(user)
+          _authStateFlow.update { AuthState.Authenticated(user) }
         } else {
-          _authStateFlow.value = AuthState.SignedOut
+          _authStateFlow.update { AuthState.SignedOut }
         }
       } catch (e: Exception) {
-        _authStateFlow.value = AuthState.Error(e.message ?: "An error occurred")
+        _authStateFlow.update { AuthState.Error(e.message ?: "An error occurred") }
       }
     }
   }

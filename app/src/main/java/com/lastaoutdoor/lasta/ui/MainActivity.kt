@@ -9,8 +9,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.lastaoutdoor.lasta.ui.navigation.MenuNavigation
+import com.lastaoutdoor.lasta.navigation.RootScreen
 import com.lastaoutdoor.lasta.ui.screen.LoginScreen
+import com.lastaoutdoor.lasta.ui.screen.MainScreen
+import com.lastaoutdoor.lasta.ui.theme.LastaTheme
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -25,13 +27,29 @@ class MainActivity : ComponentActivity() {
     setContent {
       // The navcontroller that allows to go from the login screen to the main menu screen
       val navController = rememberNavController()
-
-      NavHost(navController = navController, startDestination = "login") {
-        composable("login") {
-          LaunchedEffect(key1 = Unit) { authViewModel.fetchAuthInfo() }
-          LoginScreen(authViewModel, navController)
-        }
-        composable("main") { MenuNavigation() }
+      LastaTheme {
+        NavHost(
+            navController = navController,
+            route = RootScreen.Root.route,
+            startDestination = RootScreen.Login.route) {
+              composable(RootScreen.Login.route) {
+                LaunchedEffect(key1 = Unit) { authViewModel.fetchAuthInfo() }
+                LoginScreen(
+                    authViewModel,
+                    onLogin = {
+                      navController.popBackStack()
+                      navController.navigate(RootScreen.Main.route)
+                    })
+              }
+              composable(RootScreen.Main.route) {
+                MainScreen(
+                    onSignOut = {
+                      authViewModel.signOut()
+                      navController.popBackStack()
+                      navController.navigate(RootScreen.Login.route)
+                    })
+              }
+            }
       }
     }
   }

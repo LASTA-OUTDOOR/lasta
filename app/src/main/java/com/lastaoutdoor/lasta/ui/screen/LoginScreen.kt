@@ -30,13 +30,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.ui.theme.LastaTheme
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 
 @Composable
-fun LoginScreen(authViewModel: AuthViewModel, navController: NavHostController) {
+fun LoginScreen(authViewModel: AuthViewModel, onLogin: () -> Unit) {
   val state by authViewModel.authStateFlow.collectAsState()
   val launcher =
       rememberLauncherForActivityResult(
@@ -49,51 +47,49 @@ fun LoginScreen(authViewModel: AuthViewModel, navController: NavHostController) 
           })
   LaunchedEffect(key1 = state) {
     if (authViewModel.getCurrentUser() != null) {
-      navController.navigate("main")
+      onLogin()
+    } else if (authViewModel.getIntentSender() != null) {
+      launcher.launch(
+          IntentSenderRequest.Builder(authViewModel.getIntentSender() ?: return@LaunchedEffect)
+              .build())
     }
   }
-  LastaTheme {
-    Column(
-        modifier = Modifier.fillMaxSize().padding(15.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally) {
-          Image(
-              painter = painterResource(id = R.drawable.app_logo),
-              contentDescription = "App Logo",
-              modifier = Modifier.size(189.dp))
-          Spacer(modifier = Modifier.size(35.dp))
-          Text(
-              text = "LASTA",
-              modifier = Modifier.width(256.dp).height(65.dp),
-              style =
-                  TextStyle(
-                      fontSize = 57.sp,
-                      lineHeight = 64.sp,
-                      color = Color(0xFF191C1E),
-                      textAlign = TextAlign.Center,
-                  ))
-          Spacer(modifier = Modifier.size(150.dp))
-          Button(
-              onClick = {
-                authViewModel.startGoogleSignIn()
-                launcher.launch(
-                    IntentSenderRequest.Builder(authViewModel.getIntentSender() ?: return@Button)
-                        .build())
-              },
-              shape = RoundedCornerShape(30.dp),
-              colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-              border = BorderStroke(1.dp, Color.Gray),
-              content = {
-                Image(
-                    painter = painterResource(id = R.drawable.google_logo),
-                    contentDescription = "Google Logo",
-                    modifier = Modifier.size(24.dp))
-                Text(
-                    text = "Sign in with Google",
-                    modifier = Modifier.padding(6.dp),
-                    color = Color.Black,
-                    fontSize = 14.sp)
-              })
-        }
-  }
+
+  Column(
+      modifier = Modifier.fillMaxSize().padding(15.dp),
+      verticalArrangement = Arrangement.Center,
+      horizontalAlignment = Alignment.CenterHorizontally) {
+        Image(
+            painter = painterResource(id = R.drawable.app_logo),
+            contentDescription = "App Logo",
+            modifier = Modifier.size(189.dp))
+        Spacer(modifier = Modifier.size(35.dp))
+        Text(
+            text = "LASTA",
+            modifier = Modifier.width(256.dp).height(65.dp),
+            style =
+                TextStyle(
+                    fontSize = 57.sp,
+                    lineHeight = 64.sp,
+                    color = Color(0xFF191C1E),
+                    textAlign = TextAlign.Center,
+                ))
+        Spacer(modifier = Modifier.size(150.dp))
+        Button(
+            onClick = { authViewModel.startGoogleSignIn() },
+            shape = RoundedCornerShape(30.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+            border = BorderStroke(1.dp, Color.Gray),
+            content = {
+              Image(
+                  painter = painterResource(id = R.drawable.google_logo),
+                  contentDescription = "Google Logo",
+                  modifier = Modifier.size(24.dp))
+              Text(
+                  text = "Sign in with Google",
+                  modifier = Modifier.padding(6.dp),
+                  color = Color.Black,
+                  fontSize = 14.sp)
+            })
+      }
 }

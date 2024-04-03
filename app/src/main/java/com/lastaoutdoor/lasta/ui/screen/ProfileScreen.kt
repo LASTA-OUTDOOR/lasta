@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Button
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,7 +23,7 @@ import coil.compose.AsyncImage
 import com.lastaoutdoor.lasta.data.model.UserModel
 
 @Composable
-fun ProfileScreen(userModel: UserModel?, onSignOut: () -> Unit, goToPreferences: () -> Unit) {
+fun ProfileScreen(userModel: UserModel?, onSignOut: () -> Unit) {
   Column(
       modifier = Modifier.fillMaxSize(),
       verticalArrangement = Arrangement.Center,
@@ -45,10 +45,6 @@ fun ProfileScreen(userModel: UserModel?, onSignOut: () -> Unit, goToPreferences:
               fontWeight = FontWeight.SemiBold)
           Spacer(modifier = Modifier.height(16.dp))
         }
-        Button(onClick = onSignOut) { androidx.compose.material.Text(text = "Sign out") }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = goToPreferences) {
-          androidx.compose.material.Text(text = "Go to Preferences")
-        }
+        Button(onClick = onSignOut) { Text(text = "Sign out") }
       }
 }
