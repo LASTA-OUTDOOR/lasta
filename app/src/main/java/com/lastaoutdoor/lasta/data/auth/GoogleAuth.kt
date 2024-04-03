@@ -55,7 +55,10 @@ class GoogleAuth(private val context: Context) {
           user =
               user?.run {
                 UserModel(
-                    userId = uid, username = displayName, profilePictureUrl = photoUrl?.toString())
+                    userId = uid,
+                    userName = displayName,
+                    email = email,
+                    profilePictureUrl = photoUrl?.toString())
               },
           errorMessage = null)
     } catch (e: Exception) {
@@ -77,6 +80,10 @@ class GoogleAuth(private val context: Context) {
 
   fun getCurrentUser(): UserModel? =
       auth.currentUser?.run {
-        UserModel(userId = uid, username = displayName, profilePictureUrl = photoUrl?.toString())
+        UserModel(
+            userId = uid,
+            userName = displayName,
+            email = email,
+            profilePictureUrl = photoUrl?.toString())
       }
 }

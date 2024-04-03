@@ -1,3 +1,8 @@
 package com.lastaoutdoor.lasta.data.model
 
-data class UserModel(val userId: String, val username: String?, val profilePictureUrl: String?)
+data class UserModel(
+    val userId: String,
+    val userName: String?,
+    val email: String?,
+    val profilePictureUrl: String?
+)

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Lasta</string>
+    <string name="app_name_uppercase">LASTA</string>
     <string name="web_client_id">720666228102-mtt8qsp3fuljeatb9128qss6c2qf91t2.apps.googleusercontent.com</string>
 </resources>

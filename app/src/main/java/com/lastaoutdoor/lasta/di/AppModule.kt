@@ -2,6 +2,7 @@ package com.lastaoutdoor.lasta.di
 
 import android.content.Context
 import com.lastaoutdoor.lasta.data.auth.GoogleAuth
+import com.lastaoutdoor.lasta.data.preferences.PreferencesDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,4 +17,9 @@ object AppModule {
   @Singleton
   @Provides
   fun provideGoogleAuth(@ApplicationContext context: Context) = GoogleAuth(context)
+
+  @Singleton
+  @Provides
+  fun providePreferencesDataStore(@ApplicationContext context: Context) =
+      PreferencesDataStore(context)
 }
