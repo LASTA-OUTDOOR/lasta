@@ -1,19 +1,26 @@
 package com.lastaoutdoor.lasta.view.screen
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -21,10 +28,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.model.data.OutdoorActivity
 import com.lastaoutdoor.lasta.viewmodel.OutdoorActivityViewModel
 import java.util.Vector
@@ -84,9 +99,7 @@ fun FloatingActionButtons(outdoorActivityViewModel: OutdoorActivityViewModel) {
 
 @Composable
 fun OutdoorActivityList(outdoorActivities: List<OutdoorActivity>) {
-    /** Lazy Column only composes and lays out the items
-    that are visible on the screen, which makes it very efficient
-    for long lists. This also delays downloading images. */
+    /** Our list of activities which is lazy in order to display only the first ones. */
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -103,18 +116,93 @@ fun OutdoorActivityItem(outdoorActivity: OutdoorActivity) {
     Card(
         modifier = Modifier.padding(8.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                //modifier = Modifier.fillMaxWidth(),
+            ) {
                 Text(
-                    text = outdoorActivity.locationName,
-                    fontWeight = FontWeight.Bold
+                    text = outdoorActivity.type,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
                 )
+                Column {
+                    Text(text = outdoorActivity.locationName)
+                    Text(
+                        text = "Difficulty : ${outdoorActivity.difficulty}/10"
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            Button (
+                onClick = { /* Switch page and start activity itinerary */ },
+                modifier = Modifier
+                    .border(
+                        width = 1.dp,
+                        color = Color(0xFFFF7009),
+                        shape = RoundedCornerShape(size = 20.dp)
+                    )
+                    //.width(104.dp)
+                    //.height(30.dp)
+                    .background(color = Color(0xFFFF7009), shape = RoundedCornerShape(size = 20.dp))
+            ) {
                 Text(
-                    text = "Estimated Difficulty : ${outdoorActivity.difficulty}"
+                    text = "START",
+                    style = TextStyle(
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight(700),
+                        color = Color(0xFFFFFFFF),
+                        textAlign = TextAlign.Center,
+                    )
                 )
+                Image(
+                    modifier = Modifier
+                        .shadow(elevation = 4.dp, spotColor = Color(0x40000000), ambientColor = Color(0x40000000))
+                        .border(width = 1.dp, color = Color(0xFFFFFFFF))
+                        .padding(1.dp)
+                        .width(22.dp)
+                        .height(23.dp)
+                        .background(color = Color(0xFFFFFFFF)),
+                    painter = painterResource(id = R.drawable.play_button),
+                    contentDescription = "image description",
+                    contentScale = ContentScale.None
+                )
+            }
+            Row {
+                Button(
+                    onClick = { /* Display more information on the selected activity */ },
+                    modifier = Modifier.border(width = 1.dp, color = Color(0xFF6609FF), shape = RoundedCornerShape(size = 20.dp))
+                        //.width(104.dp)
+                        //.height(30.dp)
+                        .background(color = Color(0xFF6609FF), shape = RoundedCornerShape(size = 20.dp))
+                ) {
+                    Text(
+                        text = "MORE INFO",
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight(700),
+                            color = Color(0xFFFFFFFF),
+                            textAlign = TextAlign.Center,
+                        )
+                    )
+                }
+
+                Button(
+                    onClick = { /* Switch to map view and see location of activity */ },
+                    modifier = Modifier.border(width = 1.dp, color = Color(0xFF0989FF), shape = RoundedCornerShape(size = 20.dp))
+                        //.width(104.dp)
+                        //.height(30.dp)
+                        .background(color = Color(0xFF0989FF), shape = RoundedCornerShape(size = 20.dp))
+                ) {
+                    Text(
+                        text = "VIEW ON MAP",
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight(700),
+                            color = Color(0xFFFFFFFF),
+                            textAlign = TextAlign.Center,
+                        )
+                    )
+                }
             }
         }
     }
