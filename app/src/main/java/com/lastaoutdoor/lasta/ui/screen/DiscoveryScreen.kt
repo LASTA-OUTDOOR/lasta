@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.view.screen
+package com.lastaoutdoor.lasta.ui.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
