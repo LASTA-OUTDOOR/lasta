@@ -1,5 +1,6 @@
 package com.lastaoutdoor.lasta.view
 
+// import com.lastaoutdoor.lasta.view.screen.DiscoveryScreen
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
@@ -26,7 +27,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.view.screen.DiscoveryScreen
 import com.lastaoutdoor.lasta.view.screen.MapScreen
 import com.lastaoutdoor.lasta.view.screen.ProfileScreen
 
@@ -85,7 +85,7 @@ fun MainMenu() {
       }) { innerPadding ->
         NavHost(navController, startDestination = "map", Modifier.padding(innerPadding)) {
           composable("map") { MapScreen() }
-          composable("discover") { DiscoveryScreen() }
+          // composable("discover") { DiscoveryScreen() }
           composable("profile") { ProfileScreen() }
         }
       }
