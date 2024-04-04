@@ -8,8 +8,12 @@ class Way(
     @SerializedName("id") @Expose val id: Long,
     @SerializedName("tags") @Expose val tags: Tags,
     @SerializedName("geometry") @Expose val nodes: List<Position>,
-    activityType: ActivityType
-) : OutdoorActivity(activityType) {
+    activityType: ActivityType,
+    difficulty: Int,
+    length: Float,
+    duration: String,
+    locationName: String
+) : OutdoorActivity(activityType, difficulty, length, duration, locationName) {
 
   override fun toString(): String {
     return (" type: $type id: $id  activityType: ${getActivityType()} name: ${tags.name} nodes: $nodes\n")
