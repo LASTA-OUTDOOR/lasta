@@ -9,8 +9,12 @@ class Relation(
     @SerializedName("tags") @Expose val tags: Tags,
     @SerializedName("members") @Expose val ways: List<SimpleWay>,
     @SerializedName("bounds") @Expose val bounds: Bounds,
-    activityType: ActivityType
-) : OutdoorActivity(activityType) {
+    activityType: ActivityType,
+    difficulty: Int,
+    length: Float,
+    duration: String,
+    locationName: String
+) : OutdoorActivity(activityType, difficulty, length, duration, locationName) {
 
   override fun toString(): String {
     return (" type: $type id: $id  activityType: ${getActivityType()} name: ${tags.name} bounds: $bounds\n")
