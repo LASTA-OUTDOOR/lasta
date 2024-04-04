@@ -12,9 +12,9 @@ class Relation(
     activityType: ActivityType
 ) : OutdoorActivity(activityType) {
 
-    override fun toString(): String {
-        return (" type: $type id: $id  activityType: ${getActivityType()} name: ${tags.name} bounds: $bounds\n")
-    }
+  override fun toString(): String {
+    return (" type: $type id: $id  activityType: ${getActivityType()} name: ${tags.name} bounds: $bounds\n")
+  }
 }
 
 data class Bounds(

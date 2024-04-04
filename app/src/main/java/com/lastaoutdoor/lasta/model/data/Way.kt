@@ -11,15 +11,14 @@ class Way(
     activityType: ActivityType
 ) : OutdoorActivity(activityType) {
 
-    override fun toString(): String {
-        return (" type: $type id: $id  activityType: ${getActivityType()} name: ${tags.name} nodes: $nodes\n")
-    }
+  override fun toString(): String {
+    return (" type: $type id: $id  activityType: ${getActivityType()} name: ${tags.name} nodes: $nodes\n")
+  }
 }
-//Used to store position within OSM Relations (i.e. list of Ways) without having to store all of the informations of every Way
-class SimpleWay(
-    @SerializedName("geometry") @Expose val nodes: List<Position>
-){
-    override fun toString(): String {
-        return "Simple Way : $nodes\n"
-    }
+// Used to store position within OSM Relations (i.e. list of Ways) without having to store all of
+// the informations of every Way
+class SimpleWay(@SerializedName("geometry") @Expose val nodes: List<Position>) {
+  override fun toString(): String {
+    return "Simple Way : $nodes\n"
+  }
 }

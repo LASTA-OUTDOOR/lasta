@@ -10,14 +10,12 @@ open class Node(
     @SerializedName("lat") @Expose val lat: Float,
     @SerializedName("lon") @Expose val lon: Float,
     @SerializedName("tags") @Expose val tags: Tags,
-    activityType : ActivityType
+    activityType: ActivityType
 ) : OutdoorActivity(activityType) {
   override fun toString(): String {
     return (" type: $type id: $id lat: $lat lon: $lon activityType: ${getActivityType()} name: ${tags.name}\n")
   }
-
 }
-
 
 /*
 class ClimbingNode(
