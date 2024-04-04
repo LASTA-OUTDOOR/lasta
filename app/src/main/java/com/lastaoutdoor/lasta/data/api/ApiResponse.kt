@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.model.api
+package com.lastaoutdoor.lasta.data.api
 // WIP, should be used to handle asychronous API calls, not used yet
 sealed class ApiResponse<T> {
   /** Represents a successful response. Contains data */

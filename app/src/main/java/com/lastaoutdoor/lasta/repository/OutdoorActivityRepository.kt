@@ -1,11 +1,11 @@
-package com.lastaoutdoor.lasta.model.repository
+package com.lastaoutdoor.lasta.repository
 
-import com.lastaoutdoor.lasta.model.api.ApiService
-import com.lastaoutdoor.lasta.model.api.OutdoorActivityResponse
-import com.lastaoutdoor.lasta.model.data.ActivityType
-import com.lastaoutdoor.lasta.model.data.Node
-import com.lastaoutdoor.lasta.model.data.Relation
-import com.lastaoutdoor.lasta.model.data.Way
+import com.lastaoutdoor.lasta.data.api.ApiService
+import com.lastaoutdoor.lasta.data.api.OutdoorActivityResponse
+import com.lastaoutdoor.lasta.data.model.ActivityType
+import com.lastaoutdoor.lasta.data.model.Node
+import com.lastaoutdoor.lasta.data.model.Relation
+import com.lastaoutdoor.lasta.data.model.Way
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

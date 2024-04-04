@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.model.data
+package com.lastaoutdoor.lasta.data.db
 
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.LatLng
@@ -19,7 +19,7 @@ interface Marker {
 // @param description: the description of the marker
 // @param activity: the activity Object of the marker
 // @param icon: the icon of the marker
-data class activityMarker(
+data class ActivityMarker(
     override val name: String,
     override val position: LatLng,
     val description: String,
