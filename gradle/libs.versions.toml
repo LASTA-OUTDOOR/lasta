@@ -26,6 +26,10 @@ kaspresso = "1.5.5"
 materialVersion = "1.6.4"
 robolectric = "4.11.1"
 sonar = "4.4.1.3373"
+
+roomCommon = "2.6.1"
+roomKtx = "2.6.1"
+
 googleServices = "4.4.1"
 firebaseFirestore = "24.11.0"
 
@@ -64,6 +68,10 @@ kaspresso = { group = "com.kaspersky.android-components", name = "kaspresso", ve
 kaspresso-compose = { group = "com.kaspersky.android-components", name = "kaspresso-compose-support", version.ref = "kaspresso" }
 
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+
+androidx-room-common = { group = "androidx.room", name = "room-common", version.ref = "roomCommon" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
+
 google-services = { group = "com.google.gms", name = "google-services", version.ref = "googleServices" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 
