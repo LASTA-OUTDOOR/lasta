@@ -1,7 +1,7 @@
-package com.lastaoutdoor.lasta.model.api
+package com.lastaoutdoor.lasta.data.api
 
 import com.google.gson.annotations.SerializedName
-import com.lastaoutdoor.lasta.model.data.OutdoorActivity
+import com.lastaoutdoor.lasta.data.model.OutdoorActivity
 
 // class used by gson to convert api responses to KotlinClasses
 data class OutdoorActivityResponse<T : OutdoorActivity>(

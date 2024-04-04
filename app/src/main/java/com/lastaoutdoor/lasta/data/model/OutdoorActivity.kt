@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.model.data
+package com.lastaoutdoor.lasta.data.model
 
 open class OutdoorActivity(
     private var activityType: ActivityType,

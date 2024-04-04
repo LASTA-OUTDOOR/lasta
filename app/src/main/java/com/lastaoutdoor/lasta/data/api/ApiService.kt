@@ -1,8 +1,8 @@
-package com.lastaoutdoor.lasta.model.api
+package com.lastaoutdoor.lasta.data.api
 
-import com.lastaoutdoor.lasta.model.data.Node
-import com.lastaoutdoor.lasta.model.data.Relation
-import com.lastaoutdoor.lasta.model.data.Way
+import com.lastaoutdoor.lasta.data.model.Node
+import com.lastaoutdoor.lasta.data.model.Relation
+import com.lastaoutdoor.lasta.data.model.Way
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query

@@ -42,12 +42,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.model.data.ActivityType
-import com.lastaoutdoor.lasta.model.data.OutdoorActivity
+import com.lastaoutdoor.lasta.data.model.ActivityType
+import com.lastaoutdoor.lasta.data.model.OutdoorActivity
 import com.lastaoutdoor.lasta.viewmodel.OutdoorActivityViewModel
 
 @Composable
-fun OutdoorActivityScreen(outdoorActivityViewModel: OutdoorActivityViewModel = viewModel()) {
+fun DiscoveryScreen(outdoorActivityViewModel: OutdoorActivityViewModel = viewModel()) {
   /** this is called when discovery button is clicked */
   Scaffold(floatingActionButton = { FloatingActionButtons(outdoorActivityViewModel) }) {
       innerPadding ->
