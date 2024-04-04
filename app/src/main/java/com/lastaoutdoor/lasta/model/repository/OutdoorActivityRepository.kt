@@ -1,30 +1,87 @@
 package com.lastaoutdoor.lasta.model.repository
 
-import android.content.Context
-import androidx.lifecycle.LiveData
-import com.lastaoutdoor.lasta.model.data.OutdoorActivity
-//import com.lastaoutdoor.lasta.model.persistence.OutdoorActivityDatabase
-class OutdoorActivityRepository(context: Context) {
-    /**private val database = OutdoorActivityDatabase.getInstance(context)
-    private val outdoorActivityDao = database.outdoorActivityDao()
+import com.lastaoutdoor.lasta.model.api.ApiService
+import com.lastaoutdoor.lasta.model.api.OutdoorActivityResponse
+import com.lastaoutdoor.lasta.model.data.ActivityType
+import com.lastaoutdoor.lasta.model.data.Node
+import com.lastaoutdoor.lasta.model.data.Relation
+import com.lastaoutdoor.lasta.model.data.Way
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
-    fun getOutdoorActivities(): LiveData<List<OutdoorActivity>> {
-        return outdoorActivityDao.getOutdoorActivities()
-    }
+// Class used to get OutdoorActivities from overpass API
+class OutdoorActivityRepository(/*context: Context*/ ) {
+  // creates instance of ApiService to execute calls
+  private val apiService: ApiService by lazy {
+    Retrofit.Builder()
+        .baseUrl("https://overpass-api.de/api/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(ApiService::class.java)
+  }
+  // Gets Nodes of type climbing
+  suspend fun getClimbingActivitiesNode(
+      range: Int,
+      lat: Float,
+      lon: Float
+  ): OutdoorActivityResponse<Node> {
+    val call = apiService.getNode(getDataStringClimbing(range, lat, lon, "node"))
+    val pr = call.execute()
+    return OutdoorActivityResponse(
+        pr.body()!!.version,
+        (pr.body()!!.elements).map {
+          it.setActivityType(ActivityType.CLIMBING)
+          it
+        })
+  }
 
-    fun getOutdoorActivityById(id: Int): LiveData<OutdoorActivity> {
-        return outdoorActivityDao.getOutdoorActivityById(id)
-    }
+  suspend fun getClimbingActivitiesWay(
+      range: Int,
+      lat: Float,
+      lon: Float
+  ): OutdoorActivityResponse<Way> {
+    val call = apiService.getWay(getDataStringClimbing(range, lat, lon, "way"))
+    val pr = call.execute()
+    return OutdoorActivityResponse(
+        pr.body()!!.version,
+        (pr.body()!!.elements).map {
+          it.setActivityType(ActivityType.CLIMBING)
+          it
+        })
+  }
 
-    suspend fun insert(outdoorActivity: OutdoorActivity) {
-        outdoorActivityDao.insert(outdoorActivity)
-    }
+  suspend fun getHikingActivities(
+      range: Int,
+      lat: Float,
+      lon: Float
+  ): OutdoorActivityResponse<Relation> {
+    val call = apiService.getRelation(getDataStringHiking(range, lat, lon))
+    val pr = call.execute()
+    return OutdoorActivityResponse(
+        pr.body()!!.version,
+        (pr.body()!!.elements).map {
+          it.setActivityType(ActivityType.HIKING)
+          it
+        })
+  }
 
-    suspend fun update(outdoorActivity: OutdoorActivity) {
-        outdoorActivityDao.update(outdoorActivity)
-    }
+  fun getDataStringClimbing(range: Int, lat: Float, lon: Float, type: String): String {
+    return "[out:json];$type(around:$range,$lat,$lon)[sport=climbing];out geom;"
+  }
 
-    suspend fun delete(outdoorActivity: OutdoorActivity) {
-        outdoorActivityDao.delete(outdoorActivity)
-    } */
+  fun getDataStringHiking(range: Int, lat: Float, lon: Float): String {
+    return "[out:json];relation(around:$range,$lat,$lon)[route][route=\"hiking\"];out geom;"
+  }
+  /**
+   * private val database = OutdoorActivityDatabase.getInstance(context) private val
+   * outdoorActivityDao = database.outdoorActivityDao() @@ -27,4 +69,9 @@ class
+   * OutdoorActivityRepository(context: Context) { suspend fun delete(outdoorActivity:
+   * OutdoorActivity) { outdoorActivityDao.delete(outdoorActivity) }
+   */
+}
+// main function to test calls
+suspend fun main() {
+  val f = OutdoorActivityRepository()
+  val q = f.getHikingActivities(1000, 47.447227f, 7.617517f)
+  println(q.elements.toString())
 }

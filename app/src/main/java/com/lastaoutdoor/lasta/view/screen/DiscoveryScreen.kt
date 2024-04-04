@@ -268,5 +268,3 @@ fun OutdoorActivityListExample() {
         )
     }
 }
-
-
