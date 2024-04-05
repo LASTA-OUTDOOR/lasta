@@ -34,6 +34,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.firebase.ui.auth.AuthUI.getApplicationContext
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.viewmodel.RecentActivitiesViewModel
@@ -41,8 +42,8 @@ import com.lastaoutdoor.lasta.viewmodel.StatisticsViewModel
 
 @Composable
 fun ProfileScreen(
-    statisticsViewModel: StatisticsViewModel,
-    recentActivitiesViewModel: RecentActivitiesViewModel
+    statisticsViewModel: StatisticsViewModel = hiltViewModel(),
+    recentActivitiesViewModel: RecentActivitiesViewModel = hiltViewModel()
 ) {
 
   var text by remember { mutableStateOf("Add a few words about yourself") }
@@ -50,18 +51,20 @@ fun ProfileScreen(
   var timeFrame by remember { mutableStateOf(false) }
 
   Column {
-    Row(modifier = Modifier.fillMaxWidth().padding(15.dp)) {
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .padding(15.dp)) {
       Image(
           painter = painterResource(id = R.drawable.pov_img),
           contentDescription = null,
           modifier =
-              Modifier
-                  // Set image size to 80 dp
-                  .size(80.dp)
-                  // Clip image to be shaped as a circle
-                  .clip(CircleShape)
-                  // Add a border with a 1.5 dp width and the primary color
-                  .border(1.5.dp, MaterialTheme.colorScheme.primary, CircleShape))
+          Modifier
+              // Set image size to 80 dp
+              .size(80.dp)
+              // Clip image to be shaped as a circle
+              .clip(CircleShape)
+              // Add a border with a 1.5 dp width and the primary color
+              .border(1.5.dp, MaterialTheme.colorScheme.primary, CircleShape))
 
       // Add a horizontal space between the image and the column
       Spacer(modifier = Modifier.width(8.dp))
@@ -80,7 +83,9 @@ fun ProfileScreen(
         OutlinedTextField(
             value = text,
             onValueChange = { newText -> text = newText },
-            modifier = Modifier.border(1.dp, Color.Black, RoundedCornerShape(4.dp)).padding(8.dp),
+            modifier = Modifier
+                .border(1.dp, Color.Black, RoundedCornerShape(4.dp))
+                .padding(8.dp),
             singleLine = false,
             textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -115,7 +120,9 @@ fun ProfileScreen(
 
     // Bar graph layout
     Column(
-        modifier = Modifier.padding(horizontal = 30.dp).fillMaxSize(),
+        modifier = Modifier
+            .padding(horizontal = 30.dp)
+            .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
 
