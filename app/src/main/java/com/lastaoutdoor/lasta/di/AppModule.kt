@@ -26,7 +26,7 @@ object AppModule {
 
   @Singleton
   @Provides
-  fun provideActivitiesRepository(@ApplicationContext context: Context): ActivitiesRepository {
+  fun provideActivitiesRepository(): ActivitiesRepository {
     return ActivitiesRepository()
   }
 }

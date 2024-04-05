@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.view
+package com.lastaoutdoor.lasta.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -6,8 +6,11 @@ import androidx.activity.compose.setContent
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.lastaoutdoor.lasta.view.MainMenu
 import com.lastaoutdoor.lasta.view.screen.LoginScreen
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
