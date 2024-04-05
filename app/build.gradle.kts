@@ -1,5 +1,3 @@
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -26,11 +24,6 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-
-        val properties = Properties()
-        properties.load(project.rootProject.file("local.properties").inputStream())
-        // Set API keys in BuildConfig
-        resValue ("string", "MAPS_API_KEY", "\"${properties.getProperty("MAPS_API_KEY")}\"")
     }
 
     buildTypes {
@@ -54,7 +47,6 @@ android {
 
     buildFeatures {
         compose = true
-        buildConfig = true
     }
 
     composeOptions {
@@ -129,12 +121,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(platform(libs.compose.bom))
-    implementation(libs.androidx.room.common)
-    implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.material)
     testImplementation(libs.junit)
-    testImplementation("junit:junit:4.12")
-    testImplementation("junit:junit:4.12")
     globalTestImplementation(libs.androidx.junit)
     globalTestImplementation(libs.androidx.espresso.core)
 
@@ -171,18 +159,11 @@ dependencies {
 
     // ----------       Robolectric     ------------
     testImplementation(libs.robolectric)
-    // ----------     Retrofit     ------------
-    implementation(libs.retrofit)
-    implementation(libs.gson.v210)
-    implementation(libs.converter.gson)
 
-    implementation(libs.androidx.navigation.compose)
+    //navigation with compose
+    val nav_version = "2.7.7"
 
-    //Google maps & Location
-    implementation(libs.play.services.maps)
-    implementation(libs.maps.compose)
-    implementation(libs.play.services.location)
-    implementation(libs.android.maps.utils)
+    implementation("androidx.navigation:navigation-compose:$nav_version")
 
     implementation(libs.coil.compose)
 
@@ -194,6 +175,11 @@ dependencies {
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+
+    // Fragments
+
+    val fragment_version = "1.6.2"
+    implementation("androidx.fragment:fragment-ktx:$fragment_version")
 }
 
 tasks.withType<Test> {

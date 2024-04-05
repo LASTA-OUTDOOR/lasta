@@ -12,14 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-
-enum class TimeFrame {
-  D,
-  W,
-  M,
-  Y,
-  ALL
-}
+import com.lastaoutdoor.lasta.data.model.TimeFrame
 
 @Composable
 fun TimeFrameSelector() {
