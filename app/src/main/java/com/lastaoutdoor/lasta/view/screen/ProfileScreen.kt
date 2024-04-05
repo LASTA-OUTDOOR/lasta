@@ -1,6 +1,5 @@
 package com.lastaoutdoor.lasta.view.screen
 
-import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -33,16 +32,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.firebase.ui.auth.AuthUI.getApplicationContext
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.viewmodel.RecentActivitiesViewModel
+import com.lastaoutdoor.lasta.viewmodel.StatisticsViewModel
 
-@SuppressLint("RestrictedApi")
 @Composable
-@Preview
-fun ProfileScreen() {
+fun ProfileScreen(
+    statisticsViewModel: StatisticsViewModel,
+    recentActivitiesViewModel: RecentActivitiesViewModel
+) {
+
   var text by remember { mutableStateOf("Add a few words about yourself") }
   var sport by remember { mutableStateOf(false) }
   var timeFrame by remember { mutableStateOf(false) }
@@ -99,7 +101,7 @@ fun ProfileScreen() {
                   Sport("Skiiing"),
               ),
           onItemClick = {
-            Toast.makeText(getApplicationContext(), it.name, Toast.LENGTH_LONG).show()
+            /*TODO*/
           })
     }
 
