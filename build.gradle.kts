@@ -13,9 +13,9 @@ plugins {
 }
 
 sonar {
-  properties {
-    property("sonar.projectKey", "LASTA-OUTDOOR_lasta")
-    property("sonar.organization", "lasta")
-    property("sonar.host.url", "https://sonarcloud.io")
-  }
+    properties {
+        property("sonar.projectKey", "LASTA-OUTDOOR_lasta")
+        property("sonar.organization", "lasta")
+        property("sonar.host.url", "https://sonarcloud.io")
+    }
 }
