@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.view.screen
+package com.lastaoutdoor.lasta.ui.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding

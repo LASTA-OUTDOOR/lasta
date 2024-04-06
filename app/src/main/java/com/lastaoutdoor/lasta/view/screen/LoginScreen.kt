@@ -40,6 +40,12 @@ fun LoginScreen(onNavigateToMain: () -> Unit) {
         if (result.resultCode == Activity.RESULT_OK) {
           // Successfully signed in
           val user = FirebaseAuth.getInstance().currentUser
+          /*
+          if (user != null) {
+            val activitiesRepository = ActivitiesRepository()
+            activitiesRepository.addUserToActivitiesDatabase(user)
+          }
+            */
           onNavigateToMain()
         } else {
           // we do nothing, failed to login
