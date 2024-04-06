@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.view.screen
+package com.lastaoutdoor.lasta.ui.components
 
 import android.graphics.Paint
 import androidx.compose.animation.core.animateFloatAsState
