@@ -13,6 +13,9 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -31,12 +34,18 @@ fun ProfileScreen(
     statisticsViewModel: StatisticsViewModel = hiltViewModel(),
     recentActivitiesViewModel: RecentActivitiesViewModel = hiltViewModel()
 ) {
+  val trailListState by statisticsViewModel.trails.collectAsState()
+  LaunchedEffect(key1 = trailListState) { statisticsViewModel.getTrailsFromUserActivities() }
 
   Row {
     Text("Activity")
 
     // Sample data for the Spinner
     val spinnerItems = Sports.values().toList()
+    // Observe LiveData and convert to Composable State
+
+    // Now trailListState is a normal List<Trail> that you can use in Compose
+    Text(trailListState.toString())
 
     Spinner(
         items = spinnerItems,
