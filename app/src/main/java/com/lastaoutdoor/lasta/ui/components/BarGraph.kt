@@ -44,36 +44,19 @@ enum class WeekDay {
   Sun
 }
 
-enum class Year {
-  Jan,
-  Feb,
-  Mar,
-  Apr,
-  May,
-  Jun,
-  Jul,
-  Aug,
-  Sep,
-  Oct,
-  Nov,
-  Dec;
-
-  override fun toString(): String {
-    return name.substring(1)
-  }
-}
-
 @Composable
 fun <T : Enum<T>> BarGraph(
     graphBarData: List<Float>,
     xAxisScaleData: List<T>,
-    barData: List<Int>,
+    barData_: List<Int>,
     height: Dp,
     roundType: BarType,
     barWidth: Dp,
     barColor: Color,
     barArrangement: Arrangement.Horizontal
 ) {
+
+  val barData by remember { mutableStateOf(barData_ + 0) }
 
   // for getting screen width and height you can use LocalConfiguration
   val configuration = LocalConfiguration.current
@@ -128,7 +111,7 @@ fun <T : Enum<T>> BarGraph(
           Canvas(modifier = Modifier.padding(bottom = 10.dp).fillMaxSize()) {
 
             // Y-Axis Scale Text
-            val yAxisScaleText = barData.max() / 3f
+            val yAxisScaleText = (barData.max()) / 3f
             (0..3).forEach { i ->
               drawContext.canvas.nativeCanvas.apply {
                 drawText(

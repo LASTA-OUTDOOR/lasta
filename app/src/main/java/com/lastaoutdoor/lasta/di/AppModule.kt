@@ -3,7 +3,7 @@ package com.lastaoutdoor.lasta.di
 import android.content.Context
 import com.lastaoutdoor.lasta.data.auth.GoogleAuth
 import com.lastaoutdoor.lasta.data.preferences.PreferencesDataStore
-import com.lastaoutdoor.lasta.repositories.ActivitiesRepository
+import com.lastaoutdoor.lasta.repository.ActivitiesRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
