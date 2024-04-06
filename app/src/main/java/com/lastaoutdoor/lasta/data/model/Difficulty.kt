@@ -3,5 +3,9 @@ package com.lastaoutdoor.lasta.data.model
 enum class Difficulty {
   EASY,
   MODERATE,
-  DIFFICULT
+  DIFFICULT;
+
+  override fun toString(): String {
+    return name.lowercase().replaceFirstChar { it.uppercase() }
+  }
 }
