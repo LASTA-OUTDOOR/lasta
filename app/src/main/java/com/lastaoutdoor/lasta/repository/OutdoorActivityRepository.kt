@@ -20,10 +20,10 @@ class OutdoorActivityRepository(/*context: Context*/ ) {
         .create(ApiService::class.java)
   }
   // Gets Nodes of type climbing
-  suspend fun getClimbingActivitiesNode(
+  fun getClimbingActivitiesNode(
       range: Int,
-      lat: Float,
-      lon: Float
+      lat: Double,
+      lon: Double
   ): OutdoorActivityResponse<Node> {
     val call = apiService.getNode(getDataStringClimbing(range, lat, lon, "node"))
     val pr = call.execute()
@@ -37,8 +37,8 @@ class OutdoorActivityRepository(/*context: Context*/ ) {
 
   suspend fun getClimbingActivitiesWay(
       range: Int,
-      lat: Float,
-      lon: Float
+      lat: Double,
+      lon: Double
   ): OutdoorActivityResponse<Way> {
     val call = apiService.getWay(getDataStringClimbing(range, lat, lon, "way"))
     val pr = call.execute()
@@ -50,10 +50,10 @@ class OutdoorActivityRepository(/*context: Context*/ ) {
         })
   }
 
-  suspend fun getHikingActivities(
+  fun getHikingActivities(
       range: Int,
-      lat: Float,
-      lon: Float
+      lat: Double,
+      lon: Double
   ): OutdoorActivityResponse<Relation> {
     val call = apiService.getRelation(getDataStringHiking(range, lat, lon))
     val pr = call.execute()
@@ -65,11 +65,11 @@ class OutdoorActivityRepository(/*context: Context*/ ) {
         })
   }
 
-  fun getDataStringClimbing(range: Int, lat: Float, lon: Float, type: String): String {
+  fun getDataStringClimbing(range: Int, lat: Double, lon: Double, type: String): String {
     return "[out:json];$type(around:$range,$lat,$lon)[sport=climbing];out geom;"
   }
 
-  fun getDataStringHiking(range: Int, lat: Float, lon: Float): String {
+  fun getDataStringHiking(range: Int, lat: Double, lon: Double): String {
     return "[out:json];relation(around:$range,$lat,$lon)[route][route=\"hiking\"];out geom;"
   }
   /**
@@ -80,8 +80,8 @@ class OutdoorActivityRepository(/*context: Context*/ ) {
    */
 }
 // main function to test calls
-suspend fun main() {
+fun main() {
   val f = OutdoorActivityRepository()
-  val q = f.getHikingActivities(1000, 47.447227f, 7.617517f)
+  val q = f.getHikingActivities(1000, 47.447227, 7.617517)
   println(q.elements.toString())
 }

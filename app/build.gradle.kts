@@ -181,7 +181,7 @@ dependencies {
     implementation(libs.play.services.maps)
     implementation(libs.maps.compose)
     implementation(libs.play.services.location)
-
+    implementation(libs.android.maps.utils)
 
     implementation(libs.coil.compose)
 
