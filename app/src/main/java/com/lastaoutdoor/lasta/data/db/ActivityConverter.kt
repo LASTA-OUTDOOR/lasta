@@ -7,7 +7,7 @@ class ActivityConverter() {
   fun trailToDatabase(trail: Trail): HashMap<String, Any> {
     return hashMapOf(
         "activityId" to trail.activityID,
-        "averageSpeed" to trail.avgSpeedInKMH,
+        "averageSpeedInKMH" to trail.avgSpeedInKMH,
         "caloriesBurned" to trail.caloriesBurned,
         "distanceInMeters" to trail.distanceInMeters,
         "elevationChangeInMeters" to trail.elevationChangeInMeters,
@@ -19,7 +19,7 @@ class ActivityConverter() {
   fun databaseToTrail(data: HashMap<String, Any>): Trail {
     return Trail(
         activityID = data["activityId"] as Long,
-        avgSpeedInKMH = data["averageSpeed"] as Double,
+        avgSpeedInKMH = (data["averageSpeedInKMH"] as? Double) ?: 0.0,
         caloriesBurned = data["caloriesBurned"] as Long,
         distanceInMeters = data["distanceInMeters"] as Long,
         elevationChangeInMeters = data["elevationChangeInMeters"] as Long,

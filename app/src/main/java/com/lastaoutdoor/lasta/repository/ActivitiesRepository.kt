@@ -54,7 +54,7 @@ class ActivitiesRepository {
     CoroutineScope(Dispatchers.IO).launch {
       val documentSnapshot = userDocumentRef.get().await()
 
-      if (!documentSnapshot.exists() || documentSnapshot.contains("Hiking"))
+      if (!documentSnapshot.exists() || !documentSnapshot.contains("Hiking"))
           addUserToActivitiesDatabase(user)
 
       userDocumentRef.update(
