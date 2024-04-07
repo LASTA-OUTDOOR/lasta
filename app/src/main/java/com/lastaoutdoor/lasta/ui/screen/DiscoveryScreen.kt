@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,7 +27,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -39,6 +43,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lastaoutdoor.lasta.R
@@ -96,8 +101,12 @@ fun OutdoorActivityList(outdoorActivities: List<OutdoorActivity>) {
 
 @Composable
 fun OutdoorActivityItem(outdoorActivity: OutdoorActivity) {
-  Card(modifier = Modifier.padding(8.dp)) {
+    Card(modifier = Modifier.padding(8.dp)) {
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+      val showActivityDialog = remember{ mutableStateOf(false) }
+      if(showActivityDialog.value){
+        ActivityDialog(onDismissRequest = { showActivityDialog.value=false }, outdoorActivity = outdoorActivity)
+      }
       Row(
           // modifier = Modifier.fillMaxWidth(),
           ) {
@@ -117,14 +126,17 @@ fun OutdoorActivityItem(outdoorActivity: OutdoorActivity) {
           // set its theme from themes.xml
 
           modifier =
-              Modifier.border(
-                      width = 1.dp,
-                      color = Color(0xFFFF7009),
-                      shape = RoundedCornerShape(size = 20.dp))
-                  // .width(104.dp)
-                  // .height(30.dp)
-                  .background(
-                      color = Color(0xFFFF7009), shape = RoundedCornerShape(size = 20.dp))) {
+          Modifier
+              .border(
+                  width = 1.dp,
+                  color = Color(0xFFFF7009),
+                  shape = RoundedCornerShape(size = 20.dp)
+              )
+              // .width(104.dp)
+              // .height(30.dp)
+              .background(
+                  color = Color(0xFFFF7009), shape = RoundedCornerShape(size = 20.dp)
+              )) {
             Text(
                 text = "START",
                 style =
@@ -137,13 +149,15 @@ fun OutdoorActivityItem(outdoorActivity: OutdoorActivity) {
             Spacer(modifier = Modifier.width(10.dp))
             Image(
                 modifier =
-                    Modifier.shadow(
-                            elevation = 4.dp,
-                            spotColor = Color(0x40000000),
-                            ambientColor = Color(0x40000000))
-                        .padding(1.dp)
-                        .width(16.dp)
-                        .height(19.dp),
+                Modifier
+                    .shadow(
+                        elevation = 4.dp,
+                        spotColor = Color(0x40000000),
+                        ambientColor = Color(0x40000000)
+                    )
+                    .padding(1.dp)
+                    .width(16.dp)
+                    .height(19.dp),
                 // will need to change resource to play_button
                 painter = painterResource(id = R.drawable.play_button),
                 contentDescription = "play image for button",
@@ -151,16 +165,19 @@ fun OutdoorActivityItem(outdoorActivity: OutdoorActivity) {
           }
       Row() {
         Button(
-            onClick = { /* Display more information on the selected activity */},
+            onClick = { showActivityDialog.value=true},
             modifier =
-                Modifier.border(
-                        width = 1.dp,
-                        color = Color(0xFF6609FF),
-                        shape = RoundedCornerShape(size = 20.dp))
-                    // .width(104.dp)
-                    // .height(30.dp)
-                    .background(
-                        color = Color(0xFF6609FF), shape = RoundedCornerShape(size = 20.dp))) {
+            Modifier
+                .border(
+                    width = 1.dp,
+                    color = Color(0xFF6609FF),
+                    shape = RoundedCornerShape(size = 20.dp)
+                )
+                // .width(104.dp)
+                // .height(30.dp)
+                .background(
+                    color = Color(0xFF6609FF), shape = RoundedCornerShape(size = 20.dp)
+                )) {
               Text(
                   text = "MORE INFO",
                   style =
@@ -175,14 +192,17 @@ fun OutdoorActivityItem(outdoorActivity: OutdoorActivity) {
         Button(
             onClick = { /* Switch to map view and see location of activity */},
             modifier =
-                Modifier.border(
-                        width = 1.dp,
-                        color = Color(0xFF0989FF),
-                        shape = RoundedCornerShape(size = 20.dp))
-                    // .width(104.dp)
-                    // .height(30.dp)
-                    .background(
-                        color = Color(0xFF0989FF), shape = RoundedCornerShape(size = 20.dp))) {
+            Modifier
+                .border(
+                    width = 1.dp,
+                    color = Color(0xFF0989FF),
+                    shape = RoundedCornerShape(size = 20.dp)
+                )
+                // .width(104.dp)
+                // .height(30.dp)
+                .background(
+                    color = Color(0xFF0989FF), shape = RoundedCornerShape(size = 20.dp)
+                )) {
               Text(
                   text = "VIEW ON MAP",
                   style =
@@ -213,4 +233,54 @@ fun OutdoorActivityListExample() {
     OutdoorActivityList(
         List(10) { index -> OutdoorActivity(ActivityType.HIKING, 3, 5.0f, "2 hours", "Zurich") })
   }
+}
+
+@Composable
+fun ActivityDialog(
+    onDismissRequest: () -> Unit,
+    outdoorActivity: OutdoorActivity
+) {
+    Dialog(onDismissRequest = { onDismissRequest() }) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(250.dp)
+                .padding(16.dp),
+            shape = RoundedCornerShape(16.dp),
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+
+                Text(
+                    text = "Location: " + outdoorActivity.locationName,
+                    modifier = Modifier.padding(16.dp),
+                )
+                Text(
+                    text = "Duration: " + outdoorActivity.duration,
+                    modifier = Modifier.padding(16.dp),
+                )
+                Text(
+                    text = "Difficulty: ${outdoorActivity.difficulty}",
+                    modifier = Modifier.padding(16.dp),
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                ) {
+                    TextButton(
+                        onClick = { onDismissRequest() },
+                        modifier = Modifier.padding(8.dp),
+                    ) {
+                        Text("Ok")
+                    }
+                }
+            }
+        }
+    }
 }
