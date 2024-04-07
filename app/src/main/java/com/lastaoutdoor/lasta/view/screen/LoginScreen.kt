@@ -29,6 +29,7 @@ import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.google.firebase.auth.FirebaseAuth
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.model.data.DatabaseFunctions
 import com.lastaoutdoor.lasta.view.theme.LastaTheme
 
 @Composable
