@@ -22,8 +22,8 @@ class Relation(
 }
 
 data class Bounds(
-    @SerializedName("minlat") @Expose val minlat: Float,
-    @SerializedName("minlon") @Expose val minlon: Float,
-    @SerializedName("maxlat") @Expose val maxlat: Float,
-    @SerializedName("maxlon") @Expose val maxlon: Float
+    @SerializedName("minlat") @Expose val minlat: Double,
+    @SerializedName("minlon") @Expose val minlon: Double,
+    @SerializedName("maxlat") @Expose val maxlat: Double,
+    @SerializedName("maxlon") @Expose val maxlon: Double
 )

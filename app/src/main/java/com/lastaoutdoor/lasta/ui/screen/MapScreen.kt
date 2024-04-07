@@ -19,9 +19,10 @@ import com.google.maps.android.SphericalUtil
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.db.ClimbingMarker
+import com.lastaoutdoor.lasta.data.model.map.ClimbingMarker
 import com.lastaoutdoor.lasta.viewmodel.MapViewModel
 
 // This composable will be used to manage the permissions for the map (This needs to be called
@@ -130,6 +131,13 @@ fun MapScreen(
                 title = marker.name,
                 icon = marker.icon,
                 snippet = marker.description)
+          }
+
+          //display all the itineraries fetched by the viewmodel
+          viewModel.state.itineraryList.forEach { itinerary ->
+            Polyline(
+                points = itinerary.points
+            )
           }
         }
   }
