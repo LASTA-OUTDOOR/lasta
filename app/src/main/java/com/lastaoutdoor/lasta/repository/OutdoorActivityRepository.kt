@@ -35,11 +35,7 @@ class OutdoorActivityRepository(/*context: Context*/ ) {
         })
   }
 
-  suspend fun getClimbingActivitiesWay(
-      range: Int,
-      lat: Double,
-      lon: Double
-  ): OutdoorActivityResponse<Way> {
+  fun getClimbingActivitiesWay(range: Int, lat: Double, lon: Double): OutdoorActivityResponse<Way> {
     val call = apiService.getWay(getDataStringClimbing(range, lat, lon, "way"))
     val pr = call.execute()
     return OutdoorActivityResponse(
@@ -50,11 +46,7 @@ class OutdoorActivityRepository(/*context: Context*/ ) {
         })
   }
 
-  fun getHikingActivities(
-      range: Int,
-      lat: Double,
-      lon: Double
-  ): OutdoorActivityResponse<Relation> {
+  fun getHikingActivities(range: Int, lat: Double, lon: Double): OutdoorActivityResponse<Relation> {
     val call = apiService.getRelation(getDataStringHiking(range, lat, lon))
     val pr = call.execute()
     return OutdoorActivityResponse(

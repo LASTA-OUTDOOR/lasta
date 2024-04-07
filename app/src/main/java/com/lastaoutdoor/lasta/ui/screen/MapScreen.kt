@@ -24,7 +24,8 @@ import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.db.ClimbingMarker
 import com.lastaoutdoor.lasta.viewmodel.MapViewModel
 
-// This composable will be used to manage the permissions for the map (This needs to be called inside a composable because of the rememberLauncherForActivityResult)
+// This composable will be used to manage the permissions for the map (This needs to be called
+// inside a composable because of the rememberLauncherForActivityResult)
 @Composable
 fun ManagePermissions(viewModel: MapViewModel) {
   // Permission for geo-location
@@ -38,7 +39,7 @@ fun ManagePermissions(viewModel: MapViewModel) {
           }
           permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
             // Only approximate location access granted.
-            viewModel.updatePermission(false) //this is not enough for google map to work properly
+            viewModel.updatePermission(false) // this is not enough for google map to work properly
           }
           else -> {
             // No location access granted.
@@ -76,11 +77,24 @@ fun MapScreen(
           LatLng(46.519962, 6.633597),
           "Example Hiking point in lausanne",
           BitmapDescriptorFactory.fromResource(R.drawable.discover_icon))
-  val zoom = 13f
+  val zoom = 11f
 
   // camera that goes to the initial position and can be moved by the user
   val cameraPositionState = rememberCameraPositionState {
     position = CameraPosition.fromLatLngZoom(lausanne.position, zoom)
+  }
+
+  // Refresh markers when the camera position changes (the launched effect is used to avoid calling
+  // at every small movement))
+  LaunchedEffect(cameraPositionState.isMoving) {
+    if (!cameraPositionState.isMoving) {
+      val centerLocation = cameraPositionState.position.target
+      val topLeftLocation =
+          cameraPositionState.projection?.visibleRegion?.farLeft
+              ?: cameraPositionState.position.target
+      val rad = SphericalUtil.computeDistanceBetween(centerLocation, topLeftLocation)
+      viewModel.updateMarkers(centerLocation, rad)
+    }
   }
 
   // Scaffold to display the map and a button to filter what is on it
@@ -101,21 +115,22 @@ fun MapScreen(
         uiSettings = viewModel.state.uiSettings,
         cameraPositionState = cameraPositionState,
         onMapLoaded = {
-            val centerLocation = cameraPositionState.position.target
-            val topLeftLocation = cameraPositionState.projection?.visibleRegion?.farLeft ?: cameraPositionState.position.target
-            val rad = SphericalUtil.computeDistanceBetween(centerLocation, topLeftLocation)
-            viewModel.updateMarkers(centerLocation, rad)
+          val centerLocation = cameraPositionState.position.target
+          val topLeftLocation =
+              cameraPositionState.projection?.visibleRegion?.farLeft
+                  ?: cameraPositionState.position.target
+          val rad = SphericalUtil.computeDistanceBetween(centerLocation, topLeftLocation)
+          viewModel.updateMarkers(centerLocation, rad)
         }) {
 
-            //display all the markers fetched by the viewmodel
-            viewModel.state.markerList.forEach { marker ->
-                Marker(
-                    state = MarkerState(position = marker.position),
-                    title = marker.name,
-                    icon = marker.icon,
-                    snippet = marker.description
-                )
-            }
+          // display all the markers fetched by the viewmodel
+          viewModel.state.markerList.forEach { marker ->
+            Marker(
+                state = MarkerState(position = marker.position),
+                title = marker.name,
+                icon = marker.icon,
+                snippet = marker.description)
+          }
         }
   }
 }
