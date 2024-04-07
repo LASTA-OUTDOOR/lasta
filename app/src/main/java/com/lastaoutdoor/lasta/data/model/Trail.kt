@@ -4,14 +4,14 @@ import android.graphics.Bitmap
 import java.util.Date
 
 data class Trail(
-    var avgSpeedInKMH: Float = 0f,
-    var caloriesBurned: Int = 0,
+    val activityID: Long = 0L,
+    var avgSpeedInKMH: Double = 0.0,
+    var caloriesBurned: Long = 0,
     var difficulty: Difficulty? = null,
-    var distanceInMeters: Int = 0,
-    var elevationChangeInMeters: Int = 0,
+    var distanceInMeters: Long = 0,
+    var elevationChangeInMeters: Long = 0,
     var img: Bitmap? = null,
     var popularity: Popularity? = null,
-    var timeStarted: Long = 0L,
-    var timeFinished: Long = 0L,
-    var dayStarted: Date? = null,
+    var timeStarted: Date = Date(),
+    var timeFinished: Date = Date()
 )
