@@ -264,7 +264,7 @@ fun ActivityDialog(
                     modifier = Modifier.padding(16.dp),
                 )
                 Text(
-                    text = "Difficulty: ${outdoorActivity.difficulty}",
+                    text = "Difficulty: ${outdoorActivity.difficulty}/10",
                     modifier = Modifier.padding(16.dp),
                 )
 
