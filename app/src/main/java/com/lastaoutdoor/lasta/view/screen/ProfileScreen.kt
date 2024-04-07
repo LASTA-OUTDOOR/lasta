@@ -10,6 +10,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,14 +21,17 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lastaoutdoor.lasta.data.model.Sports
+import com.lastaoutdoor.lasta.data.model.TimeFrame
+import com.lastaoutdoor.lasta.data.model.Trail
 import com.lastaoutdoor.lasta.ui.components.BarGraph
 import com.lastaoutdoor.lasta.ui.components.BarType
 import com.lastaoutdoor.lasta.ui.components.Spinner
-import com.lastaoutdoor.lasta.ui.components.TimeFrameSelector
 import com.lastaoutdoor.lasta.ui.components.WeekDay
+import com.lastaoutdoor.lasta.utils.weekDisplay
 import com.lastaoutdoor.lasta.viewmodel.RecentActivitiesViewModel
 import com.lastaoutdoor.lasta.viewmodel.StatisticsViewModel
 
@@ -34,59 +40,95 @@ fun ProfileScreen(
     statisticsViewModel: StatisticsViewModel = hiltViewModel(),
     recentActivitiesViewModel: RecentActivitiesViewModel = hiltViewModel()
 ) {
-  val trailListState by statisticsViewModel.trails.collectAsState()
-  LaunchedEffect(key1 = trailListState) { statisticsViewModel.getTrailsFromUserActivities() }
+    //statisticsViewModel.addTrailToUserActivities()
+    val trailList by statisticsViewModel.trails.collectAsState()
 
-  Row {
-    Text("Activity")
+    Column(modifier = Modifier.padding(16.dp)) {
+        SportSelection(statisticsViewModel)
+        TimeFrameSelection(statisticsViewModel)
+        Chart(trailList)
+        RecentActivities(recentActivitiesViewModel)
+    }
 
-    // Sample data for the Spinner
-    val spinnerItems = Sports.values().toList()
-    // Observe LiveData and convert to Composable State
+}
 
-    // Now trailListState is a normal List<Trail> that you can use in Compose
-    Text(trailListState.toString())
+@Composable
+fun SportSelection(statisticsViewModel: StatisticsViewModel) {
+    Row {
+        Text("Activity")
 
-    Spinner(
-        items = spinnerItems,
-        selectedItem = statisticsViewModel.getSport(),
-        onItemSelected = { newSport -> statisticsViewModel.setSport(newSport) })
-  }
+        // Sample data for the Spinner
+        val spinnerItems = Sports.values().toList()
+        // Observe LiveData and convert to Composable State
+        // statisticsViewModel.addTrailToUserActivities()
+        // Now trailListState is a normal List<Trail> that you can use in Compose
 
-  // Add a vertical space between the author and message texts
-  Spacer(modifier = Modifier.height(4.dp))
+        Spinner(
+            items = spinnerItems,
+            selectedItem = statisticsViewModel.getSport(),
+            onItemSelected = { newSport -> statisticsViewModel.setSport(newSport) })
+    }
+}
 
-  TimeFrameSelector()
+@Composable
+fun TimeFrameSelection(statisticsViewModel: StatisticsViewModel) {
+    Row(modifier = Modifier.padding(8.dp)) {
+        TimeFrame.values().forEach { timeframe ->
+            Button(
+                onClick = { statisticsViewModel.setTimeFrame(timeframe) },
+                colors =
+                ButtonDefaults.buttonColors(
+                    containerColor =
+                    if (statisticsViewModel.getTimeFrame() == timeframe) Color.Gray else Color.LightGray,
+                    contentColor = Color.Black
+                ),
+                shape = RoundedCornerShape(4.dp),
+                modifier = Modifier.padding(4.dp)
+            ) {
+                Text(
+                    timeframe.name,
+                    color = if (statisticsViewModel.getTimeFrame() == timeframe) Color.White else Color.Black
+                )
+            }
+        }
+    }
+}
 
-  // Add a vertical space between the author and message texts
-  Spacer(modifier = Modifier.height(4.dp))
-
-  // Bar graph layout
-  Column(
-      modifier = Modifier.padding(horizontal = 30.dp).fillMaxSize(),
-      verticalArrangement = Arrangement.Center,
-      horizontalAlignment = Alignment.CenterHorizontally) {
+@Composable
+fun Chart(trails: List<Trail>) {
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 30.dp)
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally) {
 
         // Bar graph x and y data
-        val ordinate = mutableListOf(5, 10, 15, 0, 5, 7, 11)
+        val values = weekDisplay(trails)
+
+        val ordinate = values.map { it.toInt() }
         val abscissa = WeekDay.values().toList() // needs to be an enum
 
-        val ordinateFloat: List<Float> = ordinate.map { it.toFloat() / ordinate.max() }
+        val ordinateFloat: List<Float> = values.map {
+            val max = ordinate.max()
+            if(max == 0) 0f else
+            it / ordinate.max()
+        }
 
         BarGraph(
             graphBarData = ordinateFloat,
             xAxisScaleData = abscissa,
-            barData_ = ordinate,
+            barData = ordinate,
             height = 300.dp,
             roundType = BarType.TOP_CURVED,
             barWidth = 20.dp,
             barColor = MaterialTheme.colorScheme.primary,
             barArrangement = Arrangement.SpaceEvenly)
-      }
-
-  // Add a horizontal space between the image and the column
-  Spacer(modifier = Modifier.width(8.dp))
-
-  // Recent activities layout
-  LazyVerticalGrid(modifier = Modifier, columns = GridCells.Adaptive(100.dp)) {}
+    }
 }
+
+@Composable
+fun RecentActivities(recentActivitiesViewModel: RecentActivitiesViewModel) {
+    LazyVerticalGrid(modifier = Modifier, columns = GridCells.Adaptive(100.dp)) {}
+}
+
