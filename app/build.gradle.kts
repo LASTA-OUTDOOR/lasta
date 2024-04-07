@@ -171,9 +171,9 @@ dependencies {
     // ----------       Robolectric     ------------
     testImplementation(libs.robolectric)
     // ----------     Retrofit     ------------
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.google.code.gson:gson:2.10")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation(libs.retrofit)
+    implementation(libs.gson.v210)
+    implementation(libs.converter.gson)
 
     implementation(libs.androidx.navigation.compose)
 
