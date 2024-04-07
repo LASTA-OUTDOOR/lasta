@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -24,6 +26,12 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        val properties = Properties()
+        properties.load(project.rootProject.file("local.properties").inputStream())
+        // Set API keys in BuildConfig
+        resValue ("string", "MAPS_API_KEY", "\"${properties.getProperty("MAPS_API_KEY")}\"")
+        println(properties.getProperty("MAPS_API_KEY"))
     }
 
     buildTypes {
@@ -47,6 +55,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     composeOptions {
@@ -121,6 +130,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(platform(libs.compose.bom))
+    implementation(libs.androidx.room.common)
+    implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.material)
     testImplementation(libs.junit)
     globalTestImplementation(libs.androidx.junit)
@@ -159,11 +170,18 @@ dependencies {
 
     // ----------       Robolectric     ------------
     testImplementation(libs.robolectric)
+    // ----------     Retrofit     ------------
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.google.code.gson:gson:2.10")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
-    //navigation with compose
-    val nav_version = "2.7.7"
+    implementation(libs.androidx.navigation.compose)
 
-    implementation("androidx.navigation:navigation-compose:$nav_version")
+    //Google maps & Location
+    implementation(libs.play.services.maps)
+    implementation(libs.maps.compose)
+    implementation(libs.play.services.location)
+
 
     implementation(libs.coil.compose)
 
@@ -175,11 +193,6 @@ dependencies {
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
-
-    // Fragments
-
-    val fragment_version = "1.6.2"
-    implementation("androidx.fragment:fragment-ktx:$fragment_version")
 }
 
 tasks.withType<Test> {

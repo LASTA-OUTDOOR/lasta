@@ -29,7 +29,10 @@
             </intent-filter>
         </activity>
 
-
+        <!--links the API key (See wiki for more details) TODO: Find maybe a better way that strings.xml for the api key-->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/MAPS_API_KEY" />
 
     </application>
 
