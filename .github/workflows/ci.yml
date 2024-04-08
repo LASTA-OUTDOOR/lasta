@@ -41,7 +41,7 @@ jobs:
           java-version: "17"
 
       - name: Create local.properties file
-        run: echo "Subsitute local.properties" > local.properties
+        run: echo "Subsitute local.properties" > local.properties && ls -la | echo
 
       # Caching is a very useful part of a CI, as a workflow is executed in a clean environment every time,
       # this means that one would need to re-download and re-process gradle files for every run. Which is very time consuming.
