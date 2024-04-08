@@ -31,7 +31,6 @@ android {
         properties.load(project.rootProject.file("local.properties").inputStream())
         // Set API keys in BuildConfig
         resValue ("string", "MAPS_API_KEY", "\"${properties.getProperty("MAPS_API_KEY")}\"")
-        println(properties.getProperty("MAPS_API_KEY"))
     }
 
     buildTypes {
@@ -134,6 +133,8 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.material)
     testImplementation(libs.junit)
+    testImplementation("junit:junit:4.12")
+    testImplementation("junit:junit:4.12")
     globalTestImplementation(libs.androidx.junit)
     globalTestImplementation(libs.androidx.espresso.core)
 
@@ -171,9 +172,9 @@ dependencies {
     // ----------       Robolectric     ------------
     testImplementation(libs.robolectric)
     // ----------     Retrofit     ------------
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.google.code.gson:gson:2.10")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation(libs.retrofit)
+    implementation(libs.gson.v210)
+    implementation(libs.converter.gson)
 
     implementation(libs.androidx.navigation.compose)
 
@@ -181,7 +182,7 @@ dependencies {
     implementation(libs.play.services.maps)
     implementation(libs.maps.compose)
     implementation(libs.play.services.location)
-
+    implementation(libs.android.maps.utils)
 
     implementation(libs.coil.compose)
 

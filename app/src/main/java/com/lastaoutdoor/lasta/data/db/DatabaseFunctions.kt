@@ -6,11 +6,24 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
 
+/**
+ * Class containing functions for interacting with the Firebase Firestore database
+ *
+ * TODO: Rename this class to be more specific to the data it is handling
+ * TODO: Make user model interact with the database otherwise no consistency
+ */
 class DatabaseFunctions {
 
   // Attributes
   private val database = Firebase.firestore
 
+  /**
+   * Function to add a user to the Firestore database
+   *
+   * @param user the FirebaseUser object representing the user
+   *
+   * TODO: This shouldn't be a [FirebaseUser] object, but a custom user model
+   */
   fun addUserToDatabase(user: FirebaseUser) {
 
     val userDocumentRef = database.collection("users").document(user.uid)
