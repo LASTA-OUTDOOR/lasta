@@ -1,5 +1,6 @@
 package com.lastaoutdoor.lasta.navigation
 
+/** Sealed class representing all possible root screens in the application */
 sealed class RootScreen(val route: String) {
   object Root : RootScreen("Root")
 
@@ -10,6 +11,7 @@ sealed class RootScreen(val route: String) {
   object Main : RootScreen("Main")
 }
 
+/** Sealed class representing all possible leaf screens in the application */
 sealed class LeafScreen(val route: String) {
   object Map : LeafScreen("Map")
 
