@@ -4,7 +4,7 @@ package com.lastaoutdoor.lasta
 // import androidx.compose.ui.test.junit4.createAndroidComposeRule
 // import androidx.test.ext.junit.runners.AndroidJUnit4
 // import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
-// import com.lastaoutdoor.lasta.view.MainActivity
+// import com.lastaoutdoor.lasta.ui.MainActivity
 // import org.junit.Rule
 // import org.junit.runner.RunWith
 //
