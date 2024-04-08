@@ -133,6 +133,8 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.material)
     testImplementation(libs.junit)
+    testImplementation("junit:junit:4.12")
+    testImplementation("junit:junit:4.12")
     globalTestImplementation(libs.androidx.junit)
     globalTestImplementation(libs.androidx.espresso.core)
 
