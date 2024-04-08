@@ -5,7 +5,7 @@ on:
   push:
     branches:
       - main
-      - map/APIcalls
+      - 'testing/*'
 
   pull_request:
     types:
