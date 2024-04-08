@@ -3,6 +3,7 @@ package com.lastaoutdoor.lasta.di
 import android.content.Context
 import com.lastaoutdoor.lasta.data.auth.GoogleAuth
 import com.lastaoutdoor.lasta.data.preferences.PreferencesDataStore
+import com.lastaoutdoor.lasta.repository.ActivitiesRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,4 +26,10 @@ object AppModule {
   @Provides
   fun providePreferencesDataStore(@ApplicationContext context: Context) =
       PreferencesDataStore(context)
+
+  @Singleton
+  @Provides
+  fun provideActivitiesRepository(): ActivitiesRepository {
+    return ActivitiesRepository()
+  }
 }

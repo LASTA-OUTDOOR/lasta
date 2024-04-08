@@ -38,6 +38,14 @@
           }
         },
         {
+          "client_id": "720666228102-9oi9004vg8trbgscehqf68j1f816iuim.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lastaoutdoor.lasta",
+            "certificate_hash": "8857492f04bf75718c19e8170d532eb4bd8c4501"
+          }
+        },
+        {
           "client_id": "720666228102-epg6gbol55vuf48msuc0g9fg1fbpvvs2.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
