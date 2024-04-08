@@ -40,6 +40,9 @@ jobs:
           distribution: "temurin"
           java-version: "17"
 
+      - name: Create local.properties file
+        run: echo "Subsitute local.properties" > local.properties
+
       # Caching is a very useful part of a CI, as a workflow is executed in a clean environment every time,
       # this means that one would need to re-download and re-process gradle files for every run. Which is very time consuming.
       #
@@ -113,3 +116,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: ./gradlew sonar --parallel --build-cache
+
+      - name: Delete local.properties file
+        run: rm -f local.properties
