@@ -60,20 +60,55 @@ class StatisticsViewModel @Inject constructor(private val repository: Activities
   fun addTrailToUserActivities() {
     if (user != null) {
       repository.addTrailToUserActivities(
-          user, Trail(1, 5.0, 200, null, 6000, 500, null, null, createDateTime(2024, 4, 7, 8, 0, 0), createDateTime(2024, 4, 7, 8, 30, 0)))
+          user,
+          Trail(
+              1,
+              5.0,
+              200,
+              null,
+              6000,
+              500,
+              null,
+              null,
+              createDateTime(2024, 4, 7, 8, 0, 0),
+              createDateTime(2024, 4, 7, 8, 30, 0)))
 
       repository.addTrailToUserActivities(
-          user, Trail(2, 6.0, 400, null, 11100, 200, null, null, createDateTime(2024, 4, 8, 8, 0, 0), createDateTime(2024, 4, 8, 8, 30, 0)))
+          user,
+          Trail(
+              2,
+              6.0,
+              400,
+              null,
+              11100,
+              200,
+              null,
+              null,
+              createDateTime(2024, 4, 8, 8, 0, 0),
+              createDateTime(2024, 4, 8, 8, 30, 0)))
 
       repository.addTrailToUserActivities(
-          user, Trail(3, 2.0, 100, null, 12650, 300, null, null, createDateTime(2024, 4, 5, 8, 0, 0), createDateTime(2024, 4, 5, 8, 30, 0)))
+          user,
+          Trail(
+              3,
+              2.0,
+              100,
+              null,
+              12650,
+              300,
+              null,
+              null,
+              createDateTime(2024, 4, 5, 8, 0, 0),
+              createDateTime(2024, 4, 5, 8, 30, 0)))
     }
   }
 
-  fun setTimeFrame(timeFrame: TimeFrame){
+  fun setTimeFrame(timeFrame: TimeFrame) {
     time.value = timeFrame
   }
+
   fun getTimeFrame() = time.value
+
   fun setSport(s: Sports) {
     sport.value = s
   }

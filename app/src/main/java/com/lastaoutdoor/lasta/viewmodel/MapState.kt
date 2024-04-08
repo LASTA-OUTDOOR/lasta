@@ -3,6 +3,8 @@ package com.lastaoutdoor.lasta.viewmodel
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.MapUiSettings
+import com.lastaoutdoor.lasta.data.model.map.MapItinerary
+import com.lastaoutdoor.lasta.data.model.map.Marker
 
 // state for the map on the mapScreen
 class MapState {
@@ -13,4 +15,8 @@ class MapState {
 
   var uiSettings: MapUiSettings =
       MapUiSettings(zoomControlsEnabled = false, myLocationButtonEnabled = false)
+
+  var markerList: List<Marker> = emptyList()
+
+  var itineraryList: List<MapItinerary> = emptyList()
 }
