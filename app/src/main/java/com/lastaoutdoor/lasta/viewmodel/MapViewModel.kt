@@ -6,12 +6,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Polyline
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.model.map.ClimbingMarker
-import com.lastaoutdoor.lasta.data.model.map.HikingMarker
 import com.lastaoutdoor.lasta.data.model.Node
 import com.lastaoutdoor.lasta.data.model.Relation
+import com.lastaoutdoor.lasta.data.model.map.ClimbingMarker
+import com.lastaoutdoor.lasta.data.model.map.HikingMarker
 import com.lastaoutdoor.lasta.data.model.map.MapItinerary
 import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
 
@@ -22,6 +21,9 @@ class MapViewModel : ViewModel() {
 
   // if the user has not agreed to share his location, the map will be centered on Lausanne
   val initialPosition = LatLng(46.519962, 6.633597)
+
+  // initial zoom level of the map
+  val initialZoom = 11f
 
   // Changes the map properties depending on the permission
   fun updatePermission(value: Boolean) {
@@ -57,7 +59,7 @@ class MapViewModel : ViewModel() {
     val climbingMarkers = mutableListOf<ClimbingMarker>()
 
     // Converts the node data structure to our marker data structure
-    climbingNodes.forEach() {
+    climbingNodes.forEach {
       val marker =
           ClimbingMarker(
               it.tags.name ?: "Unnamed Climbing Spot",
@@ -68,7 +70,6 @@ class MapViewModel : ViewModel() {
     }
 
     return climbingMarkers
-
   }
 
   // Returns relations that represents hiking activities
@@ -78,74 +79,63 @@ class MapViewModel : ViewModel() {
       repository: OutdoorActivityRepository
   ): List<Relation> {
 
-      var hikingRelation: List<Relation> = emptyList()
+    var hikingRelation: List<Relation> = emptyList()
 
-      val hikingThread = Thread {
-          hikingRelation = repository.getHikingActivities(
-              rad.toInt(),
-              centerLocation.latitude,
-              centerLocation.longitude
-          ).elements
-      }
+    val hikingThread = Thread {
+      hikingRelation =
+          repository
+              .getHikingActivities(rad.toInt(), centerLocation.latitude, centerLocation.longitude)
+              .elements
+    }
 
-      hikingThread.start()
-      hikingThread.join()
+    hikingThread.start()
+    hikingThread.join()
 
-
-      return hikingRelation
+    return hikingRelation
   }
 
-    private fun getMarkersFromRelations(hikingRelations: List<Relation>): List<HikingMarker> {
+  // Still WIP /!\ -> Get starting point of a hiking activity
+  private fun getMarkersFromRelations(hikingRelations: List<Relation>): List<HikingMarker> {
 
-        val markers = mutableListOf<HikingMarker>()
+    val markers = mutableListOf<HikingMarker>()
 
-        hikingRelations.forEach(){
-            markers.add(
-                HikingMarker(
-                it.tags.name ?: "Unnamed Hiking Spot",
-                LatLng(it.bounds.minlat, it.bounds.minlon),
-                it.locationName ?: "No description",
-                BitmapDescriptorFactory.fromResource(R.drawable.hiking_icon)
-            )
-            )
-        }
-
-        return markers.toList()
-
+    hikingRelations.forEach {
+      markers.add(
+          HikingMarker(
+              "Hiking: " + (it.tags.name ?: "Sans nom"),
+              LatLng(it.bounds.minlat, it.bounds.minlon),
+              it.locationName ?: "No description",
+              BitmapDescriptorFactory.fromResource(R.drawable.hiking_icon)))
     }
 
-    private fun getItineraryFromRelations(hikingRelations: List<Relation>): List<MapItinerary> {
+    return markers.toList()
+  }
 
-        val itinerary = mutableListOf<MapItinerary>()
+  // Still WIP /!\ -> get the itinerary of a hiking activity (Doesn't work, we cannot just draw and
+  // fetch all itineraries for big distances)
+  private fun getItineraryFromRelations(hikingRelations: List<Relation>): List<MapItinerary> {
 
-        hikingRelations.forEach(){ relation ->
+    val itinerary = mutableListOf<MapItinerary>()
 
-            val pointsList  = mutableListOf<LatLng>()
-           relation.ways.forEach(){ way ->
-               way.nodes.forEach(){ position ->
-                   pointsList.add(LatLng(position.lat, position.lon))
-               }
-           }
+    // go through each relation to find the ways and nodes composing it
+    hikingRelations.forEach { relation ->
+      val pointsList = mutableListOf<LatLng>()
+      relation.ways.forEach { way ->
+        way.nodes.forEach { position -> pointsList.add(LatLng(position.lat, position.lon)) }
+      }
 
-           itinerary.add(
-               MapItinerary(
-                   relation.id,
-                   relation.tags.name ?: "Unnamed Hiking Spot",
-                   points=pointsList
-               )
-           )
-        }
-
-        return itinerary.toList()
-
+      itinerary.add(
+          MapItinerary(
+              relation.id, relation.tags.name ?: "Unnamed Hiking Spot", points = pointsList))
     }
 
-
+    return itinerary.toList()
+  }
 
   // Update the markers on the map with a new center location and radius
   fun updateMarkers(centerLocation: LatLng, rad: Double) {
 
-    //fetch more activity at once, so less effort when moving around
+    // fetch more activity at once, so less effort when moving around
 
     try {
       // repository to fetch the activities
@@ -154,19 +144,20 @@ class MapViewModel : ViewModel() {
       // get all the climbing activities in the radius
       val climbingMarkers = fetchClimbingActivities(rad, centerLocation, repository)
 
-      val hikingRelations = fetchHikingActivities(rad, centerLocation, repository)
-      val hikingMarkers = getMarkersFromRelations(hikingRelations)
+      // markers for hiking activities are still not ready due to optimization problems / api call
+      // structure
+      // val hikingRelations = fetchHikingActivities(rad, centerLocation, repository)
+      // val hikingMarkers = getMarkersFromRelations(hikingRelations)
 
       // Add the markers to the map
       state.markerList = climbingMarkers
-      state.markerList = state.markerList.plus(hikingMarkers)
+      // state.markerList = state.markerList.plus(hikingMarkers)
 
-      state.itineraryList = state.itineraryList.plus(getItineraryFromRelations(hikingRelations))
+      // state.itineraryList = state.itineraryList.plus(getItineraryFromRelations(hikingRelations))
 
     } catch (e: Exception) {
       // TODO: error message system to tell the user that the activities could not be fetched
       e.printStackTrace()
     }
   }
-
 }

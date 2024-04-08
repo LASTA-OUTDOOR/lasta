@@ -1,5 +1,5 @@
 package com.lastaoutdoor.lasta.viewmodel
-import com.google.android.gms.maps.model.Polyline
+
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.MapUiSettings
@@ -19,5 +19,4 @@ class MapState {
   var markerList: List<Marker> = emptyList()
 
   var itineraryList: List<MapItinerary> = emptyList()
-
 }

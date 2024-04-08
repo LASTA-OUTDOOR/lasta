@@ -32,7 +32,6 @@ data class ClimbingMarker(
     override val activity: ActivityType = ActivityType.CLIMBING
 ) : Marker
 
-
 // Marker Hiking activities
 // @param name: the name of the marker
 // @param position: the latitude and longitude of the marker
