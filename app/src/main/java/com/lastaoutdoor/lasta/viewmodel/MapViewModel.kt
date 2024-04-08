@@ -147,13 +147,13 @@ class MapViewModel : ViewModel() {
       // markers for hiking activities are still not ready due to optimization problems / api call
       // structure
       val hikingRelations = fetchHikingActivities(rad, centerLocation, repository)
-      //val hikingMarkers = getMarkersFromRelations(hikingRelations)
+      // val hikingMarkers = getMarkersFromRelations(hikingRelations)
 
       // Add the markers to the map
       state.markerList = climbingMarkers
-      //state.markerList = state.markerList.plus(hikingMarkers)
+      // state.markerList = state.markerList.plus(hikingMarkers)
 
-      //state.itineraryList = state.itineraryList.plus(getItineraryFromRelations(hikingRelations))
+      // state.itineraryList = state.itineraryList.plus(getItineraryFromRelations(hikingRelations))
     } catch (e: Exception) {
       // TODO: error message system to tell the user that the activities could not be fetched
       e.printStackTrace()
