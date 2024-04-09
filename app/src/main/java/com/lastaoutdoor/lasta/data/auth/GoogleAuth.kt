@@ -10,6 +10,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.data.db.DatabaseManager
 import com.lastaoutdoor.lasta.data.model.UserModel
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.tasks.await
@@ -88,7 +89,8 @@ class GoogleAuth(private val context: Context) {
                     userId = uid,
                     userName = displayName,
                     email = email,
-                    profilePictureUrl = photoUrl?.toString())
+                    profilePictureUrl = photoUrl?.toString(),
+                    prefSettings = DatabaseManager.getUserPreferences(uid))
               },
           errorMessage = null)
     } catch (e: Exception) {
@@ -118,12 +120,13 @@ class GoogleAuth(private val context: Context) {
    *
    * @return The current user, or 'null' if no user is signed in.
    */
-  fun getCurrentUser(): UserModel? =
+  suspend fun getCurrentUser(): UserModel? =
       auth.currentUser?.run {
         UserModel(
             userId = uid,
             userName = displayName,
             email = email,
-            profilePictureUrl = photoUrl?.toString())
+            profilePictureUrl = photoUrl?.toString(),
+            prefSettings = DatabaseManager.getUserPreferences(uid))
       }
 }

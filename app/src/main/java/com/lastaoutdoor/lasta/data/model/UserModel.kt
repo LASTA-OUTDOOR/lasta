@@ -21,13 +21,13 @@ data class UserModel(
     val profilePictureUrl: String?,
     val prefSettings: UserPreferences
 ) {
-    constructor(firebaseUser: FirebaseUser, prefSettings: UserPreferences) : this(
-        firebaseUser.uid,
-        firebaseUser.displayName,
-        firebaseUser.email,
-        firebaseUser.photoUrl?.toString(),
-        prefSettings
-    )
+  constructor(
+      firebaseUser: FirebaseUser,
+      prefSettings: UserPreferences
+  ) : this(
+      firebaseUser.uid,
+      firebaseUser.displayName,
+      firebaseUser.email,
+      firebaseUser.photoUrl?.toString(),
+      prefSettings)
 }
-
-
