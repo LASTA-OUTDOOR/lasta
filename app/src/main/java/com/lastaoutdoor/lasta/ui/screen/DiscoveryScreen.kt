@@ -47,7 +47,7 @@ import com.lastaoutdoor.lasta.data.model.OutdoorActivity
 import com.lastaoutdoor.lasta.viewmodel.OutdoorActivityViewModel
 
 @Composable
-fun DiscoveryScreen(outdoorActivityViewModel: OutdoorActivityViewModel = viewModel()) {
+fun DiscoveryScreen(outdoorActivityViewModel: OutdoorActivityViewModel) {
   /** this is called when discovery button is clicked */
   Scaffold(floatingActionButton = { FloatingActionButtons(outdoorActivityViewModel) }) {
       innerPadding ->
@@ -56,16 +56,12 @@ fun DiscoveryScreen(outdoorActivityViewModel: OutdoorActivityViewModel = viewMod
 }
 
 @Composable
-fun DiscoveryContent(outdoorActivityViewModel: ViewModel) {
+fun DiscoveryContent(outdoorActivityViewModel: OutdoorActivityViewModel) {
   Column {
     // link this with database or API depending from which we fetch
-    // OutdoorActivityList(outdoorActivityViewModel)
-
-    // example
-    var outdoorList =
-        List(10) { index -> OutdoorActivity(ActivityType.HIKING, 3, 5.0f, "2 hours", "Zurich") }
-
-    OutdoorActivityList(outdoorList)
+    //OutdoorActivityList(outdoorActivityViewModel.getOutdoorActivities())
+    OutdoorActivityList(
+        List(10) { index -> OutdoorActivity(ActivityType.HIKING, 3, 5.0f, "2 hours", "Zurich") })
   }
 }
 
