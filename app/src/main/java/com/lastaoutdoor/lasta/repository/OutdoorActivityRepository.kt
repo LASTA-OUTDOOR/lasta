@@ -7,8 +7,6 @@ import com.lastaoutdoor.lasta.data.model.Node
 import com.lastaoutdoor.lasta.data.model.Relation
 import com.lastaoutdoor.lasta.data.model.Way
 import javax.inject.Inject
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 // Class used to get OutdoorActivities from overpass API
 class OutdoorActivityRepository
@@ -23,15 +21,8 @@ constructor( // creates instance of ApiService to execute calls
       lat: Double,
       lon: Double
   ): OutdoorActivityResponse<Node> {
-    // for now locally created
-    val apiService2: ApiService by lazy {
-      Retrofit.Builder()
-          .baseUrl("https://overpass-api.de/api/")
-          .addConverterFactory(GsonConverterFactory.create())
-          .build()
-          .create(ApiService::class.java)
-    }
-    val call = apiService2.getNode(getDataStringClimbing(range, lat, lon, "node"))
+    // api call is not working
+    val call = apiService.getNode(getDataStringClimbing(range, lat, lon, "node"))
     val pr = call.execute()
     return OutdoorActivityResponse(
         pr.body()!!.version,
