@@ -1,7 +1,6 @@
 package com.lastaoutdoor.lasta.data.db
 
 import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
 import com.lastaoutdoor.lasta.data.model.UserModel
@@ -13,7 +12,7 @@ import kotlinx.coroutines.tasks.await
  * TODO: Rename this class to be more specific to the data it is handling
  * TODO: Make user model interact with the database otherwise no consistency
  */
-class UserDatabaseManager {
+class DatabaseManager {
 
   // Attributes
   private val database = Firebase.firestore
@@ -77,5 +76,5 @@ class UserDatabaseManager {
     database.collection(collectionName)
   }
 
-  fun
+
 }
