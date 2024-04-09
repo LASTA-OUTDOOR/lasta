@@ -1,12 +1,16 @@
 [versions]
 agp = "8.3.1"
+androidMapsUtils = "3.7.0"
 coilCompose = "2.6.0"
+converterGson = "2.9.0"
 datastorePreferences = "1.0.0"
 firebaseAuthKtx = "22.3.0"
 firebaseBom = "32.7.2"
 firebaseDatabaseKtx = "20.3.0"
 firebaseFirestoreVersion = "24.10.0"
 firebaseUiAuth = "7.2.0"
+gson = "2.10.1.1"
+gsonVersion = "2.10"
 hiltAndroid = "2.49"
 hiltAndroidCompiler = "2.44"
 hiltNavigationCompose = "1.2.0"
@@ -17,6 +21,7 @@ junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
 appcompat = "1.6.1"
+mapsCompose = "4.3.0"
 material = "1.11.0"
 composeBom = "2024.02.02"
 composeActivity = "1.8.2"
@@ -24,28 +29,42 @@ composeViewModel = "2.7.0"
 lifecycleRuntimeKtx = "2.7.0"
 kaspresso = "1.5.5"
 materialVersion = "1.6.4"
+navigationCompose = "2.7.7"
+playServicesLocation = "21.2.0"
+playServicesMaps = "18.2.0"
+retrofit = "2.9.0"
 robolectric = "4.11.1"
 sonar = "4.4.1.3373"
+
+roomCommon = "2.6.1"
+roomKtx = "2.6.1"
+
 googleServices = "4.4.1"
 firebaseFirestore = "24.11.0"
 
 [libraries]
+android-maps-utils = { module = "com.google.maps.android:android-maps-utils", version.ref = "androidMapsUtils" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-material = { module = "androidx.compose.material:material", version.ref = "materialVersion" }
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-database-ktx = { module = "com.google.firebase:firebase-database-ktx", version.ref = "firebaseDatabaseKtx" }
 firebase-firestore-v24100 = { module = "com.google.firebase:firebase-firestore", version.ref = "firebaseFirestoreVersion" }
 firebase-ui-auth = { module = "com.firebaseui:firebase-ui-auth", version.ref = "firebaseUiAuth" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+gson-v210 = { module = "com.google.code.gson:gson", version.ref = "gsonVersion" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 
@@ -63,7 +82,14 @@ compose-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifes
 kaspresso = { group = "com.kaspersky.android-components", name = "kaspresso", version.ref = "kaspresso" }
 kaspresso-compose = { group = "com.kaspersky.android-components", name = "kaspresso-compose-support", version.ref = "kaspresso" }
 
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
+play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+
+androidx-room-common = { group = "androidx.room", name = "room-common", version.ref = "roomCommon" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
+
 google-services = { group = "com.google.gms", name = "google-services", version.ref = "googleServices" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 
