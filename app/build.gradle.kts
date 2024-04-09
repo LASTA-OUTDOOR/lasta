@@ -193,6 +193,8 @@ dependencies {
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+
+    testImplementation("io.mockk:mockk:1.13.10")
 }
 
 tasks.withType<Test> {
