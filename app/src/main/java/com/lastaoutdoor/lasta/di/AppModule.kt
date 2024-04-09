@@ -29,4 +29,6 @@ object AppModule {
   fun provideActivitiesRepository(): ActivitiesRepository {
     return ActivitiesRepository()
   }
+
+  @Provides @Singleton fun provideTimeProvider(): TimeProvider = RealTimeProvider()
 }

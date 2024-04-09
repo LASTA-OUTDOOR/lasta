@@ -32,7 +32,7 @@ import com.lastaoutdoor.lasta.viewmodel.RecentActivitiesViewModel
 import com.lastaoutdoor.lasta.viewmodel.StatisticsViewModel
 
 @Composable
-fun ProfileScreen(
+fun ProfileScreen2(
     statisticsViewModel: StatisticsViewModel = hiltViewModel(),
     recentActivitiesViewModel: RecentActivitiesViewModel = hiltViewModel()
 ) {

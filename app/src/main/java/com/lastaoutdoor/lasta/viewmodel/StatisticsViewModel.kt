@@ -8,8 +8,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.lastaoutdoor.lasta.data.model.Sports
 import com.lastaoutdoor.lasta.data.model.TimeFrame
 import com.lastaoutdoor.lasta.data.model.Trail
+import com.lastaoutdoor.lasta.di.TimeProvider
 import com.lastaoutdoor.lasta.repository.ActivitiesRepository
-import com.lastaoutdoor.lasta.utils.calculateTimeRange
+import com.lastaoutdoor.lasta.utils.calculateTimeRangeUntilNow
 import com.lastaoutdoor.lasta.utils.createDateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -18,7 +19,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class StatisticsViewModel @Inject constructor(private val repository: ActivitiesRepository) :
+class StatisticsViewModel
+@Inject
+constructor(private val repository: ActivitiesRepository, private val timeProvider: TimeProvider) :
     ViewModel() {
   private var sport = mutableStateOf(Sports.HIKING)
   private val user = FirebaseAuth.getInstance().currentUser
@@ -49,7 +52,7 @@ class StatisticsViewModel @Inject constructor(private val repository: Activities
   }
 
   private fun filterTrailsByTimeFrame(trails: List<Trail>, timeFrame: TimeFrame): List<Trail> {
-    val frame = calculateTimeRange(timeFrame)
+    val frame = calculateTimeRangeUntilNow(timeFrame, timeProvider)
     return trails.filter { trail ->
       val trailStart = Timestamp(trail.timeStarted)
       val trailEnd = Timestamp(trail.timeFinished)
@@ -60,20 +63,55 @@ class StatisticsViewModel @Inject constructor(private val repository: Activities
   fun addTrailToUserActivities() {
     if (user != null) {
       repository.addTrailToUserActivities(
-          user, Trail(1, 5.0, 200, null, 6000, 500, null, null, createDateTime(2024, 4, 7, 8, 0, 0), createDateTime(2024, 4, 7, 8, 30, 0)))
+          user,
+          Trail(
+              1,
+              5.0,
+              200,
+              null,
+              6000,
+              500,
+              null,
+              null,
+              createDateTime(2024, 4, 7, 8, 0, 0),
+              createDateTime(2024, 4, 7, 8, 30, 0)))
 
       repository.addTrailToUserActivities(
-          user, Trail(2, 6.0, 400, null, 11100, 200, null, null, createDateTime(2024, 4, 8, 8, 0, 0), createDateTime(2024, 4, 8, 8, 30, 0)))
+          user,
+          Trail(
+              2,
+              6.0,
+              400,
+              null,
+              11100,
+              200,
+              null,
+              null,
+              createDateTime(2024, 4, 8, 8, 0, 0),
+              createDateTime(2024, 4, 8, 8, 30, 0)))
 
       repository.addTrailToUserActivities(
-          user, Trail(3, 2.0, 100, null, 12650, 300, null, null, createDateTime(2024, 4, 5, 8, 0, 0), createDateTime(2024, 4, 5, 8, 30, 0)))
+          user,
+          Trail(
+              3,
+              2.0,
+              100,
+              null,
+              12650,
+              300,
+              null,
+              null,
+              createDateTime(2024, 4, 5, 8, 0, 0),
+              createDateTime(2024, 4, 5, 8, 30, 0)))
     }
   }
 
-  fun setTimeFrame(timeFrame: TimeFrame){
+  fun setTimeFrame(timeFrame: TimeFrame) {
     time.value = timeFrame
   }
+
   fun getTimeFrame() = time.value
+
   fun setSport(s: Sports) {
     sport.value = s
   }
