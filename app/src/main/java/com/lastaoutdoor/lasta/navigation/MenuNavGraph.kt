@@ -8,7 +8,6 @@ import androidx.navigation.compose.composable
 import com.lastaoutdoor.lasta.ui.screen.DiscoveryScreen
 import com.lastaoutdoor.lasta.ui.screen.MapScreen
 import com.lastaoutdoor.lasta.ui.screen.ProfileScreen
-import com.lastaoutdoor.lasta.viewmodel.MapViewModel
 import com.lastaoutdoor.lasta.viewmodel.OutdoorActivityViewModel
 import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 

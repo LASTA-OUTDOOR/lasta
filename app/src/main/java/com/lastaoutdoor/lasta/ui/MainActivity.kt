@@ -23,7 +23,6 @@ import com.lastaoutdoor.lasta.ui.screen.LoginScreen
 import com.lastaoutdoor.lasta.ui.screen.MainScreen
 import com.lastaoutdoor.lasta.ui.theme.LastaTheme
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
-import com.lastaoutdoor.lasta.viewmodel.MapViewModel
 import com.lastaoutdoor.lasta.viewmodel.OutdoorActivityViewModel
 import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 import dagger.hilt.android.AndroidEntryPoint
