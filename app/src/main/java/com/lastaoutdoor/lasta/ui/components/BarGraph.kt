@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.lastaoutdoor.lasta.data.model.user_profile.SubTimeFrames
 import kotlin.math.round
 
 enum class BarType {
@@ -34,39 +35,10 @@ enum class BarType {
   TOP_CURVED
 }
 
-enum class WeekDay {
-  Mon,
-  Tue,
-  Wed,
-  Thu,
-  Fri,
-  Sat,
-  Sun
-}
-
-enum class Year {
-  Jan,
-  Feb,
-  Mar,
-  Apr,
-  May,
-  Jun,
-  Jul,
-  Aug,
-  Sep,
-  Oct,
-  Nov,
-  Dec;
-
-  override fun toString(): String {
-    return name.substring(1)
-  }
-}
-
 @Composable
-fun <T : Enum<T>> BarGraph(
+fun BarGraph(
     graphBarData: List<Float>,
-    xAxisScaleData: List<T>,
+    xAxisScaleData: List<SubTimeFrames>,
     barData: List<Int>,
     height: Dp,
     roundType: BarType,
@@ -132,7 +104,7 @@ fun <T : Enum<T>> BarGraph(
             (0..3).forEach { i ->
               drawContext.canvas.nativeCanvas.apply {
                 drawText(
-                    round(barData.min() + yAxisScaleText * i).toString(),
+                    round(yAxisScaleText * i).toString(),
                     30f,
                     size.height - yAxisScaleSpacing - i * size.height / 3f,
                     textPaint)

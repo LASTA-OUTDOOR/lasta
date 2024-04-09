@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.lastaoutdoor.lasta.data.db.Trail
 import com.lastaoutdoor.lasta.data.model.Sports
-import com.lastaoutdoor.lasta.data.model.TimeFrame
-import com.lastaoutdoor.lasta.data.model.Trail
+import com.lastaoutdoor.lasta.data.model.user_profile.TimeFrame
 import com.lastaoutdoor.lasta.di.TimeProvider
 import com.lastaoutdoor.lasta.repository.ActivitiesRepository
 import com.lastaoutdoor.lasta.utils.calculateTimeRangeUntilNow
@@ -19,20 +19,23 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class StatisticsViewModel
+class ProfileScreenVIewModel
 @Inject
 constructor(private val repository: ActivitiesRepository, private val timeProvider: TimeProvider) :
     ViewModel() {
   private var sport = mutableStateOf(Sports.HIKING)
   private val user = FirebaseAuth.getInstance().currentUser
-  private val time = mutableStateOf(TimeFrame.W)
 
   // Cache for storing fetched trails
-  private var allTrailsCache: List<Trail> = emptyList()
+  private val _allTrailsCache = MutableStateFlow<List<Trail>>(emptyList())
+  val allTrails = _allTrailsCache
 
   // Live data for filtered trails
   private val _trails = MutableStateFlow<List<Trail>>(emptyList())
   val trails: StateFlow<List<Trail>> = _trails
+
+  private val _time = MutableStateFlow(TimeFrame.W)
+  val timeFrame: StateFlow<TimeFrame> = _time
 
   init {
     fetchUserActivitiesOnce()
@@ -41,22 +44,30 @@ constructor(private val repository: ActivitiesRepository, private val timeProvid
   private fun fetchUserActivitiesOnce() {
     viewModelScope.launch {
       if (user != null) {
-        allTrailsCache = repository.getUserActivities(user, sport.value)
+        _allTrailsCache.value =
+            repository.getUserActivities(user, sport.value).sortedBy { it.timeStarted }
         applyFilters()
       }
     }
   }
 
   private fun applyFilters() {
-    _trails.value = filterTrailsByTimeFrame(allTrailsCache, time.value)
+    _trails.value = filterTrailsByTimeFrame(_allTrailsCache.value, _time.value)
   }
 
   private fun filterTrailsByTimeFrame(trails: List<Trail>, timeFrame: TimeFrame): List<Trail> {
-    val frame = calculateTimeRangeUntilNow(timeFrame, timeProvider)
-    return trails.filter { trail ->
-      val trailStart = Timestamp(trail.timeStarted)
-      val trailEnd = Timestamp(trail.timeFinished)
-      trailStart > frame.first && trailEnd < frame.second
+    return when (timeFrame) {
+      TimeFrame.W,
+      TimeFrame.M,
+      TimeFrame.Y -> {
+        val frame = calculateTimeRangeUntilNow(timeFrame, timeProvider)
+        trails.filter { trail ->
+          val trailStart = Timestamp(trail.timeStarted)
+          val trailEnd = Timestamp(trail.timeFinished)
+          trailStart > frame.first && trailEnd < frame.second
+        }
+      }
+      TimeFrame.ALL -> trails
     }
   }
 
@@ -107,10 +118,9 @@ constructor(private val repository: ActivitiesRepository, private val timeProvid
   }
 
   fun setTimeFrame(timeFrame: TimeFrame) {
-    time.value = timeFrame
+    _time.value = timeFrame
+    applyFilters()
   }
-
-  fun getTimeFrame() = time.value
 
   fun setSport(s: Sports) {
     sport.value = s

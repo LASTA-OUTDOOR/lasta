@@ -1,7 +1,7 @@
 package com.lastaoutdoor.lasta.utils
 
-import com.lastaoutdoor.lasta.data.model.TimeFrame
-import com.lastaoutdoor.lasta.data.model.Trail
+import com.lastaoutdoor.lasta.data.db.Trail
+import com.lastaoutdoor.lasta.data.model.user_profile.TimeFrame
 import com.lastaoutdoor.lasta.di.TimeProvider
 import io.mockk.every
 import io.mockk.mockk
@@ -203,7 +203,7 @@ class HelperFunctionsTest {
         )
 
     // When weekDisplay is called
-    val result = weekDisplay(trails)
+    val result = chartDisplayValues(trails, TimeFrame.W)
 
     // Then the result should match expected distances
     val expected = listOf(5.959f, 5.1f, 2.1f, 3.4f, 4.549f, 0.4f, 0.001f)
@@ -216,7 +216,7 @@ class HelperFunctionsTest {
         Date.from(
             LocalDate.of(2022, 4, 15).atTime(8, 0, 0).atZone(ZoneId.systemDefault()).toInstant())
 
-    val result = dayOfWeekFromDate(date)
+    val result = indexDayOfWeekFromDate(date)
 
     val expected = 4 // Friday
 
