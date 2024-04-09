@@ -7,14 +7,16 @@ import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.data.api.ApiService
 import com.lastaoutdoor.lasta.data.model.Node
 import com.lastaoutdoor.lasta.data.model.Relation
 import com.lastaoutdoor.lasta.data.model.map.ClimbingMarker
 import com.lastaoutdoor.lasta.data.model.map.HikingMarker
 import com.lastaoutdoor.lasta.data.model.map.MapItinerary
 import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
+import javax.inject.Inject
 
-class MapViewModel : ViewModel() {
+class MapViewModel @Inject constructor(private val apiService: ApiService) : ViewModel() {
 
   // this is used to store the state of the map and modify it
   var state by mutableStateOf(MapState())
@@ -139,7 +141,7 @@ class MapViewModel : ViewModel() {
 
     try {
       // repository to fetch the activities
-      val repository = OutdoorActivityRepository()
+      val repository = OutdoorActivityRepository(apiService)
 
       // get all the climbing activities in the radius
       val climbingMarkers = fetchClimbingActivities(rad, centerLocation, repository)
