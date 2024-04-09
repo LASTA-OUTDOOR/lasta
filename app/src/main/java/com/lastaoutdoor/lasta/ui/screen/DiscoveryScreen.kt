@@ -60,7 +60,7 @@ fun DiscoveryScreen(outdoorActivityViewModel: OutdoorActivityViewModel = viewMod
 }
 
 @Composable
-fun DiscoveryContent(outdoorActivityViewModel: ViewModel) {
+fun DiscoveryContent(outdoorActivityViewModel: OutdoorActivityViewModel) {
   Column {
     // link this with database or API depending from which we fetch
     // OutdoorActivityList(outdoorActivityViewModel)
@@ -69,7 +69,7 @@ fun DiscoveryContent(outdoorActivityViewModel: ViewModel) {
     var outdoorList =
         List(10) { index -> OutdoorActivity(ActivityType.HIKING, 3, 5.0f, "2 hours", "Zurich") }
 
-    OutdoorActivityList(outdoorList)
+    OutdoorActivityList(outdoorList,outdoorActivityViewModel)
   }
 }
 
@@ -91,21 +91,20 @@ fun FloatingActionButtons(outdoorActivityViewModel: OutdoorActivityViewModel) {
 }
 
 @Composable
-fun OutdoorActivityList(outdoorActivities: List<OutdoorActivity>) {
+fun OutdoorActivityList(outdoorActivities: List<OutdoorActivity>,outdoorActivityViewModel: OutdoorActivityViewModel) {
   /** Our list of activities which is lazy in order to display only the first ones. */
   LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp)) {
-    items(outdoorActivities) { outdoorActivity -> OutdoorActivityItem(outdoorActivity) }
+    items(outdoorActivities) { outdoorActivity -> OutdoorActivityItem(outdoorActivity,outdoorActivityViewModel) }
   }
 }
 
 @Composable
-fun OutdoorActivityItem(outdoorActivity: OutdoorActivity) {
+fun OutdoorActivityItem(outdoorActivity: OutdoorActivity,outdoorActivityViewModel: OutdoorActivityViewModel) {
   Card(modifier = Modifier.padding(8.dp)) {
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-      val showActivityDialog = remember { mutableStateOf(false) }
-      if (showActivityDialog.value) {
+      if (outdoorActivityViewModel.getDialogState()) {
         ActivityDialog(
-            onDismissRequest = { showActivityDialog.value = false },
+            onDismissRequest = { outdoorActivityViewModel.setDialogState(false) },
             outdoorActivity = outdoorActivity)
       }
       Row(
@@ -161,7 +160,7 @@ fun OutdoorActivityItem(outdoorActivity: OutdoorActivity) {
           }
       Row() {
         Button(
-            onClick = { showActivityDialog.value = true },
+            onClick = { outdoorActivityViewModel.setDialogState(true) },
             modifier =
                 Modifier.border(
                         width = 1.dp,
@@ -208,60 +207,68 @@ fun OutdoorActivityItem(outdoorActivity: OutdoorActivity) {
   }
 }
 
-@Preview
 @Composable
-fun OutdoorActivityExample() {
+fun OutdoorActivityExample(outdoorActivityViewModel: OutdoorActivityViewModel) {
   MaterialTheme {
-    OutdoorActivityItem(OutdoorActivity(ActivityType.HIKING, 3, 5.0f, "2 hours", "Zurich"))
+    OutdoorActivityItem(OutdoorActivity(ActivityType.HIKING, 3, 5.0f, "2 hours", "Zurich"),outdoorActivityViewModel)
   }
 }
 
-@Preview
 @Composable
-fun OutdoorActivityListExample() {
+fun OutdoorActivityListExample(outdoorActivityViewModel: OutdoorActivityViewModel) {
   MaterialTheme {
     OutdoorActivityList(
-        List(10) { index -> OutdoorActivity(ActivityType.HIKING, 3, 5.0f, "2 hours", "Zurich") })
+        List(10) { index -> OutdoorActivity(ActivityType.HIKING, 3, 5.0f, "2 hours", "Zurich") },
+        outdoorActivityViewModel)
   }
 }
 
 @Composable
-fun ActivityDialog(onDismissRequest: () -> Unit, outdoorActivity: OutdoorActivity) {
-  Dialog(onDismissRequest = { onDismissRequest() }) {
-    Card(
-        modifier = Modifier.fillMaxWidth().height(250.dp).padding(16.dp),
-        shape = RoundedCornerShape(16.dp),
-    ) {
-      Column(
-          modifier = Modifier.fillMaxSize(),
-          verticalArrangement = Arrangement.Center,
-          horizontalAlignment = Alignment.CenterHorizontally,
-      ) {
-        Text(
-            text = "Location: " + outdoorActivity.locationName,
-            modifier = Modifier.padding(16.dp),
-        )
-        Text(
-            text = "Duration: " + outdoorActivity.duration,
-            modifier = Modifier.padding(16.dp),
-        )
-        Text(
-            text = "Difficulty: ${outdoorActivity.difficulty}/10",
-            modifier = Modifier.padding(16.dp),
-        )
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
+fun ActivityDialog(
+    onDismissRequest: () -> Unit,
+    outdoorActivity: OutdoorActivity
+) {
+    Dialog(onDismissRequest = { onDismissRequest() }) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(250.dp)
+                .padding(16.dp),
+            shape = RoundedCornerShape(16.dp),
         ) {
-          TextButton(
-              onClick = { onDismissRequest() },
-              modifier = Modifier.padding(8.dp),
-          ) {
-            Text("Ok")
-          }
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+
+                Text(
+                    text = "Location: " + outdoorActivity.locationName,
+                    modifier = Modifier.padding(16.dp),
+                )
+                Text(
+                    text = "Duration: " + outdoorActivity.duration,
+                    modifier = Modifier.padding(16.dp),
+                )
+                Text(
+                    text = "Difficulty: ${outdoorActivity.difficulty}",
+                    modifier = Modifier.padding(16.dp),
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                ) {
+                    TextButton(
+                        onClick = { onDismissRequest() },
+                        modifier = Modifier.padding(8.dp),
+                    ) {
+                        Text("Ok")
+                    }
+                }
+            }
         }
-      }
     }
-  }
 }
