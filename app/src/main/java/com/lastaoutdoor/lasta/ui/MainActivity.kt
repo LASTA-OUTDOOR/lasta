@@ -41,6 +41,8 @@ class MainActivity : ComponentActivity() {
       val navController = rememberNavController()
       val authState by authViewModel.authStateFlow.collectAsState()
       val isLoggedIn by preferencesViewModel.isLoggedIn.collectAsState(initial = false)
+
+      // TODO: Make different composables to reduce this file size
       LastaTheme {
         NavHost(
             navController = navController,

@@ -9,9 +9,16 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel class for the Preferences data store
+ *
+ * @return [HiltViewModel] instance
+ * @property preferences the [PreferencesDataStore] instance
+ */
 @HiltViewModel
 class PreferencesViewModel @Inject constructor(private val preferences: PreferencesDataStore) :
     ViewModel() {
+  // Decompose UserPreferences into individual properties available as Flows
   val isLoggedIn = preferences.userPreferencesFlow.map { it.isLoggedIn }
   val userId = preferences.userPreferencesFlow.map { it.uid }
   val userName = preferences.userPreferencesFlow.map { it.userName }
@@ -19,14 +26,32 @@ class PreferencesViewModel @Inject constructor(private val preferences: Preferen
   val profilePictureUrl = preferences.userPreferencesFlow.map { it.profilePictureUrl }
   val hikingLevel = preferences.userPreferencesFlow.map { it.hikingLevel }
 
+  /**
+   * Updates the isLoggedIn preference
+   *
+   * @param isLoggedIn the new value for the preference
+   */
   fun updateIsLoggedIn(isLoggedIn: Boolean) {
     viewModelScope.launch { preferences.updateIsLoggedIn(isLoggedIn) }
   }
 
+  /**
+   * Updates the user information preferences
+   *
+   * @param uid the new value for the uid preference
+   * @param userName the new value for the userName preference
+   * @param email the new value for the email preference
+   * @param profilePictureUrl the new value for the profilePictureUrl preference
+   */
   fun updateUserInfo(uid: String, userName: String, email: String, profilePictureUrl: String) {
     viewModelScope.launch { preferences.updateUserInfo(uid, userName, email, profilePictureUrl) }
   }
 
+  /**
+   * Updates the hiking level preference
+   *
+   * @param hikingLevel the new value for the hikingLevel preference
+   */
   fun updateHikingLevel(hikingLevel: HikingLevel) {
     viewModelScope.launch { preferences.updateHikingLevel(hikingLevel) }
   }

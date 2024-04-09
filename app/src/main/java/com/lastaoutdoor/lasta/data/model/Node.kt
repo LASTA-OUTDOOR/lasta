@@ -7,8 +7,8 @@ import com.google.gson.annotations.SerializedName
 open class Node(
     @SerializedName("type") @Expose val type: String,
     @SerializedName("id") @Expose val id: Long,
-    @SerializedName("lat") @Expose val lat: Float,
-    @SerializedName("lon") @Expose val lon: Float,
+    @SerializedName("lat") @Expose val lat: Double,
+    @SerializedName("lon") @Expose val lon: Double,
     @SerializedName("tags") @Expose val tags: Tags,
     activityType: ActivityType,
     difficulty: Int,

@@ -14,13 +14,30 @@ import com.lastaoutdoor.lasta.data.model.UserModel
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.tasks.await
 
+/**
+ * Represents the result of a sign-in operation.
+ *
+ * @property user The signed-in user, if the operation was successful.
+ * @property errorMessage The error message, if the operation was unsuccessful.
+ */
 data class SignInResult(val user: UserModel?, val errorMessage: String?)
 
+/**
+ * A class that handles Google sign-in operations.
+ *
+ * @property context The [Context] used to create the sign-in client.
+ */
 class GoogleAuth(private val context: Context) {
+  /** The Firebase authentication instance. */
   private val auth = Firebase.auth
 
   private val signInClient: SignInClient = Identity.getSignInClient(context)
 
+  /**
+   * Builds a [BeginSignInRequest] object for Google sign-in.
+   *
+   * @return The request object.
+   */
   private fun buildSignInRequest(): BeginSignInRequest {
     return BeginSignInRequest.Builder()
         .setGoogleIdTokenRequestOptions(
@@ -33,6 +50,12 @@ class GoogleAuth(private val context: Context) {
         .build()
   }
 
+  /**
+   * Initiates the Google sign-in flow.
+   *
+   * @return The [IntentSender] for the sign-in flow, or 'null' if the operation failed.
+   * @exception CancellationException Thrown if the operation was cancelled.
+   */
   suspend fun signIn(): IntentSender? {
     val result =
         try {
@@ -45,6 +68,13 @@ class GoogleAuth(private val context: Context) {
     return result?.pendingIntent?.intentSender
   }
 
+  /**
+   * Completes the Google sign-in flow.
+   *
+   * @param intent The [Intent] received from the sign-in flow.
+   * @return The [SignInResult] of the sign-in operation.
+   * @exception CancellationException Thrown if the operation was cancelled.
+   */
   suspend fun signInWithIntent(intent: Intent): SignInResult {
     val credential = signInClient.getSignInCredentialFromIntent(intent)
     val googleIdToken = credential.googleIdToken
@@ -68,6 +98,11 @@ class GoogleAuth(private val context: Context) {
     }
   }
 
+  /**
+   * Signs out the current user.
+   *
+   * @exception CancellationException Thrown if the operation was cancelled.
+   */
   suspend fun signOut() {
     try {
       signInClient.signOut().await()
@@ -78,6 +113,11 @@ class GoogleAuth(private val context: Context) {
     }
   }
 
+  /**
+   * Gets the current signed-in user if there is one.
+   *
+   * @return The current user, or 'null' if no user is signed in.
+   */
   fun getCurrentUser(): UserModel? =
       auth.currentUser?.run {
         UserModel(
