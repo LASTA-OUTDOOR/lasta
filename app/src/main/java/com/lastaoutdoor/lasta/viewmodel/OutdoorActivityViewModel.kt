@@ -14,7 +14,19 @@ class OutdoorActivityViewModel
 constructor(private val outdoorActivityRepository: OutdoorActivityRepository) : ViewModel() {
   fun getOutdoorActivities(): List<OutdoorActivity> {
     val climbingActivities = outdoorActivityRepository.getClimbingActivitiesNode(100, 46.519962, 6.633597)
-    return climbingActivities.elements
+    //create a list of OutdoorActivity objects from the climbingActivities
+    val climbingActivitiesList = mutableListOf<OutdoorActivity>()
+    climbingActivities.elements.forEach {
+      climbingActivitiesList.add(
+          OutdoorActivity(
+              ActivityType.CLIMBING,
+              it.difficulty,
+              it.length,
+              it.duration,
+              it.locationName,
+          ))
+    }
+    return climbingActivitiesList
   }
 
   fun refresh() {}
