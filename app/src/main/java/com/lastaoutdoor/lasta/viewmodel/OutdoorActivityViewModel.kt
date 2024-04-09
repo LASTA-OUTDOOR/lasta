@@ -1,20 +1,20 @@
 package com.lastaoutdoor.lasta.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class OutdoorActivityViewModel @Inject constructor(private val outdoorActivityRepository: OutdoorActivityRepository) : ViewModel()
-{
+class OutdoorActivityViewModel
+@Inject
+constructor(private val outdoorActivityRepository: OutdoorActivityRepository) : ViewModel() {
   fun getOutdoorActivities() {
-        outdoorActivityRepository.getClimbingActivitiesNode(1000, 52.5200, 13.4050)
-        outdoorActivityRepository.getClimbingActivitiesWay(1000, 52.5200, 13.4050)
-        outdoorActivityRepository.getHikingActivities(1000, 52.5200, 13.4050)
-    }
+    outdoorActivityRepository.getClimbingActivitiesNode(1000, 52.5200, 13.4050)
+    outdoorActivityRepository.getClimbingActivitiesWay(1000, 52.5200, 13.4050)
+    outdoorActivityRepository.getHikingActivities(1000, 52.5200, 13.4050)
+  }
+
   fun refresh() {}
 
   fun filter() {}
