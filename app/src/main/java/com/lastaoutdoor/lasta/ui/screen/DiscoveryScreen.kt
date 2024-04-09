@@ -41,12 +41,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.model.ActivityType
 import com.lastaoutdoor.lasta.data.model.OutdoorActivity
 import com.lastaoutdoor.lasta.viewmodel.OutdoorActivityViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 
 @Composable
 fun DiscoveryScreen(outdoorActivityViewModel: OutdoorActivityViewModel = hiltViewModel()) {
