@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 class StatisticsViewModel @Inject constructor(private val repository: ActivitiesRepository) :
     ViewModel() {
     private var sport = mutableStateOf(Sports.HIKING)
+    //TODO : MAKE IT WITH UserModel
     private val user = FirebaseAuth.getInstance().currentUser
     private val time = mutableStateOf(TimeFrame.W)
 
