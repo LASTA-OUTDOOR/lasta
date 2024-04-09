@@ -13,10 +13,16 @@ class MapState {
   var properties: MapProperties =
       MapProperties(mapType = MapType.TERRAIN, isMyLocationEnabled = false)
 
+  // UI settings of the map -> Want we want to show
   var uiSettings: MapUiSettings =
       MapUiSettings(zoomControlsEnabled = false, myLocationButtonEnabled = false)
 
+  // List of markers to display on the map
   var markerList: List<Marker> = emptyList()
 
+  // Itinerary to display
   var itineraryList: List<MapItinerary> = emptyList()
+
+  // The marker displayed in the more info bottom sheet
+  var selectedMarker: Marker? = null
 }
