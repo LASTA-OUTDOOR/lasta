@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.lastaoutdoor.lasta.data.model.UserModel
 import java.io.IOException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -95,25 +96,12 @@ class PreferencesDataStore(private val context: Context) {
     dataStore.edit { preferences -> preferences[IS_LOGGED_IN_KEY] = isLoggedIn }
   }
 
-  /**
-   * Update the user information preferences
-   *
-   * @param uid the new value for the uid preference
-   * @param userName the new value for the userName preference
-   * @param email the new value for the email preference
-   * @param profilePictureUrl the new value for the profilePictureUrl preference
-   */
-  suspend fun updateUserInfo(
-      uid: String,
-      userName: String,
-      email: String,
-      profilePictureUrl: String
-  ) {
+  suspend fun updateUserInfo(user: UserModel?) {
     dataStore.edit { preferences ->
-      preferences[UID_KEY] = uid
-      preferences[USER_NAME_KEY] = userName
-      preferences[EMAIL_KEY] = email
-      preferences[PROFILE_PICTURE_URL_KEY] = profilePictureUrl
+      preferences[UID_KEY] = user?.userId ?: ""
+      preferences[USER_NAME_KEY] = user?.userName ?: ""
+      preferences[EMAIL_KEY] = user?.email ?: ""
+      preferences[PROFILE_PICTURE_URL_KEY] = user?.profilePictureUrl ?: ""
     }
   }
 
@@ -124,5 +112,9 @@ class PreferencesDataStore(private val context: Context) {
    */
   suspend fun updateHikingLevel(hikingLevel: HikingLevel) {
     dataStore.edit { preferences -> preferences[HIKING_LEVEL_KEY] = hikingLevel.name }
+  }
+
+  suspend fun clearPreferences() {
+    dataStore.edit { preferences -> preferences.clear() }
   }
 }

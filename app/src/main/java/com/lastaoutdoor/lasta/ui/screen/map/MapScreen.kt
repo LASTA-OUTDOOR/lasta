@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.lastaoutdoor.lasta.ui.screen
+package com.lastaoutdoor.lasta.ui.screen.map
 
 import android.Manifest
 import android.annotation.SuppressLint

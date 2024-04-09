@@ -1,9 +1,5 @@
-package com.lastaoutdoor.lasta.ui.screen
+package com.lastaoutdoor.lasta.ui.screen.login.components
 
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.IntentSenderRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -21,9 +17,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,30 +29,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 
 @Composable
-fun LoginScreen(authViewModel: AuthViewModel, onLogin: () -> Unit) {
-  val state by authViewModel.authStateFlow.collectAsState()
-  val launcher =
-      rememberLauncherForActivityResult(
-          contract = ActivityResultContracts.StartIntentSenderForResult(),
-          onResult = { result ->
-            if (result.resultCode == ComponentActivity.RESULT_OK) {
-              authViewModel.handleGoogleSignInResult(
-                  result.data ?: return@rememberLauncherForActivityResult)
-            }
-          })
-  LaunchedEffect(key1 = state) {
-    if (authViewModel.getCurrentUser() != null) {
-      onLogin()
-    } else if (authViewModel.getIntentSender() != null) {
-      launcher.launch(
-          IntentSenderRequest.Builder(authViewModel.getIntentSender() ?: return@LaunchedEffect)
-              .build())
-    }
-  }
-
+fun LoginContent(onLoginClick: () -> Unit) {
   Column(
       modifier = Modifier.fillMaxSize().padding(15.dp),
       verticalArrangement = Arrangement.Center,
@@ -82,7 +54,7 @@ fun LoginScreen(authViewModel: AuthViewModel, onLogin: () -> Unit) {
                 ))
         Spacer(modifier = Modifier.size(150.dp))
         Button(
-            onClick = { authViewModel.startGoogleSignIn() },
+            onClick = { onLoginClick() },
             shape = RoundedCornerShape(30.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color.White),
             border = BorderStroke(1.dp, Color.Gray),

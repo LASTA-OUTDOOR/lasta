@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.navigation
+package com.lastaoutdoor.lasta.ui.navigation
 
 /** Sealed class representing all possible root screens in the application */
 sealed class RootScreen(val route: String) {

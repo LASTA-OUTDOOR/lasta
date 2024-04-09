@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.ui.screen
+package com.lastaoutdoor.lasta.ui.screen.profile
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,16 +23,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.lastaoutdoor.lasta.data.model.Sports
 import com.lastaoutdoor.lasta.data.model.TimeFrame
 import com.lastaoutdoor.lasta.data.model.Trail
-import com.lastaoutdoor.lasta.ui.components.BarGraph
-import com.lastaoutdoor.lasta.ui.components.BarType
-import com.lastaoutdoor.lasta.ui.components.Spinner
-import com.lastaoutdoor.lasta.ui.components.WeekDay
+import com.lastaoutdoor.lasta.ui.screen.profile.components.BarGraph
+import com.lastaoutdoor.lasta.ui.screen.profile.components.BarType
+import com.lastaoutdoor.lasta.ui.screen.profile.components.Spinner
+import com.lastaoutdoor.lasta.ui.screen.profile.components.WeekDay
 import com.lastaoutdoor.lasta.utils.weekDisplay
 import com.lastaoutdoor.lasta.viewmodel.RecentActivitiesViewModel
 import com.lastaoutdoor.lasta.viewmodel.StatisticsViewModel
 
 @Composable
-fun ProfileScreen(
+fun ProfileScreen2(
     statisticsViewModel: StatisticsViewModel = hiltViewModel(),
     recentActivitiesViewModel: RecentActivitiesViewModel = hiltViewModel()
 ) {

@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.ui.components
+package com.lastaoutdoor.lasta.ui.screen.profile.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box

@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.navigation
+package com.lastaoutdoor.lasta.ui.navigation
 
 import androidx.compose.material.Badge
 import androidx.compose.material.icons.Icons

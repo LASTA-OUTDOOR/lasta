@@ -1,23 +1,22 @@
-package com.lastaoutdoor.lasta.ui.screen
+package com.lastaoutdoor.lasta.ui.screen.main
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.lastaoutdoor.lasta.navigation.MenuNavGraph
-import com.lastaoutdoor.lasta.navigation.MenuNavigation
-import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
+import com.lastaoutdoor.lasta.ui.navigation.MenuNavGraph
+import com.lastaoutdoor.lasta.ui.navigation.MenuNavigation
 
 @Composable
-fun MainScreen(preferencesViewModel: PreferencesViewModel, onSignOut: () -> Unit) {
+fun MainScreen(rootNavController: NavHostController) {
   val navController = rememberNavController()
 
   Scaffold(bottomBar = { MenuNavigation(navController = navController) }) { paddingValues ->
     MenuNavGraph(
+        rootNavController = rootNavController,
         navController = navController,
-        preferencesViewModel = preferencesViewModel,
-        modifier = Modifier.padding(paddingValues),
-        onSignOut = { onSignOut() })
+        modifier = Modifier.padding(paddingValues))
   }
 }

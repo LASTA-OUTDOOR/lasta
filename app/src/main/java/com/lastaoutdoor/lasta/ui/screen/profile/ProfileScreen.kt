@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.ui.screen
+package com.lastaoutdoor.lasta.ui.screen.profile
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,12 +25,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.lastaoutdoor.lasta.data.preferences.HikingLevel
+import com.lastaoutdoor.lasta.ui.navigation.RootScreen
+import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 
 @Composable
-fun ProfileScreen(preferencesViewModel: PreferencesViewModel, onSignOut: () -> Unit) {
+fun ProfileScreen(
+    rootNavController: NavHostController,
+    authViewModel: AuthViewModel = hiltViewModel(),
+    preferencesViewModel: PreferencesViewModel = hiltViewModel()
+) {
   // val isLoggedIn by preferencesViewModel.isLoggedIn.collectAsState(initial = false)
   // val userId by preferencesViewModel.userId.collectAsState(initial = "")
   val userName by preferencesViewModel.userName.collectAsState(initial = "")
@@ -55,7 +63,16 @@ fun ProfileScreen(preferencesViewModel: PreferencesViewModel, onSignOut: () -> U
             fontSize = 36.sp,
             fontWeight = FontWeight.SemiBold)
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onSignOut) { Text(text = "Sign out") }
+        Button(
+            onClick = {
+              authViewModel.signOut()
+              preferencesViewModel.clearPreferences()
+              preferencesViewModel.updateIsLoggedIn(false)
+              rootNavController.popBackStack()
+              rootNavController.navigate(RootScreen.Login.route)
+            }) {
+              Text(text = "Sign out")
+            }
         Spacer(modifier = Modifier.height(16.dp))
         HikingRow(preferences = preferencesViewModel, selectedHikingLevel = hikingLevel)
       }
