@@ -4,15 +4,16 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
+import com.lastaoutdoor.lasta.data.model.UserModel
 import kotlinx.coroutines.tasks.await
 
 /**
- * Class containing functions for interacting with the Firebase Firestore database
+ * Class containing functions for interacting with the Firestore database
  *
  * TODO: Rename this class to be more specific to the data it is handling
  * TODO: Make user model interact with the database otherwise no consistency
  */
-class DatabaseFunctions {
+class UserDatabaseManager {
 
   // Attributes
   private val database = Firebase.firestore
@@ -20,18 +21,19 @@ class DatabaseFunctions {
   /**
    * Function to add a user to the Firestore database
    *
-   * @param user the FirebaseUser object representing the user
+   * @param user The user to add to the database
    *
-   * TODO: This shouldn't be a [FirebaseUser] object, but a custom user model
    */
-  fun addUserToDatabase(user: FirebaseUser) {
+  fun addUserToDatabase(user: UserModel) {
 
-    val userDocumentRef = database.collection("users").document(user.uid)
+    val userDocumentRef = database.collection("users").document(user.userId)
 
     // Create a data map with the user's information
     val userData =
         hashMapOf(
-            "email" to user.email, "displayName" to user.displayName
+            "email" to user.email,
+            "displayName" to user.userName,
+            "profilePictureUrl" to user.profilePictureUrl
             // Add any other user information you want to store here
             )
 
@@ -74,4 +76,6 @@ class DatabaseFunctions {
   fun createCollection(collectionName: String) {
     database.collection(collectionName)
   }
+
+  fun
 }
