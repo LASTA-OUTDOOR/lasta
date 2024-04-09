@@ -8,19 +8,14 @@ import com.lastaoutdoor.lasta.data.model.Relation
 import com.lastaoutdoor.lasta.data.model.Way
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
 
 // Class used to get OutdoorActivities from overpass API
-class OutdoorActivityRepository(/*context: Context*/ ) {
-  // creates instance of ApiService to execute calls
-  private val apiService: ApiService by lazy {
-    Retrofit.Builder()
-        .baseUrl("https://overpass-api.de/api/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-        .create(ApiService::class.java)
-  }
-  // Gets Nodes of type climbing
-  fun getClimbingActivitiesNode(
+class OutdoorActivityRepository @Inject constructor(// creates instance of ApiService to execute calls
+    private val apiService: ApiService
+): OutdoorActivityRepositoryIn {
+    // Gets Nodes of type climbing
+  override fun getClimbingActivitiesNode(
       range: Int,
       lat: Double,
       lon: Double
@@ -35,7 +30,7 @@ class OutdoorActivityRepository(/*context: Context*/ ) {
         })
   }
 
-  fun getClimbingActivitiesWay(range: Int, lat: Double, lon: Double): OutdoorActivityResponse<Way> {
+  override fun getClimbingActivitiesWay(range: Int, lat: Double, lon: Double): OutdoorActivityResponse<Way> {
     val call = apiService.getWay(getDataStringClimbing(range, lat, lon, "way"))
     val pr = call.execute()
     return OutdoorActivityResponse(
@@ -46,7 +41,7 @@ class OutdoorActivityRepository(/*context: Context*/ ) {
         })
   }
 
-  fun getHikingActivities(range: Int, lat: Double, lon: Double): OutdoorActivityResponse<Relation> {
+  override fun getHikingActivities(range: Int, lat: Double, lon: Double): OutdoorActivityResponse<Relation> {
     val call = apiService.getRelation(getDataStringHiking(range, lat, lon))
     val pr = call.execute()
     return OutdoorActivityResponse(
@@ -57,11 +52,11 @@ class OutdoorActivityRepository(/*context: Context*/ ) {
         })
   }
 
-  fun getDataStringClimbing(range: Int, lat: Double, lon: Double, type: String): String {
+  override fun getDataStringClimbing(range: Int, lat: Double, lon: Double, type: String): String {
     return "[out:json];$type(around:$range,$lat,$lon)[sport=climbing];out geom;"
   }
 
-  fun getDataStringHiking(range: Int, lat: Double, lon: Double): String {
+  override fun getDataStringHiking(range: Int, lat: Double, lon: Double): String {
     return "[out:json];relation(around:$range,$lat,$lon)[route][route=\"hiking\"];out geom;"
   }
   /**
@@ -71,9 +66,4 @@ class OutdoorActivityRepository(/*context: Context*/ ) {
    * OutdoorActivity) { outdoorActivityDao.delete(outdoorActivity) }
    */
 }
-// main function to test calls
-fun main() {
-  val f = OutdoorActivityRepository()
-  val q = f.getHikingActivities(1000, 47.447227, 7.617517)
-  println(q.elements.toString())
-}
+
