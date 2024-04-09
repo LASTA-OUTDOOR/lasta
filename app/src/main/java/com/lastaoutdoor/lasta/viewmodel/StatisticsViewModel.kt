@@ -5,9 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.lastaoutdoor.lasta.data.db.DatabaseManager
 import com.lastaoutdoor.lasta.data.model.Sports
 import com.lastaoutdoor.lasta.data.model.TimeFrame
 import com.lastaoutdoor.lasta.data.model.Trail
+import com.lastaoutdoor.lasta.data.model.UserModel
+import com.lastaoutdoor.lasta.data.preferences.UserPreferences
 import com.lastaoutdoor.lasta.repository.ActivitiesRepository
 import com.lastaoutdoor.lasta.utils.calculateTimeRange
 import com.lastaoutdoor.lasta.utils.createDateTime
@@ -18,10 +21,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class StatisticsViewModel @Inject constructor(private val repository: ActivitiesRepository) :
+class StatisticsViewModel @Inject constructor(private val databaseManager: DatabaseManager) :
     ViewModel() {
   private var sport = mutableStateOf(Sports.HIKING)
-  private val user = FirebaseAuth.getInstance().currentUser
+  //TODO: Fit the UserModel instead of FirebaseUser !!
+  private val user = UserModel()
   private val time = mutableStateOf(TimeFrame.W)
 
   // Cache for storing fetched trails
@@ -38,7 +42,7 @@ class StatisticsViewModel @Inject constructor(private val repository: Activities
   private fun fetchUserActivitiesOnce() {
     viewModelScope.launch {
       if (user != null) {
-        allTrailsCache = repository.getUserActivities(user, sport.value)
+        allTrailsCache = databaseManager.getUserActivities(user, sport.value)
         applyFilters()
       }
     }
@@ -59,7 +63,7 @@ class StatisticsViewModel @Inject constructor(private val repository: Activities
 
   fun addTrailToUserActivities() {
     if (user != null) {
-      repository.addTrailToUserActivities(
+      databaseManager.addTrailToUserActivities(
           user,
           Trail(
               1,
@@ -73,7 +77,7 @@ class StatisticsViewModel @Inject constructor(private val repository: Activities
               createDateTime(2024, 4, 7, 8, 0, 0),
               createDateTime(2024, 4, 7, 8, 30, 0)))
 
-      repository.addTrailToUserActivities(
+      databaseManager.addTrailToUserActivities(
           user,
           Trail(
               2,
@@ -87,7 +91,7 @@ class StatisticsViewModel @Inject constructor(private val repository: Activities
               createDateTime(2024, 4, 8, 8, 0, 0),
               createDateTime(2024, 4, 8, 8, 30, 0)))
 
-      repository.addTrailToUserActivities(
+      databaseManager.addTrailToUserActivities(
           user,
           Trail(
               3,
