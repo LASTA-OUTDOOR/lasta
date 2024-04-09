@@ -6,10 +6,11 @@ import android.Manifest
 import android.annotation.SuppressLint
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
@@ -21,10 +22,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.AuthUI.getApplicationContext
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.maps.android.SphericalUtil
+import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
@@ -34,26 +37,40 @@ import com.lastaoutdoor.lasta.viewmodel.MapViewModel
 
 // Called after a click on a pointer on the map
 // @param viewModel: the viewmodel
+// @param sheetState: the state of the sheet
+// @param isSheetOpen: whether the sheet is open or not
+// @param onDismissRequest: function to close the sheet and update the state
 @Composable
-fun InformationSheet(viewModel: MapViewModel, sheetState: SheetState, isSheetOpen: Boolean, onDismissRequest: () -> Unit){
+private fun InformationSheet(
+    viewModel: MapViewModel,
+    sheetState: SheetState,
+    isSheetOpen: Boolean,
+    onDismissRequest: () -> Unit
+) {
 
-    if(isSheetOpen) {
-        ModalBottomSheet(
-            onDismissRequest = { onDismissRequest() },
-            sheetState = sheetState
-
-        ) {
-            Text("Test of the bottom sheet")
-        }
-
+  // We use the rememberSaveable to keep the state of the sheet (whether it is open or not)
+  if (isSheetOpen) {
+    ModalBottomSheet(
+        onDismissRequest = { onDismissRequest() },
+        sheetState = sheetState,
+        modifier = Modifier.fillMaxSize(),
+    ) {
+      Column(modifier = Modifier.padding(16.dp)) {
+        Text(
+            viewModel.state.selectedMarker?.name ?: "No name",
+            style = MaterialTheme.typography.headlineLarge)
+        Text(
+            "Activity Type: ${viewModel.state.selectedMarker?.description ?: "Not specified"}",
+            style = MaterialTheme.typography.bodyLarge)
+      }
     }
-
+  }
 }
 
 // Composable asking user for permissions to access location
 // @param viewModel: the viewmodel that will be updated with the permission status
 @Composable
-fun ManagePermissions(viewModel: MapViewModel) {
+private fun ManagePermissions(viewModel: MapViewModel) {
   // Permission for geo-location
   val requestPermissionLauncher =
       rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -102,15 +119,16 @@ fun MapScreen(
     position = CameraPosition.fromLatLngZoom(viewModel.initialPosition, viewModel.initialZoom)
   }
 
+  // State used to manage the sheet (close it and open it)
   val sheetState = rememberModalBottomSheetState()
-  var isSheetOpen by rememberSaveable {
-     mutableStateOf(false)
-  }
+  var isSheetOpen by rememberSaveable { mutableStateOf(false) }
 
-  InformationSheet(viewModel = viewModel, sheetState = sheetState, isSheetOpen = isSheetOpen, onDismissRequest = {isSheetOpen = false})
+  InformationSheet(
+      viewModel = viewModel,
+      sheetState = sheetState,
+      isSheetOpen = isSheetOpen,
+      onDismissRequest = { isSheetOpen = false })
 
-  // Refresh markers when the camera position changes (the launched effect is used to avoid calling
-  // at every small movement)
   LaunchedEffect(cameraPositionState.isMoving) {
     if (!cameraPositionState.isMoving) {
 
@@ -130,7 +148,20 @@ fun MapScreen(
       viewModel.updateMarkers(centerLocation, rad)
     }
   }
+  // draw the map
+  GoogleMapComposable(viewModel, cameraPositionState, { isSheetOpen = true })
+}
 
+// Composable that displays the Google Map
+// @param viewModel: the viewmodel that will be used to fetch the activities and update the map
+// @param cameraPositionState: the state of the camera
+// @param updateSheet: function to update the sheet state (close it)
+@Composable
+private fun GoogleMapComposable(
+    viewModel: MapViewModel,
+    cameraPositionState: CameraPositionState,
+    updateSheet: () -> Unit,
+) {
   GoogleMap(
       modifier = Modifier.fillMaxSize(),
       properties = viewModel.state.properties,
@@ -144,21 +175,23 @@ fun MapScreen(
         val rad = SphericalUtil.computeDistanceBetween(centerLocation, topLeftLocation)
         viewModel.updateMarkers(centerLocation, rad)
       },
-      onPOIClick = {
-        isSheetOpen = true
-      }
   ) {
 
-        // display all the markers fetched by the viewmodel
-        viewModel.state.markerList.forEach { marker ->
-          Marker(
-              state = MarkerState(position = marker.position),
-              title = marker.name,
-              icon = marker.icon,
-              snippet = marker.description)
-        }
+    // display all the markers fetched by the viewmodel
+    viewModel.state.markerList.forEach { marker ->
+      Marker(
+          state = MarkerState(position = marker.position),
+          title = marker.name,
+          icon = marker.icon,
+          snippet = marker.description,
+          onClick = {
+            updateSheet()
+            viewModel.updateSelectedMarker(marker)
+            true
+          })
+    }
 
-        // display all the itineraries fetched by the viewmodel
-        viewModel.state.itineraryList.forEach { itinerary -> Polyline(points = itinerary.points) }
-      }
+    // display all the itineraries fetched by the viewmodel
+    viewModel.state.itineraryList.forEach { itinerary -> Polyline(points = itinerary.points) }
+  }
 }
