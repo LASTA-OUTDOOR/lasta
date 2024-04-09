@@ -1,5 +1,7 @@
 package com.lastaoutdoor.lasta.viewmodel
 
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -14,6 +16,7 @@ import com.lastaoutdoor.lasta.data.model.map.HikingMarker
 import com.lastaoutdoor.lasta.data.model.map.MapItinerary
 import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
 
+@OptIn(ExperimentalMaterial3Api::class)
 class MapViewModel : ViewModel() {
 
   // this is used to store the state of the map and modify it
@@ -146,7 +149,7 @@ class MapViewModel : ViewModel() {
 
       // markers for hiking activities are still not ready due to optimization problems / api call
       // structure
-      val hikingRelations = fetchHikingActivities(rad, centerLocation, repository)
+      //val hikingRelations = fetchHikingActivities(rad, centerLocation, repository)
       // val hikingMarkers = getMarkersFromRelations(hikingRelations)
 
       // Add the markers to the map

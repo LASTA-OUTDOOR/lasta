@@ -1,12 +1,25 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.lastaoutdoor.lasta.ui.screen
 
 import android.Manifest
 import android.annotation.SuppressLint
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetState
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.firebase.ui.auth.AuthUI.getApplicationContext
 import com.google.android.gms.maps.MapsInitializer
@@ -18,6 +31,24 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.lastaoutdoor.lasta.viewmodel.MapViewModel
+
+// Called after a click on a pointer on the map
+// @param viewModel: the viewmodel
+@Composable
+fun InformationSheet(viewModel: MapViewModel, sheetState: SheetState, isSheetOpen: Boolean, onDismissRequest: () -> Unit){
+
+    if(isSheetOpen) {
+        ModalBottomSheet(
+            onDismissRequest = { onDismissRequest() },
+            sheetState = sheetState
+
+        ) {
+            Text("Test of the bottom sheet")
+        }
+
+    }
+
+}
 
 // Composable asking user for permissions to access location
 // @param viewModel: the viewmodel that will be updated with the permission status
@@ -71,6 +102,13 @@ fun MapScreen(
     position = CameraPosition.fromLatLngZoom(viewModel.initialPosition, viewModel.initialZoom)
   }
 
+  val sheetState = rememberModalBottomSheetState()
+  var isSheetOpen by rememberSaveable {
+     mutableStateOf(false)
+  }
+
+  InformationSheet(viewModel = viewModel, sheetState = sheetState, isSheetOpen = isSheetOpen, onDismissRequest = {isSheetOpen = false})
+
   // Refresh markers when the camera position changes (the launched effect is used to avoid calling
   // at every small movement)
   LaunchedEffect(cameraPositionState.isMoving) {
@@ -105,7 +143,11 @@ fun MapScreen(
                 ?: cameraPositionState.position.target
         val rad = SphericalUtil.computeDistanceBetween(centerLocation, topLeftLocation)
         viewModel.updateMarkers(centerLocation, rad)
-      }) {
+      },
+      onPOIClick = {
+        isSheetOpen = true
+      }
+  ) {
 
         // display all the markers fetched by the viewmodel
         viewModel.state.markerList.forEach { marker ->
