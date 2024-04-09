@@ -10,7 +10,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.model.UserModel
+import com.lastaoutdoor.lasta.data.model.user.UserModel
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.tasks.await
 

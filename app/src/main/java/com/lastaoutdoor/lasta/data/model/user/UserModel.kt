@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.data.model
+package com.lastaoutdoor.lasta.data.model.user
 
 /**
  * Data class representing a user

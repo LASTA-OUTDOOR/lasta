@@ -1,8 +1,8 @@
 package com.lastaoutdoor.lasta.utils
 
 import com.google.firebase.Timestamp
-import com.lastaoutdoor.lasta.data.model.TimeFrame
-import com.lastaoutdoor.lasta.data.model.Trail
+import com.lastaoutdoor.lasta.data.model.profile.TimeFrame
+import com.lastaoutdoor.lasta.data.model.profile.Trail
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime

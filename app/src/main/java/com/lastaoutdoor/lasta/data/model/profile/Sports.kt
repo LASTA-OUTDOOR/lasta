@@ -1,9 +1,8 @@
-package com.lastaoutdoor.lasta.data.model
+package com.lastaoutdoor.lasta.data.model.profile
 
-enum class Difficulty {
-  EASY,
-  MODERATE,
-  DIFFICULT;
+enum class Sports {
+  HIKING,
+  CLIMBING;
 
   override fun toString(): String {
     return name.lowercase().replaceFirstChar { it.uppercase() }

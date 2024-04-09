@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.data.model
+package com.lastaoutdoor.lasta.data.model.activity
 
 enum class ActivityType {
   NULL,

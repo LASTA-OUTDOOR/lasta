@@ -4,7 +4,7 @@ import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
-import com.lastaoutdoor.lasta.data.model.UserModel
+import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.repository.AuthRepository
 import com.lastaoutdoor.lasta.repository.OneTapSignInResponse
 import com.lastaoutdoor.lasta.repository.SignInWithGoogleResponse

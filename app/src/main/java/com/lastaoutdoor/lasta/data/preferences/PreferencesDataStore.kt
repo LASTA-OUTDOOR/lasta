@@ -8,7 +8,9 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.lastaoutdoor.lasta.data.model.UserModel
+import com.lastaoutdoor.lasta.data.model.user.HikingLevel
+import com.lastaoutdoor.lasta.data.model.user.UserModel
+import com.lastaoutdoor.lasta.data.model.user.UserPreferences
 import java.io.IOException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -16,23 +18,6 @@ import kotlinx.coroutines.flow.map
 
 /** DataStore for storing user preferences and settings */
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
-
-/** Enum class for hiking levels */
-enum class HikingLevel(val level: Int) {
-  BEGINNER(0),
-  INTERMEDIATE(1),
-  ADVANCED(2)
-}
-
-/** Class representing all possible local stored preferences */
-data class UserPreferences(
-    val isLoggedIn: Boolean,
-    val uid: String,
-    val userName: String,
-    val email: String,
-    val profilePictureUrl: String,
-    val hikingLevel: HikingLevel
-)
 
 /**
  * DataStore class implementing methods for storing user preferences

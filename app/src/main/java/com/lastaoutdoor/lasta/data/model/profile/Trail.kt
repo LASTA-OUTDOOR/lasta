@@ -1,6 +1,7 @@
-package com.lastaoutdoor.lasta.data.model
+package com.lastaoutdoor.lasta.data.model.profile
 
 import android.graphics.Bitmap
+import com.lastaoutdoor.lasta.data.model.activity.Difficulty
 import java.util.Date
 
 data class Trail(

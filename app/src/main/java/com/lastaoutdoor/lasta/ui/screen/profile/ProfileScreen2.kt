@@ -20,9 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.lastaoutdoor.lasta.data.model.Sports
-import com.lastaoutdoor.lasta.data.model.TimeFrame
-import com.lastaoutdoor.lasta.data.model.Trail
+import com.lastaoutdoor.lasta.data.model.profile.Sports
+import com.lastaoutdoor.lasta.data.model.profile.TimeFrame
+import com.lastaoutdoor.lasta.data.model.profile.Trail
 import com.lastaoutdoor.lasta.ui.screen.profile.components.BarGraph
 import com.lastaoutdoor.lasta.ui.screen.profile.components.BarType
 import com.lastaoutdoor.lasta.ui.screen.profile.components.Spinner

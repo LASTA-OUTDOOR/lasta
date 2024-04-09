@@ -42,8 +42,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.model.ActivityType
-import com.lastaoutdoor.lasta.data.model.OutdoorActivity
+import com.lastaoutdoor.lasta.data.model.activity.ActivityType
+import com.lastaoutdoor.lasta.data.model.activity.OutdoorActivity
 import com.lastaoutdoor.lasta.viewmodel.OutdoorActivityViewModel
 
 @Composable

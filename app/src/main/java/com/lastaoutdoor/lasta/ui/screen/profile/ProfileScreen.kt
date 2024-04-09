@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
-import com.lastaoutdoor.lasta.data.preferences.HikingLevel
+import com.lastaoutdoor.lasta.data.model.user.HikingLevel
 import com.lastaoutdoor.lasta.ui.navigation.RootScreen
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel

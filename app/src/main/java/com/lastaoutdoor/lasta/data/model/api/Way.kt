@@ -1,7 +1,10 @@
-package com.lastaoutdoor.lasta.data.model
+package com.lastaoutdoor.lasta.data.model.api
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.lastaoutdoor.lasta.data.model.map.Position
+import com.lastaoutdoor.lasta.data.model.activity.ActivityType
+import com.lastaoutdoor.lasta.data.model.activity.OutdoorActivity
 
 class Way(
     @SerializedName("type") @Expose val type: String,

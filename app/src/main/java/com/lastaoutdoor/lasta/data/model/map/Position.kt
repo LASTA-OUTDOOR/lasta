@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.data.model
+package com.lastaoutdoor.lasta.data.model.map
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

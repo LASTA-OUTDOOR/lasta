@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
-import com.lastaoutdoor.lasta.data.model.Sports
-import com.lastaoutdoor.lasta.data.model.TimeFrame
-import com.lastaoutdoor.lasta.data.model.Trail
+import com.lastaoutdoor.lasta.data.model.profile.Sports
+import com.lastaoutdoor.lasta.data.model.profile.TimeFrame
+import com.lastaoutdoor.lasta.data.model.profile.Trail
 import com.lastaoutdoor.lasta.repository.ActivitiesRepository
 import com.lastaoutdoor.lasta.utils.calculateTimeRange
 import com.lastaoutdoor.lasta.utils.createDateTime
@@ -71,7 +71,8 @@ class StatisticsViewModel @Inject constructor(private val repository: Activities
               null,
               null,
               createDateTime(2024, 4, 7, 8, 0, 0),
-              createDateTime(2024, 4, 7, 8, 30, 0)))
+              createDateTime(2024, 4, 7, 8, 30, 0))
+      )
 
       repository.addTrailToUserActivities(
           user,
@@ -85,7 +86,8 @@ class StatisticsViewModel @Inject constructor(private val repository: Activities
               null,
               null,
               createDateTime(2024, 4, 8, 8, 0, 0),
-              createDateTime(2024, 4, 8, 8, 30, 0)))
+              createDateTime(2024, 4, 8, 8, 30, 0))
+      )
 
       repository.addTrailToUserActivities(
           user,
@@ -99,7 +101,8 @@ class StatisticsViewModel @Inject constructor(private val repository: Activities
               null,
               null,
               createDateTime(2024, 4, 5, 8, 0, 0),
-              createDateTime(2024, 4, 5, 8, 30, 0)))
+              createDateTime(2024, 4, 5, 8, 30, 0))
+      )
     }
   }
 
