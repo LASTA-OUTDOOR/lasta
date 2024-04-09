@@ -6,15 +6,15 @@ import com.lastaoutdoor.lasta.data.model.ActivityType
 import com.lastaoutdoor.lasta.data.model.Node
 import com.lastaoutdoor.lasta.data.model.Relation
 import com.lastaoutdoor.lasta.data.model.Way
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
 
 // Class used to get OutdoorActivities from overpass API
-class OutdoorActivityRepository @Inject constructor(// creates instance of ApiService to execute calls
+class OutdoorActivityRepository
+@Inject
+constructor( // creates instance of ApiService to execute calls
     private val apiService: ApiService
-): OutdoorActivityRepositoryIn {
-    // Gets Nodes of type climbing
+) : OutdoorActivityRepositoryIn {
+  // Gets Nodes of type climbing
   override fun getClimbingActivitiesNode(
       range: Int,
       lat: Double,
@@ -30,7 +30,11 @@ class OutdoorActivityRepository @Inject constructor(// creates instance of ApiSe
         })
   }
 
-  override fun getClimbingActivitiesWay(range: Int, lat: Double, lon: Double): OutdoorActivityResponse<Way> {
+  override fun getClimbingActivitiesWay(
+      range: Int,
+      lat: Double,
+      lon: Double
+  ): OutdoorActivityResponse<Way> {
     val call = apiService.getWay(getDataStringClimbing(range, lat, lon, "way"))
     val pr = call.execute()
     return OutdoorActivityResponse(
@@ -41,7 +45,11 @@ class OutdoorActivityRepository @Inject constructor(// creates instance of ApiSe
         })
   }
 
-  override fun getHikingActivities(range: Int, lat: Double, lon: Double): OutdoorActivityResponse<Relation> {
+  override fun getHikingActivities(
+      range: Int,
+      lat: Double,
+      lon: Double
+  ): OutdoorActivityResponse<Relation> {
     val call = apiService.getRelation(getDataStringHiking(range, lat, lon))
     val pr = call.execute()
     return OutdoorActivityResponse(
@@ -66,4 +74,3 @@ class OutdoorActivityRepository @Inject constructor(// creates instance of ApiSe
    * OutdoorActivity) { outdoorActivityDao.delete(outdoorActivity) }
    */
 }
-

@@ -11,9 +11,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Singleton
 
 /** Hilt Module for providing dependencies */
 @InstallIn(SingletonComponent::class)
@@ -25,17 +25,17 @@ object AppModule {
   @Provides
   fun provideApiService(): ApiService {
     return Retrofit.Builder()
-      .baseUrl("https://overpass-api.de/api/")
-      .addConverterFactory(GsonConverterFactory.create())
-      .build()
-      .create(ApiService::class.java)
+        .baseUrl("https://overpass-api.de/api/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(ApiService::class.java)
   }
 
   /** Provides the [OutdoorActivityRepository] class */
   @Singleton
   @Provides
   fun provideOutdoorActivityRepository(apiService: ApiService): OutdoorActivityRepository {
-      return OutdoorActivityRepository(apiService)
+    return OutdoorActivityRepository(apiService)
   }
 
   /** Provides the [GoogleAuth] class */

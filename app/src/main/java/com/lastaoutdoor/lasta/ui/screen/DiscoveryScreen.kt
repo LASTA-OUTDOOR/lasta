@@ -39,8 +39,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.model.ActivityType
 import com.lastaoutdoor.lasta.data.model.OutdoorActivity
@@ -59,7 +57,7 @@ fun DiscoveryScreen(outdoorActivityViewModel: OutdoorActivityViewModel) {
 fun DiscoveryContent(outdoorActivityViewModel: OutdoorActivityViewModel) {
   Column {
     // link this with database or API depending from which we fetch
-    //OutdoorActivityList(outdoorActivityViewModel.getOutdoorActivities())
+    // OutdoorActivityList(outdoorActivityViewModel.getOutdoorActivities())
     OutdoorActivityList(
         List(10) { index -> OutdoorActivity(ActivityType.HIKING, 3, 5.0f, "2 hours", "Zurich") })
   }

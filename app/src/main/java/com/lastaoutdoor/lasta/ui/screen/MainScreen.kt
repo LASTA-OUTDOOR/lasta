@@ -11,7 +11,11 @@ import com.lastaoutdoor.lasta.viewmodel.OutdoorActivityViewModel
 import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 
 @Composable
-fun MainScreen(preferencesViewModel: PreferencesViewModel, outdoorActivityViewModel: OutdoorActivityViewModel, onSignOut: () -> Unit) {
+fun MainScreen(
+    preferencesViewModel: PreferencesViewModel,
+    outdoorActivityViewModel: OutdoorActivityViewModel,
+    onSignOut: () -> Unit
+) {
   val navController = rememberNavController()
 
   Scaffold(bottomBar = { MenuNavigation(navController = navController) }) { paddingValues ->

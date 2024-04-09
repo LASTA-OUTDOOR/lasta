@@ -16,7 +16,7 @@ import com.lastaoutdoor.lasta.data.model.map.MapItinerary
 import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
 import javax.inject.Inject
 
-class MapViewModel @Inject constructor(private val apiService : ApiService) : ViewModel() {
+class MapViewModel @Inject constructor(private val apiService: ApiService) : ViewModel() {
 
   // this is used to store the state of the map and modify it
   var state by mutableStateOf(MapState())
