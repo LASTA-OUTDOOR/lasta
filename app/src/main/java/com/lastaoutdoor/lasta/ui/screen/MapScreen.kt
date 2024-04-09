@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.firebase.ui.auth.AuthUI.getApplicationContext
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.model.CameraPosition
@@ -56,8 +57,7 @@ fun ManagePermissions(viewModel: MapViewModel) {
 @SuppressLint("RestrictedApi")
 @Composable
 fun MapScreen(
-    viewModel: MapViewModel =
-        androidx.lifecycle.viewmodel.compose.viewModel(), // viewModel for the MapScreen
+    viewModel: MapViewModel = hiltViewModel(), // viewModel for the MapScreen
 ) {
 
   // Initialise the map, otherwise the icon functionality won't work

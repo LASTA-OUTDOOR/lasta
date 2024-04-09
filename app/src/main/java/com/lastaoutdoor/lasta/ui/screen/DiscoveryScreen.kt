@@ -56,15 +56,10 @@ fun DiscoveryScreen(outdoorActivityViewModel: OutdoorActivityViewModel = hiltVie
 }
 
 @Composable
-fun DiscoveryContent(outdoorActivityViewModel: ViewModel) {
+fun DiscoveryContent(outdoorActivityViewModel: OutdoorActivityViewModel) {
   Column {
     // link this with database or API depending from which we fetch
-    // OutdoorActivityList(outdoorActivityViewModel)
-
-    // example
-    var outdoorList =
-        List(10) { index -> OutdoorActivity(ActivityType.HIKING, 3, 5.0f, "2 hours", "Zurich") }
-
+    val outdoorList = outdoorActivityViewModel.getOutdoorActivities()
     OutdoorActivityList(outdoorList)
   }
 }

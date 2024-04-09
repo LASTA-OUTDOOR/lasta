@@ -7,11 +7,16 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.lastaoutdoor.lasta.navigation.MenuNavGraph
 import com.lastaoutdoor.lasta.navigation.MenuNavigation
+import com.lastaoutdoor.lasta.viewmodel.MapViewModel
 import com.lastaoutdoor.lasta.viewmodel.OutdoorActivityViewModel
 import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 
 @Composable
-fun MainScreen(preferencesViewModel: PreferencesViewModel, outdoorActivityViewModel: OutdoorActivityViewModel, onSignOut: () -> Unit) {
+fun MainScreen(
+    preferencesViewModel: PreferencesViewModel,
+    outdoorActivityViewModel: OutdoorActivityViewModel,
+    onSignOut: () -> Unit
+) {
   val navController = rememberNavController()
 
   Scaffold(bottomBar = { MenuNavigation(navController = navController) }) { paddingValues ->
