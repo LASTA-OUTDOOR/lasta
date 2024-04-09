@@ -71,8 +71,7 @@ class StatisticsViewModel @Inject constructor(private val repository: Activities
               null,
               null,
               createDateTime(2024, 4, 7, 8, 0, 0),
-              createDateTime(2024, 4, 7, 8, 30, 0))
-      )
+              createDateTime(2024, 4, 7, 8, 30, 0)))
 
       repository.addTrailToUserActivities(
           user,
@@ -86,8 +85,7 @@ class StatisticsViewModel @Inject constructor(private val repository: Activities
               null,
               null,
               createDateTime(2024, 4, 8, 8, 0, 0),
-              createDateTime(2024, 4, 8, 8, 30, 0))
-      )
+              createDateTime(2024, 4, 8, 8, 30, 0)))
 
       repository.addTrailToUserActivities(
           user,
@@ -101,8 +99,7 @@ class StatisticsViewModel @Inject constructor(private val repository: Activities
               null,
               null,
               createDateTime(2024, 4, 5, 8, 0, 0),
-              createDateTime(2024, 4, 5, 8, 30, 0))
-      )
+              createDateTime(2024, 4, 5, 8, 30, 0)))
     }
   }
 

@@ -1,7 +1,5 @@
 package com.lastaoutdoor.lasta.data.model.activity
 
-import com.lastaoutdoor.lasta.data.model.activity.ActivityType
-
 open class OutdoorActivity(
     private var activityType: ActivityType,
     /** The type of the activity. */

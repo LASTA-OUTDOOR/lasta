@@ -39,24 +39,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.model.activity.ActivityType
 import com.lastaoutdoor.lasta.data.model.activity.OutdoorActivity
-import com.lastaoutdoor.lasta.viewmodel.OutdoorActivityViewModel
+import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenViewModel
 
 @Composable
-fun DiscoveryScreen(outdoorActivityViewModel: OutdoorActivityViewModel = viewModel()) {
+fun DiscoveryScreen() {
   /** this is called when discovery button is clicked */
-  Scaffold(floatingActionButton = { FloatingActionButtons(outdoorActivityViewModel) }) {
-      innerPadding ->
-    Column(modifier = Modifier.padding(innerPadding)) { DiscoveryContent(outdoorActivityViewModel) }
+  Scaffold(floatingActionButton = { FloatingActionButtons() }) { innerPadding ->
+    Column(modifier = Modifier.padding(innerPadding)) { DiscoveryContent() }
   }
 }
 
 @Composable
-fun DiscoveryContent(outdoorActivityViewModel: ViewModel) {
+fun DiscoveryContent(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel()) {
   Column {
     // link this with database or API depending from which we fetch
     // OutdoorActivityList(outdoorActivityViewModel)
@@ -64,23 +62,22 @@ fun DiscoveryContent(outdoorActivityViewModel: ViewModel) {
     // example
     var outdoorList =
         List(10) { index -> OutdoorActivity(ActivityType.HIKING, 3, 5.0f, "2 hours", "Zurich") }
+    // val outdoorList = discoveryScreenViewModel.climbingActivities
 
     OutdoorActivityList(outdoorList)
   }
 }
 
 @Composable
-fun FloatingActionButtons(outdoorActivityViewModel: OutdoorActivityViewModel) {
+fun FloatingActionButtons() {
   Column(
       modifier = Modifier.padding(16.dp),
       verticalArrangement = Arrangement.Bottom,
       horizontalAlignment = Alignment.End) {
-        FloatingActionButton(
-            onClick = { outdoorActivityViewModel.refresh() },
-            modifier = Modifier.padding(bottom = 8.dp)) {
-              Icon(Icons.Filled.Refresh, contentDescription = "Refresh")
-            }
-        FloatingActionButton(onClick = { outdoorActivityViewModel.filter() }) {
+        FloatingActionButton(onClick = { /*TODO*/}, modifier = Modifier.padding(bottom = 8.dp)) {
+          Icon(Icons.Filled.Refresh, contentDescription = "Refresh")
+        }
+        FloatingActionButton(onClick = { /*TODO*/}) {
           Icon(Icons.Filled.Build, contentDescription = "Filter")
         }
       }

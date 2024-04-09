@@ -23,6 +23,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.firebase.ui.auth.AuthUI.getApplicationContext
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.model.CameraPosition
@@ -42,7 +43,7 @@ import com.lastaoutdoor.lasta.viewmodel.MapViewModel
 // @param onDismissRequest: function to close the sheet and update the state
 @Composable
 private fun InformationSheet(
-    viewModel: MapViewModel,
+    viewModel: MapViewModel = hiltViewModel(),
     sheetState: SheetState,
     isSheetOpen: Boolean,
     onDismissRequest: () -> Unit
@@ -70,7 +71,7 @@ private fun InformationSheet(
 // Composable asking user for permissions to access location
 // @param viewModel: the viewmodel that will be updated with the permission status
 @Composable
-private fun ManagePermissions(viewModel: MapViewModel) {
+private fun ManagePermissions(viewModel: MapViewModel = hiltViewModel()) {
   // Permission for geo-location
   val requestPermissionLauncher =
       rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -103,10 +104,7 @@ private fun ManagePermissions(viewModel: MapViewModel) {
 // @param viewModel: the viewmodel that will be used to fetch the activities and update the map
 @SuppressLint("RestrictedApi")
 @Composable
-fun MapScreen(
-    viewModel: MapViewModel =
-        androidx.lifecycle.viewmodel.compose.viewModel(), // viewModel for the MapScreen
-) {
+fun MapScreen(viewModel: MapViewModel = hiltViewModel()) {
 
   // Initialise the map, otherwise the icon functionality won't work
   MapsInitializer.initialize(getApplicationContext())
@@ -158,7 +156,7 @@ fun MapScreen(
 // @param updateSheet: function to update the sheet state (close it)
 @Composable
 private fun GoogleMapComposable(
-    viewModel: MapViewModel,
+    viewModel: MapViewModel = hiltViewModel(),
     cameraPositionState: CameraPositionState,
     updateSheet: () -> Unit,
 ) {
