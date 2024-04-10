@@ -38,7 +38,12 @@ constructor(private val repository: OutdoorActivityRepository) : ViewModel() {
 
     climbingNodes.forEach { node ->
       climbingActivities.add(
-          OutdoorActivity(ActivityType.CLIMBING, node.difficulty, node.length, "", node.tags.name))
+          OutdoorActivity(
+              ActivityType.CLIMBING,
+              node.difficulty,
+              node.length,
+              "",
+              node.tags.name ?: "Unnamed Climbing Activity"))
     }
   }
 }
