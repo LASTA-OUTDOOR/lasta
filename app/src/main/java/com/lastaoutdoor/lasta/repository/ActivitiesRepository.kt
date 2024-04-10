@@ -1,11 +1,10 @@
 package com.lastaoutdoor.lasta.repository
 
 import com.google.firebase.auth.FirebaseUser
-import com.lastaoutdoor.lasta.data.db.Trail
-import com.lastaoutdoor.lasta.data.model.Sports
+import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
+
 
 interface ActivitiesRepository {
-  fun addTrailToUserActivities(user: FirebaseUser, trail: Trail)
-
-  suspend fun getUserActivities(user: FirebaseUser, activity: Sports): List<Trail>
+  fun addActivityToUserActivities(user: FirebaseUser, activity: ActivitiesDatabaseType)
+  suspend fun getUserActivities(user: FirebaseUser, activityType: ActivitiesDatabaseType.Sports): List<ActivitiesDatabaseType>
 }

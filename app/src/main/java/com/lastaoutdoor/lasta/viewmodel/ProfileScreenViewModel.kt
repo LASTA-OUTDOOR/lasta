@@ -1,14 +1,14 @@
 package com.lastaoutdoor.lasta.viewmodel
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
-import com.lastaoutdoor.lasta.data.db.ActivitiesRepositoryImpl
-import com.lastaoutdoor.lasta.data.db.Trail
-import com.lastaoutdoor.lasta.data.model.Sports
-import com.lastaoutdoor.lasta.data.model.user_profile.TimeFrame
+import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
+import com.lastaoutdoor.lasta.data.model.profile.TimeFrame
 import com.lastaoutdoor.lasta.di.TimeProvider
+import com.lastaoutdoor.lasta.repository.ActivitiesRepository
 import com.lastaoutdoor.lasta.utils.calculateTimeRangeUntilNow
 import com.lastaoutdoor.lasta.utils.createDateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,24 +21,26 @@ import kotlinx.coroutines.launch
 class ProfileScreenViewModel
 @Inject
 constructor(
-    private val repository: ActivitiesRepositoryImpl,
+    private val repository: ActivitiesRepository,
     private val timeProvider: TimeProvider
 ) : ViewModel() {
 
+    // TODO : MAKE IT WITH UserModel
   private val user = FirebaseAuth.getInstance().currentUser
+  private val time = mutableStateOf(TimeFrame.W)
 
   // Cache for storing fetched trails
-  private val _allTrailsCache = MutableStateFlow<List<Trail>>(emptyList())
+  private val _allTrailsCache = MutableStateFlow<List<ActivitiesDatabaseType>>(emptyList())
   val allTrails = _allTrailsCache
 
   // Live data for filtered trails
-  private val _trails = MutableStateFlow<List<Trail>>(emptyList())
-  val trails: StateFlow<List<Trail>> = _trails
+  private val _trails = MutableStateFlow<List<ActivitiesDatabaseType>>(emptyList())
+  val trails: StateFlow<List<ActivitiesDatabaseType>> = _trails
 
   private val _time = MutableStateFlow(TimeFrame.W)
   val timeFrame: StateFlow<TimeFrame> = _time
 
-  private val _sport = MutableStateFlow(Sports.HIKING)
+  private val _sport = MutableStateFlow(ActivitiesDatabaseType.Sports.HIKING)
   val sport = _sport
 
   init {
@@ -59,7 +61,7 @@ constructor(
     _trails.value = filterTrailsByTimeFrame(_allTrailsCache.value, _time.value)
   }
 
-  private fun filterTrailsByTimeFrame(trails: List<Trail>, timeFrame: TimeFrame): List<Trail> {
+  private fun filterTrailsByTimeFrame(trails: List<ActivitiesDatabaseType>, timeFrame: TimeFrame): List<ActivitiesDatabaseType> {
     return when (timeFrame) {
       TimeFrame.W,
       TimeFrame.M,
@@ -75,59 +77,17 @@ constructor(
     }
   }
 
-  fun addTrailToUserActivities() {
-    if (user != null) {
-      repository.addTrailToUserActivities(
-          user,
-          Trail(
-              1,
-              5.0,
-              200,
-              null,
-              6000,
-              500,
-              null,
-              null,
-              createDateTime(2024, 4, 7, 8, 0, 0),
-              createDateTime(2024, 4, 7, 8, 30, 0)))
-
-      repository.addTrailToUserActivities(
-          user,
-          Trail(
-              2,
-              6.0,
-              400,
-              null,
-              11100,
-              200,
-              null,
-              null,
-              createDateTime(2024, 4, 8, 8, 0, 0),
-              createDateTime(2024, 4, 8, 8, 30, 0)))
-
-      repository.addTrailToUserActivities(
-          user,
-          Trail(
-              3,
-              2.0,
-              100,
-              null,
-              12650,
-              300,
-              null,
-              null,
-              createDateTime(2024, 4, 5, 8, 0, 0),
-              createDateTime(2024, 4, 5, 8, 30, 0)))
-    }
-  }
-
   fun setTimeFrame(timeFrame: TimeFrame) {
     _time.value = timeFrame
     applyFilters()
   }
 
-  fun setSport(s: Sports) {
+  fun getTimeFrame() = time.value
+
+  fun setSport(s: ActivitiesDatabaseType.Sports) {
     _sport.value = s
     fetchUserActivities()
   }
+
+  fun getSport() = sport.value
 }

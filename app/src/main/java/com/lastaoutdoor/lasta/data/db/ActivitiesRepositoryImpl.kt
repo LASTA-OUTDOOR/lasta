@@ -4,7 +4,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import com.lastaoutdoor.lasta.data.model.Sports
+import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.repository.ActivitiesRepository
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
@@ -20,22 +20,21 @@ class ActivitiesRepositoryImpl @Inject constructor(private val database: Firebas
 
   private fun addUserToActivitiesDatabase(user: FirebaseUser) {
     val userDocumentRef = database.collection(ACTIVITIES_DB_NAME).document(user.uid)
-
-    val userData = hashMapOf("Hiking" to arrayListOf<Trail>())
+    val userData = hashMapOf("Hiking" to arrayListOf<ActivitiesDatabaseType.Trail>(), "Climbing" to arrayListOf<ActivitiesDatabaseType.Climb>())
     userDocumentRef.set(userData, SetOptions.merge())
   }
 
   @Suppress("UNCHECKED_CAST")
-  override suspend fun getUserActivities(user: FirebaseUser, activity: Sports): List<Trail> {
+  override suspend fun getUserActivities(user: FirebaseUser, activityType: ActivitiesDatabaseType.Sports): List<ActivitiesDatabaseType> {
     val userDocumentRef = database.collection(ACTIVITIES_DB_NAME).document(user.uid)
-    val trailList: ArrayList<Trail> = arrayListOf()
+    val trailList: ArrayList<ActivitiesDatabaseType> = arrayListOf()
     val document = userDocumentRef.get().await()
 
     if (document != null) {
-      val hikingArray = document.get(activity.toString()) as? List<*>
-      if (hikingArray != null) {
-        for (item in hikingArray) {
-          trailList.add(activityConverter.databaseToTrail(item as HashMap<String, Any>))
+      val activityArray = document.get(activityType.toString()) as? List<*>
+      if (activityArray != null) {
+        for (item in activityArray) {
+          trailList.add(activityConverter.databaseToActivity(item as HashMap<String, Any>, activityType))
         }
       } else {
         println("No 'Hiking' array found or it's not an array")
@@ -47,17 +46,18 @@ class ActivitiesRepositoryImpl @Inject constructor(private val database: Firebas
     return trailList.toList()
   }
 
-  override fun addTrailToUserActivities(user: FirebaseUser, trail: Trail) {
+  override fun addActivityToUserActivities(user: FirebaseUser, activity: ActivitiesDatabaseType) {
     val userDocumentRef = database.collection(ACTIVITIES_DB_NAME).document(user.uid)
 
     CoroutineScope(Dispatchers.IO).launch {
       val documentSnapshot = userDocumentRef.get().await()
 
-      if (!documentSnapshot.exists() || !documentSnapshot.contains("Hiking"))
+      val activityType: String = activity.sport.toString()
+      if (!documentSnapshot.exists() || !documentSnapshot.contains(activityType))
           addUserToActivitiesDatabase(user)
 
       userDocumentRef.update(
-          "Hiking", FieldValue.arrayUnion(activityConverter.trailToDatabase(trail)))
+          activityType, FieldValue.arrayUnion(activityConverter.activityToDatabase(activity)))
     }
   }
 }
