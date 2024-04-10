@@ -23,6 +23,7 @@ import com.lastaoutdoor.lasta.ui.screen.LoginScreen
 import com.lastaoutdoor.lasta.ui.screen.MainScreen
 import com.lastaoutdoor.lasta.ui.theme.LastaTheme
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
+import com.lastaoutdoor.lasta.viewmodel.OutdoorActivityViewModel
 import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -32,6 +33,7 @@ class MainActivity : ComponentActivity() {
 
   private val authViewModel by viewModels<AuthViewModel>()
   private val preferencesViewModel by viewModels<PreferencesViewModel>()
+  private val outdoorActivityViewModel by viewModels<OutdoorActivityViewModel>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -96,6 +98,7 @@ class MainActivity : ComponentActivity() {
                 }
                 MainScreen(
                     preferencesViewModel = preferencesViewModel,
+                    outdoorActivityViewModel = outdoorActivityViewModel,
                     onSignOut = {
                       authViewModel.signOut()
                       preferencesViewModel.updateIsLoggedIn(false)
