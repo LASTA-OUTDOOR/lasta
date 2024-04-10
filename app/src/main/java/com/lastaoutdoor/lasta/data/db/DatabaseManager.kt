@@ -7,10 +7,6 @@ import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.data.model.user.HikingLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.data.model.user.UserPreferences
-import java.util.Date
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 private const val USERS_COLLECTION = "users"
@@ -131,7 +127,10 @@ class DatabaseManager {
       if (hikingArray != null) {
         for (item in hikingArray) {
           // Convert the item to a Trail object
-          val trail = activityConverter.databaseToActivity(item as HashMap<String, Any>, ActivitiesDatabaseType.Sports.HIKING) as ActivitiesDatabaseType.Trail
+          val trail =
+              activityConverter.databaseToActivity(
+                  item as HashMap<String, Any>, ActivitiesDatabaseType.Sports.HIKING)
+                  as ActivitiesDatabaseType.Trail
 
           // Check if the activity ID matches
           if (trail.activityId == activityId) {

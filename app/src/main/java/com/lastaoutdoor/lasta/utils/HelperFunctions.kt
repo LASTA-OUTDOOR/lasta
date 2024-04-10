@@ -53,7 +53,10 @@ fun createDateTime(year: Int, month: Int, day: Int, hour: Int, minute: Int, seco
           .toInstant())
 }
 
-fun chartDisplayValues(activities: List<ActivitiesDatabaseType>, timeFrame: TimeFrame): List<Float> {
+fun chartDisplayValues(
+    activities: List<ActivitiesDatabaseType>,
+    timeFrame: TimeFrame
+): List<Float> {
   val values =
       when (timeFrame) {
         TimeFrame.W,
@@ -78,10 +81,13 @@ fun chartDisplayValues(activities: List<ActivitiesDatabaseType>, timeFrame: Time
           TimeFrame.Y -> indexMonthOfYearFromDate(a.timeStarted)
           TimeFrame.ALL -> indexYearFromDate(a.timeStarted, a.timeStarted)
         }
-      values[index] += when (a.sport) {
-        ActivitiesDatabaseType.Sports.HIKING -> metersToKilometers((a as ActivitiesDatabaseType.Trail).distanceInMeters)
-        ActivitiesDatabaseType.Sports.CLIMBING -> metersToKilometers((a as ActivitiesDatabaseType.Climb).elevationGainedInMeters)
-      }
+    values[index] +=
+        when (a.sport) {
+          ActivitiesDatabaseType.Sports.HIKING ->
+              metersToKilometers((a as ActivitiesDatabaseType.Trail).distanceInMeters)
+          ActivitiesDatabaseType.Sports.CLIMBING ->
+              metersToKilometers((a as ActivitiesDatabaseType.Climb).elevationGainedInMeters)
+        }
   }
   return values
 }

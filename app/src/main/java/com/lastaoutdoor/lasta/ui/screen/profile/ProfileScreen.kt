@@ -2,16 +2,13 @@ package com.lastaoutdoor.lasta.ui.screen.profile
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -22,7 +19,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -75,20 +71,5 @@ fun ProfileScreen(
             }
         Spacer(modifier = Modifier.height(16.dp))
         HikingRow(preferences = preferencesViewModel, selectedHikingLevel = hikingLevel)
-      }
-}
-
-@Composable
-fun HikingRow(preferences: PreferencesViewModel, selectedHikingLevel: HikingLevel) {
-  Row(
-      modifier = Modifier.fillMaxWidth(.7f),
-      horizontalArrangement = Arrangement.SpaceEvenly,
-      verticalAlignment = Alignment.CenterVertically) {
-        HikingLevel.values().forEach { hikingLevel ->
-          Text(text = hikingLevel.level.toString(), maxLines = 1, overflow = TextOverflow.Ellipsis)
-          RadioButton(
-              selected = hikingLevel == selectedHikingLevel,
-              onClick = { preferences.updateHikingLevel(hikingLevel) })
-        }
       }
 }

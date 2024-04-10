@@ -10,7 +10,6 @@ import com.lastaoutdoor.lasta.data.model.profile.TimeFrame
 import com.lastaoutdoor.lasta.di.TimeProvider
 import com.lastaoutdoor.lasta.repository.ActivitiesRepository
 import com.lastaoutdoor.lasta.utils.calculateTimeRangeUntilNow
-import com.lastaoutdoor.lasta.utils.createDateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,12 +19,10 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class ProfileScreenViewModel
 @Inject
-constructor(
-    private val repository: ActivitiesRepository,
-    private val timeProvider: TimeProvider
-) : ViewModel() {
+constructor(private val repository: ActivitiesRepository, private val timeProvider: TimeProvider) :
+    ViewModel() {
 
-    // TODO : MAKE IT WITH UserModel
+  // TODO : MAKE IT WITH UserModel
   private val user = FirebaseAuth.getInstance().currentUser
   private val time = mutableStateOf(TimeFrame.W)
 
@@ -61,7 +58,10 @@ constructor(
     _trails.value = filterTrailsByTimeFrame(_allTrailsCache.value, _time.value)
   }
 
-  private fun filterTrailsByTimeFrame(trails: List<ActivitiesDatabaseType>, timeFrame: TimeFrame): List<ActivitiesDatabaseType> {
+  private fun filterTrailsByTimeFrame(
+      trails: List<ActivitiesDatabaseType>,
+      timeFrame: TimeFrame
+  ): List<ActivitiesDatabaseType> {
     return when (timeFrame) {
       TimeFrame.W,
       TimeFrame.M,

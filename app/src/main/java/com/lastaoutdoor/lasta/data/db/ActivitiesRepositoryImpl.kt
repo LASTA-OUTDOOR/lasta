@@ -20,12 +20,18 @@ class ActivitiesRepositoryImpl @Inject constructor(private val database: Firebas
 
   private fun addUserToActivitiesDatabase(user: FirebaseUser) {
     val userDocumentRef = database.collection(ACTIVITIES_DB_NAME).document(user.uid)
-    val userData = hashMapOf("Hiking" to arrayListOf<ActivitiesDatabaseType.Trail>(), "Climbing" to arrayListOf<ActivitiesDatabaseType.Climb>())
+    val userData =
+        hashMapOf(
+            "Hiking" to arrayListOf<ActivitiesDatabaseType.Trail>(),
+            "Climbing" to arrayListOf<ActivitiesDatabaseType.Climb>())
     userDocumentRef.set(userData, SetOptions.merge())
   }
 
   @Suppress("UNCHECKED_CAST")
-  override suspend fun getUserActivities(user: FirebaseUser, activityType: ActivitiesDatabaseType.Sports): List<ActivitiesDatabaseType> {
+  override suspend fun getUserActivities(
+      user: FirebaseUser,
+      activityType: ActivitiesDatabaseType.Sports
+  ): List<ActivitiesDatabaseType> {
     val userDocumentRef = database.collection(ACTIVITIES_DB_NAME).document(user.uid)
     val trailList: ArrayList<ActivitiesDatabaseType> = arrayListOf()
     val document = userDocumentRef.get().await()
@@ -34,7 +40,8 @@ class ActivitiesRepositoryImpl @Inject constructor(private val database: Firebas
       val activityArray = document.get(activityType.toString()) as? List<*>
       if (activityArray != null) {
         for (item in activityArray) {
-          trailList.add(activityConverter.databaseToActivity(item as HashMap<String, Any>, activityType))
+          trailList.add(
+              activityConverter.databaseToActivity(item as HashMap<String, Any>, activityType))
         }
       } else {
         println("No 'Hiking' array found or it's not an array")

@@ -14,31 +14,44 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.data.model.profile.DaysInWeek
 import com.lastaoutdoor.lasta.data.model.profile.MonthsInYear
 import com.lastaoutdoor.lasta.data.model.profile.TimeFrame
 import com.lastaoutdoor.lasta.data.model.profile.WeeksInMonth
 import com.lastaoutdoor.lasta.data.model.profile.Year
+import com.lastaoutdoor.lasta.data.model.user.HikingLevel
+import com.lastaoutdoor.lasta.ui.navigation.RootScreen
 import com.lastaoutdoor.lasta.ui.screen.profile.components.BarGraph
 import com.lastaoutdoor.lasta.ui.screen.profile.components.BarType
 import com.lastaoutdoor.lasta.ui.screen.profile.components.Spinner
@@ -47,16 +60,23 @@ import com.lastaoutdoor.lasta.utils.formatDate
 import com.lastaoutdoor.lasta.utils.metersToKilometers
 import com.lastaoutdoor.lasta.utils.timeFromActivityInMillis
 import com.lastaoutdoor.lasta.utils.timeFromMillis
+import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
+import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 import com.lastaoutdoor.lasta.viewmodel.ProfileScreenViewModel
 import java.util.Calendar
 
 @Composable
 fun ProfileScreen2(
     profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(),
+    rootNavController: NavHostController,
+    authViewModel: AuthViewModel = hiltViewModel(),
+    preferencesViewModel: PreferencesViewModel = hiltViewModel()
 ) {
   // profileScreenVIewModel.addTrailToUserActivities()
   val activities by profileScreenViewModel.trails.collectAsState()
+
   LazyColumn(modifier = Modifier.padding(16.dp)) {
+    item { UserInfo(preferencesViewModel, rootNavController, authViewModel) }
     item {
       SportSelection(profileScreenViewModel)
       Spacer(modifier = Modifier.height(16.dp))
@@ -75,6 +95,80 @@ fun ProfileScreen2(
       Spacer(modifier = Modifier.height(16.dp))
     }
   }
+}
+
+@Composable
+fun UserInfo(
+    preferencesViewModel: PreferencesViewModel,
+    rootNavController: NavHostController,
+    authViewModel: AuthViewModel
+) {
+  // val isLoggedIn by preferencesViewModel.isLoggedIn.collectAsState(initial = false)
+  // val userId by preferencesViewModel.userId.collectAsState(initial = "")
+  val userName by preferencesViewModel.userName.collectAsState(initial = "")
+  // val email by preferencesViewModel.email.collectAsState(initial = "")
+  val profilePictureUrl by preferencesViewModel.profilePictureUrl.collectAsState(initial = "")
+  val hikingLevel by preferencesViewModel.hikingLevel.collectAsState(initial = HikingLevel.BEGINNER)
+
+  var showDialog by remember { mutableStateOf(false) }
+
+  if (showDialog) {
+    AlertDialog(
+        onDismissRequest = { showDialog = false },
+        title = { Text("Preferences") },
+        confirmButton = { Button(onClick = { showDialog = false }) { Text("Save") } },
+        dismissButton = {
+          Button(
+              onClick = {
+                showDialog = false
+                authViewModel.signOut()
+                preferencesViewModel.clearPreferences()
+                preferencesViewModel.updateIsLoggedIn(false)
+                rootNavController.popBackStack()
+                rootNavController.navigate(RootScreen.Login.route)
+              }) {
+                Text("Sign out")
+                HikingRow(preferences = preferencesViewModel, selectedHikingLevel = hikingLevel)
+              }
+        })
+  }
+
+  Row(
+      modifier = Modifier.fillMaxWidth(),
+      horizontalArrangement = Arrangement.SpaceBetween,
+      verticalAlignment = Alignment.CenterVertically) {
+        Column {
+          AsyncImage(
+              model = profilePictureUrl,
+              contentDescription = "Profile picture",
+              modifier = Modifier.size(80.dp).clip(CircleShape),
+              contentScale = ContentScale.Crop)
+        }
+        Column {
+          Text(
+              text = userName,
+              color = MaterialTheme.colorScheme.primary,
+              textAlign = TextAlign.Center,
+              fontSize = 20.sp,
+              fontWeight = FontWeight.Bold)
+        }
+        Column { Button(onClick = { showDialog = true }) { Text("Show Dialog") } }
+      }
+}
+
+@Composable
+fun HikingRow(preferences: PreferencesViewModel, selectedHikingLevel: HikingLevel) {
+  Row(
+      modifier = Modifier.fillMaxWidth(.7f),
+      horizontalArrangement = Arrangement.SpaceEvenly,
+      verticalAlignment = Alignment.CenterVertically) {
+        HikingLevel.values().forEach { hikingLevel ->
+          Text(text = hikingLevel.level.toString(), maxLines = 1, overflow = TextOverflow.Ellipsis)
+          RadioButton(
+              selected = hikingLevel == selectedHikingLevel,
+              onClick = { preferences.updateHikingLevel(hikingLevel) })
+        }
+      }
 }
 
 @Composable
@@ -135,30 +229,43 @@ fun TimeFrameSelection(profileScreenViewModel: ProfileScreenViewModel) {
 }
 
 @Composable
-fun Chart(activities: List<ActivitiesDatabaseType>, profileScreenViewModel: ProfileScreenViewModel) {
+fun Chart(
+    activities: List<ActivitiesDatabaseType>,
+    profileScreenViewModel: ProfileScreenViewModel
+) {
   Column(modifier = Modifier.padding(8.dp)) {
 
     // Bar graph x and y data
     val timeFrame by profileScreenViewModel.timeFrame.collectAsState()
+    val sport by profileScreenViewModel.sport.collectAsState()
 
     // Based on the collected timeFrame, adapt the chart dynamically
     val (values, abscissa) =
         when (timeFrame) {
-          TimeFrame.W -> Pair(chartDisplayValues(activities, timeFrame), DaysInWeek.values().toList())
-          TimeFrame.M -> Pair(chartDisplayValues(activities, timeFrame), WeeksInMonth.values().toList())
-          TimeFrame.Y -> Pair(chartDisplayValues(activities, timeFrame), MonthsInYear.values().toList())
+          TimeFrame.W ->
+              Pair(chartDisplayValues(activities, timeFrame), DaysInWeek.values().toList())
+          TimeFrame.M ->
+              Pair(chartDisplayValues(activities, timeFrame), WeeksInMonth.values().toList())
+          TimeFrame.Y ->
+              Pair(chartDisplayValues(activities, timeFrame), MonthsInYear.values().toList())
           TimeFrame.ALL -> {
-            val start =
-                Calendar.getInstance().apply { time = activities[0].timeStarted }.get(Calendar.YEAR)
-            val end =
-                Calendar.getInstance()
-                    .apply { time = activities[activities.size - 1].timeStarted }
-                    .get(Calendar.YEAR)
-            val years = mutableListOf<Year>()
-            for (i in start..end) {
-              years.add(Year(i))
+            if (activities.isEmpty()) {
+              Pair(listOf(0f), listOf(Year(2024)))
+            } else {
+              val start =
+                  Calendar.getInstance()
+                      .apply { time = activities[0].timeStarted }
+                      .get(Calendar.YEAR)
+              val end =
+                  Calendar.getInstance()
+                      .apply { time = activities[activities.size - 1].timeStarted }
+                      .get(Calendar.YEAR)
+              val years = mutableListOf<Year>()
+              for (i in start..end) {
+                years.add(Year(i))
+              }
+              Pair(chartDisplayValues(activities, timeFrame), years.toList())
             }
-            Pair(chartDisplayValues(activities, timeFrame), years.toList())
           }
         }
 
@@ -188,17 +295,39 @@ fun Chart(activities: List<ActivitiesDatabaseType>, profileScreenViewModel: Prof
             activities.size.toString(),
             fontWeight = FontWeight.Bold,
             style = TextStyle(fontSize = 20.sp))
-        Text("runs")
+
+        when (sport) {
+          ActivitiesDatabaseType.Sports.HIKING -> {
+            Text("hikes")
+          }
+          ActivitiesDatabaseType.Sports.CLIMBING -> {
+            Text("climbs")
+          }
+        }
       }
-        /*
-      Column {
-        Text(
-            text = caloriesFromHiking(activities).toString(),
-            fontWeight = FontWeight.Bold,
-            style = TextStyle(fontSize = 20.sp))
-        Text("Calories")
+      when (sport) {
+        ActivitiesDatabaseType.Sports.HIKING -> {
+          val trailActivities = activities.filterIsInstance<ActivitiesDatabaseType.Trail>()
+          Column {
+            Text(
+                text = trailActivities.sumOf { it.caloriesBurned }.toString(),
+                fontWeight = FontWeight.Bold,
+                style = TextStyle(fontSize = 20.sp))
+            Text("Calories")
+          }
+        }
+        ActivitiesDatabaseType.Sports.CLIMBING -> {
+          val trailActivities = activities.filterIsInstance<ActivitiesDatabaseType.Climb>()
+          Column {
+            Text(
+                text = trailActivities.sumOf { it.numberOfPitches }.toString(),
+                fontWeight = FontWeight.Bold,
+                style = TextStyle(fontSize = 20.sp))
+            Text("Pitches")
+          }
+        }
       }
-    */
+
       Column {
         Text(
             text = timeFromMillis(timeFromActivityInMillis(activities)),
@@ -225,6 +354,7 @@ fun Chart(activities: List<ActivitiesDatabaseType>, profileScreenViewModel: Prof
 @Composable
 fun RecentActivities(profileScreenViewModel: ProfileScreenViewModel) {
   val activities by profileScreenViewModel.allTrails.collectAsState()
+  val sport by profileScreenViewModel.sport.collectAsState()
   Text("Recent Activities", style = TextStyle(fontSize = 20.sp), fontWeight = FontWeight.Bold)
   for (a in activities.reversed()) {
     Card(
@@ -253,32 +383,57 @@ fun RecentActivities(profileScreenViewModel: ProfileScreenViewModel) {
                 Column { Text(text = formatDate(a.timeStarted), fontWeight = FontWeight.Bold) }
               }
           // Text information on the right
-        /*
+
           Row(
               modifier = Modifier.fillMaxWidth().padding(16.dp),
               horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
-                  Text(
-                      text = String.format("%.2f", metersToKilometers(a.distanceInMeters)),
-                      fontWeight = FontWeight.Bold)
-                  Text(text = "Km")
+                  when (sport) {
+                    ActivitiesDatabaseType.Sports.HIKING -> {
+                      val trail = a as ActivitiesDatabaseType.Trail
+                      Text(
+                          text = String.format("%.2f", metersToKilometers(trail.distanceInMeters)),
+                          fontWeight = FontWeight.Bold)
+                      Text(text = "Km")
+                    }
+                    ActivitiesDatabaseType.Sports.CLIMBING -> {
+                      val climb = a as ActivitiesDatabaseType.Climb
+                      Text(
+                          text =
+                              String.format(
+                                  "%.2f", metersToKilometers(climb.elevationGainedInMeters)),
+                          fontWeight = FontWeight.Bold)
+                      Text(text = "Elevation")
+                    }
+                  }
                 }
 
                 Column {
-                  Text(text = a.elevationChangeInMeters.toString(), fontWeight = FontWeight.Bold)
-                  Text(text = "Elevation")
+                  when (sport) {
+                    ActivitiesDatabaseType.Sports.HIKING -> {
+                      val trail = a as ActivitiesDatabaseType.Trail
+                      Text(
+                          text = trail.elevationChangeInMeters.toString(),
+                          fontWeight = FontWeight.Bold)
+                      Text(text = "Elevation")
+                    }
+                    ActivitiesDatabaseType.Sports.CLIMBING -> {
+                      val climb = a as ActivitiesDatabaseType.Climb
+                      Text(
+                          text = String.format("%.2f", metersToKilometers(climb.numberOfPitches)),
+                          fontWeight = FontWeight.Bold)
+                      Text(text = "Pitches")
+                    }
+                  }
                 }
 
                 Column {
                   Text(
-                      text = timeFromMillis(timeFromActivityInMillis(a)),
+                      text = timeFromMillis(timeFromActivityInMillis(listOf(a))),
                       fontWeight = FontWeight.Bold)
                   Text(text = "Time")
                 }
               }
-
-         */
         }
-
   }
 }
