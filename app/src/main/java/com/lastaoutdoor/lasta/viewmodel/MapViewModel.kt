@@ -1,6 +1,5 @@
 package com.lastaoutdoor.lasta.viewmodel
 
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,16 +7,20 @@ import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.model.Node
-import com.lastaoutdoor.lasta.data.model.Relation
+import com.lastaoutdoor.lasta.data.model.api.Node
+import com.lastaoutdoor.lasta.data.model.api.Relation
 import com.lastaoutdoor.lasta.data.model.map.ClimbingMarker
 import com.lastaoutdoor.lasta.data.model.map.HikingMarker
 import com.lastaoutdoor.lasta.data.model.map.MapItinerary
 import com.lastaoutdoor.lasta.data.model.map.Marker
 import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-@OptIn(ExperimentalMaterial3Api::class)
-class MapViewModel : ViewModel() {
+@HiltViewModel
+class MapViewModel
+@Inject
+constructor(private val outdoorActivityRepository: OutdoorActivityRepository) : ViewModel() {
 
   // this is used to store the state of the map and modify it
   var state by mutableStateOf(MapState())
@@ -70,7 +73,7 @@ class MapViewModel : ViewModel() {
     climbingNodes.forEach {
       val marker =
           ClimbingMarker(
-              it.tags.name ?: "Unnamed Climbing Spot",
+              it.tags.name,
               LatLng(it.lat, it.lon),
               it.tags.sport,
               BitmapDescriptorFactory.fromResource(R.drawable.climbing_icon))
@@ -110,16 +113,16 @@ class MapViewModel : ViewModel() {
     hikingRelations.forEach {
       markers.add(
           HikingMarker(
-              "Hiking: " + (it.tags.name ?: "Sans nom"),
+              "Hiking: " + (it.tags.name),
               LatLng(it.bounds.minlat, it.bounds.minlon),
-              it.locationName ?: "No description",
+              it.locationName,
               BitmapDescriptorFactory.fromResource(R.drawable.hiking_icon)))
     }
 
     return markers.toList()
   }
 
-  // Still WIP /!\ -> get the itinerary of a hiking activity (Doesn't work, we cannot just draw and
+  // Still TODO /!\ -> get the itinerary of a hiking activity (Doesn't work, we cannot just draw and
   // fetch all itineraries for big distances)
   private fun getItineraryFromRelations(hikingRelations: List<Relation>): List<MapItinerary> {
 
@@ -132,9 +135,7 @@ class MapViewModel : ViewModel() {
         way.nodes.forEach { position -> pointsList.add(LatLng(position.lat, position.lon)) }
       }
 
-      itinerary.add(
-          MapItinerary(
-              relation.id, relation.tags.name ?: "Unnamed Hiking Spot", points = pointsList))
+      itinerary.add(MapItinerary(relation.id, relation.tags.name, points = pointsList))
     }
 
     return itinerary.toList()
@@ -146,11 +147,9 @@ class MapViewModel : ViewModel() {
     // fetch more activity at once, so less effort when moving around
 
     try {
-      // repository to fetch the activities
-      val repository = OutdoorActivityRepository()
 
       // get all the climbing activities in the radius
-      val climbingMarkers = fetchClimbingActivities(rad, centerLocation, repository)
+      val climbingMarkers = fetchClimbingActivities(rad, centerLocation, outdoorActivityRepository)
 
       // markers for hiking activities are still not ready due to optimization problems / api call
       // structure

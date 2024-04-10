@@ -5,7 +5,9 @@ import com.lastaoutdoor.lasta.data.model.api.Node
 import com.lastaoutdoor.lasta.data.model.api.Relation
 import com.lastaoutdoor.lasta.data.model.api.Way
 
-interface OutdoorActivityRepository {
+// Interface used to get OutdoorActivities from overpass API
+interface OutdoorActivityRepositoryIn {
+
   fun getClimbingActivitiesNode(range: Int, lat: Double, lon: Double): OutdoorActivityResponse<Node>
 
   fun getClimbingActivitiesWay(range: Int, lat: Double, lon: Double): OutdoorActivityResponse<Way>

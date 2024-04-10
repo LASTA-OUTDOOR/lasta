@@ -89,13 +89,13 @@ jobs:
           ./gradlew assemble lint --parallel --build-cache
 
       # Run Unit tests
-      - name: Run tests
+      - name: Run Unit tests
         run: |
           # To run the CI with debug information, add --info
           ./gradlew check --parallel --build-cache
 
       # Run connected tests on the emulator
-      - name: run tests
+      - name: Run Instrumented Android tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
