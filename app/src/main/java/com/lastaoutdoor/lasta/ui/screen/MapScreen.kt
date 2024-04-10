@@ -22,8 +22,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.firebase.ui.auth.AuthUI.getApplicationContext
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.model.CameraPosition

@@ -1,6 +1,5 @@
 package com.lastaoutdoor.lasta.viewmodel
 
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -19,7 +18,6 @@ import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
 import javax.inject.Inject
 
 class MapViewModel @Inject constructor(private val apiService: ApiService) : ViewModel() {
-
 
   // this is used to store the state of the map and modify it
   var state by mutableStateOf(MapState())
