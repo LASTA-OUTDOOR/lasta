@@ -7,16 +7,20 @@ import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.api.ApiService
-import com.lastaoutdoor.lasta.data.model.Node
-import com.lastaoutdoor.lasta.data.model.Relation
+import com.lastaoutdoor.lasta.data.model.api.Node
+import com.lastaoutdoor.lasta.data.model.api.Relation
 import com.lastaoutdoor.lasta.data.model.map.ClimbingMarker
 import com.lastaoutdoor.lasta.data.model.map.HikingMarker
 import com.lastaoutdoor.lasta.data.model.map.MapItinerary
+import com.lastaoutdoor.lasta.data.model.map.Marker
 import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
-class MapViewModel @Inject constructor(private val apiService: ApiService) : ViewModel() {
+@HiltViewModel
+class MapViewModel
+@Inject
+constructor(private val outdoorActivityRepository: OutdoorActivityRepository) : ViewModel() {
 
   // this is used to store the state of the map and modify it
   var state by mutableStateOf(MapState())
@@ -31,6 +35,11 @@ class MapViewModel @Inject constructor(private val apiService: ApiService) : Vie
   fun updatePermission(value: Boolean) {
     state.uiSettings = state.uiSettings.copy(myLocationButtonEnabled = value)
     state.properties = state.properties.copy(isMyLocationEnabled = value)
+  }
+
+  // Update which marker is currently selected
+  fun updateSelectedMarker(marker: Marker) {
+    state.selectedMarker = marker
   }
 
   // Calls the API to fetch climbing activities and returns the list of markers to display
@@ -64,7 +73,7 @@ class MapViewModel @Inject constructor(private val apiService: ApiService) : Vie
     climbingNodes.forEach {
       val marker =
           ClimbingMarker(
-              it.tags.name ?: "Unnamed Climbing Spot",
+              it.tags.name,
               LatLng(it.lat, it.lon),
               it.tags.sport,
               BitmapDescriptorFactory.fromResource(R.drawable.climbing_icon))
@@ -104,16 +113,16 @@ class MapViewModel @Inject constructor(private val apiService: ApiService) : Vie
     hikingRelations.forEach {
       markers.add(
           HikingMarker(
-              "Hiking: " + (it.tags.name ?: "Sans nom"),
+              "Hiking: " + (it.tags.name),
               LatLng(it.bounds.minlat, it.bounds.minlon),
-              it.locationName ?: "No description",
+              it.locationName,
               BitmapDescriptorFactory.fromResource(R.drawable.hiking_icon)))
     }
 
     return markers.toList()
   }
 
-  // Still WIP /!\ -> get the itinerary of a hiking activity (Doesn't work, we cannot just draw and
+  // Still TODO /!\ -> get the itinerary of a hiking activity (Doesn't work, we cannot just draw and
   // fetch all itineraries for big distances)
   private fun getItineraryFromRelations(hikingRelations: List<Relation>): List<MapItinerary> {
 
@@ -126,9 +135,7 @@ class MapViewModel @Inject constructor(private val apiService: ApiService) : Vie
         way.nodes.forEach { position -> pointsList.add(LatLng(position.lat, position.lon)) }
       }
 
-      itinerary.add(
-          MapItinerary(
-              relation.id, relation.tags.name ?: "Unnamed Hiking Spot", points = pointsList))
+      itinerary.add(MapItinerary(relation.id, relation.tags.name, points = pointsList))
     }
 
     return itinerary.toList()
@@ -140,15 +147,13 @@ class MapViewModel @Inject constructor(private val apiService: ApiService) : Vie
     // fetch more activity at once, so less effort when moving around
 
     try {
-      // repository to fetch the activities
-      val repository = OutdoorActivityRepository(apiService)
 
       // get all the climbing activities in the radius
-      val climbingMarkers = fetchClimbingActivities(rad, centerLocation, repository)
+      val climbingMarkers = fetchClimbingActivities(rad, centerLocation, outdoorActivityRepository)
 
       // markers for hiking activities are still not ready due to optimization problems / api call
       // structure
-      val hikingRelations = fetchHikingActivities(rad, centerLocation, repository)
+      // val hikingRelations = fetchHikingActivities(rad, centerLocation, repository)
       // val hikingMarkers = getMarkersFromRelations(hikingRelations)
 
       // Add the markers to the map

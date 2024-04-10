@@ -1,9 +1,9 @@
 package com.lastaoutdoor.lasta.repository
 
 import com.lastaoutdoor.lasta.data.api.OutdoorActivityResponse
-import com.lastaoutdoor.lasta.data.model.Node
-import com.lastaoutdoor.lasta.data.model.Relation
-import com.lastaoutdoor.lasta.data.model.Way
+import com.lastaoutdoor.lasta.data.model.api.Node
+import com.lastaoutdoor.lasta.data.model.api.Relation
+import com.lastaoutdoor.lasta.data.model.api.Way
 
 // Interface used to get OutdoorActivities from overpass API
 interface OutdoorActivityRepositoryIn {

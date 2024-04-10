@@ -2,7 +2,7 @@ package com.lastaoutdoor.lasta.data.model.map
 
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.LatLng
-import com.lastaoutdoor.lasta.data.model.ActivityType
+import com.lastaoutdoor.lasta.data.model.activity.ActivityType
 
 // Marker Hiking activities
 // @param name: the name of the marker

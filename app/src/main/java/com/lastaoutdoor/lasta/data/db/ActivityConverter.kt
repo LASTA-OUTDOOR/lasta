@@ -1,7 +1,7 @@
 package com.lastaoutdoor.lasta.data.db
 
 import com.google.firebase.Timestamp
-import com.lastaoutdoor.lasta.data.model.Trail
+import com.lastaoutdoor.lasta.data.model.profile.Trail
 
 class ActivityConverter() {
   fun trailToDatabase(trail: Trail): HashMap<String, Any> {
