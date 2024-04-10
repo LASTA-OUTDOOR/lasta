@@ -21,9 +21,6 @@ import kotlinx.coroutines.launch
 class AuthViewModel
 @Inject
 constructor(private val authRepo: AuthRepository, val oneTapClient: SignInClient) : ViewModel() {
-  val isUserAuthenticated
-    get() = authRepo.isUserAuthentificated
-
   val currentUser
     get() = authRepo.currentUser
 

@@ -11,17 +11,13 @@ import com.lastaoutdoor.lasta.repository.SignInWithGoogleResponse
 import com.lastaoutdoor.lasta.repository.SignOutResponse
 import com.lastaoutdoor.lasta.utils.Response.Failure
 import com.lastaoutdoor.lasta.utils.Response.Success
-import javax.inject.Singleton
 import kotlinx.coroutines.tasks.await
 
-@Singleton
 class AuthRepositoryImpl(
     private val auth: FirebaseAuth,
     private var oneTapClient: SignInClient,
     private var signInRequest: BeginSignInRequest,
 ) : AuthRepository {
-  override val isUserAuthentificated = auth.currentUser != null
-
   override val currentUser: UserModel?
     get() =
         auth.currentUser?.let {

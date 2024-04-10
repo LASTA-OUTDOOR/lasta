@@ -12,7 +12,6 @@ typealias SignInWithGoogleResponse = Response<UserModel>
 typealias SignOutResponse = Response<Boolean>
 
 interface AuthRepository {
-  val isUserAuthentificated: Boolean
 
   val currentUser: UserModel?
 

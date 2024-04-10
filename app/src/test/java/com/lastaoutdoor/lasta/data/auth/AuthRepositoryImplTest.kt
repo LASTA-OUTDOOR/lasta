@@ -3,6 +3,7 @@ package com.lastaoutdoor.lasta.data.auth
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.lastaoutdoor.lasta.repository.AuthRepository
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -37,60 +38,46 @@ class AuthRepositoryImplTest {
   }
 
   @Test
-  fun `isUserAuthenticated returns true when currentUser is not null`() {
-    every { auth.currentUser } returns mockk(relaxed = true)
+  fun `currentUser returns UserModel when auth currentUser is not null`() {
+    val mockFirebaseUser = mockk<FirebaseUser>()
+    every { mockFirebaseUser.uid } returns "testUserId"
+    every { mockFirebaseUser.displayName } returns "Test User"
+    every { mockFirebaseUser.email } returns "test@example.com"
+    every { mockFirebaseUser.photoUrl.toString() } returns "https://example.com/photo.jpg"
 
-    assertTrue(authRepository.isUserAuthentificated)
+    every { auth.currentUser } returns mockFirebaseUser
+
+    val userModel = authRepository.currentUser
+
+    assertEquals("testUserId", userModel?.userId)
+    assertEquals("Test User", userModel?.userName)
+    assertEquals("test@example.com", userModel?.email)
+    assertEquals("https://example.com/photo.jpg", userModel?.profilePictureUrl.toString())
+  }
+
+  @Test
+  fun `currentUser returns null when auth currentUser is null`() {
+    every { auth.currentUser } returns null
+
+    val userModel = authRepository.currentUser
+
+    assertNull(userModel)
   }
 
   /*@Test
-  fun `isUserAuthenticated returns false when currentUser is null`() {
-      every { auth.currentUser } returns null
-
-      println(authRepository.isUserAuthentificated)
-
-      assertFalse(authRepository.isUserAuthentificated)
-  }
-
-  @ExperimentalCoroutinesApi
-  @Test
-  fun `currentUser returns UserModel when auth currentUser is not null`() {
-      val mockFirebaseUser = mockk<FirebaseUser>()
-      every { mockFirebaseUser.uid } returns "testUserId"
-      every { mockFirebaseUser.displayName } returns "Test User"
-      every { mockFirebaseUser.email } returns "test@example.com"
-      every { mockFirebaseUser.photoUrl } answers {
-          mockk {
-              every { toString() } returns "https://example.com/photo.jpg"
-          }
-      }
-
-      every { auth.currentUser } returns mockFirebaseUser
-
-      println(auth.currentUser?.uid)
-
-      val userModel = authRepository.currentUser
-
-      assert(userModel?.userId == "testUserId")
-      assert(userModel?.userName == "Test User")
-      assert(userModel?.email == "test@example.com")
-      assert(userModel?.profilePictureUrl == "https://example.com/photo.jpg")
-  }
-
-  @Test
-  fun `startGoogleSignIn returns Success with OneTapSignInResponse`() = runTest {
-      val mockSignInResult = mockk<BeginSignInResult>()
-      coEvery { oneTapClient.beginSignIn(any()) } returns mockk {
-          coEvery { await() } returns mockSignInResult
-      }
+  fun `startGoogleSignIn returns Success when signIn is successful`() = runTest {
+      val mockTask: Task<BeginSignInResult> = mockk()
+      val mockResult = mockk<BeginSignInResult>()
+      every { oneTapClient.beginSignIn(signInRequest) } returns mockTask
+      coEvery { mockTask.await() } returns mockResult
 
       val result = authRepository.startGoogleSignIn()
 
-      assert(result is Success)
-      assert((result as Success).data == mockSignInResult)
-  }
+      assertTrue(result is Success)
+      assertEquals(mockResult, (result as Success).data)
+  }*/
 
-  @Test
+  /*@Test
   fun `finishGoogleSignIn returns Success with UserModel`() = runBlockingTest {
       val mockAuthCredential = mockk<AuthCredential>()
       val mockFirebaseUser = mockk<FirebaseUser>()
@@ -132,7 +119,7 @@ class AuthRepositoryImplTest {
   }
 
   @Test
-  fun `signOut returns Success true`() = runBlockingTest {
+  fun `signOut returns Success true`() = runTest {
       coEvery { oneTapClient.signOut() } just runs
       coEvery { auth.signOut() } just runs
 
@@ -143,12 +130,12 @@ class AuthRepositoryImplTest {
   }
 
   @Test
-  fun `signOut returns Failure when exception occurs`() = runBlockingTest {
+  fun `signOut returns Failure when exception occurs`() = runTest {
       coEvery { oneTapClient.signOut() } throws Exception("OneTap sign out error")
 
       val result = authRepository.signOut()
 
       assert(result is Failure)
-      assert((result as Failure).exception.message == "OneTap sign out error")
+      assert((result as Failure).e.message == "OneTap sign out error")
   }*/
 }
