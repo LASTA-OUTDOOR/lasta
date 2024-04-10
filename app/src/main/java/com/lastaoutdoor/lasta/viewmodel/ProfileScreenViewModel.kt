@@ -38,8 +38,8 @@ constructor(
   private val _time = MutableStateFlow(TimeFrame.W)
   val timeFrame: StateFlow<TimeFrame> = _time
 
-    private val _sport = MutableStateFlow(Sports.HIKING)
-    val sport = _sport
+  private val _sport = MutableStateFlow(Sports.HIKING)
+  val sport = _sport
 
   init {
     fetchUserActivities()
@@ -130,5 +130,4 @@ constructor(
     _sport.value = s
     fetchUserActivities()
   }
-
 }
