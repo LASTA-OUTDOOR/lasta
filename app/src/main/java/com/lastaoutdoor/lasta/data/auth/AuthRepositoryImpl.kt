@@ -32,7 +32,8 @@ constructor(
               userId = it.uid,
               userName = it.displayName,
               email = it.email,
-              profilePictureUrl = it.photoUrl.toString())
+              profilePictureUrl = it.photoUrl.toString(),
+              null)
         }
 
   override suspend fun startGoogleSignIn(): OneTapSignInResponse {
@@ -49,7 +50,7 @@ constructor(
   ): SignInWithGoogleResponse {
     return try {
       val user = auth.signInWithCredential(googleCredential).await().user
-      user?.run { Success(UserModel(uid, displayName, email, photoUrl.toString())) }
+      user?.run { Success(UserModel(uid, displayName, email, photoUrl.toString(), null)) }
           ?: run { Failure(Exception("User is null")) }
     } catch (e: Exception) {
       Failure(e)
