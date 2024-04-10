@@ -1,11 +1,15 @@
 package com.lastaoutdoor.lasta.ui.screen
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -22,8 +26,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lastaoutdoor.lasta.data.db.Trail
 import com.lastaoutdoor.lasta.data.model.Sports
@@ -41,28 +49,41 @@ import com.lastaoutdoor.lasta.utils.formatDate
 import com.lastaoutdoor.lasta.utils.metersToKilometers
 import com.lastaoutdoor.lasta.utils.timeFromHikingInMillis
 import com.lastaoutdoor.lasta.utils.timeFromMillis
-import com.lastaoutdoor.lasta.viewmodel.ProfileScreenVIewModel
+import com.lastaoutdoor.lasta.viewmodel.ProfileScreenViewModel
 import java.util.Calendar
 
 @Composable
 fun ProfileScreen2(
-    profileScreenVIewModel: ProfileScreenVIewModel = hiltViewModel(),
+    profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(),
 ) {
   // profileScreenVIewModel.addTrailToUserActivities()
-  val trailList by profileScreenVIewModel.trails.collectAsState()
+  val trailList by profileScreenViewModel.trails.collectAsState()
 
-  LazyColumn(modifier = Modifier) {
-    item { SportSelection(profileScreenVIewModel) }
-    item { TimeFrameSelection(profileScreenVIewModel) }
-    item { Chart(trailList, profileScreenVIewModel) }
-    item { RecentActivities(profileScreenVIewModel) }
+  LazyColumn(modifier = Modifier.padding(16.dp)) {
+    item {
+        SportSelection(profileScreenViewModel)
+        Spacer(modifier = Modifier.height(16.dp))
+    }
+
+    item {
+        TimeFrameSelection(profileScreenViewModel)
+        Spacer(modifier = Modifier.height(16.dp))
+    }
+    item {
+        Chart(trailList, profileScreenViewModel)
+        Spacer(modifier = Modifier.height(16.dp))
+    }
+    item {
+        RecentActivities(profileScreenViewModel)
+        Spacer(modifier = Modifier.height(16.dp))}
   }
 }
 
 @Composable
-fun SportSelection(profileScreenVIewModel: ProfileScreenVIewModel) {
+fun SportSelection(profileScreenViewModel: ProfileScreenViewModel) {
+    val sport by profileScreenViewModel.sport.collectAsState()
+
   Row {
-    Text("Activity")
 
     // Sample data for the Spinner
     val spinnerItems = Sports.values().toList()
@@ -72,39 +93,56 @@ fun SportSelection(profileScreenVIewModel: ProfileScreenVIewModel) {
 
     Spinner(
         items = spinnerItems,
-        selectedItem = profileScreenVIewModel.getSport(),
-        onItemSelected = { newSport -> profileScreenVIewModel.setSport(newSport) })
+        selectedItem = sport,
+        onItemSelected = { newSport -> profileScreenViewModel.setSport(newSport) },
+        "Activitiy")
   }
 }
 
 @Composable
-fun TimeFrameSelection(profileScreenVIewModel: ProfileScreenVIewModel) {
-  Row(modifier = Modifier.padding(8.dp)) {
-    val timeFrame by profileScreenVIewModel.timeFrame.collectAsState()
-    TimeFrame.values().forEach { timeframe ->
-      Button(
-          onClick = { profileScreenVIewModel.setTimeFrame(timeframe) },
-          colors =
-              ButtonDefaults.buttonColors(
-                  containerColor = if (timeFrame == timeframe) Color.Gray else Color.LightGray,
-                  contentColor = Color.Black),
-          shape = RoundedCornerShape(4.dp),
-          modifier = Modifier.padding(4.dp)) {
-            Text(timeframe.name, color = if (timeFrame == timeframe) Color.White else Color.Black)
-          }
-    }
-  }
+fun TimeFrameSelection(profileScreenViewModel: ProfileScreenViewModel) {
+  val shape = RoundedCornerShape(20.dp)
+  val borderModifier =
+      Modifier.padding(4.dp).border(width = 1.dp, color = Color.Black, shape = shape)
+
+  Row(
+      modifier =
+          Modifier.clip(shape)
+              .background(MaterialTheme.colorScheme.background)
+              .padding(1.dp) // Padding for the border effect
+              .then(borderModifier)) {
+        val timeFrame by profileScreenViewModel.timeFrame.collectAsState()
+        TimeFrame.values().forEach { timeframe ->
+          // Determine background and text color based on selection
+          val backgroundColor = if (timeFrame == timeframe) Color(0xFFFDB813) else Color.Transparent
+          val textColor = if (timeFrame == timeframe) Color.White else Color.Black
+
+          Button(
+              onClick = { profileScreenViewModel.setTimeFrame(timeframe) },
+              colors =
+                  ButtonDefaults.buttonColors(
+                      containerColor = backgroundColor, contentColor = textColor),
+              shape = shape,
+              modifier =
+                  Modifier.padding(horizontal = 2.dp)
+                      .height(50.dp)
+                      .defaultMinSize(minWidth = 50.dp) // Minimum width for all buttons
+              ) {
+                Text(
+                    text = timeframe.name,
+                    color = textColor,
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp))
+              }
+        }
+      }
 }
 
 @Composable
-fun Chart(trails: List<Trail>, profileScreenVIewModel: ProfileScreenVIewModel) {
-  Column(
-      modifier = Modifier.padding(horizontal = 30.dp),
-      verticalArrangement = Arrangement.Center,
-      horizontalAlignment = Alignment.CenterHorizontally) {
+fun Chart(trails: List<Trail>, profileScreenViewModel: ProfileScreenViewModel) {
+  Column (modifier = Modifier.padding(8.dp)){
 
         // Bar graph x and y data
-        val timeFrame by profileScreenVIewModel.timeFrame.collectAsState()
+        val timeFrame by profileScreenViewModel.timeFrame.collectAsState()
 
         // Based on the collected timeFrame, adapt the chart dynamically
         val (values, abscissa) =
@@ -140,27 +178,31 @@ fun Chart(trails: List<Trail>, profileScreenVIewModel: ProfileScreenVIewModel) {
 
         Row {
           Column {
-            Text(text = String.format("%.2f", values.sum()))
+            Text(text = String.format("%.2f", values.sum()), fontWeight = FontWeight.Bold, style = TextStyle(fontSize = 48.sp))
             Text("Km")
           }
         }
 
-        Row {
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
           Column {
-            Text(trails.size.toString())
+            Text(trails.size.toString(), fontWeight = FontWeight.Bold, style = TextStyle(fontSize = 20.sp))
             Text("runs")
           }
 
           Column {
-            Text(text = caloriesFromHiking(trails).toString())
+            Text(text = caloriesFromHiking(trails).toString(),  fontWeight = FontWeight.Bold, style = TextStyle(fontSize = 20.sp))
             Text("Calories")
           }
 
           Column {
-            Text(text = timeFromMillis(timeFromHikingInMillis(*trails.toTypedArray())))
+            Text(text = timeFromMillis(timeFromHikingInMillis(*trails.toTypedArray())),  fontWeight = FontWeight.Bold, style = TextStyle(fontSize = 20.sp))
             Text("Time")
           }
         }
+
+      Spacer(modifier = Modifier.height(32.dp))
 
         BarGraph(
             graphBarData = ordinateFloat,
@@ -173,17 +215,16 @@ fun Chart(trails: List<Trail>, profileScreenVIewModel: ProfileScreenVIewModel) {
             barArrangement = Arrangement.SpaceEvenly)
       }
 }
-
 @Composable
-fun RecentActivities(profileScreenVIewModel: ProfileScreenVIewModel) {
-  val activities by profileScreenVIewModel.allTrails.collectAsState()
-  Text("Recent Activities")
+fun RecentActivities(profileScreenViewModel: ProfileScreenViewModel) {
+  val activities by profileScreenViewModel.allTrails.collectAsState()
+  Text("Recent Activities", style = TextStyle(fontSize = 20.sp), fontWeight = FontWeight.Bold)
   for (a in activities.reversed()) {
     Card(
-        modifier = Modifier.padding(8.dp).fillMaxWidth(),
+        modifier = Modifier.padding(12.dp).fillMaxWidth(),
         elevation = CardDefaults.cardElevation(4.dp),
-        shape = RoundedCornerShape(10.dp)) {
-          Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
+        shape = RoundedCornerShape(8.dp)) {
+          Row(modifier = Modifier.padding(8.dp, 0.dp), verticalAlignment = Alignment.CenterVertically) {
             // Image on the left
             Box(modifier = Modifier.size(100.dp).padding(8.dp)) {
               /*
@@ -201,24 +242,23 @@ fun RecentActivities(profileScreenVIewModel: ProfileScreenVIewModel) {
             Spacer(modifier = Modifier.width(8.dp))
 
             Column {
-              Text(text = formatDate(a.timeStarted))
-              Text(text = "description")
+              Text(text = formatDate(a.timeStarted), fontWeight = FontWeight.Bold)
             }
           }
           // Text information on the right
-          Row {
+          Row (modifier = Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween) {
             Column {
-              Text(text = String.format("%.2f", metersToKilometers(a.distanceInMeters)))
+              Text(text = String.format("%.2f", metersToKilometers(a.distanceInMeters)), fontWeight = FontWeight.Bold)
               Text(text = "Km")
             }
 
             Column {
-              Text(text = a.elevationChangeInMeters.toString())
+              Text(text = a.elevationChangeInMeters.toString(), fontWeight = FontWeight.Bold)
               Text(text = "Elevation")
             }
 
             Column {
-              Text(text = timeFromMillis(timeFromHikingInMillis(a)))
+              Text(text = timeFromMillis(timeFromHikingInMillis(a)), fontWeight = FontWeight.Bold)
               Text(text = "Time")
             }
           }

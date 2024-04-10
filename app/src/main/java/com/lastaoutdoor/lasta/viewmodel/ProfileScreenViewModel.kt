@@ -1,15 +1,14 @@
 package com.lastaoutdoor.lasta.viewmodel
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.lastaoutdoor.lasta.data.db.ActivitiesRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.Trail
 import com.lastaoutdoor.lasta.data.model.Sports
 import com.lastaoutdoor.lasta.data.model.user_profile.TimeFrame
 import com.lastaoutdoor.lasta.di.TimeProvider
-import com.lastaoutdoor.lasta.repository.ActivitiesRepository
 import com.lastaoutdoor.lasta.utils.calculateTimeRangeUntilNow
 import com.lastaoutdoor.lasta.utils.createDateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,11 +18,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class ProfileScreenVIewModel
+class ProfileScreenViewModel
 @Inject
-constructor(private val repository: ActivitiesRepository, private val timeProvider: TimeProvider) :
-    ViewModel() {
-  private var sport = mutableStateOf(Sports.HIKING)
+constructor(
+    private val repository: ActivitiesRepositoryImpl,
+    private val timeProvider: TimeProvider
+) : ViewModel() {
+
   private val user = FirebaseAuth.getInstance().currentUser
 
   // Cache for storing fetched trails
@@ -37,11 +38,14 @@ constructor(private val repository: ActivitiesRepository, private val timeProvid
   private val _time = MutableStateFlow(TimeFrame.W)
   val timeFrame: StateFlow<TimeFrame> = _time
 
+    private val _sport = MutableStateFlow(Sports.HIKING)
+    val sport = _sport
+
   init {
-    fetchUserActivitiesOnce()
+    fetchUserActivities()
   }
 
-  private fun fetchUserActivitiesOnce() {
+  private fun fetchUserActivities() {
     viewModelScope.launch {
       if (user != null) {
         _allTrailsCache.value =
@@ -123,8 +127,8 @@ constructor(private val repository: ActivitiesRepository, private val timeProvid
   }
 
   fun setSport(s: Sports) {
-    sport.value = s
+    _sport.value = s
+    fetchUserActivities()
   }
 
-  fun getSport() = sport.value
 }

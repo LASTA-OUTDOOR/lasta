@@ -22,7 +22,6 @@ fun MainScreen(
     MenuNavGraph(
         navController = navController,
         preferencesViewModel = preferencesViewModel,
-        outdoorActivityViewModel = outdoorActivityViewModel,
         modifier = Modifier.padding(paddingValues),
         onSignOut = { onSignOut() })
   }
