@@ -11,14 +11,11 @@ import com.lastaoutdoor.lasta.repository.SignInWithGoogleResponse
 import com.lastaoutdoor.lasta.repository.SignOutResponse
 import com.lastaoutdoor.lasta.utils.Response.Failure
 import com.lastaoutdoor.lasta.utils.Response.Success
-import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.tasks.await
 
 @Singleton
-class AuthRepositoryImpl
-@Inject
-constructor(
+class AuthRepositoryImpl(
     private val auth: FirebaseAuth,
     private var oneTapClient: SignInClient,
     private var signInRequest: BeginSignInRequest,
