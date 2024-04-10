@@ -109,26 +109,6 @@ class DatabaseManager {
   }
 
   /**
-   * Function to update a user's preferences in the Firestore database
-   *
-   * @param user The user to update the preferences for
-   * @param preferences The new preferences
-   */
-  fun updateUserPreferences(user: UserModel, preferences: UserPreferences) {
-    val userDocumentRef = database.collection(USERS_COLLECTION).document(user.userId)
-    val prefSettings =
-        hashMapOf(
-            "isLoggedIn" to preferences.isLoggedIn,
-            "uid" to preferences.uid,
-            "userName" to preferences.userName,
-            "email" to preferences.email,
-            "profilePictureUrl" to preferences.profilePictureUrl,
-            "hikingLevel" to preferences.hikingLevel)
-    val data = hashMapOf("prefSettings" to prefSettings)
-    userDocumentRef.set(data, SetOptions.merge())
-  }
-
-  /**
    * Function to get a field of a hiking activity from the user's document in the Firestore database
    *
    * @param user The user to get the field from
@@ -137,21 +117,33 @@ class DatabaseManager {
    * @return The value of the field
    */
   suspend fun getFieldOfHiking(user: UserModel, activityId: Long, field: String): Any {
+    // Create a reference to the user's document in the Firestore database
     val userDocumentRef = database.collection(ACTIVITIES_COLLECTION).document(user.userId)
+
+    // Get the document snapshot
     val document = userDocumentRef.get().await()
+
     if (document != null) {
+      // Get the "Hiking" array from the document
       val hikingArray = document.get("Hiking") as? List<*>
       if (hikingArray != null) {
         for (item in hikingArray) {
+          // Convert the item to a Trail object
           val trail = activityConverter.databaseToTrail(item as HashMap<String, Any>)
+
+          // Check if the activity ID matches
           if (trail.activityID == activityId) {
-            when (field) {
-              "avgSpeedInKMH" -> return trail.avgSpeedInKMH
-              "caloriesBurned" -> return trail.caloriesBurned.toDouble()
-              "distanceInMeters" -> return trail.distanceInMeters.toDouble()
-              "elevationChangeInMeters" -> return trail.elevationChangeInMeters.toDouble()
-              "timeStarted" -> return trail.timeStarted
-              "timeFinished" -> return trail.timeFinished
+            // Convert the field name to HikingField enum
+            val hikingField = HikingField.valueOf(field.uppercase())
+
+            // Return the corresponding value based on the field
+            return when (hikingField) {
+              HikingField.AVG_SPEED_IN_KMH -> trail.avgSpeedInKMH
+              HikingField.CALORIES_BURNED -> trail.caloriesBurned.toDouble()
+              HikingField.DISTANCE_IN_METERS -> trail.distanceInMeters.toDouble()
+              HikingField.ELEVATION_CHANGE_IN_METERS -> trail.elevationChangeInMeters.toDouble()
+              HikingField.TIME_STARTED -> trail.timeStarted
+              HikingField.TIME_FINISHED -> trail.timeFinished
             }
           }
         }
@@ -167,25 +159,35 @@ class DatabaseManager {
    * @param field The field to set
    */
   fun setFieldOfHiking(user: UserModel, activityId: Long, field: String, value: Any) {
+    // Create a reference to the user's document in the Firestore database
     val userDocumentRef = database.collection(ACTIVITIES_COLLECTION).document(user.userId)
+
+    // Update the field in the document
     CoroutineScope(Dispatchers.IO).launch {
       val documentSnapshot = userDocumentRef.get().await()
+
       if (documentSnapshot != null) {
         val hikingArray = documentSnapshot.get("Hiking") as? List<*>
         if (hikingArray != null) {
           for (item in hikingArray) {
             val trail = activityConverter.databaseToTrail(item as HashMap<String, Any>)
             if (trail.activityID == activityId) {
-              when (field) {
-                "avgSpeedInKMH" -> trail.avgSpeedInKMH = value as Double
-                "caloriesBurned" -> trail.caloriesBurned = value as Long
-                "distanceInMeters" -> trail.distanceInMeters = value as Long
-                "elevationChangeInMeters" -> trail.elevationChangeInMeters = value as Long
-                "timeStarted" -> trail.timeStarted = value as Date
-                "timeFinished" -> trail.timeFinished = value as Date
+              // Convert the field name to HikingField enum
+              val hikingField = HikingField.valueOf(field.uppercase())
+
+              // Update the corresponding value based on the field
+              when (hikingField) {
+                HikingField.AVG_SPEED_IN_KMH -> trail.avgSpeedInKMH = value as Double
+                HikingField.CALORIES_BURNED -> trail.caloriesBurned = value as Long
+                HikingField.DISTANCE_IN_METERS -> trail.distanceInMeters = value as Long
+                HikingField.ELEVATION_CHANGE_IN_METERS ->
+                    trail.elevationChangeInMeters = value as Long
+                HikingField.TIME_STARTED -> trail.timeStarted = value as Date
+                HikingField.TIME_FINISHED -> trail.timeFinished = value as Date
               }
             }
           }
+          // Update the "Hiking" array in the document
           userDocumentRef.update("Hiking", hikingArray)
         }
       }
@@ -193,18 +195,48 @@ class DatabaseManager {
   }
 
   /**
-   * Function to add a hiking activity to the user's document in the Firestore database
+   * Function to update a user's preferences in the Firestore database
    *
-   * @param user The user to add the activity for
-   * @param trail The trail to add
+   * @param user The user to update the preferences for
+   * @param preferences The new preferences
+   */
+  fun updateUserPreferences(user: UserModel, preferences: UserPreferences) {
+    // Create a reference to the user's document in the Firestore database
+    val userDocumentRef = database.collection(USERS_COLLECTION).document(user.userId)
+
+    // Create a map containing the user's preferences
+    val prefSettings =
+        hashMapOf(
+            "isLoggedIn" to preferences.isLoggedIn,
+            "uid" to preferences.uid,
+            "userName" to preferences.userName,
+            "email" to preferences.email,
+            "profilePictureUrl" to preferences.profilePictureUrl,
+            "hikingLevel" to preferences.hikingLevel)
+
+    // Merge the preferences into the user's document
+    val data = hashMapOf("prefSettings" to prefSettings)
+    userDocumentRef.set(data, SetOptions.merge())
+  }
+
+  /**
+   * Function to get a user's preferences from the Firestore database
+   *
+   * @param uid The unique identifier of the user
+   * @return The user's preferences
    */
   companion object {
     suspend fun getUserPreferences(uid: String): UserPreferences {
+      // Create a reference to the user's document in the Firestore database
       val userDocumentRef = Firebase.firestore.collection(USERS_COLLECTION).document(uid)
+
+      // Get the document snapshot
       val document = userDocumentRef.get().await()
+
       if (document != null) {
-        val prefSettings = document.get("prefSettings") as? HashMap<String, Any>
+        val prefSettings = document.get("prefSettings") as? HashMap<*, *>
         if (prefSettings != null) {
+          // Extract user preferences from the document
           return UserPreferences(
               isLoggedIn = prefSettings["isLoggedIn"] as Boolean,
               uid = prefSettings["uid"] as String,
@@ -214,6 +246,7 @@ class DatabaseManager {
               hikingLevel = prefSettings["hikingLevel"] as HikingLevel)
         }
       }
+      // Return default preferences if not found
       return UserPreferences(false, "", "", "", "", HikingLevel.BEGINNER)
     }
   }
