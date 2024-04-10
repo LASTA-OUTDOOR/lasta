@@ -6,6 +6,8 @@ import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.ApiService
@@ -30,6 +32,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 object AppModule {
 
   @Singleton @Provides fun provideFirebaseAuth() = Firebase.auth
+
+  @Singleton @Provides fun provideDatabase(): FirebaseFirestore = Firebase.firestore
 
   @Singleton
   @Provides

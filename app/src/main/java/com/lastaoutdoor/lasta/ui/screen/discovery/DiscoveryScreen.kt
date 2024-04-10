@@ -60,9 +60,10 @@ fun DiscoveryContent(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltVi
     // OutdoorActivityList(outdoorActivityViewModel)
 
     // example
-    var outdoorList =
-        List(10) { index -> OutdoorActivity(ActivityType.HIKING, 3, 5.0f, "2 hours", "Zurich") }
-    // val outdoorList = discoveryScreenViewModel.climbingActivities
+    // var outdoorList =
+    // List(10) { index -> OutdoorActivity(ActivityType.HIKING, 3, 5.0f, "2 hours", "Zurich") }
+    discoveryScreenViewModel.fetchClimbingActivities()
+    val outdoorList = discoveryScreenViewModel.climbingActivities
 
     OutdoorActivityList(outdoorList)
   }
