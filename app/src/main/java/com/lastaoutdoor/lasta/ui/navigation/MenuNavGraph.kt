@@ -7,7 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.lastaoutdoor.lasta.ui.screen.discovery.DiscoveryScreen
 import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
-import com.lastaoutdoor.lasta.ui.screen.profile.ProfileScreen2
+import com.lastaoutdoor.lasta.ui.screen.profile.ProfileScreen
 
 @Composable
 fun MenuNavGraph(
@@ -19,12 +19,11 @@ fun MenuNavGraph(
       navController = navController,
       route = RootScreen.Main.route,
       modifier = modifier,
-      startDestination = LeafScreen.Profile.route) {
+      startDestination = LeafScreen.Map.route) {
         composable(LeafScreen.Map.route) { MapScreen() }
         composable(LeafScreen.Discover.route) { DiscoveryScreen() }
         composable(LeafScreen.Profile.route) {
-          // ProfileScreen(rootNavController = rootNavController)
-          ProfileScreen2(rootNavController = rootNavController)
+          ProfileScreen(rootNavController = rootNavController)
         }
       }
 }
