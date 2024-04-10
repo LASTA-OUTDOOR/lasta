@@ -234,6 +234,10 @@ tasks.register("jacocoTestReport", JacocoReport::class) {
     })
 }
 
+tasks.register("submitAndCheck", GradleBuild::class) {
+    dependsOn("ktfmtFormat", "testDebugUnitTest", "jacocoTestReport")
+}
+
 kapt {
     correctErrorTypes = true
 }

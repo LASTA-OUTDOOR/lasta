@@ -3,9 +3,9 @@ package com.lastaoutdoor.lasta.data.db
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
-import com.lastaoutdoor.lasta.data.model.UserModel
-import com.lastaoutdoor.lasta.data.preferences.HikingLevel
-import com.lastaoutdoor.lasta.data.preferences.UserPreferences
+import com.lastaoutdoor.lasta.data.model.user.HikingLevel
+import com.lastaoutdoor.lasta.data.model.user.UserModel
+import com.lastaoutdoor.lasta.data.model.user.UserPreferences
 import java.util.Date
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

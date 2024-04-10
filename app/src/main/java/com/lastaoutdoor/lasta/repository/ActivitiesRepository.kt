@@ -6,8 +6,8 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
 import com.lastaoutdoor.lasta.data.db.ActivityConverter
-import com.lastaoutdoor.lasta.data.model.Sports
-import com.lastaoutdoor.lasta.data.model.Trail
+import com.lastaoutdoor.lasta.data.model.profile.Sports
+import com.lastaoutdoor.lasta.data.model.profile.Trail
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
