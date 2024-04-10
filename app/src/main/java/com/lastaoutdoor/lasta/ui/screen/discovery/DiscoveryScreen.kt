@@ -42,6 +42,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.model.activity.ActivityType
@@ -68,7 +69,7 @@ fun DiscoveryContent(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltVi
     discoveryScreenViewModel.fetchClimbingActivities()
     val outdoorList = discoveryScreenViewModel.climbingActivities
 
-    OutdoorActivityList(outdoorList,outdoorActivityViewModel)
+    OutdoorActivityList(outdoorList)
   }
 }
 
@@ -88,22 +89,18 @@ fun FloatingActionButtons() {
 }
 
 @Composable
-fun OutdoorActivityList(outdoorActivities: List<OutdoorActivity>,outdoorActivityViewModel: OutdoorActivityViewModel) {
+fun OutdoorActivityList(outdoorActivities: List<OutdoorActivity>) {
   /** Our list of activities which is lazy in order to display only the first ones. */
   LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp)) {
-    items(outdoorActivities) { outdoorActivity -> OutdoorActivityItem(outdoorActivity,outdoorActivityViewModel) }
+    items(outdoorActivities) { outdoorActivity -> OutdoorActivityItem(outdoorActivity) }
   }
 }
 
 @Composable
-fun OutdoorActivityItem(outdoorActivity: OutdoorActivity,outdoorActivityViewModel: OutdoorActivityViewModel) {
+fun OutdoorActivityItem(outdoorActivity: OutdoorActivity,discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel()) {
   Card(modifier = Modifier.padding(8.dp)) {
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-      if (outdoorActivityViewModel.getDialogState()) {
-        ActivityDialog(
-            onDismissRequest = { outdoorActivityViewModel.setDialogState(false) },
-            outdoorActivity = outdoorActivity)
-      }
+      discoveryScreenViewModel.displayActivityDialog(outdoorActivity)
       Row(
           // modifier = Modifier.fillMaxWidth(),
           ) {
@@ -157,7 +154,7 @@ fun OutdoorActivityItem(outdoorActivity: OutdoorActivity,outdoorActivityViewMode
           }
       Row() {
         Button(
-            onClick = { outdoorActivityViewModel.setDialogState(true) },
+            onClick = { discoveryScreenViewModel.showDialog() },
             modifier =
                 Modifier.border(
                         width = 1.dp,
@@ -205,18 +202,17 @@ fun OutdoorActivityItem(outdoorActivity: OutdoorActivity,outdoorActivityViewMode
 }
 
 @Composable
-fun OutdoorActivityExample(outdoorActivityViewModel: OutdoorActivityViewModel) {
+fun OutdoorActivityExample() {
   MaterialTheme {
-    OutdoorActivityItem(OutdoorActivity(ActivityType.HIKING, 3, 5.0f, "2 hours", "Zurich"),outdoorActivityViewModel)
+    OutdoorActivityItem(OutdoorActivity(ActivityType.HIKING, 3, 5.0f, "2 hours", "Zurich"))
   }
 }
 
 @Composable
-fun OutdoorActivityListExample(outdoorActivityViewModel: OutdoorActivityViewModel) {
+fun OutdoorActivityListExample() {
   MaterialTheme {
     OutdoorActivityList(
-        List(10) { index -> OutdoorActivity(ActivityType.HIKING, 3, 5.0f, "2 hours", "Zurich") },
-        outdoorActivityViewModel)
+        List(10) { index -> OutdoorActivity(ActivityType.HIKING, 3, 5.0f, "2 hours", "Zurich") })
   }
 }
 
