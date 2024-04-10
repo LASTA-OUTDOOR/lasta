@@ -73,9 +73,9 @@ constructor(private val outdoorActivityRepository: OutdoorActivityRepository) : 
     climbingNodes.forEach {
       val marker =
           ClimbingMarker(
-              it.tags.name,
+              it.tags.name ?: "Climbing - Unnamed",
               LatLng(it.lat, it.lon),
-              it.tags.sport,
+              it.tags.sport ?: "climbing",
               BitmapDescriptorFactory.fromResource(R.drawable.climbing_icon))
       climbingMarkers.add(marker)
     }
@@ -113,9 +113,9 @@ constructor(private val outdoorActivityRepository: OutdoorActivityRepository) : 
     hikingRelations.forEach {
       markers.add(
           HikingMarker(
-              "Hiking: " + (it.tags.name),
+              "Hiking: " + (it.tags.name ?: "Unnamed"),
               LatLng(it.bounds.minlat, it.bounds.minlon),
-              it.locationName,
+              it.locationName ?: "No location name",
               BitmapDescriptorFactory.fromResource(R.drawable.hiking_icon)))
     }
 
@@ -145,7 +145,6 @@ constructor(private val outdoorActivityRepository: OutdoorActivityRepository) : 
   fun updateMarkers(centerLocation: LatLng, rad: Double) {
 
     // fetch more activity at once, so less effort when moving around
-
     try {
 
       // get all the climbing activities in the radius
