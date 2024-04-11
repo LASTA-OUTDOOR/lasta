@@ -73,9 +73,9 @@ constructor(private val outdoorActivityRepository: OutdoorActivityRepository) : 
     climbingNodes.forEach {
       val marker =
           ClimbingMarker(
-              it.tags.name,
+              it.tags.name ?: "Climbing - Unnamed",
               LatLng(it.lat, it.lon),
-              it.tags.sport,
+              it.tags.sport ?: "climbing",
               BitmapDescriptorFactory.fromResource(R.drawable.climbing_icon))
       climbingMarkers.add(marker)
     }
@@ -113,9 +113,9 @@ constructor(private val outdoorActivityRepository: OutdoorActivityRepository) : 
     hikingRelations.forEach {
       markers.add(
           HikingMarker(
-              "Hiking: " + (it.tags.name),
+              "Hiking: " + (it.tags.name ?: "Unnamed"),
               LatLng(it.bounds.minlat, it.bounds.minlon),
-              it.locationName,
+              it.locationName ?: "No location name",
               BitmapDescriptorFactory.fromResource(R.drawable.hiking_icon)))
     }
 
@@ -135,7 +135,8 @@ constructor(private val outdoorActivityRepository: OutdoorActivityRepository) : 
         way.nodes.forEach { position -> pointsList.add(LatLng(position.lat, position.lon)) }
       }
 
-      itinerary.add(MapItinerary(relation.id, relation.tags.name, points = pointsList))
+      itinerary.add(
+          MapItinerary(relation.id, relation.tags.name ?: "No given name", points = pointsList))
     }
 
     return itinerary.toList()
@@ -144,26 +145,19 @@ constructor(private val outdoorActivityRepository: OutdoorActivityRepository) : 
   // Update the markers on the map with a new center location and radius
   fun updateMarkers(centerLocation: LatLng, rad: Double) {
 
-    // fetch more activity at once, so less effort when moving around
+    // get all the climbing activities in the radius
+    val climbingMarkers = fetchClimbingActivities(rad, centerLocation, outdoorActivityRepository)
 
-    try {
+    // markers for hiking activities are still not ready due to optimization problems / api call
+    // structure
+    // val hikingRelations = fetchHikingActivities(rad, centerLocation, repository)
+    // val hikingMarkers = getMarkersFromRelations(hikingRelations)
 
-      // get all the climbing activities in the radius
-      val climbingMarkers = fetchClimbingActivities(rad, centerLocation, outdoorActivityRepository)
+    // Add the markers to the map
+    state.markerList = climbingMarkers
+    // state.markerList = state.markerList.plus(hikingMarkers)
 
-      // markers for hiking activities are still not ready due to optimization problems / api call
-      // structure
-      // val hikingRelations = fetchHikingActivities(rad, centerLocation, repository)
-      // val hikingMarkers = getMarkersFromRelations(hikingRelations)
+    // state.itineraryList = state.itineraryList.plus(getItineraryFromRelations(hikingRelations))
 
-      // Add the markers to the map
-      state.markerList = climbingMarkers
-      // state.markerList = state.markerList.plus(hikingMarkers)
-
-      // state.itineraryList = state.itineraryList.plus(getItineraryFromRelations(hikingRelations))
-    } catch (e: Exception) {
-      // TODO: error message system to tell the user that the activities could not be fetched
-      e.printStackTrace()
-    }
   }
 }
