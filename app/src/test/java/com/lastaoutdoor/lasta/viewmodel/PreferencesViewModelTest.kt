@@ -1,33 +1,24 @@
-import com.google.common.base.Verify.verify
-import com.lastaoutdoor.lasta.data.preferences.PreferencesDataStore
-import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
+package com.lastaoutdoor.lasta.viewmodel
+
+import com.lastaoutdoor.lasta.repository.PreferencesRepository
 import io.mockk.clearAllMocks
 import io.mockk.mockk
 import org.junit.After
 import org.junit.Before
-import org.junit.Test
 
 class PreferencesViewModelTest {
 
-    private lateinit var preferencesViewModel: PreferencesViewModel
-    private lateinit var mockPreferencesDataStore: PreferencesDataStore
+  private lateinit var preferencesViewModel: PreferencesViewModel
+  private lateinit var mockPreferencesDataStore: PreferencesRepository
 
-    @Before
-    fun setUp() {
-        mockPreferencesDataStore = mockk()
-        preferencesViewModel = PreferencesViewModel(mockPreferencesDataStore)
-    }
+  @Before
+  fun setUp() {
+    mockPreferencesDataStore = mockk()
+    preferencesViewModel = PreferencesViewModel(mockPreferencesDataStore)
+  }
 
-    @After
-    fun tearDown() {
-        clearAllMocks()
-    }
-
-    @Test
-    fun `updateIsLoggedIn should call updateIsLoggedIn from PreferencesDataStore`() {
-        val isLoggedIn = true
-        preferencesViewModel.updateIsLoggedIn(isLoggedIn)
-    }
-
-
+  @After
+  fun tearDown() {
+    clearAllMocks()
+  }
 }

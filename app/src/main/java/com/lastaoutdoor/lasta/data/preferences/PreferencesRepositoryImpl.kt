@@ -8,10 +8,10 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.lastaoutdoor.lasta.repository.PreferencesRepository
 import com.lastaoutdoor.lasta.data.model.user.HikingLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.data.model.user.UserPreferences
+import com.lastaoutdoor.lasta.repository.PreferencesRepository
 import java.io.IOException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -25,7 +25,7 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "se
  *
  * @param context the context of the application
  */
-class PreferencesRepositoryImpl(private val context: Context): PreferencesRepository {
+class PreferencesRepositoryImpl(private val context: Context) : PreferencesRepository {
   private val dataStore = context.dataStore
 
   /**

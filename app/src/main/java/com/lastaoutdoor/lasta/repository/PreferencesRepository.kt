@@ -7,14 +7,13 @@ import kotlinx.coroutines.flow.Flow
 
 interface PreferencesRepository {
 
-    val userPreferencesFlow: Flow<UserPreferences>
+  val userPreferencesFlow: Flow<UserPreferences>
 
-    suspend fun updateIsLoggedIn(isLoggedIn: Boolean)
+  suspend fun updateIsLoggedIn(isLoggedIn: Boolean)
 
-    suspend fun updateUserInfo(user: UserModel?)
+  suspend fun updateUserInfo(user: UserModel?)
 
-    suspend fun updateHikingLevel(hikingLevel: HikingLevel)
+  suspend fun updateHikingLevel(hikingLevel: HikingLevel)
 
-    suspend fun clearPreferences()
-
+  suspend fun clearPreferences()
 }
