@@ -1,6 +1,7 @@
 package com.lastaoutdoor.lasta.data.db
 
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
@@ -14,10 +15,9 @@ private const val ACTIVITIES_COLLECTION = "activities_database"
 private const val ERR_NOT_FOUND = -1.0
 
 /** Class containing functions for interacting with the Firestore database */
-class DatabaseManager {
+class DatabaseManager(private val database: FirebaseFirestore = Firebase.firestore) {
 
   // Attributes
-  private val database = Firebase.firestore
   private val activityConverter = ActivityConverter()
 
   /**
