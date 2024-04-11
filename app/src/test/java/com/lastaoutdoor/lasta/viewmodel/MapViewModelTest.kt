@@ -124,7 +124,6 @@ class MapViewModelTest {
     clear()
   }
 
-
   // CHeck all the basic properties of the view model and state
   @Test
   fun testInitialState() {
@@ -145,7 +144,6 @@ class MapViewModelTest {
     // Check initial position and zoom
     assertEquals(11f, viewModel.initialZoom)
     assertEquals(LatLng(46.519962, 6.633597), viewModel.initialPosition)
-
   }
 
   // If no climbing nodes are in the range, the list should be empty
@@ -156,11 +154,9 @@ class MapViewModelTest {
     viewModel.updateMarkers(lausanne, 1000.0)
     assertTrue(viewModel.state.markerList.isEmpty())
 
-    repository.addClimbingNode(
-        dummyNode(ActivityType.CLIMBING, "Point 1", lausanne))
+    repository.addClimbingNode(dummyNode(ActivityType.CLIMBING, "Point 1", lausanne))
     viewModel.updateMarkers(lausanne, 1000.0)
     assertFalse(viewModel.state.markerList.isEmpty())
-
   }
 
   // Check that all points are in the list that are going to be displayed
