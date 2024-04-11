@@ -16,34 +16,29 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-@HiltAndroidTest @UninstallModules(AppModule::class) class DiscoveryScreenTest {
+@HiltAndroidTest
+@UninstallModules(AppModule::class)
+class DiscoveryScreenTest {
 
-    @get:Rule(order = 0)
-    val hiltRule = HiltAndroidRule(this)
+  @get:Rule(order = 0) val hiltRule = HiltAndroidRule(this)
 
-    @get:Rule(order = 1)
-    val composeRule = createAndroidComposeRule<MainActivity>()
+  @get:Rule(order = 1) val composeRule = createAndroidComposeRule<MainActivity>()
 
-    @Before
-    fun setUp() {
-        hiltRule.inject()
-        composeRule.setContent {
-            val navController = rememberNavController()
-            LastaTheme {
-                NavHost(navController = navController,
-                    startDestination = "DiscoveryScreen") {
-                    composable(route = "DiscoveryScreen") {
-                        DiscoveryScreen()
-                    }
-                }
-            }
+  @Before
+  fun setUp() {
+    hiltRule.inject()
+    composeRule.setContent {
+      val navController = rememberNavController()
+      LastaTheme {
+        NavHost(navController = navController, startDestination = "DiscoveryScreen") {
+          composable(route = "DiscoveryScreen") { DiscoveryScreen() }
         }
+      }
     }
-    
-    @Test
-    fun discoveryScreen_isDisplayed() {
-        composeRule.onNodeWithText("Discovery").assertIsDisplayed()
+  }
 
-    }
-
+  @Test
+  fun discoveryScreen_isDisplayed() {
+    composeRule.onNodeWithText("Discovery").assertIsDisplayed()
+  }
 }
