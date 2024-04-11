@@ -4,13 +4,10 @@ import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
-import com.lastaoutdoor.lasta.data.model.UserModel
-import com.lastaoutdoor.lasta.data.preferences.HikingLevel
-import com.lastaoutdoor.lasta.data.preferences.UserPreferences
-import java.util.Date
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
+import com.lastaoutdoor.lasta.data.model.user.HikingLevel
+import com.lastaoutdoor.lasta.data.model.user.UserModel
+import com.lastaoutdoor.lasta.data.model.user.UserPreferences
 import kotlinx.coroutines.tasks.await
 
 private const val USERS_COLLECTION = "users"
@@ -116,6 +113,7 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
    * @param field The field to get
    * @return The value of the field
    */
+  @Suppress("UNCHECKED_CAST")
   suspend fun getFieldOfHiking(user: UserModel, activityId: Long, field: String): Any {
     // Create a reference to the user's document in the Firestore database
     val userDocumentRef = database.collection(ACTIVITIES_COLLECTION).document(user.userId)
@@ -129,10 +127,13 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
       if (hikingArray != null) {
         for (item in hikingArray) {
           // Convert the item to a Trail object
-          val trail = activityConverter.databaseToTrail(item as HashMap<String, Any>)
+          val trail =
+              activityConverter.databaseToActivity(
+                  item as HashMap<String, Any>, ActivitiesDatabaseType.Sports.HIKING)
+                  as ActivitiesDatabaseType.Trail
 
           // Check if the activity ID matches
-          if (trail.activityID == activityId) {
+          if (trail.activityId == activityId) {
             // Convert the field name to HikingField enum
             val hikingField = HikingField.valueOf(field.uppercase())
 
@@ -152,12 +153,14 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
     return ERR_NOT_FOUND
   }
 
+  /*
   /**
    * Function to set a hiking field from the user's document in the Firestore database
    *
    * @param uid The unique identifier of the user
    * @param field The field to set
    */
+  @Suppress("UNCHECKED_CAST")
   fun setFieldOfHiking(user: UserModel, activityId: Long, field: String, value: Any) {
     // Create a reference to the user's document in the Firestore database
     val userDocumentRef = database.collection(ACTIVITIES_COLLECTION).document(user.userId)
@@ -170,8 +173,8 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
         val hikingArray = documentSnapshot.get("Hiking") as? List<*>
         if (hikingArray != null) {
           for (item in hikingArray) {
-            val trail = activityConverter.databaseToTrail(item as HashMap<String, Any>)
-            if (trail.activityID == activityId) {
+            val trail = activityConverter.databaseToActivity(item as HashMap<String, Any>, ActivitiesDatabaseType.Sports.HIKING) as ActivitiesDatabaseType.Trail
+            if (trail.activityId == activityId) {
               // Convert the field name to HikingField enum
               val hikingField = HikingField.valueOf(field.uppercase())
 
@@ -193,6 +196,8 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
       }
     }
   }
+
+   */
 
   /**
    * Function to update a user's preferences in the Firestore database

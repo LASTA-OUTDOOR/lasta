@@ -9,6 +9,9 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.lastaoutdoor.lasta.repository.PreferencesRepository
+import com.lastaoutdoor.lasta.data.model.user.HikingLevel
+import com.lastaoutdoor.lasta.data.model.user.UserModel
+import com.lastaoutdoor.lasta.data.model.user.UserPreferences
 import java.io.IOException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -16,23 +19,6 @@ import kotlinx.coroutines.flow.map
 
 /** DataStore for storing user preferences and settings */
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
-
-/** Enum class for hiking levels */
-enum class HikingLevel(val level: Int) {
-  BEGINNER(0),
-  INTERMEDIATE(1),
-  ADVANCED(2)
-}
-
-/** Class representing all possible local stored preferences */
-data class UserPreferences(
-    val isLoggedIn: Boolean,
-    val uid: String,
-    val userName: String,
-    val email: String,
-    val profilePictureUrl: String,
-    val hikingLevel: HikingLevel
-)
 
 /**
  * DataStore class implementing methods for storing user preferences
@@ -96,25 +82,12 @@ class PreferencesRepositoryImpl(private val context: Context): PreferencesReposi
     dataStore.edit { preferences -> preferences[IS_LOGGED_IN_KEY] = isLoggedIn }
   }
 
-  /**
-   * Update the user information preferences
-   *
-   * @param uid the new value for the uid preference
-   * @param userName the new value for the userName preference
-   * @param email the new value for the email preference
-   * @param profilePictureUrl the new value for the profilePictureUrl preference
-   */
-  override suspend fun updateUserInfo(
-      uid: String,
-      userName: String,
-      email: String,
-      profilePictureUrl: String
-  ) {
+  override suspend fun updateUserInfo(user: UserModel?) {
     dataStore.edit { preferences ->
-      preferences[UID_KEY] = uid
-      preferences[USER_NAME_KEY] = userName
-      preferences[EMAIL_KEY] = email
-      preferences[PROFILE_PICTURE_URL_KEY] = profilePictureUrl
+      preferences[UID_KEY] = user?.userId ?: ""
+      preferences[USER_NAME_KEY] = user?.userName ?: ""
+      preferences[EMAIL_KEY] = user?.email ?: ""
+      preferences[PROFILE_PICTURE_URL_KEY] = user?.profilePictureUrl ?: ""
     }
   }
 
@@ -125,5 +98,9 @@ class PreferencesRepositoryImpl(private val context: Context): PreferencesReposi
    */
   override suspend fun updateHikingLevel(hikingLevel: HikingLevel) {
     dataStore.edit { preferences -> preferences[HIKING_LEVEL_KEY] = hikingLevel.name }
+  }
+
+  override suspend fun clearPreferences() {
+    dataStore.edit { preferences -> preferences.clear() }
   }
 }

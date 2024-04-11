@@ -133,6 +133,8 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.material)
     testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.androidx.core.testing)
     testImplementation("junit:junit:4.12")
     testImplementation("junit:junit:4.12")
     testImplementation("io.mockk:mockk:1.13.10")
@@ -199,6 +201,8 @@ dependencies {
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+
+    testImplementation("io.mockk:mockk:1.13.10")
 }
 
 tasks.withType<Test> {
@@ -237,6 +241,10 @@ tasks.register("jacocoTestReport", JacocoReport::class) {
         include("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
         include("outputs/code_coverage/debugAndroidTest/connected/*/coverage.ec")
     })
+}
+
+tasks.register("submitAndCheck", GradleBuild::class) {
+    dependsOn("ktfmtFormat", "testDebugUnitTest", "jacocoTestReport")
 }
 
 kapt {
