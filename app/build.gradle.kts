@@ -133,8 +133,8 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.material)
     testImplementation(libs.junit)
-    testImplementation("junit:junit:4.12")
-    testImplementation("junit:junit:4.12")
+    testImplementation(libs.mockk)
+    testImplementation(libs.androidx.core.testing)
     globalTestImplementation(libs.androidx.junit)
     globalTestImplementation(libs.androidx.espresso.core)
 
@@ -194,6 +194,8 @@ dependencies {
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+
+    testImplementation("io.mockk:mockk:1.13.10")
 }
 
 tasks.withType<Test> {
