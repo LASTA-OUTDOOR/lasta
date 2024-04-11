@@ -26,14 +26,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.firebase.ui.auth.AuthUI.getApplicationContext
 import com.google.android.gms.maps.MapsInitializer
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.maps.android.SphericalUtil
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
-import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.viewmodel.MapViewModel
 
 // Called after a click on a pointer on the map
@@ -180,7 +181,7 @@ private fun GoogleMapComposable(
       Marker(
           state = MarkerState(position = marker.position),
           title = marker.name,
-          icon = marker.icon,
+          icon = BitmapDescriptorFactory.fromResource(R.drawable.climbing_icon),
           snippet = marker.description,
           onClick = {
             updateSheet()
@@ -190,6 +191,7 @@ private fun GoogleMapComposable(
     }
 
     // display all the itineraries fetched by the viewmodel
-    viewModel.state.itineraryList.forEach { itinerary -> Polyline(points = itinerary.points) }
+    // Commented because not ready for Milestone 1
+    // viewModel.state.itineraryList.forEach { itinerary -> Polyline(points = itinerary.points) }
   }
 }

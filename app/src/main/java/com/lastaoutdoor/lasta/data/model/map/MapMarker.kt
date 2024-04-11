@@ -1,6 +1,5 @@
 package com.lastaoutdoor.lasta.data.model.map
 
-import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.data.model.activity.ActivityType
 
@@ -14,7 +13,7 @@ interface Marker {
   val name: String
   val position: LatLng
   val description: String
-  val icon: BitmapDescriptor
+  val icon: Int
   val activity: ActivityType
 }
 
@@ -28,7 +27,7 @@ data class ClimbingMarker(
     override val name: String,
     override val position: LatLng,
     override val description: String,
-    override val icon: BitmapDescriptor,
+    override val icon: Int,
     override val activity: ActivityType = ActivityType.CLIMBING
 ) : Marker
 
@@ -42,6 +41,6 @@ data class HikingMarker(
     override val name: String,
     override val position: LatLng,
     override val description: String,
-    override val icon: BitmapDescriptor,
+    override val icon: Int,
     override val activity: ActivityType = ActivityType.HIKING
 ) : Marker
