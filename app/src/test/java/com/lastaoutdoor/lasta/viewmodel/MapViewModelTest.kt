@@ -1,8 +1,6 @@
 package com.lastaoutdoor.lasta.viewmodel
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
-import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.SphericalUtil
 import com.google.maps.android.compose.MapType
@@ -12,6 +10,8 @@ import com.lastaoutdoor.lasta.data.model.api.Node
 import com.lastaoutdoor.lasta.data.model.api.Relation
 import com.lastaoutdoor.lasta.data.model.api.Tags
 import com.lastaoutdoor.lasta.data.model.api.Way
+import com.lastaoutdoor.lasta.data.model.map.ClimbingMarker
+import com.lastaoutdoor.lasta.data.model.map.Marker
 import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
 import org.junit.Assert.*
 import org.junit.Before
@@ -121,15 +121,13 @@ class MapViewModelTest {
 
   @Before
   fun setUp() {
-    // Robotelectric
     clear()
-    val context = InstrumentationRegistry.getInstrumentation().targetContext
-    MapsInitializer.initialize(context)
   }
 
+
+  // CHeck all the basic properties of the view model and state
   @Test
   fun testInitialState() {
-
     // Check map properties
     assertTrue(viewModel.state.properties.mapType == MapType.TERRAIN)
     assertTrue(!viewModel.state.uiSettings.zoomControlsEnabled)
@@ -143,15 +141,26 @@ class MapViewModelTest {
 
     // No marker should be selected
     assertTrue(viewModel.state.selectedMarker == null)
+
+    // Check initial position and zoom
+    assertEquals(11f, viewModel.initialZoom)
+    assertEquals(LatLng(46.519962, 6.633597), viewModel.initialPosition)
+
   }
 
+  // If no climbing nodes are in the range, the list should be empty
   @Test
   fun emptyTest() {
 
     clear()
-
     viewModel.updateMarkers(lausanne, 1000.0)
     assertTrue(viewModel.state.markerList.isEmpty())
+
+    repository.addClimbingNode(
+        dummyNode(ActivityType.CLIMBING, "Point 1", lausanne))
+    viewModel.updateMarkers(lausanne, 1000.0)
+    assertFalse(viewModel.state.markerList.isEmpty())
+
   }
 
   // Check that all points are in the list that are going to be displayed
@@ -172,7 +181,7 @@ class MapViewModelTest {
     assertEquals(3, viewModel.state.markerList.size)
   }
 
-  // add points are supposed to be fetched
+  // Only points at an appropriate distance are fetched
   @Test
   fun limitedClimbingNodesInRange() {
 
@@ -192,6 +201,28 @@ class MapViewModelTest {
     assertEquals(3, viewModel.state.markerList.size)
   }
 
+  // Due to the non-uniform data, some fields might be null and we need to support it
+  @Test
+  fun nullPropertiesNode() {
+    clear()
+
+    repository.addClimbingNode(
+        Node(
+            "climbing",
+            0,
+            lausanne.latitude,
+            lausanne.longitude,
+            Tags(null, null),
+            ActivityType.CLIMBING,
+            0,
+            10.2f,
+            null,
+            null))
+    viewModel.updateMarkers(lausanne, 10000.0)
+    assertEquals(1, viewModel.state.markerList.size)
+  }
+
+  // Check that the permission is updated correctly
   @Test
   fun testUpdatePermission() {
     viewModel.updatePermission(true)
@@ -201,5 +232,16 @@ class MapViewModelTest {
     viewModel.updatePermission(false)
     assertTrue(!viewModel.state.uiSettings.myLocationButtonEnabled)
     assertTrue(!viewModel.state.properties.isMyLocationEnabled)
+  }
+
+  // Check that the selected marker is updated correctly
+  @Test
+  fun testUpdateSelectedMarker() {
+    clear()
+    assertNull(viewModel.state.selectedMarker)
+
+    val marker: Marker = ClimbingMarker("Point 1", lausanne, "climbing", 1)
+    viewModel.updateSelectedMarker(marker)
+    assertEquals(marker, viewModel.state.selectedMarker)
   }
 }

@@ -7,9 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.model.api.Node
-import com.lastaoutdoor.lasta.data.model.api.Relation
 import com.lastaoutdoor.lasta.data.model.map.ClimbingMarker
-import com.lastaoutdoor.lasta.data.model.map.MapItinerary
 import com.lastaoutdoor.lasta.data.model.map.Marker
 import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -78,7 +76,6 @@ constructor(private val outdoorActivityRepository: OutdoorActivityRepository) : 
       climbingMarkers.add(marker)
     }
 
-    println("1: $climbingMarkers")
     return climbingMarkers
   }
 
@@ -126,23 +123,24 @@ constructor(private val outdoorActivityRepository: OutdoorActivityRepository) : 
 
   // Still TODO /!\ -> get the itinerary of a hiking activity (Doesn't work, we cannot just draw and
   // fetch all itineraries for big distances)
-  private fun getItineraryFromRelations(hikingRelations: List<Relation>): List<MapItinerary> {
-
-    val itinerary = mutableListOf<MapItinerary>()
-
-    // go through each relation to find the ways and nodes composing it
-    hikingRelations.forEach { relation ->
-      val pointsList = mutableListOf<LatLng>()
-      relation.ways.forEach { way ->
-        way.nodes.forEach { position -> pointsList.add(LatLng(position.lat, position.lon)) }
-      }
-
-      itinerary.add(
-          MapItinerary(relation.id, relation.tags.name ?: "No given name", points = pointsList))
-    }
-
-    return itinerary.toList()
-  }
+  // COMMENTED Because not ready for milestone 1
+  //  private fun getItineraryFromRelations(hikingRelations: List<Relation>): List<MapItinerary> {
+  //
+  //    val itinerary = mutableListOf<MapItinerary>()
+  //
+  //    // go through each relation to find the ways and nodes composing it
+  //    hikingRelations.forEach { relation ->
+  //      val pointsList = mutableListOf<LatLng>()
+  //      relation.ways.forEach { way ->
+  //        way.nodes.forEach { position -> pointsList.add(LatLng(position.lat, position.lon)) }
+  //      }
+  //
+  //      itinerary.add(
+  //          MapItinerary(relation.id, relation.tags.name ?: "No given name", points = pointsList))
+  //    }
+  //
+  //    return itinerary.toList()
+  //  }
 
   // Update the markers on the map with a new center location and radius
   fun updateMarkers(centerLocation: LatLng, rad: Double) {
