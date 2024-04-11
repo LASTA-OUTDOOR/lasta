@@ -45,22 +45,24 @@ constructor(private val repository: OutdoorActivityRepository) : ViewModel() {
     }
   }
   /*Toggles the dialog box on/off*/
-  val displayDialog =  mutableStateOf(false)
+  val displayDialog = mutableStateOf(false)
   /*Just a default activity to fill in the mutable state*/
   val dummyActivity = OutdoorActivity(ActivityType.HIKING, 3, 5.0f, "2 hours", "Zurich")
   val activityToDisplay = mutableStateOf(dummyActivity)
+
   @Composable
-  fun displayActivityDialog(){
-      if (displayDialog.value) {
-          ActivityDialog(
-              onDismissRequest = { /*dismiss dialog on clicking "Ok"*/
-                  displayDialog.value=false },
-              outdoorActivity = activityToDisplay.value)
-      }
+  fun displayActivityDialog() {
+    if (displayDialog.value) {
+      ActivityDialog(
+          onDismissRequest = { /*dismiss dialog on clicking "Ok"*/
+            displayDialog.value = false
+          },
+          outdoorActivity = activityToDisplay.value)
+    }
   }
 
-  fun showDialog(outdoorActivity: OutdoorActivity){
-      activityToDisplay.value=outdoorActivity
-      displayDialog.value=true
+  fun showDialog(outdoorActivity: OutdoorActivity) {
+    activityToDisplay.value = outdoorActivity
+    displayDialog.value = true
   }
 }
