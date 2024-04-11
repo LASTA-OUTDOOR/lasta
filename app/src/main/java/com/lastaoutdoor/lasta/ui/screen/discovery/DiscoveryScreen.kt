@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -49,13 +50,13 @@ import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenViewModel
 fun DiscoveryScreen() {
   /** this is called when discovery button is clicked */
   Scaffold(floatingActionButton = { FloatingActionButtons() }) { innerPadding ->
-    Column(modifier = Modifier.padding(innerPadding)) { DiscoveryContent() }
+    Column(modifier = Modifier.padding(innerPadding).testTag("discoveryScreen")) { DiscoveryContent() }
   }
 }
 
 @Composable
 fun DiscoveryContent(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel()) {
-  Column {
+  Column(modifier = Modifier.fillMaxSize().testTag("discoveryContent")) {
     // link this with database or API depending from which we fetch
     // OutdoorActivityList(outdoorActivityViewModel)
 
@@ -72,7 +73,7 @@ fun DiscoveryContent(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltVi
 @Composable
 fun FloatingActionButtons() {
   Column(
-      modifier = Modifier.padding(16.dp),
+      modifier = Modifier.padding(16.dp).testTag("floatingActionButtons"),
       verticalArrangement = Arrangement.Bottom,
       horizontalAlignment = Alignment.End) {
         FloatingActionButton(onClick = { /*TODO*/}, modifier = Modifier.padding(bottom = 8.dp)) {
@@ -87,14 +88,14 @@ fun FloatingActionButtons() {
 @Composable
 fun OutdoorActivityList(outdoorActivities: List<OutdoorActivity>) {
   /** Our list of activities which is lazy in order to display only the first ones. */
-  LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp)) {
+  LazyColumn(modifier = Modifier.fillMaxSize().testTag("outdoorActivityList"), contentPadding = PaddingValues(16.dp)) {
     items(outdoorActivities) { outdoorActivity -> OutdoorActivityItem(outdoorActivity) }
   }
 }
 
 @Composable
 fun OutdoorActivityItem(outdoorActivity: OutdoorActivity) {
-  Card(modifier = Modifier.padding(8.dp)) {
+  Card(modifier = Modifier.padding(8.dp).testTag("outdoorActivityItem")) {
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
       Row(
           // modifier = Modifier.fillMaxWidth(),
