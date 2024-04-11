@@ -1,11 +1,11 @@
 package com.lastaoutdoor.lasta.viewmodel
 
-import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.SphericalUtil
+import com.google.maps.android.compose.MapType
 import com.lastaoutdoor.lasta.data.api.OutdoorActivityResponse
 import com.lastaoutdoor.lasta.data.model.activity.ActivityType
 import com.lastaoutdoor.lasta.data.model.api.Node
@@ -128,22 +128,37 @@ class MapViewModelTest {
   }
 
   @Test
+  fun testInitialState() {
+
+    // Check map properties
+    assertTrue(viewModel.state.properties.mapType == MapType.TERRAIN)
+    assertTrue(!viewModel.state.uiSettings.zoomControlsEnabled)
+
+    // Initially the localization should be disabled
+    assertTrue(!viewModel.state.uiSettings.myLocationButtonEnabled)
+    assertTrue(!viewModel.state.properties.isMyLocationEnabled)
+
+    // No markers should be displayed
+    assertTrue(viewModel.state.markerList.isEmpty())
+
+    // No marker should be selected
+    assertTrue(viewModel.state.selectedMarker == null)
+  }
+
+  @Test
   fun emptyTest() {
 
     clear()
-    val context = InstrumentationRegistry.getInstrumentation().targetContext
 
-    MapsInitializer.initialize(context)
     viewModel.updateMarkers(lausanne, 1000.0)
     assertTrue(viewModel.state.markerList.isEmpty())
   }
 
-  // add points are supposed to be fetched
+  // Check that all points are in the list that are going to be displayed
   @Test
   fun allClimbingNodesInRange() {
 
     clear()
-    MapsInitializer.initialize(getApplicationContext())
 
     repository.addClimbingNode(
         dummyNode(ActivityType.CLIMBING, "Point 1", LatLng(46.52417, 6.60223)))
@@ -155,5 +170,36 @@ class MapViewModelTest {
     viewModel.updateMarkers(lausanne, 10000.0)
 
     assertEquals(3, viewModel.state.markerList.size)
+  }
+
+  // add points are supposed to be fetched
+  @Test
+  fun limitedClimbingNodesInRange() {
+
+    clear()
+
+    repository.addClimbingNode(
+        dummyNode(ActivityType.CLIMBING, "Point 1", LatLng(46.52417, 6.60223)))
+    repository.addClimbingNode(
+        dummyNode(ActivityType.CLIMBING, "Point 2", LatLng(46.51873, 6.65029)))
+    repository.addClimbingNode(
+        dummyNode(ActivityType.CLIMBING, "Point 3", LatLng(46.54094, 6.63484)))
+    repository.addClimbingNode(
+        dummyNode(ActivityType.CLIMBING, "Point 4", LatLng(0.54094, 0.63484)))
+
+    viewModel.updateMarkers(lausanne, 10000.0)
+
+    assertEquals(3, viewModel.state.markerList.size)
+  }
+
+  @Test
+  fun testUpdatePermission() {
+    viewModel.updatePermission(true)
+    assertTrue(viewModel.state.uiSettings.myLocationButtonEnabled)
+    assertTrue(viewModel.state.properties.isMyLocationEnabled)
+
+    viewModel.updatePermission(false)
+    assertTrue(!viewModel.state.uiSettings.myLocationButtonEnabled)
+    assertTrue(!viewModel.state.properties.isMyLocationEnabled)
   }
 }

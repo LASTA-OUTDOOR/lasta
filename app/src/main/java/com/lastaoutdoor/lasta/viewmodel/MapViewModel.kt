@@ -9,7 +9,6 @@ import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.model.api.Node
 import com.lastaoutdoor.lasta.data.model.api.Relation
 import com.lastaoutdoor.lasta.data.model.map.ClimbingMarker
-import com.lastaoutdoor.lasta.data.model.map.HikingMarker
 import com.lastaoutdoor.lasta.data.model.map.MapItinerary
 import com.lastaoutdoor.lasta.data.model.map.Marker
 import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
@@ -84,43 +83,46 @@ constructor(private val outdoorActivityRepository: OutdoorActivityRepository) : 
   }
 
   // Returns relations that represents hiking activities
-  private fun fetchHikingActivities(
-      rad: Double,
-      centerLocation: LatLng,
-      repository: OutdoorActivityRepository
-  ): List<Relation> {
-
-    var hikingRelation: List<Relation> = emptyList()
-
-    val hikingThread = Thread {
-      hikingRelation =
-          repository
-              .getHikingActivities(rad.toInt(), centerLocation.latitude, centerLocation.longitude)
-              .elements
-    }
-
-    hikingThread.start()
-    hikingThread.join()
-
-    return hikingRelation
-  }
+  // COMMENTED Because not ready for milestone 1
+  //  private fun fetchHikingActivities(
+  //      rad: Double,
+  //      centerLocation: LatLng,
+  //      repository: OutdoorActivityRepository
+  //  ): List<Relation> {
+  //
+  //    var hikingRelation: List<Relation> = emptyList()
+  //
+  //    val hikingThread = Thread {
+  //      hikingRelation =
+  //          repository
+  //              .getHikingActivities(rad.toInt(), centerLocation.latitude,
+  // centerLocation.longitude)
+  //              .elements
+  //    }
+  //
+  //    hikingThread.start()
+  //    hikingThread.join()
+  //
+  //    return hikingRelation
+  //  }
 
   // Still WIP /!\ -> Get starting point of a hiking activity
-  private fun getMarkersFromRelations(hikingRelations: List<Relation>): List<HikingMarker> {
-
-    val markers = mutableListOf<HikingMarker>()
-
-    hikingRelations.forEach {
-      markers.add(
-          HikingMarker(
-              "Hiking: " + (it.tags.name ?: "Unnamed"),
-              LatLng(it.bounds.minlat, it.bounds.minlon),
-              it.locationName ?: "No location name",
-              R.drawable.hiking_icon))
-    }
-
-    return markers.toList()
-  }
+  // COMMENTED Because not ready for milestone 1
+  //  private fun getMarkersFromRelations(hikingRelations: List<Relation>): List<HikingMarker> {
+  //
+  //    val markers = mutableListOf<HikingMarker>()
+  //
+  //    hikingRelations.forEach {
+  //      markers.add(
+  //          HikingMarker(
+  //              "Hiking: " + (it.tags.name ?: "Unnamed"),
+  //              LatLng(it.bounds.minlat, it.bounds.minlon),
+  //              it.locationName ?: "No location name",
+  //              R.drawable.hiking_icon))
+  //    }
+  //
+  //    return markers.toList()
+  //  }
 
   // Still TODO /!\ -> get the itinerary of a hiking activity (Doesn't work, we cannot just draw and
   // fetch all itineraries for big distances)

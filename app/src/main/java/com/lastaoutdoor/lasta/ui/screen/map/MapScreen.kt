@@ -33,7 +33,6 @@ import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
-import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.viewmodel.MapViewModel
@@ -192,6 +191,7 @@ private fun GoogleMapComposable(
     }
 
     // display all the itineraries fetched by the viewmodel
-    viewModel.state.itineraryList.forEach { itinerary -> Polyline(points = itinerary.points) }
+    // Commented because not ready for Milestone 1
+    // viewModel.state.itineraryList.forEach { itinerary -> Polyline(points = itinerary.points) }
   }
 }
