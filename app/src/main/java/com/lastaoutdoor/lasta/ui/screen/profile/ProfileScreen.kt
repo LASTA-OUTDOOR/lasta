@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -45,6 +46,15 @@ fun ProfileScreen(
   // val email by preferencesViewModel.email.collectAsState(initial = "")
   val profilePictureUrl by preferencesViewModel.profilePictureUrl.collectAsState(initial = "")
   val hikingLevel by preferencesViewModel.hikingLevel.collectAsState(initial = HikingLevel.BEGINNER)
+
+  LaunchedEffect(key1 = authViewModel.signedOut) {
+    if (authViewModel.signedOut) {
+      preferencesViewModel.clearPreferences()
+      preferencesViewModel.updateIsLoggedIn(false)
+      rootNavController.popBackStack()
+      rootNavController.navigate(RootScreen.Login.route)
+    }
+  }
   Column(
       modifier = Modifier.fillMaxSize(),
       verticalArrangement = Arrangement.Center,
@@ -63,16 +73,7 @@ fun ProfileScreen(
             fontSize = 36.sp,
             fontWeight = FontWeight.SemiBold)
         Spacer(modifier = Modifier.height(16.dp))
-        Button(
-            onClick = {
-              authViewModel.signOut()
-              preferencesViewModel.clearPreferences()
-              preferencesViewModel.updateIsLoggedIn(false)
-              rootNavController.popBackStack()
-              rootNavController.navigate(RootScreen.Login.route)
-            }) {
-              Text(text = "Sign out")
-            }
+        Button(onClick = { authViewModel.signOut() }) { Text(text = "Sign out") }
         Spacer(modifier = Modifier.height(16.dp))
         HikingRow(preferences = preferencesViewModel, selectedHikingLevel = hikingLevel)
       }

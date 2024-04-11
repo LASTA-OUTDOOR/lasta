@@ -3,6 +3,7 @@ agp = "8.3.1"
 androidMapsUtils = "3.7.0"
 coilCompose = "2.6.0"
 converterGson = "2.9.0"
+coreTesting = "2.2.0"
 datastorePreferences = "1.0.0"
 firebaseAuthKtx = "22.3.0"
 firebaseBom = "32.7.2"
@@ -46,6 +47,7 @@ firebaseFirestore = "24.11.0"
 [libraries]
 android-maps-utils = { module = "com.google.maps.android:android-maps-utils", version.ref = "androidMapsUtils" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "coreTesting" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-material = { module = "androidx.compose.material:material", version.ref = "materialVersion" }

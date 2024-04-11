@@ -4,20 +4,13 @@ import com.google.android.gms.auth.api.identity.BeginSignInResult
 import com.google.firebase.auth.AuthCredential
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.utils.Response
-
-typealias OneTapSignInResponse = Response<BeginSignInResult>
-
-typealias SignInWithGoogleResponse = Response<UserModel>
-
-typealias SignOutResponse = Response<Boolean>
+import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
 
-  val currentUser: UserModel?
+  suspend fun startGoogleSignIn(): Flow<Response<BeginSignInResult>>
 
-  suspend fun startGoogleSignIn(): OneTapSignInResponse
+  suspend fun finishGoogleSignIn(googleCredential: AuthCredential): Flow<Response<UserModel>>
 
-  suspend fun finishGoogleSignIn(googleCredential: AuthCredential): SignInWithGoogleResponse
-
-  suspend fun signOut(): SignOutResponse
+  suspend fun signOut(): Flow<Response<Boolean>>
 }

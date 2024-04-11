@@ -23,7 +23,7 @@ fun LoadingScreen(
     preferencesViewModel: PreferencesViewModel = hiltViewModel()
 ) {
   val isLoggedIn by preferencesViewModel.isLoggedIn.collectAsState(initial = false)
-  LaunchedEffect(key1 = isLoggedIn) {
+  LaunchedEffect(key1 = preferencesViewModel.isLoggedIn) {
     delay(400)
     navController.popBackStack()
     if (isLoggedIn) {

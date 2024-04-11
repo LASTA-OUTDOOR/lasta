@@ -134,6 +134,7 @@ dependencies {
     implementation(libs.androidx.material)
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
+    testImplementation(libs.androidx.core.testing)
     globalTestImplementation(libs.androidx.junit)
     globalTestImplementation(libs.androidx.espresso.core)
 

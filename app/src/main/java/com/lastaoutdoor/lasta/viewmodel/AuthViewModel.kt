@@ -5,13 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.auth.api.identity.BeginSignInResult
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.AuthCredential
+import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.repository.AuthRepository
-import com.lastaoutdoor.lasta.repository.OneTapSignInResponse
-import com.lastaoutdoor.lasta.repository.SignInWithGoogleResponse
-import com.lastaoutdoor.lasta.repository.SignOutResponse
-import com.lastaoutdoor.lasta.utils.Response.Loading
+import com.lastaoutdoor.lasta.utils.Response
 import com.lastaoutdoor.lasta.utils.Response.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -21,29 +20,56 @@ import kotlinx.coroutines.launch
 class AuthViewModel
 @Inject
 constructor(private val authRepo: AuthRepository, val oneTapClient: SignInClient) : ViewModel() {
-  val currentUser
-    get() = authRepo.currentUser
 
-  var oneTapSignInResponse by mutableStateOf<OneTapSignInResponse>(Success(null))
-  var signInWithGoogleResponse by mutableStateOf<SignInWithGoogleResponse>(Success(null))
+  var beginSignInResult: BeginSignInResult? by mutableStateOf(null)
+  var user: UserModel? by mutableStateOf(null)
+  var signedOut: Boolean by mutableStateOf(false)
 
-  var signOutResponse by mutableStateOf<SignOutResponse>(Success(false))
-
-  fun startGoogleSignIn() =
-      viewModelScope.launch {
-        oneTapSignInResponse = Loading
-        oneTapSignInResponse = authRepo.startGoogleSignIn()
+  fun startGoogleSignIn() {
+    viewModelScope.launch {
+      authRepo.startGoogleSignIn().collect { response ->
+        when (response) {
+          is Response.Loading -> {}
+          is Success -> {
+            beginSignInResult = response.data
+          }
+          is Response.Failure -> {
+            response.e.printStackTrace()
+          }
+        }
       }
+    }
+  }
 
-  fun finishGoogleSignIn(googleCredential: AuthCredential) =
-      viewModelScope.launch {
-        signInWithGoogleResponse = Loading
-        signInWithGoogleResponse = authRepo.finishGoogleSignIn(googleCredential)
+  fun finishGoogleSignIn(googleCredential: AuthCredential) {
+    viewModelScope.launch {
+      authRepo.finishGoogleSignIn(googleCredential).collect { response ->
+        when (response) {
+          is Response.Loading -> {}
+          is Success -> {
+            user = response.data
+          }
+          is Response.Failure -> {
+            response.e.printStackTrace()
+          }
+        }
       }
+    }
+  }
 
-  fun signOut() =
-      viewModelScope.launch {
-        signOutResponse = Loading
-        signOutResponse = authRepo.signOut()
+  fun signOut() {
+    viewModelScope.launch {
+      authRepo.signOut().collect { response ->
+        when (response) {
+          is Response.Loading -> {}
+          is Success -> {
+            signedOut = true
+          }
+          is Response.Failure -> {
+            response.e.printStackTrace()
+          }
+        }
       }
+    }
+  }
 }
