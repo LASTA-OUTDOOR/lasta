@@ -22,7 +22,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.lastaoutdoor.lasta.HiltTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -168,6 +168,10 @@ dependencies {
     // --------- Kaspresso test framework ----------
     globalTestImplementation(libs.kaspresso)
     globalTestImplementation(libs.kaspresso.compose)
+
+    //Hilt
+    androidTestImplementation(libs.hilt.android.testing)
+    kaptAndroidTest(libs.hilt.android.compiler)
 
     // ----------       Robolectric     ------------
     testImplementation(libs.robolectric)
