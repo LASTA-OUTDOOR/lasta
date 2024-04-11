@@ -218,6 +218,34 @@ class HelperFunctionsTest {
     val list = listOf(trail, climb)
     assert(chartDisplayValues(list, timeFrame)[0] == 0.75f)
   }
+
+  @Test
+  fun respLoading() {
+    val ld1 = Response.Loading
+    val ld2 = Response.Loading
+    assert(ld1.javaClass == ld2.javaClass)
+  }
+
+  @Test
+  fun respSuccessNotNull() {
+    val ld1 = Response.Success<String>("wow")
+
+    assert(ld1.data == "wow")
+  }
+
+  @Test
+  fun respSuccessNull() {
+    val ld1 = Response.Success<String>(null)
+
+    assert(ld1.data == null)
+  }
+
+  @Test
+  fun respFailure() {
+
+    val ld2 = Response.Failure(Exception("ex"))
+    assert(ld2.e.message == "ex")
+  }
 }
 
     /*
