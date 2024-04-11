@@ -35,6 +35,7 @@ constructor(private val authRepo: AuthRepository, val oneTapClient: SignInClient
           }
           is Response.Failure -> {
             response.e.printStackTrace()
+            throw response.e
           }
         }
       }
@@ -51,6 +52,7 @@ constructor(private val authRepo: AuthRepository, val oneTapClient: SignInClient
           }
           is Response.Failure -> {
             response.e.printStackTrace()
+            throw response.e
           }
         }
       }
@@ -67,6 +69,7 @@ constructor(private val authRepo: AuthRepository, val oneTapClient: SignInClient
           }
           is Response.Failure -> {
             response.e.printStackTrace()
+            throw response.e
           }
         }
       }
