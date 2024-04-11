@@ -3,8 +3,13 @@ package com.lastaoutdoor.lasta.data.api
 import androidx.test.core.app.ApplicationProvider
 import com.google.api.Context
 import com.lastaoutdoor.lasta.data.model.activity.ActivityType
+import com.lastaoutdoor.lasta.data.model.api.Bounds
 import com.lastaoutdoor.lasta.data.model.api.Node
+import com.lastaoutdoor.lasta.data.model.api.Relation
+import com.lastaoutdoor.lasta.data.model.api.SimpleWay
 import com.lastaoutdoor.lasta.data.model.api.Tags
+import com.lastaoutdoor.lasta.data.model.api.Way
+import com.lastaoutdoor.lasta.data.model.map.Position
 import com.lastaoutdoor.lasta.di.AppModule
 import dagger.hilt.android.internal.modules.ApplicationContextModule_ProvideContextFactory
 import org.junit.Test
@@ -64,7 +69,7 @@ import org.robolectric.RuntimeEnvironment
     @Test
     fun outdoorActivityRepositorygetNodesNotEmpty(){
         val nodes = rep.getClimbingActivitiesNode(10000,46.5,6.6)
-        println(nodes.elements[0])
+
         assert(nodes.elements[0].getActivityType() == ActivityType.CLIMBING)
     }
     @Test
@@ -81,7 +86,7 @@ import org.robolectric.RuntimeEnvironment
     @Test
     fun outdoorActivityRepositorygetWayNotEmpty(){
         val nodes = rep.getClimbingActivitiesWay(100000,46.5,6.6)
-        println(nodes.elements[0])
+
         assert(nodes.elements[0].getActivityType() == ActivityType.CLIMBING)
     }
     @Test
@@ -107,6 +112,71 @@ import org.robolectric.RuntimeEnvironment
 
         assert(nodes.version== 0.0f)
     }
+    @Test
+    fun simpleWay(){
+        val sw = SimpleWay(listOf(Position(1.0,1.0)))
+
+        assert(sw.nodes[0] == Position(1.0,1.0) && sw.toString() == "Simple Way : [Position(lat=1.0, lon=1.0)]\n")
+    }
+    @Test
+    fun tags(){
+        val tg = Tags("name", "sport")
+        assert(tg.name == "name" && tg.sport== "sport"&& tg.toString() == "name: name, sport: sport")
+    }
+    @Test
+    fun bounds(){
+        val bd = Bounds(-1.0,-1.0,-1.0,-1.0)
+        assert(bd.maxlat == -1.0&& bd.minlat == -1.0 && bd.maxlon == -1.0 && bd.minlon == -1.0)
+    }
+    @Test
+    fun relation(){
+        val rel = Relation("type",0L,Tags("name", "sport"),
+            listOf( SimpleWay(listOf(Position(1.0,1.0)))),
+            Bounds(-1.0,-1.0,-1.0,-1.0),
+            ActivityType.HIKING,0,0.0f,null,null
+            )
+        assert(rel.type == "type" &&  rel.id == 0L
+                && rel.tags == Tags("name", "sport")
+                && rel.bounds == Bounds(-1.0,-1.0,-1.0,-1.0)
+                && rel.ways[0].nodes[0].lat ==  1.0
+                && rel.getActivityType() == ActivityType.HIKING
+                && rel.difficulty == 0 && rel.length == 0.0f
+                && rel.duration == "not given" && rel.locationName == "unnamed")
+
+    }
+    @Test
+    fun way(){
+        val w = Way("type", 0L,
+            Tags("name", "sport"),
+            listOf(Position(1.0,1.0)),
+            ActivityType.HIKING,
+            0,0.0f, "dur", "loc"
+            )
+            assert(w.type == "type" &&  w.id == 0L
+                && w.tags == Tags("name", "sport")
+
+                && w.nodes[0].lat ==  1.0
+                && w.getActivityType() == ActivityType.HIKING
+                && w.difficulty == 0 && w.length == 0.0f
+                && w.duration == "dur" && w.locationName == "loc"
+                    && w.toString() == " type: ${w.type} id: ${w.id}  activityType: ${w.getActivityType()} name: ${w.tags.name} nodes: ${w.nodes}\n")
+
+    }
+    @Test
+    fun node(){
+        val n = Node("type", 0L,0.0,0.0,Tags("name", "sport"),ActivityType.HIKING,0,0.0f, "dur", "loc")
+        assert(
+            n.type == "type" &&  n.id == 0L
+                    && n.tags == Tags("name", "sport")
+                    && n.getActivityType() == ActivityType.HIKING
+                    && n.difficulty == 0 && n.length == 0.0f
+                    && n.duration == "dur" && n.locationName == ""
+                    && n.lon == 0.0 && n.lat == 0.0
+                    && n.toString() == " type: ${n.type} id: ${n.id} lat: ${n.lat} lon: ${n.lon} activityType: ${n.getActivityType()} name: ${n.tags.name}\n"
+        )
+    }
+
+
 }
 
 
