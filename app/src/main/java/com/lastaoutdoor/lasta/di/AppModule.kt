@@ -88,7 +88,10 @@ object AppModule {
 
   @Singleton
   @Provides
-  fun provideActivitiesRepository(@ApplicationContext context: Context, database: FirebaseFirestore): ActivitiesRepository {
+  fun provideActivitiesRepository(
+      @ApplicationContext context: Context,
+      database: FirebaseFirestore
+  ): ActivitiesRepository {
     return ActivitiesRepositoryImpl(database, context)
   }
 

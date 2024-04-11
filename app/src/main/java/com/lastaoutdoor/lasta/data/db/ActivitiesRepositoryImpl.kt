@@ -14,12 +14,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-class ActivitiesRepositoryImpl @Inject constructor(private val database: FirebaseFirestore, private val context: Context) :
+class ActivitiesRepositoryImpl
+@Inject
+constructor(private val database: FirebaseFirestore, private val context: Context) :
     ActivitiesRepository {
   private val activityConverter = ActivityConverter()
 
   private fun addUserToActivitiesDatabase(user: FirebaseUser) {
-    val userDocumentRef = database.collection(context.getString(R.string.activities_database_name)).document(user.uid)
+    val userDocumentRef =
+        database.collection(context.getString(R.string.activities_database_name)).document(user.uid)
     val userData =
         hashMapOf(
             "Hiking" to arrayListOf<ActivitiesDatabaseType.Trail>(),
@@ -32,7 +35,8 @@ class ActivitiesRepositoryImpl @Inject constructor(private val database: Firebas
       user: FirebaseUser,
       activityType: ActivitiesDatabaseType.Sports
   ): List<ActivitiesDatabaseType> {
-    val userDocumentRef = database.collection(context.getString(R.string.activities_database_name)).document(user.uid)
+    val userDocumentRef =
+        database.collection(context.getString(R.string.activities_database_name)).document(user.uid)
     val trailList: ArrayList<ActivitiesDatabaseType> = arrayListOf()
     val document = userDocumentRef.get().await()
 
@@ -54,7 +58,8 @@ class ActivitiesRepositoryImpl @Inject constructor(private val database: Firebas
   }
 
   override fun addActivityToUserActivities(user: FirebaseUser, activity: ActivitiesDatabaseType) {
-    val userDocumentRef = database.collection(context.getString(R.string.activities_database_name)).document(user.uid)
+    val userDocumentRef =
+        database.collection(context.getString(R.string.activities_database_name)).document(user.uid)
 
     CoroutineScope(Dispatchers.IO).launch {
       val documentSnapshot = userDocumentRef.get().await()
