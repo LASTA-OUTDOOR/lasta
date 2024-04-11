@@ -2,7 +2,7 @@ package com.lastaoutdoor.lasta.data.db
 
 import org.junit.Before
 
-class DatabasemanagerTest {
+class DatabaseManagerTest {
   private lateinit var databaseManager: DatabaseManager
 
   @Before
