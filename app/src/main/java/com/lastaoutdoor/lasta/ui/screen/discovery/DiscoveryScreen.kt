@@ -66,7 +66,13 @@ fun DiscoveryContent(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltVi
     discoveryScreenViewModel.fetchClimbingActivities()
     val outdoorList = discoveryScreenViewModel.climbingActivities
     /** viewmodel process that displays the "more info" activity dialog */
-    discoveryScreenViewModel.displayActivityDialog()
+    if (discoveryScreenViewModel.displayDialog.value) {
+      ActivityDialog(
+          onDismissRequest = { /*dismiss dialog on clicking "Ok"*/
+            discoveryScreenViewModel.displayDialog.value = false
+          },
+          outdoorActivity = discoveryScreenViewModel.activityToDisplay.value)
+    }
     OutdoorActivityList(outdoorList)
   }
 }

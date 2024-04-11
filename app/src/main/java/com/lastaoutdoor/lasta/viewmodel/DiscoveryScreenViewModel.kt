@@ -1,6 +1,5 @@
 package com.lastaoutdoor.lasta.viewmodel
 
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
@@ -8,7 +7,6 @@ import com.lastaoutdoor.lasta.data.model.activity.ActivityType
 import com.lastaoutdoor.lasta.data.model.activity.OutdoorActivity
 import com.lastaoutdoor.lasta.data.model.api.Node
 import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
-import com.lastaoutdoor.lasta.ui.screen.discovery.ActivityDialog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -54,17 +52,6 @@ constructor(private val repository: OutdoorActivityRepository) : ViewModel() {
   /*Just a default activity to fill in the mutable state*/
   val dummyActivity = OutdoorActivity(ActivityType.HIKING, 3, 5.0f, "2 hours", "Zurich")
   val activityToDisplay = mutableStateOf(dummyActivity)
-
-  @Composable
-  fun displayActivityDialog() {
-    if (displayDialog.value) {
-      ActivityDialog(
-          onDismissRequest = { /*dismiss dialog on clicking "Ok"*/
-            displayDialog.value = false
-          },
-          outdoorActivity = activityToDisplay.value)
-    }
-  }
 
   fun showDialog(outdoorActivity: OutdoorActivity) {
     activityToDisplay.value = outdoorActivity
