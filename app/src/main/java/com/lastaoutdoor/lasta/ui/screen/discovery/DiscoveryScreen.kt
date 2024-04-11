@@ -104,7 +104,7 @@ fun OutdoorActivityItem(outdoorActivity: OutdoorActivity) {
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp)
             Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
-              Text(text = outdoorActivity.locationName)
+              Text(text = outdoorActivity.locationName ?: "Unnamed Activity")
               Text(text = "Difficulty : ${outdoorActivity.difficulty}/10")
             }
           }

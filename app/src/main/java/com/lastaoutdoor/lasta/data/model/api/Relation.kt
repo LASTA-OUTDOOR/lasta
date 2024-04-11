@@ -14,9 +14,11 @@ class Relation(
     activityType: ActivityType,
     difficulty: Int,
     length: Float,
-    duration: String,
-    locationName: String
-) : OutdoorActivity(activityType, difficulty, length, duration, locationName) {
+    duration: String?,
+    locationName: String?
+) :
+    OutdoorActivity(
+        activityType, difficulty, length, duration ?: "not given", locationName ?: "unnamed") {
 
   override fun toString(): String {
     return (" type: $type id: $id  activityType: ${getActivityType()} name: ${tags.name} bounds: $bounds\n")
