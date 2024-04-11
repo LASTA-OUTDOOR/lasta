@@ -13,6 +13,7 @@ import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.ApiService
 import com.lastaoutdoor.lasta.data.api.OutdoorActivityRepositoryImpl
 import com.lastaoutdoor.lasta.data.auth.AuthRepositoryImpl
+import com.lastaoutdoor.lasta.data.db.ActivitiesRepositoryImpl
 import com.lastaoutdoor.lasta.data.preferences.PreferencesDataStore
 import com.lastaoutdoor.lasta.repository.ActivitiesRepository
 import com.lastaoutdoor.lasta.repository.AuthRepository
@@ -33,13 +34,15 @@ object AppModule {
 
   @Singleton @Provides fun provideFirebaseAuth() = Firebase.auth
 
-  @Singleton @Provides fun provideDatabase(): FirebaseFirestore = Firebase.firestore
-
   @Singleton
   @Provides
   fun provideOneTapClient(@ApplicationContext context: Context): SignInClient =
       Identity.getSignInClient(context)
 
+  /** Provides the [Firebase.firestore] class */
+  @Provides @Singleton fun provideFirebaseUser() = Firebase.firestore
+
+  /** Provides the [ApiService] class */
   @Singleton
   @Provides
   fun provideSignInRequest(@ApplicationContext context: Context): BeginSignInRequest =
@@ -62,6 +65,7 @@ object AppModule {
           .build()
           .create(ApiService::class.java)
 
+  /** Provides the [OutdoorActivityRepository] class */
   @Singleton
   @Provides
   fun provideAuthRepository(
@@ -70,6 +74,7 @@ object AppModule {
       signInRequest: BeginSignInRequest
   ): AuthRepository = AuthRepositoryImpl(auth, oneTapClient, signInRequest)
 
+  /** Provides the [GoogleAuth] class */
   @Singleton
   @Provides
   fun provideOutdoorActivitiesRepository(apiService: ApiService): OutdoorActivityRepository =
@@ -83,7 +88,13 @@ object AppModule {
 
   @Singleton
   @Provides
-  fun provideActivitiesRepository(): ActivitiesRepository {
-    return ActivitiesRepository()
+  fun provideActivitiesRepository(
+      @ApplicationContext context: Context,
+      database: FirebaseFirestore
+  ): ActivitiesRepository {
+    return ActivitiesRepositoryImpl(database, context)
   }
+
+  /** Provides the [TimeProvider] class */
+  @Provides @Singleton fun provideTimeProvider(): TimeProvider = RealTimeProvider()
 }
