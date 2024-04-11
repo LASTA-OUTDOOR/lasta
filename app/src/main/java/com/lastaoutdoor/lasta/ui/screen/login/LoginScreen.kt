@@ -5,20 +5,22 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.google.android.gms.auth.api.identity.BeginSignInResult
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.lastaoutdoor.lasta.ui.navigation.RootScreen
-import com.lastaoutdoor.lasta.ui.screen.login.components.FinishGoogleSignInEffect
 import com.lastaoutdoor.lasta.ui.screen.login.components.LoginContent
-import com.lastaoutdoor.lasta.ui.screen.login.components.StartGoogleSignInEffect
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
+import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 
 @Composable
-fun LoginScreen(navController: NavHostController, authViewModel: AuthViewModel = hiltViewModel()) {
+fun LoginScreen(
+    navController: NavHostController,
+    authViewModel: AuthViewModel = hiltViewModel(),
+    preferencesViewModel: PreferencesViewModel = hiltViewModel()
+) {
 
   val launcher =
       rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
@@ -35,18 +37,21 @@ fun LoginScreen(navController: NavHostController, authViewModel: AuthViewModel =
         }
       }
 
-  fun launch(signInResult: BeginSignInResult) {
-    val intent = IntentSenderRequest.Builder(signInResult.pendingIntent.intentSender).build()
-    launcher.launch(intent)
+  LaunchedEffect(key1 = authViewModel.beginSignInResult) {
+    authViewModel.beginSignInResult?.let {
+      val intent = IntentSenderRequest.Builder(it.pendingIntent.intentSender).build()
+      launcher.launch(intent)
+    }
+  }
+
+  LaunchedEffect(key1 = authViewModel.user) {
+    authViewModel.user?.let {
+      preferencesViewModel.updateIsLoggedIn(true)
+      preferencesViewModel.updateUserInfo(it)
+      navController.popBackStack()
+      navController.navigate(RootScreen.Main.route)
+    }
   }
 
   LoginContent(onLoginClick = { authViewModel.startGoogleSignIn() })
-
-  StartGoogleSignInEffect(launch = { launch(it) })
-
-  FinishGoogleSignInEffect(
-      navigateToHomeScreen = {
-        navController.popBackStack()
-        navController.navigate(RootScreen.Main.route)
-      })
 }
