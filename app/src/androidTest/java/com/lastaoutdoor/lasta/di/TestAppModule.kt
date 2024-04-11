@@ -14,18 +14,19 @@ import com.lastaoutdoor.lasta.data.api.ApiService
 import com.lastaoutdoor.lasta.data.api.FakeOutdoorActivityRepository
 import com.lastaoutdoor.lasta.data.auth.AuthRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.ActivitiesRepositoryImpl
-import com.lastaoutdoor.lasta.data.preferences.PreferencesDataStore
+import com.lastaoutdoor.lasta.data.preferences.PreferencesRepositoryImpl
 import com.lastaoutdoor.lasta.repository.ActivitiesRepository
 import com.lastaoutdoor.lasta.repository.AuthRepository
 import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
+import com.lastaoutdoor.lasta.repository.PreferencesRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
-import javax.inject.Singleton
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Singleton
 
 /** Fake Hilt Module for providing dependencies */
 @TestInstallIn(components = [SingletonComponent::class], replaces = [AppModule::class])
@@ -83,8 +84,8 @@ object TestAppModule {
   /** Provides the [PreferencesDataStore] class */
   @Singleton
   @Provides
-  fun providePreferencesDataStore(@ApplicationContext context: Context): PreferencesDataStore =
-      PreferencesDataStore(context)
+  fun providePreferencesRepository(@ApplicationContext context: Context): PreferencesRepository =
+      PreferencesRepositoryImpl(context)
 
   @Singleton
   @Provides
