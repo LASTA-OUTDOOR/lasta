@@ -6,4 +6,5 @@
     <string name="tab_map">Map</string>
     <string name="tab_discover">Discover</string>
     <string name="tab_profile">Profile</string>
+    <string name="activities_database_name">activities_database</string>
 </resources>
