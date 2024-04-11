@@ -11,10 +11,10 @@ open class OutdoorActivity(
     val length: Float,
 
     /** The estimated duration of the activity. */
-    val duration: String,
+    val duration: String?,
 
     /** The canton and postal code of the activity. */
-    val locationName: String,
+    val locationName: String?,
 
     /** The geographic position of the activity. */
 ) {

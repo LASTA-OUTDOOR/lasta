@@ -1,5 +1,6 @@
 package com.lastaoutdoor.lasta.viewmodel
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.data.model.activity.ActivityType
@@ -38,7 +39,22 @@ constructor(private val repository: OutdoorActivityRepository) : ViewModel() {
 
     climbingNodes.forEach { node ->
       climbingActivities.add(
-          OutdoorActivity(ActivityType.CLIMBING, node.difficulty, node.length, "", node.tags.name))
+          OutdoorActivity(
+              ActivityType.CLIMBING,
+              node.difficulty,
+              node.length,
+              "",
+              node.tags.name ?: "Unnamed Climbing Activity"))
     }
+  }
+  /*Toggles the dialog box on/off*/
+  val displayDialog = mutableStateOf(false)
+  /*Just a default activity to fill in the mutable state*/
+  val dummyActivity = OutdoorActivity(ActivityType.HIKING, 3, 5.0f, "2 hours", "Zurich")
+  val activityToDisplay = mutableStateOf(dummyActivity)
+
+  fun showDialog(outdoorActivity: OutdoorActivity) {
+    activityToDisplay.value = outdoorActivity
+    displayDialog.value = true
   }
 }
