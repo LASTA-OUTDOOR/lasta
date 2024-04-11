@@ -24,9 +24,9 @@ import dagger.Provides
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
+import javax.inject.Singleton
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Singleton
 
 /** Fake Hilt Module for providing dependencies */
 @TestInstallIn(components = [SingletonComponent::class], replaces = [AppModule::class])
