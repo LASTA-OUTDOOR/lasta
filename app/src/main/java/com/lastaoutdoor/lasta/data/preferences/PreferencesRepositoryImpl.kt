@@ -11,6 +11,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.lastaoutdoor.lasta.data.model.user.HikingLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.data.model.user.UserPreferences
+import com.lastaoutdoor.lasta.repository.PreferencesRepository
 import java.io.IOException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -24,7 +25,7 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "se
  *
  * @param context the context of the application
  */
-class PreferencesDataStore(private val context: Context) {
+class PreferencesRepositoryImpl(private val context: Context) : PreferencesRepository {
   private val dataStore = context.dataStore
 
   /**
@@ -52,7 +53,7 @@ class PreferencesDataStore(private val context: Context) {
    * @return [Flow] of [UserPreferences] the flow of user preferences
    * @throws IOException if an I/O error occurs
    */
-  val userPreferencesFlow: Flow<UserPreferences> =
+  override val userPreferencesFlow: Flow<UserPreferences> =
       dataStore.data
           .catch { exception ->
             if (exception is IOException) {
@@ -77,11 +78,11 @@ class PreferencesDataStore(private val context: Context) {
    *
    * @param isLoggedIn the new value for the isLoggedIn preference
    */
-  suspend fun updateIsLoggedIn(isLoggedIn: Boolean) {
+  override suspend fun updateIsLoggedIn(isLoggedIn: Boolean) {
     dataStore.edit { preferences -> preferences[IS_LOGGED_IN_KEY] = isLoggedIn }
   }
 
-  suspend fun updateUserInfo(user: UserModel?) {
+  override suspend fun updateUserInfo(user: UserModel?) {
     dataStore.edit { preferences ->
       preferences[UID_KEY] = user?.userId ?: ""
       preferences[USER_NAME_KEY] = user?.userName ?: ""
@@ -95,11 +96,11 @@ class PreferencesDataStore(private val context: Context) {
    *
    * @param hikingLevel the new value for the hikingLevel preference
    */
-  suspend fun updateHikingLevel(hikingLevel: HikingLevel) {
+  override suspend fun updateHikingLevel(hikingLevel: HikingLevel) {
     dataStore.edit { preferences -> preferences[HIKING_LEVEL_KEY] = hikingLevel.name }
   }
 
-  suspend fun clearPreferences() {
+  override suspend fun clearPreferences() {
     dataStore.edit { preferences -> preferences.clear() }
   }
 }

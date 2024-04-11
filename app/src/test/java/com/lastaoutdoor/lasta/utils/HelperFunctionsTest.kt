@@ -1,5 +1,6 @@
 package com.lastaoutdoor.lasta.utils
 
+import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.data.model.profile.TimeFrame
 import com.lastaoutdoor.lasta.di.TimeProvider
 import io.mockk.every
@@ -113,7 +114,140 @@ class HelperFunctionsTest {
 
     assertEquals(expectedDate, result)
   }
+
+  @Test
+  fun `Meters to kilomters`() {
+    assert(metersToKilometers(1000L) == 1f)
+  }
+
+  @Test
+  fun `Format date`() {
+    val date = Date(1712864046759)
+
+    assert(formatDate(date) == "11/04/2024")
+  }
+
+  @Test
+  fun `index of day of week`() {
+    val date = Date(1712864046759)
+
+    assert(indexDayOfWeekFromDate(date) == 3)
+  }
+
+  @Test
+  fun `index of Month`() {
+    val date = Date(1712864046759)
+
+    assert(indexMonthOfYearFromDate(date) == 3)
+  }
+
+  @Test
+  fun `index of week of month`() {
+    val date = Date(1712864046759)
+
+    assert(indexWeekOfMonthFromDate(date) == 1)
+  }
+
+  @Test
+  fun `index of year `() {
+    val date = Date(1712864046759)
+    val d1970 = Date(0)
+    assert(indexYearFromDate(date, d1970) == 54)
+  }
+
+  @Test
+  fun `Time from millis`() {
+    val time = 10800000L // eq of 3 hours
+    assert(timeFromMillis(time) == "03:00:00")
+  }
+
+  @Test
+  fun `time from activity millis`() {
+    val date1 = Date(1712864046759)
+    val date2 = Date(1712864040000)
+    val list = listOf(ActivitiesDatabaseType.Trail(timeStarted = date2, timeFinished = date1))
+    assert(timeFromActivityInMillis(list) == 6759L)
+  }
+
+  @Test
+  fun `chart display timeFrame = W`() {
+    val date1 = Date(1712864046759) // 11/04
+    val date2 = Date(86400000 + 1712864046759) // 12/04
+    val timeFrame = TimeFrame.W
+    val trail = ActivitiesDatabaseType.Trail(timeStarted = date1, distanceInMeters = 500)
+    val climb = ActivitiesDatabaseType.Climb(timeStarted = date2, elevationGainedInMeters = 250)
+
+    val list = listOf(trail, climb)
+    assert(
+        chartDisplayValues(list, timeFrame)[3] == 0.5f &&
+            chartDisplayValues(list, timeFrame)[4] == 0.25f)
+  }
+
+  @Test
+  fun `chart display timeFrame = M`() {
+    val date1 = Date(1712864046759) // 11/04
+    val timeFrame = TimeFrame.M
+    val trail = ActivitiesDatabaseType.Trail(timeStarted = date1, distanceInMeters = 500)
+
+    val list = listOf(trail)
+    assert(chartDisplayValues(list, timeFrame)[1] == 0.5f)
+  }
+
+  @Test
+  fun `chart display timeFrame = Y`() {
+    val date1 = Date(1712864046759) // 11/04
+    val date2 = Date(1712864046759 - 2629800000) // 11/03
+    val timeFrame = TimeFrame.Y
+    val trail = ActivitiesDatabaseType.Trail(timeStarted = date1, distanceInMeters = 500)
+    val climb = ActivitiesDatabaseType.Climb(timeStarted = date2, elevationGainedInMeters = 250)
+
+    val list = listOf(trail, climb)
+    assert(
+        chartDisplayValues(list, timeFrame)[3] == 0.5f &&
+            chartDisplayValues(list, timeFrame)[2] == 0.25f)
+  }
+
+  @Test
+  fun `chart display timeFrame = ALL`() {
+    val date1 = Date(1712864046759) // 11/04
+    val date2 = Date(1712864046759 - 2629800000) // 11/03
+    val timeFrame = TimeFrame.ALL
+    val trail = ActivitiesDatabaseType.Trail(timeStarted = date1, distanceInMeters = 500)
+    val climb = ActivitiesDatabaseType.Climb(timeStarted = date2, elevationGainedInMeters = 250)
+
+    val list = listOf(trail, climb)
+    assert(chartDisplayValues(list, timeFrame)[0] == 0.75f)
+  }
+
+  @Test
+  fun respLoading() {
+    val ld1 = Response.Loading
+    val ld2 = Response.Loading
+    assert(ld1.javaClass == ld2.javaClass)
+  }
+
+  @Test
+  fun respSuccessNotNull() {
+    val ld1 = Response.Success<String>("wow")
+
+    assert(ld1.data == "wow")
+  }
+
+  @Test
+  fun respSuccessNull() {
+    val ld1 = Response.Success<String>(null)
+
+    assert(ld1.data == null)
+  }
+
+  @Test
+  fun respFailure() {
+
+    val ld2 = Response.Failure(Exception("ex"))
+    assert(ld2.e.message == "ex")
+  }
 }
+
     /*
       @Test
       fun `weekDisplay returns correct distances per day`() {
