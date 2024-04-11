@@ -1,6 +1,8 @@
 package com.lastaoutdoor.lasta.data.db
 
+/*
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
 import com.lastaoutdoor.lasta.data.model.UserModel
@@ -16,18 +18,19 @@ private const val USERS_COLLECTION = "users"
 private const val ACTIVITIES_COLLECTION = "activities_database"
 private const val ERR_NOT_FOUND = -1.0
 
-/** Class containing functions for interacting with the Firestore database */
-class DatabaseManager {
+* Class containing functions for interacting with the Firestore database
+
+class DatabaseManager(private val database: FirebaseFirestore = Firebase.firestore) {
 
   // Attributes
-  private val database = Firebase.firestore
   private val activityConverter = ActivityConverter()
 
-  /**
+*
    * Function to add a user to the Firestore database
    *
    * @param user The user to add to the database
-   */
+
+
   fun addUserToDatabase(user: UserModel) {
 
     val userDocumentRef = database.collection(USERS_COLLECTION).document(user.userId)
@@ -45,13 +48,14 @@ class DatabaseManager {
     userDocumentRef.set(userData, SetOptions.merge())
   }
 
-  /**
+*
    * Function to get a field from the user's document in the Firestore database
    *
    * @param uid The unique identifier of the user
    * @param field The field to get
    * @return The value of the field
-   */
+
+
   suspend fun getFieldFromUser(uid: String, field: String): String {
     // Create a reference to the document with the user's UID
     val userDocumentRef = database.collection(USERS_COLLECTION).document(uid)
@@ -63,13 +67,14 @@ class DatabaseManager {
     return documentSnapshot.getString(field) ?: ""
   }
 
-  /**
+*
    * Function to add a field to the user's document in the Firestore database
    *
    * @param uid The unique identifier of the user
    * @param field The field to add
    * @param value The value of the field
-   */
+
+
   fun addFieldToUser(uid: String, field: String, value: String) {
     // Create a reference to the document with the user's UID
     val userDocumentRef = database.collection(USERS_COLLECTION).document(uid)
@@ -81,13 +86,14 @@ class DatabaseManager {
     userDocumentRef.set(data, SetOptions.merge())
   }
 
-  /**
+*
    * Function to update a field in the user's document in the Firestore database
    *
    * @param uid The unique identifier of the user
    * @param field The field to update
    * @param value The new value of the field
-   */
+
+
   fun updateFieldInUser(uid: String, field: String, value: String) {
     // Create a reference to the document with the user's UID
     val userDocumentRef = database.collection(USERS_COLLECTION).document(uid)
@@ -99,23 +105,25 @@ class DatabaseManager {
     userDocumentRef.update(data as Map<String, Any>)
   }
 
-  /**
+*
    * Function to create a new collection in the Firestore database
    *
    * @param collectionName The name of the collection to create
-   */
+
+
   fun createCollection(collectionName: String) {
     database.collection(collectionName)
   }
 
-  /**
+*
    * Function to get a field of a hiking activity from the user's document in the Firestore database
    *
    * @param user The user to get the field from
    * @param activityId The ID of the activity
    * @param field The field to get
    * @return The value of the field
-   */
+
+
   suspend fun getFieldOfHiking(user: UserModel, activityId: Long, field: String): Any {
     // Create a reference to the user's document in the Firestore database
     val userDocumentRef = database.collection(ACTIVITIES_COLLECTION).document(user.userId)
@@ -152,12 +160,13 @@ class DatabaseManager {
     return ERR_NOT_FOUND
   }
 
-  /**
+*
    * Function to set a hiking field from the user's document in the Firestore database
    *
    * @param uid The unique identifier of the user
    * @param field The field to set
-   */
+
+
   fun setFieldOfHiking(user: UserModel, activityId: Long, field: String, value: Any) {
     // Create a reference to the user's document in the Firestore database
     val userDocumentRef = database.collection(ACTIVITIES_COLLECTION).document(user.userId)
@@ -194,12 +203,13 @@ class DatabaseManager {
     }
   }
 
-  /**
+*
    * Function to update a user's preferences in the Firestore database
    *
    * @param user The user to update the preferences for
    * @param preferences The new preferences
-   */
+
+
   fun updateUserPreferences(user: UserModel, preferences: UserPreferences) {
     // Create a reference to the user's document in the Firestore database
     val userDocumentRef = database.collection(USERS_COLLECTION).document(user.userId)
@@ -219,12 +229,13 @@ class DatabaseManager {
     userDocumentRef.set(data, SetOptions.merge())
   }
 
-  /**
+*
    * Function to get a user's preferences from the Firestore database
    *
    * @param uid The unique identifier of the user
    * @return The user's preferences
-   */
+
+
   companion object {
     suspend fun getUserPreferences(uid: String): UserPreferences {
       // Create a reference to the user's document in the Firestore database
@@ -251,3 +262,4 @@ class DatabaseManager {
     }
   }
 }
+*/

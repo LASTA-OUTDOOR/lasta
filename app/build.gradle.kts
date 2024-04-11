@@ -135,6 +135,10 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation("junit:junit:4.12")
     testImplementation("junit:junit:4.12")
+    testImplementation("io.mockk:mockk:1.13.10")
+    testImplementation("io.mockk:mockk-agent-jvm:1.13.10")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+
     globalTestImplementation(libs.androidx.junit)
     globalTestImplementation(libs.androidx.espresso.core)
 
