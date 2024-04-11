@@ -168,6 +168,8 @@ dependencies {
     // --------- Kaspresso test framework ----------
     globalTestImplementation(libs.kaspresso)
     globalTestImplementation(libs.kaspresso.compose)
+    globalTestImplementation(libs.kotlinx.coroutines.test)
+
 
     // ----------       Robolectric     ------------
     testImplementation(libs.robolectric)
@@ -195,7 +197,13 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
 
-    testImplementation("io.mockk:mockk:1.13.10")
+    globalTestImplementation(libs.mockk)
+
+    //Android Testing
+    androidTestImplementation(libs.hilt.android.testing)
+    kaptAndroidTest(libs.hilt.android.compiler)
+
+
 }
 
 tasks.withType<Test> {
