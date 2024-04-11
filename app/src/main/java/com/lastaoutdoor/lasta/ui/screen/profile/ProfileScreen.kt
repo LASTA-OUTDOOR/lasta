@@ -120,28 +120,6 @@ fun UserInfo(
       rootNavController.navigate(RootScreen.Login.route)
     }
   }
-  Column(
-      modifier = Modifier.fillMaxSize(),
-      verticalArrangement = Arrangement.Center,
-      horizontalAlignment = Alignment.CenterHorizontally) {
-        AsyncImage(
-            model = profilePictureUrl,
-            contentDescription = "Profile picture",
-            modifier = Modifier.size(150.dp).clip(CircleShape),
-            contentScale = ContentScale.Crop)
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = userName,
-            color = MaterialTheme.colorScheme.primary,
-            textAlign = TextAlign.Center,
-            fontSize = 36.sp,
-            fontWeight = FontWeight.SemiBold)
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { authViewModel.signOut() }) { Text(text = "Sign out") }
-        Spacer(modifier = Modifier.height(16.dp))
-        HikingRow(preferences = preferencesViewModel, selectedHikingLevel = hikingLevel)
-      }
 
   var showDialog by remember { mutableStateOf(false) }
 
