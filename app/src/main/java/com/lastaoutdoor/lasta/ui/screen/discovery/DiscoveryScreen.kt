@@ -26,6 +26,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,9 +37,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.model.activity.ActivityType
@@ -64,7 +65,14 @@ fun DiscoveryContent(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltVi
     // List(10) { index -> OutdoorActivity(ActivityType.HIKING, 3, 5.0f, "2 hours", "Zurich") }
     discoveryScreenViewModel.fetchClimbingActivities()
     val outdoorList = discoveryScreenViewModel.climbingActivities
-
+    /** viewmodel process that displays the "more info" activity dialog */
+    if (discoveryScreenViewModel.displayDialog.value) {
+      ActivityDialog(
+          onDismissRequest = { /*dismiss dialog on clicking "Ok"*/
+            discoveryScreenViewModel.displayDialog.value = false
+          },
+          outdoorActivity = discoveryScreenViewModel.activityToDisplay.value)
+    }
     OutdoorActivityList(outdoorList)
   }
 }
@@ -93,7 +101,10 @@ fun OutdoorActivityList(outdoorActivities: List<OutdoorActivity>) {
 }
 
 @Composable
-fun OutdoorActivityItem(outdoorActivity: OutdoorActivity) {
+fun OutdoorActivityItem(
+    outdoorActivity: OutdoorActivity,
+    discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel()
+) {
   Card(modifier = Modifier.padding(8.dp)) {
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
       Row(
@@ -149,7 +160,10 @@ fun OutdoorActivityItem(outdoorActivity: OutdoorActivity) {
           }
       Row() {
         Button(
-            onClick = { /* Display more information on the selected activity */},
+            onClick = {
+              /** Calls the view model to toggle activity dialog */
+              discoveryScreenViewModel.showDialog(outdoorActivity)
+            },
             modifier =
                 Modifier.border(
                         width = 1.dp,
@@ -196,7 +210,6 @@ fun OutdoorActivityItem(outdoorActivity: OutdoorActivity) {
   }
 }
 
-@Preview
 @Composable
 fun OutdoorActivityExample() {
   MaterialTheme {
@@ -204,11 +217,58 @@ fun OutdoorActivityExample() {
   }
 }
 
-@Preview
 @Composable
 fun OutdoorActivityListExample() {
   MaterialTheme {
     OutdoorActivityList(
         List(10) { index -> OutdoorActivity(ActivityType.HIKING, 3, 5.0f, "2 hours", "Zurich") })
+  }
+}
+
+/** The composable for the "more info" dialog box */
+@Composable
+fun ActivityDialog(onDismissRequest: () -> Unit, outdoorActivity: OutdoorActivity) {
+  Dialog(onDismissRequest = { onDismissRequest() }) {
+    Card(
+        modifier = Modifier.fillMaxWidth().height(400.dp).padding(16.dp),
+        shape = RoundedCornerShape(16.dp),
+    ) {
+      Column(
+          modifier = Modifier.fillMaxSize(),
+          verticalArrangement = Arrangement.Center,
+          horizontalAlignment = Alignment.CenterHorizontally,
+      ) {
+        Text(
+            text =
+                if (outdoorActivity.locationName != "") "Location: " + outdoorActivity.locationName
+                else "No available Location",
+            modifier = Modifier.padding(16.dp),
+        )
+        Text(
+            text =
+                if (outdoorActivity.duration != "") "Duration: " + outdoorActivity.duration
+                else "No available duration",
+            modifier = Modifier.padding(16.dp),
+        )
+        Text(
+            text =
+                if (outdoorActivity.difficulty != 0) "Difficulty: ${outdoorActivity.difficulty}"
+                else "No available difficulty",
+            modifier = Modifier.padding(16.dp),
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+        ) {
+          TextButton(
+              onClick = { onDismissRequest() },
+              modifier = Modifier.padding(8.dp),
+          ) {
+            Text("Ok")
+          }
+        }
+      }
+    }
   }
 }
