@@ -7,7 +7,7 @@ import com.lastaoutdoor.lasta.data.model.activity.OutdoorActivity
 
 // represents OSM node
 open class Node(
-    @SerializedName("type") @Expose val type: String,
+    @SerializedName("type") @Expose val type: String?,
     @SerializedName("id") @Expose val id: Long,
     @SerializedName("lat") @Expose val lat: Double,
     @SerializedName("lon") @Expose val lon: Double,
@@ -15,8 +15,8 @@ open class Node(
     activityType: ActivityType,
     difficulty: Int,
     length: Float,
-    duration: String,
-    locationName: String
+    duration: String?,
+    locationName: String?
 ) : OutdoorActivity(activityType, difficulty, length, duration, "") {
   override fun toString(): String {
     return (" type: $type id: $id lat: $lat lon: $lon activityType: ${getActivityType()} name: ${tags.name}\n")
