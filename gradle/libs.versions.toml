@@ -3,6 +3,7 @@ agp = "8.3.1"
 androidMapsUtils = "3.7.0"
 coilCompose = "2.6.0"
 converterGson = "2.9.0"
+coreTesting = "2.2.0"
 datastorePreferences = "1.0.0"
 firebaseAuthKtx = "22.3.0"
 firebaseBom = "32.7.2"
@@ -29,6 +30,7 @@ composeViewModel = "2.7.0"
 lifecycleRuntimeKtx = "2.7.0"
 kaspresso = "1.5.5"
 materialVersion = "1.6.4"
+mockk = "1.12.0"
 navigationCompose = "2.7.7"
 playServicesLocation = "21.2.0"
 playServicesMaps = "18.2.0"
@@ -45,6 +47,7 @@ firebaseFirestore = "24.11.0"
 [libraries]
 android-maps-utils = { module = "com.google.maps.android:android-maps-utils", version.ref = "androidMapsUtils" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "coreTesting" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-material = { module = "androidx.compose.material:material", version.ref = "materialVersion" }
@@ -82,6 +85,7 @@ compose-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifes
 kaspresso = { group = "com.kaspersky.android-components", name = "kaspresso", version.ref = "kaspresso" }
 kaspresso-compose = { group = "com.kaspersky.android-components", name = "kaspresso-compose-support", version.ref = "kaspresso" }
 
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }

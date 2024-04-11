@@ -26,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -110,6 +111,15 @@ fun UserInfo(
   // val email by preferencesViewModel.email.collectAsState(initial = "")
   val profilePictureUrl by preferencesViewModel.profilePictureUrl.collectAsState(initial = "")
   val hikingLevel by preferencesViewModel.hikingLevel.collectAsState(initial = HikingLevel.BEGINNER)
+
+  LaunchedEffect(key1 = authViewModel.signedOut) {
+    if (authViewModel.signedOut) {
+      preferencesViewModel.clearPreferences()
+      preferencesViewModel.updateIsLoggedIn(false)
+      rootNavController.popBackStack()
+      rootNavController.navigate(RootScreen.Login.route)
+    }
+  }
 
   var showDialog by remember { mutableStateOf(false) }
 
