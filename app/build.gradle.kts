@@ -225,6 +225,10 @@ tasks.register("jacocoTestReport", JacocoReport::class) {
         "**/Manifest*.*",
         "**/*Test*.*",
         "android/**/*.*",
+        "**/*Hilt*.*",
+        "hilt_aggregated_deps/**",
+        "**/*_Factory.class2",
+        "**/*_MembersInjector.class"
     )
 
     val debugTree = fileTree("${project.layout.buildDirectory.get()}/tmp/kotlin-classes/debug") {
@@ -241,7 +245,7 @@ tasks.register("jacocoTestReport", JacocoReport::class) {
 }
 
 tasks.register("submitAndCheck", GradleBuild::class) {
-    dependsOn("ktfmtFormat", "testDebugUnitTest", "jacocoTestReport")
+    dependsOn("ktfmtFormat", "testDebugUnitTest", "connectedDebugAndroidTest", "jacocoTestReport")
 }
 
 kapt {
