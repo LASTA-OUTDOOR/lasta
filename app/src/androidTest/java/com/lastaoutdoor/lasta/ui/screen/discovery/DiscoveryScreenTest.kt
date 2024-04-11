@@ -22,7 +22,6 @@ class DiscoveryScreenTest {
 
   @get:Rule(order = 1) val composeRule = createAndroidComposeRule<MainActivity>()
 
-
   @Before
   fun setUp() {
     hiltRule.inject()
@@ -30,19 +29,17 @@ class DiscoveryScreenTest {
       val navController = androidx.navigation.compose.rememberNavController()
       com.lastaoutdoor.lasta.ui.theme.LastaTheme {
         androidx.navigation.compose.NavHost(
-          navController = navController,
-          startDestination = "DiscoveryScreen"
-        ) {
-          composable(route = "DiscoveryScreen") { com.lastaoutdoor.lasta.ui.screen.discovery.DiscoveryScreen() }
-        }
+            navController = navController, startDestination = "DiscoveryScreen") {
+              composable(route = "DiscoveryScreen") {
+                com.lastaoutdoor.lasta.ui.screen.discovery.DiscoveryScreen()
+              }
+            }
       }
     }
-
   }
 
   @Test
   fun discoveryScreen_isDisplayed() {
     composeRule.onNodeWithTag("Discovery").assertIsDisplayed()
   }
-
 }
