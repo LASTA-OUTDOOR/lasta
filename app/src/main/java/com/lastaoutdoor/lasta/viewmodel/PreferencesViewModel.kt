@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lastaoutdoor.lasta.data.model.user.HikingLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
-import com.lastaoutdoor.lasta.data.preferences.PreferencesDataStore
+import com.lastaoutdoor.lasta.repository.PreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.map
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
  * @property preferences the [PreferencesDataStore] instance
  */
 @HiltViewModel
-class PreferencesViewModel @Inject constructor(private val preferences: PreferencesDataStore) :
+class PreferencesViewModel @Inject constructor(private val preferences: PreferencesRepository) :
     ViewModel() {
   // Decompose UserPreferences into individual properties available as Flows
   val isLoggedIn = preferences.userPreferencesFlow.map { it.isLoggedIn }

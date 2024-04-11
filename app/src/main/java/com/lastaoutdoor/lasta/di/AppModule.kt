@@ -14,10 +14,11 @@ import com.lastaoutdoor.lasta.data.api.ApiService
 import com.lastaoutdoor.lasta.data.api.OutdoorActivityRepositoryImpl
 import com.lastaoutdoor.lasta.data.auth.AuthRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.ActivitiesRepositoryImpl
-import com.lastaoutdoor.lasta.data.preferences.PreferencesDataStore
+import com.lastaoutdoor.lasta.data.preferences.PreferencesRepositoryImpl
 import com.lastaoutdoor.lasta.repository.ActivitiesRepository
 import com.lastaoutdoor.lasta.repository.AuthRepository
 import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
+import com.lastaoutdoor.lasta.repository.PreferencesRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -74,17 +75,16 @@ object AppModule {
       signInRequest: BeginSignInRequest
   ): AuthRepository = AuthRepositoryImpl(auth, oneTapClient, signInRequest)
 
+  @Singleton
+  @Provides
+  fun providePreferencesRepository(@ApplicationContext context: Context): PreferencesRepository =
+      PreferencesRepositoryImpl(context)
+
   /** Provides the [GoogleAuth] class */
   @Singleton
   @Provides
   fun provideOutdoorActivitiesRepository(apiService: ApiService): OutdoorActivityRepository =
       OutdoorActivityRepositoryImpl(apiService)
-
-  /** Provides the [PreferencesDataStore] class */
-  @Singleton
-  @Provides
-  fun providePreferencesDataStore(@ApplicationContext context: Context): PreferencesDataStore =
-      PreferencesDataStore(context)
 
   @Singleton
   @Provides
