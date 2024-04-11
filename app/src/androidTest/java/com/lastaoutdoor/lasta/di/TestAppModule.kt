@@ -20,15 +20,15 @@ import com.lastaoutdoor.lasta.repository.AuthRepository
 import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import dagger.hilt.testing.TestInstallIn
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Singleton
 
 /** Fake Hilt Module for providing dependencies */
-@InstallIn(SingletonComponent::class)
+@TestInstallIn(components = [SingletonComponent::class], replaces = [AppModule::class])
 @Module
 object TestAppModule {
 

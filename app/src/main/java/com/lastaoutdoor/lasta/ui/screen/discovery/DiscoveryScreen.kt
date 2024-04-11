@@ -50,8 +50,8 @@ import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenViewModel
 @Composable
 fun DiscoveryScreen() {
   /** this is called when discovery button is clicked */
-  Scaffold(floatingActionButton = { FloatingActionButtons() }) { innerPadding ->
-    Column(modifier = Modifier.padding(innerPadding).testTag("Discovery")) { DiscoveryContent() }
+  Scaffold(modifier = Modifier.testTag("Discovery"), floatingActionButton = { FloatingActionButtons() }) { innerPadding ->
+    Column(modifier = Modifier.padding(innerPadding)) { DiscoveryContent() }
   }
 }
 
