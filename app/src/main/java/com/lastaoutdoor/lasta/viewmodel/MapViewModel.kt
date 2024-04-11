@@ -4,7 +4,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.model.api.Node
@@ -76,10 +75,11 @@ constructor(private val outdoorActivityRepository: OutdoorActivityRepository) : 
               it.tags.name ?: "Climbing - Unnamed",
               LatLng(it.lat, it.lon),
               it.tags.sport ?: "climbing",
-              BitmapDescriptorFactory.fromResource(R.drawable.climbing_icon))
+              R.drawable.climbing_icon)
       climbingMarkers.add(marker)
     }
 
+    println("1: $climbingMarkers")
     return climbingMarkers
   }
 
@@ -116,7 +116,7 @@ constructor(private val outdoorActivityRepository: OutdoorActivityRepository) : 
               "Hiking: " + (it.tags.name ?: "Unnamed"),
               LatLng(it.bounds.minlat, it.bounds.minlon),
               it.locationName ?: "No location name",
-              BitmapDescriptorFactory.fromResource(R.drawable.hiking_icon)))
+              R.drawable.hiking_icon))
     }
 
     return markers.toList()
