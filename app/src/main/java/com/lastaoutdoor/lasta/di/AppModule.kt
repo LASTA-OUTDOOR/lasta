@@ -88,8 +88,8 @@ object AppModule {
 
   @Singleton
   @Provides
-  fun provideActivitiesRepository(database: FirebaseFirestore): ActivitiesRepository {
-    return ActivitiesRepositoryImpl(database)
+  fun provideActivitiesRepository(@ApplicationContext context: Context, database: FirebaseFirestore): ActivitiesRepository {
+    return ActivitiesRepositoryImpl(database, context)
   }
 
   /** Provides the [TimeProvider] class */
