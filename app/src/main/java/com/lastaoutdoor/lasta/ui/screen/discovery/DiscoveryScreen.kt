@@ -231,7 +231,7 @@ fun ActivityDialog(onDismissRequest: () -> Unit, outdoorActivity: OutdoorActivit
         Text(
             text =
                 if (outdoorActivity.locationName != "") "Location: " + outdoorActivity.locationName
-                else "No available Location",
+                else "No available location",
             modifier = Modifier.padding(16.dp).testTag("locationText"),
         )
         Text(

@@ -24,24 +24,21 @@ import org.junit.Test
 @UninstallModules(AppModule::class)
 class DiscoveryScreenTest {
 
+  // Allow Hilt to inject dependencies
   @get:Rule(order = 0) val hiltRule = HiltAndroidRule(this)
 
+  // Create a compose rule
   @get:Rule(order = 1) val composeRule = createAndroidComposeRule<MainActivity>()
 
+  // Bind the fake view model to the test
   @BindValue
   val discoveryScreenViewModel: DiscoveryScreenViewModel =
       DiscoveryScreenViewModel(FakeOutdoorActivityRepository())
 
+  // Set up the test
   @Before
   fun setUp() {
     hiltRule.inject()
-    /**
-     * composeRule.activity.setContent { val navController =
-     * androidx.navigation.compose.rememberNavController()
-     * com.lastaoutdoor.lasta.ui.theme.LastaTheme { androidx.navigation.compose.NavHost(
-     * navController = navController, startDestination = "DiscoveryScreen") { composable(route =
-     * "DiscoveryScreen") { DiscoveryScreen() } } } }
-     */
   }
 
   // Test if discovery screen is displayed
@@ -65,6 +62,7 @@ class DiscoveryScreenTest {
     composeRule.onNodeWithTag("outdoorActivityList").assertIsDisplayed()
   }
 
+  // Test if discovery screen has floating action button
   @Test
   fun discoveryScreen_hasFloatingActionButton() {
     composeRule.activity.setContent { DiscoveryScreen() }
@@ -115,7 +113,7 @@ class DiscoveryScreenTest {
           },
           outdoorActivity = act)
     }
-    composeRule.onNodeWithTag("locationText").assertTextContains("No available Location")
+    composeRule.onNodeWithTag("locationText").assertTextContains("No available location")
     composeRule.onNodeWithTag("durationText").assertTextContains("No available duration")
     composeRule.onNodeWithTag("difficultyText").assertTextContains("No available difficulty")
     composeRule.onNodeWithTag("activityDialog").assertIsDisplayed()
