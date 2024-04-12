@@ -15,7 +15,7 @@ class DiscoveryScreenViewModel
 @Inject
 constructor(private val repository: OutdoorActivityRepository) : ViewModel() {
 
-  var climbingActivities: ArrayList<OutdoorActivity> = ArrayList()
+  var climbingActivities: MutableList<OutdoorActivity> = mutableListOf()
 
   fun fetchClimbingActivities(
       rad: Double = 10000.0,
@@ -36,7 +36,7 @@ constructor(private val repository: OutdoorActivityRepository) : ViewModel() {
     // start and join the thread, since we need the result before continuing
     climbingThread.start()
     climbingThread.join()
-
+    climbingActivities.clear()
     climbingNodes.forEach { node ->
       climbingActivities.add(
           OutdoorActivity(

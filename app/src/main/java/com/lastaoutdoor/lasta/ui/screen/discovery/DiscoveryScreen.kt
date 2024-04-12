@@ -23,7 +23,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -43,7 +42,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.model.activity.ActivityType
 import com.lastaoutdoor.lasta.data.model.activity.OutdoorActivity
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenViewModel
 
@@ -51,7 +49,7 @@ import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenViewModel
 fun DiscoveryScreen() {
   /** this is called when discovery button is clicked */
   Scaffold(
-      modifier = Modifier.testTag("Discovery"),
+      modifier = Modifier.testTag("discoveryScreen"),
       floatingActionButton = { FloatingActionButtons() }) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) { DiscoveryContent() }
       }
@@ -59,7 +57,7 @@ fun DiscoveryScreen() {
 
 @Composable
 fun DiscoveryContent(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel()) {
-  Column {
+  Column(modifier = Modifier.testTag("discoveryContent")) {
     // link this with database or API depending from which we fetch
     // OutdoorActivityList(outdoorActivityViewModel)
 
@@ -83,7 +81,7 @@ fun DiscoveryContent(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltVi
 @Composable
 fun FloatingActionButtons() {
   Column(
-      modifier = Modifier.padding(16.dp),
+      modifier = Modifier.padding(16.dp).testTag("floatingActionButtons"),
       verticalArrangement = Arrangement.Bottom,
       horizontalAlignment = Alignment.End) {
         FloatingActionButton(onClick = { /*TODO*/}, modifier = Modifier.padding(bottom = 8.dp)) {
@@ -98,9 +96,11 @@ fun FloatingActionButtons() {
 @Composable
 fun OutdoorActivityList(outdoorActivities: List<OutdoorActivity>) {
   /** Our list of activities which is lazy in order to display only the first ones. */
-  LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp)) {
-    items(outdoorActivities) { outdoorActivity -> OutdoorActivityItem(outdoorActivity) }
-  }
+  LazyColumn(
+      modifier = Modifier.fillMaxSize().testTag("outdoorActivityList"),
+      contentPadding = PaddingValues(16.dp)) {
+        items(outdoorActivities) { outdoorActivity -> OutdoorActivityItem(outdoorActivity) }
+      }
 }
 
 @Composable
@@ -108,7 +108,7 @@ fun OutdoorActivityItem(
     outdoorActivity: OutdoorActivity,
     discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel()
 ) {
-  Card(modifier = Modifier.padding(8.dp)) {
+  Card(modifier = Modifier.padding(8.dp).testTag("outdoorActivityItem")) {
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
       Row(
           // modifier = Modifier.fillMaxWidth(),
@@ -129,7 +129,8 @@ fun OutdoorActivityItem(
           // set its theme from themes.xml
 
           modifier =
-              Modifier.border(
+              Modifier.testTag("startButton")
+                  .border(
                       width = 1.dp,
                       color = Color(0xFFFF7009),
                       shape = RoundedCornerShape(size = 20.dp))
@@ -174,8 +175,8 @@ fun OutdoorActivityItem(
                         shape = RoundedCornerShape(size = 20.dp))
                     // .width(104.dp)
                     // .height(30.dp)
-                    .background(
-                        color = Color(0xFF6609FF), shape = RoundedCornerShape(size = 20.dp))) {
+                    .background(color = Color(0xFF6609FF), shape = RoundedCornerShape(size = 20.dp))
+                    .testTag("moreInfoButton")) {
               Text(
                   text = "MORE INFO",
                   style =
@@ -190,7 +191,8 @@ fun OutdoorActivityItem(
         Button(
             onClick = { /* Switch to map view and see location of activity */},
             modifier =
-                Modifier.border(
+                Modifier.testTag("mapButton")
+                    .border(
                         width = 1.dp,
                         color = Color(0xFF0989FF),
                         shape = RoundedCornerShape(size = 20.dp))
@@ -213,27 +215,12 @@ fun OutdoorActivityItem(
   }
 }
 
-@Composable
-fun OutdoorActivityExample() {
-  MaterialTheme {
-    OutdoorActivityItem(OutdoorActivity(ActivityType.HIKING, 3, 5.0f, "2 hours", "Zurich"))
-  }
-}
-
-@Composable
-fun OutdoorActivityListExample() {
-  MaterialTheme {
-    OutdoorActivityList(
-        List(10) { index -> OutdoorActivity(ActivityType.HIKING, 3, 5.0f, "2 hours", "Zurich") })
-  }
-}
-
 /** The composable for the "more info" dialog box */
 @Composable
 fun ActivityDialog(onDismissRequest: () -> Unit, outdoorActivity: OutdoorActivity) {
   Dialog(onDismissRequest = { onDismissRequest() }) {
     Card(
-        modifier = Modifier.fillMaxWidth().height(400.dp).padding(16.dp),
+        modifier = Modifier.fillMaxWidth().height(400.dp).padding(16.dp).testTag("activityDialog"),
         shape = RoundedCornerShape(16.dp),
     ) {
       Column(
@@ -244,20 +231,20 @@ fun ActivityDialog(onDismissRequest: () -> Unit, outdoorActivity: OutdoorActivit
         Text(
             text =
                 if (outdoorActivity.locationName != "") "Location: " + outdoorActivity.locationName
-                else "No available Location",
-            modifier = Modifier.padding(16.dp),
+                else "No available location",
+            modifier = Modifier.padding(16.dp).testTag("locationText"),
         )
         Text(
             text =
                 if (outdoorActivity.duration != "") "Duration: " + outdoorActivity.duration
                 else "No available duration",
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(16.dp).testTag("durationText"),
         )
         Text(
             text =
                 if (outdoorActivity.difficulty != 0) "Difficulty: ${outdoorActivity.difficulty}"
                 else "No available difficulty",
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(16.dp).testTag("difficultyText"),
         )
 
         Row(
@@ -266,7 +253,7 @@ fun ActivityDialog(onDismissRequest: () -> Unit, outdoorActivity: OutdoorActivit
         ) {
           TextButton(
               onClick = { onDismissRequest() },
-              modifier = Modifier.padding(8.dp),
+              modifier = Modifier.padding(8.dp).testTag("okButton"),
           ) {
             Text("Ok")
           }
