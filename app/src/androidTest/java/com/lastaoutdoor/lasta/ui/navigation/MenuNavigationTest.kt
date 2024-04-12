@@ -1,7 +1,9 @@
 package com.lastaoutdoor.lasta.ui.navigation
 
 import androidx.activity.compose.setContent
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.navigation.compose.rememberNavController
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.ui.MainActivity
@@ -36,6 +38,6 @@ class MenuNavigationTest {
   @Test
   fun menuNavigationIsDisplayed() {
     // Check if the instanciated menu navigation is displayed
-    // composeRule.onNodeWithTag("MenuNavigation").assertIsDisplayed()
+    composeRule.onNodeWithTag("MenuNavigation").assertIsDisplayed()
   }
 }
