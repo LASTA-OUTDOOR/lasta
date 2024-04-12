@@ -1,0 +1,45 @@
+name: APK Build
+
+# Run the workflow when commits are pushed on main or when a PR is modified
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: APK Build
+    # Execute the CI on the course's runners
+    runs-on: ubuntu-latest
+
+    steps:
+      # First step : Checkout the repository on the runner
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of Sonar analysis (if we use Sonar Later)
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Grant execute permission for gradlew
+        run: |
+          chmod +x ./gradlew
+
+      - name: Create local.properties used for Map
+        env:
+          MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
+        run: |
+            echo "MAPS_API_KEY=$MAPS_API_KEY" > ./local.properties
+            echo "File created"
+
+      - name: Building APK
+        run: ./gradlew build
+
+      - name: Upload APK to Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug
+          path: app/build/outputs/apk/debug/app-debug.apk
