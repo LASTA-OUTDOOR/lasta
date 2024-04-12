@@ -1,6 +1,8 @@
 package com.lastaoutdoor.lasta.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -14,6 +16,7 @@ fun MainAppNavGraph(
 ) {
   NavHost(
       navController = navController,
+      modifier = Modifier.testTag("MainAppNavGraph"),
       route = RootScreen.Root.route,
       startDestination = RootScreen.Loading.route) {
         composable(RootScreen.Loading.route) { LoadingScreen(navController = navController) }
