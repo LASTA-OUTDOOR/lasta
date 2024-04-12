@@ -82,12 +82,8 @@ constructor(private val repository: ActivitiesRepository, private val timeProvid
     applyFilters()
   }
 
-  fun getTimeFrame() = time.value
-
   fun setSport(s: ActivitiesDatabaseType.Sports) {
     _sport.value = s
     fetchUserActivities()
   }
-
-  fun getSport() = sport.value
 }
