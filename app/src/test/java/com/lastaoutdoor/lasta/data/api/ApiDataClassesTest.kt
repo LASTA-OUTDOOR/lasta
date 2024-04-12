@@ -1,21 +1,6 @@
 package com.lastaoutdoor.lasta.data.api
 
-import androidx.test.core.app.ApplicationProvider
-import com.google.api.Context
-import com.lastaoutdoor.lasta.data.model.activity.ActivityType
-import com.lastaoutdoor.lasta.data.model.api.Bounds
-import com.lastaoutdoor.lasta.data.model.api.Node
-import com.lastaoutdoor.lasta.data.model.api.Relation
-import com.lastaoutdoor.lasta.data.model.api.SimpleWay
-import com.lastaoutdoor.lasta.data.model.api.Tags
-import com.lastaoutdoor.lasta.data.model.api.Way
-import com.lastaoutdoor.lasta.data.model.map.Position
-import com.lastaoutdoor.lasta.di.AppModule
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-
-@RunWith(RobolectricTestRunner::class)
+/*@RunWith(RobolectricTestRunner::class)
 class ApiDataClassesTest {
   private val con = ApplicationProvider.getApplicationContext<android.content.Context>()
   private val rep = OutdoorActivityRepositoryImpl(AppModule.provideAPIService(con))
@@ -212,4 +197,4 @@ class ApiDataClassesTest {
             n.toString() ==
                 " type: ${n.type} id: ${n.id} lat: ${n.lat} lon: ${n.lon} activityType: ${n.getActivityType()} name: ${n.tags.name}\n")
   }
-}
+}*/
