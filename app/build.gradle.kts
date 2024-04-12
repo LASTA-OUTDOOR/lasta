@@ -22,7 +22,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.lastaoutdoor.lasta.HiltTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -176,6 +176,10 @@ dependencies {
     globalTestImplementation(libs.kaspresso)
     globalTestImplementation(libs.kaspresso.compose)
 
+    //Hilt
+    androidTestImplementation(libs.hilt.android.testing)
+    kaptAndroidTest(libs.hilt.android.compiler)
+
     // ----------       Robolectric     ------------
     testImplementation(libs.robolectric)
     // ----------     Retrofit     ------------
@@ -228,6 +232,10 @@ tasks.register("jacocoTestReport", JacocoReport::class) {
         "**/Manifest*.*",
         "**/*Test*.*",
         "android/**/*.*",
+        "**/*Hilt*.*",
+        "hilt_aggregated_deps/**",
+        "**/*_Factory.class2",
+        "**/*_MembersInjector.class"
     )
 
     val debugTree = fileTree("${project.layout.buildDirectory.get()}/tmp/kotlin-classes/debug") {
@@ -244,7 +252,7 @@ tasks.register("jacocoTestReport", JacocoReport::class) {
 }
 
 tasks.register("submitAndCheck", GradleBuild::class) {
-    dependsOn("ktfmtFormat", "testDebugUnitTest", "jacocoTestReport")
+    dependsOn("ktfmtFormat", "testDebugUnitTest", "connectedDebugAndroidTest", "jacocoTestReport")
 }
 
 kapt {

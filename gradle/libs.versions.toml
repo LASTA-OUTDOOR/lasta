@@ -14,6 +14,8 @@ gson = "2.10.1.1"
 gsonVersion = "2.10"
 hiltAndroid = "2.49"
 hiltAndroidCompiler = "2.44"
+hiltAndroidCompilerVersion = "2.37"
+hiltAndroidTesting = "2.37"
 hiltNavigationCompose = "1.2.0"
 kotlin = "1.8.10"
 coreKtx = "1.12.0"
@@ -63,6 +65,8 @@ gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 gson-v210 = { module = "com.google.code.gson:gson", version.ref = "gsonVersion" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
+hilt-android-compiler-v237 = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompilerVersion" }
+hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hiltAndroidTesting" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
