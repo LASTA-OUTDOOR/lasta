@@ -192,9 +192,10 @@ fun HikingRow(
       modifier = Modifier.fillMaxWidth(.7f),
       horizontalArrangement = Arrangement.SpaceEvenly,
       verticalAlignment = Alignment.CenterVertically) {
-        HikingLevel.values().forEach { hikingLevel ->
+        HikingLevel.values().forEachIndexed { index, hikingLevel ->
           Text(text = hikingLevel.level.toString(), maxLines = 1, overflow = TextOverflow.Ellipsis)
           RadioButton(
+              modifier = Modifier.testTag("HikingLevelItem$index"),
               selected = hikingLevel == selectedHikingLevel,
               onClick = { preferences.updateHikingLevel(hikingLevel) })
         }
