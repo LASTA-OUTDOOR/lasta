@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
@@ -34,12 +35,13 @@ fun <T> Spinner(
       Icon(
           imageVector = Icons.Filled.ArrowDropDown,
           contentDescription = "Dropdown",
-          modifier = Modifier.clickable(onClick = { expanded = true }))
+          modifier = Modifier.clickable(onClick = { expanded = true }).testTag("spinnerIcon"))
     }
 
     DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-      items.forEach { label ->
+      items.forEachIndexed { index, label ->
         DropdownMenuItem(
+            modifier = Modifier.testTag("DropdownItem$index"),
             text = { Text(label.toString()) },
             onClick = {
               onItemSelected(label)
