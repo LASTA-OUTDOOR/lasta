@@ -385,11 +385,10 @@ fun Chart(
 @Composable
 fun RecentActivities(
     activities: List<ActivitiesDatabaseType>,
-    profileScreenViewModel: ProfileScreenViewModel = hiltViewModel()
 ) {
-  val sport by profileScreenViewModel.sport.collectAsState()
   Text("Recent Activities", style = TextStyle(fontSize = 20.sp), fontWeight = FontWeight.Bold)
   for (a in activities.reversed()) {
+    val sport = a.sport
     Card(
         modifier = Modifier.padding(12.dp).fillMaxWidth().testTag("RecentActivitiesItem"),
         elevation = CardDefaults.cardElevation(4.dp),
