@@ -89,6 +89,4 @@ class MapScreenTest {
     Espresso.pressBack()
     composeRule.onNodeWithTag("bottomSheet").assertIsNotDisplayed()
   }
-
-
 }
