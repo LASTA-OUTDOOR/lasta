@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -71,39 +72,35 @@ import java.util.Calendar
 fun ProfileScreen(
     profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(),
     rootNavController: NavHostController,
-    authViewModel: AuthViewModel = hiltViewModel(),
-    preferencesViewModel: PreferencesViewModel = hiltViewModel()
+    authViewModel: AuthViewModel = hiltViewModel()
 ) {
   // profileScreenVIewModel.addTrailToUserActivities()
   val activities by profileScreenViewModel.trails.collectAsState()
 
-  LazyColumn(modifier = Modifier.padding(16.dp)) {
-    item { UserInfo(preferencesViewModel, rootNavController, authViewModel) }
+  LazyColumn(modifier = Modifier.padding(16.dp).testTag("ProfileScreen")) {
+    item { UserInfo(rootNavController) }
     item {
-      SportSelection(profileScreenViewModel)
+      SportSelection()
       Spacer(modifier = Modifier.height(16.dp))
     }
 
     item {
-      TimeFrameSelection(profileScreenViewModel)
+      TimeFrameSelection()
       Spacer(modifier = Modifier.height(16.dp))
     }
     item {
-      Chart(activities, profileScreenViewModel)
+      Chart(activities)
       Spacer(modifier = Modifier.height(16.dp))
     }
-    item {
-      RecentActivities(profileScreenViewModel)
-      Spacer(modifier = Modifier.height(16.dp))
-    }
+    item { RecentActivities(activities = activities) }
   }
 }
 
 @Composable
 fun UserInfo(
-    preferencesViewModel: PreferencesViewModel,
     rootNavController: NavHostController,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel = hiltViewModel(),
+    preferencesViewModel: PreferencesViewModel = hiltViewModel()
 ) {
   // val isLoggedIn by preferencesViewModel.isLoggedIn.collectAsState(initial = false)
   // val userId by preferencesViewModel.userId.collectAsState(initial = "")
@@ -125,12 +122,13 @@ fun UserInfo(
 
   if (showDialog) {
     AlertDialog(
+        modifier = Modifier.testTag("AlertDialog"),
         onDismissRequest = { showDialog = false },
         title = { Text("Preferences") },
         text = {
           Column {
             Text("Hiking Level")
-            HikingRow(preferencesViewModel, hikingLevel)
+            HikingRow(selectedHikingLevel = hikingLevel)
           }
         },
         confirmButton = { Row { Button(onClick = { showDialog = false }) { Text("Save") } } },
@@ -150,7 +148,11 @@ fun UserInfo(
   }
 
   Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-    Column { Button(onClick = { showDialog = true }) { Text("≡") } }
+    Column {
+      Button(onClick = { showDialog = true }, modifier = Modifier.testTag("showDialog")) {
+        Text("≡")
+      }
+    }
   }
   Spacer(modifier = Modifier.height(8.dp))
   Row(
@@ -182,7 +184,10 @@ fun UserInfo(
 }
 
 @Composable
-fun HikingRow(preferences: PreferencesViewModel, selectedHikingLevel: HikingLevel) {
+fun HikingRow(
+    selectedHikingLevel: HikingLevel,
+    preferences: PreferencesViewModel = hiltViewModel(),
+) {
   Row(
       modifier = Modifier.fillMaxWidth(.7f),
       horizontalArrangement = Arrangement.SpaceEvenly,
@@ -197,7 +202,7 @@ fun HikingRow(preferences: PreferencesViewModel, selectedHikingLevel: HikingLeve
 }
 
 @Composable
-fun SportSelection(profileScreenViewModel: ProfileScreenViewModel) {
+fun SportSelection(profileScreenViewModel: ProfileScreenViewModel = hiltViewModel()) {
   val sport by profileScreenViewModel.sport.collectAsState()
 
   Row {
@@ -216,7 +221,7 @@ fun SportSelection(profileScreenViewModel: ProfileScreenViewModel) {
 }
 
 @Composable
-fun TimeFrameSelection(profileScreenViewModel: ProfileScreenViewModel) {
+fun TimeFrameSelection(profileScreenViewModel: ProfileScreenViewModel = hiltViewModel()) {
   val shape = RoundedCornerShape(20.dp)
   val borderModifier =
       Modifier.padding(4.dp).border(width = 1.dp, color = Color.Black, shape = shape)
@@ -256,7 +261,7 @@ fun TimeFrameSelection(profileScreenViewModel: ProfileScreenViewModel) {
 @Composable
 fun Chart(
     activities: List<ActivitiesDatabaseType>,
-    profileScreenViewModel: ProfileScreenViewModel
+    profileScreenViewModel: ProfileScreenViewModel = hiltViewModel()
 ) {
   Column(modifier = Modifier.padding(8.dp)) {
 
@@ -377,13 +382,15 @@ fun Chart(
 }
 
 @Composable
-fun RecentActivities(profileScreenViewModel: ProfileScreenViewModel) {
-  val activities by profileScreenViewModel.allTrails.collectAsState()
+fun RecentActivities(
+    activities: List<ActivitiesDatabaseType>,
+    profileScreenViewModel: ProfileScreenViewModel = hiltViewModel()
+) {
   val sport by profileScreenViewModel.sport.collectAsState()
   Text("Recent Activities", style = TextStyle(fontSize = 20.sp), fontWeight = FontWeight.Bold)
   for (a in activities.reversed()) {
     Card(
-        modifier = Modifier.padding(12.dp).fillMaxWidth(),
+        modifier = Modifier.padding(12.dp).fillMaxWidth().testTag("RecentActivitiesItem"),
         elevation = CardDefaults.cardElevation(4.dp),
         shape = RoundedCornerShape(8.dp)) {
           Row(
