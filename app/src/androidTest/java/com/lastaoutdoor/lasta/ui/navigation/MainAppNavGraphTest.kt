@@ -39,5 +39,6 @@ class MainAppNavGraphTest {
   fun mainAppNavGraphIsDisplayed() {
     // Check if the main nav graph is present
     composeRule.onNodeWithTag("MainAppNavGraph").assertIsDisplayed()
+    composeRule.onNodeWithTag("LoadingScreen").assertIsDisplayed()
   }
 }
