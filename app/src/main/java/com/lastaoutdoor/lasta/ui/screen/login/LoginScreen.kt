@@ -4,6 +4,7 @@ import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -55,6 +56,7 @@ fun LoginScreen(
       navController.navigate(RootScreen.Main.route)
     }
   }
+  Spacer(modifier = Modifier.testTag("loginScreenMain"))
 
   LoginContent(onLoginClick = { authViewModel.startGoogleSignIn() })
 }

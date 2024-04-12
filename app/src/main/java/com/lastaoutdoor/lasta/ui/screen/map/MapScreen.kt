@@ -22,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.firebase.ui.auth.AuthUI.getApplicationContext
@@ -43,7 +44,7 @@ import com.lastaoutdoor.lasta.viewmodel.MapViewModel
 // @param isSheetOpen: whether the sheet is open or not
 // @param onDismissRequest: function to close the sheet and update the state
 @Composable
-private fun InformationSheet(
+fun InformationSheet(
     viewModel: MapViewModel = hiltViewModel(),
     sheetState: SheetState,
     isSheetOpen: Boolean,
@@ -55,11 +56,12 @@ private fun InformationSheet(
     ModalBottomSheet(
         onDismissRequest = { onDismissRequest() },
         sheetState = sheetState,
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().testTag("bottomSheet"),
     ) {
       Column(modifier = Modifier.padding(16.dp)) {
         Text(
-            viewModel.state.selectedMarker?.name ?: "No name",
+            modifier = Modifier.testTag("bottomSheetTitle"),
+            text = viewModel.state.selectedMarker?.name ?: "No name",
             style = MaterialTheme.typography.headlineLarge)
         Text(
             "Activity Type: ${viewModel.state.selectedMarker?.description ?: "Not specified"}",

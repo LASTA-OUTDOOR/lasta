@@ -192,9 +192,10 @@ fun HikingRow(
       modifier = Modifier.fillMaxWidth(.7f),
       horizontalArrangement = Arrangement.SpaceEvenly,
       verticalAlignment = Alignment.CenterVertically) {
-        HikingLevel.values().forEach { hikingLevel ->
+        HikingLevel.values().forEachIndexed { index, hikingLevel ->
           Text(text = hikingLevel.level.toString(), maxLines = 1, overflow = TextOverflow.Ellipsis)
           RadioButton(
+              modifier = Modifier.testTag("HikingLevelItem$index"),
               selected = hikingLevel == selectedHikingLevel,
               onClick = { preferences.updateHikingLevel(hikingLevel) })
         }
@@ -384,11 +385,10 @@ fun Chart(
 @Composable
 fun RecentActivities(
     activities: List<ActivitiesDatabaseType>,
-    profileScreenViewModel: ProfileScreenViewModel = hiltViewModel()
 ) {
-  val sport by profileScreenViewModel.sport.collectAsState()
   Text("Recent Activities", style = TextStyle(fontSize = 20.sp), fontWeight = FontWeight.Bold)
   for (a in activities.reversed()) {
+    val sport = a.sport
     Card(
         modifier = Modifier.padding(12.dp).fillMaxWidth().testTag("RecentActivitiesItem"),
         elevation = CardDefaults.cardElevation(4.dp),
