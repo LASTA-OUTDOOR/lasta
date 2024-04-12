@@ -2,6 +2,7 @@ package com.lastaoutdoor.lasta.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -18,7 +19,7 @@ fun MenuNavGraph(
   NavHost(
       navController = navController,
       route = RootScreen.Main.route,
-      modifier = modifier,
+      modifier = modifier.testTag("MenuNavGraph"),
       startDestination = LeafScreen.Map.route) {
         composable(LeafScreen.Map.route) { MapScreen() }
         composable(LeafScreen.Discover.route) { DiscoveryScreen() }

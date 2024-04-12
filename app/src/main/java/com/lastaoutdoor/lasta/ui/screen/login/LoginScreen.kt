@@ -24,6 +24,7 @@ fun LoginScreen(
     authViewModel: AuthViewModel = hiltViewModel(),
     preferencesViewModel: PreferencesViewModel = hiltViewModel()
 ) {
+  Modifier.testTag("LoginScreen")
 
   val launcher =
       rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
