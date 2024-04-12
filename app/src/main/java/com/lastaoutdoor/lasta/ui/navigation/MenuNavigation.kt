@@ -15,7 +15,9 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -51,7 +53,7 @@ fun MenuNavigation(navController: NavHostController) {
   val navBackStackEntry by navController.currentBackStackEntryAsState()
   val currentDestination = navBackStackEntry?.destination
 
-  NavigationBar {
+  NavigationBar(modifier = Modifier.testTag("MenuNavigation")) {
     items.forEach { item ->
       val selected = currentDestination?.route == item.route
       NavigationBarItem(
