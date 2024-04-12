@@ -22,7 +22,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.lastaoutdoor.lasta.HiltTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -133,8 +133,15 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.material)
     testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.androidx.core.testing)
     testImplementation("junit:junit:4.12")
     testImplementation("junit:junit:4.12")
+    testImplementation("io.mockk:mockk:1.13.10")
+    testImplementation("io.mockk:mockk-agent-jvm:1.13.10")
+    testImplementation("app.cash.turbine:turbine:0.5.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+
     globalTestImplementation(libs.androidx.junit)
     globalTestImplementation(libs.androidx.espresso.core)
 
@@ -168,8 +175,11 @@ dependencies {
     // --------- Kaspresso test framework ----------
     globalTestImplementation(libs.kaspresso)
     globalTestImplementation(libs.kaspresso.compose)
-    globalTestImplementation(libs.kotlinx.coroutines.test)
 
+
+    //Hilt
+    androidTestImplementation(libs.hilt.android.testing)
+    kaptAndroidTest(libs.hilt.android.compiler)
 
     // ----------       Robolectric     ------------
     testImplementation(libs.robolectric)
@@ -229,6 +239,10 @@ tasks.register("jacocoTestReport", JacocoReport::class) {
         "**/Manifest*.*",
         "**/*Test*.*",
         "android/**/*.*",
+        "**/*Hilt*.*",
+        "hilt_aggregated_deps/**",
+        "**/*_Factory.class2",
+        "**/*_MembersInjector.class"
     )
 
     val debugTree = fileTree("${project.layout.buildDirectory.get()}/tmp/kotlin-classes/debug") {
@@ -245,7 +259,7 @@ tasks.register("jacocoTestReport", JacocoReport::class) {
 }
 
 tasks.register("submitAndCheck", GradleBuild::class) {
-    dependsOn("ktfmtFormat", "testDebugUnitTest", "jacocoTestReport")
+    dependsOn("ktfmtFormat", "testDebugUnitTest", "connectedDebugAndroidTest", "jacocoTestReport")
 }
 
 kapt {

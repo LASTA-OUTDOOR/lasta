@@ -23,7 +23,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -43,21 +42,22 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.model.activity.ActivityType
 import com.lastaoutdoor.lasta.data.model.activity.OutdoorActivity
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenViewModel
 
 @Composable
 fun DiscoveryScreen() {
   /** this is called when discovery button is clicked */
-  Scaffold(floatingActionButton = { FloatingActionButtons() }) { innerPadding ->
-    Column(modifier = Modifier.padding(innerPadding).testTag("discoveryScreen")) { DiscoveryContent() }
-  }
+  Scaffold(
+      modifier = Modifier.testTag("discoveryScreen"),
+      floatingActionButton = { FloatingActionButtons() }) { innerPadding ->
+        Column(modifier = Modifier.padding(innerPadding)) { DiscoveryContent() }
+      }
 }
 
 @Composable
 fun DiscoveryContent(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel()) {
-  Column (modifier = Modifier.fillMaxSize().testTag("discoveryContent")) {
+  Column(modifier = Modifier.testTag("discoveryContent")) {
     // link this with database or API depending from which we fetch
     // OutdoorActivityList(outdoorActivityViewModel)
 
@@ -96,9 +96,11 @@ fun FloatingActionButtons() {
 @Composable
 fun OutdoorActivityList(outdoorActivities: List<OutdoorActivity>) {
   /** Our list of activities which is lazy in order to display only the first ones. */
-  LazyColumn(modifier = Modifier.fillMaxSize().testTag("outdoorActivityList"), contentPadding = PaddingValues(16.dp)) {
-    items(outdoorActivities) { outdoorActivity -> OutdoorActivityItem(outdoorActivity) }
-  }
+  LazyColumn(
+      modifier = Modifier.fillMaxSize().testTag("outdoorActivityList"),
+      contentPadding = PaddingValues(16.dp)) {
+        items(outdoorActivities) { outdoorActivity -> OutdoorActivityItem(outdoorActivity) }
+      }
 }
 
 @Composable
@@ -172,8 +174,8 @@ fun OutdoorActivityItem(
                         shape = RoundedCornerShape(size = 20.dp))
                     // .width(104.dp)
                     // .height(30.dp)
-                    .background(
-                        color = Color(0xFF6609FF), shape = RoundedCornerShape(size = 20.dp))) {
+                    .background(color = Color(0xFF6609FF), shape = RoundedCornerShape(size = 20.dp))
+                    .testTag("moreInfoButton")) {
               Text(
                   text = "MORE INFO",
                   style =
@@ -188,7 +190,8 @@ fun OutdoorActivityItem(
         Button(
             onClick = { /* Switch to map view and see location of activity */},
             modifier =
-                Modifier.border(
+                Modifier.testTag("mapButton")
+                    .border(
                         width = 1.dp,
                         color = Color(0xFF0989FF),
                         shape = RoundedCornerShape(size = 20.dp))
@@ -211,32 +214,16 @@ fun OutdoorActivityItem(
   }
 }
 
-@Composable
-fun OutdoorActivityExample() {
-  MaterialTheme {
-    OutdoorActivityItem(OutdoorActivity(ActivityType.HIKING, 3, 5.0f, "2 hours", "Zurich"))
-  }
-}
-
-@Composable
-fun OutdoorActivityListExample() {
-  MaterialTheme {
-    OutdoorActivityList(
-        List(10) { index -> OutdoorActivity(ActivityType.HIKING, 3, 5.0f, "2 hours", "Zurich") })
-  }
-}
-
 /** The composable for the "more info" dialog box */
 @Composable
 fun ActivityDialog(onDismissRequest: () -> Unit, outdoorActivity: OutdoorActivity) {
-  Dialog( onDismissRequest = { onDismissRequest() }
-  ){
+  Dialog(onDismissRequest = { onDismissRequest() }) {
     Card(
-        modifier = Modifier.fillMaxWidth().height(400.dp).padding(16.dp),
+        modifier = Modifier.fillMaxWidth().height(400.dp).padding(16.dp).testTag("activityDialog"),
         shape = RoundedCornerShape(16.dp),
     ) {
       Column(
-          modifier = Modifier.fillMaxSize().testTag("activityDialog"),
+          modifier = Modifier.fillMaxSize(),
           verticalArrangement = Arrangement.Center,
           horizontalAlignment = Alignment.CenterHorizontally,
       ) {

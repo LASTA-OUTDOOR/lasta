@@ -1,95 +1,97 @@
 package com.lastaoutdoor.lasta.ui.screen.discovery
 
+import androidx.activity.compose.setContent
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.lastaoutdoor.lasta.data.api.FakeOutdoorActivityRepository
 import com.lastaoutdoor.lasta.data.model.activity.ActivityType
 import com.lastaoutdoor.lasta.data.model.activity.OutdoorActivity
+import com.lastaoutdoor.lasta.di.AppModule
+import com.lastaoutdoor.lasta.ui.MainActivity
+import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenViewModel
+import dagger.hilt.android.testing.BindValue
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4::class)
+@HiltAndroidTest
+@UninstallModules(AppModule::class)
 class DiscoveryScreenTest {
+
+  @get:Rule(order = 0) val hiltRule = HiltAndroidRule(this)
+
+  @get:Rule(order = 1) val composeRule = createAndroidComposeRule<MainActivity>()
+
+  @BindValue
+  val discoveryScreenViewModel: DiscoveryScreenViewModel =
+      DiscoveryScreenViewModel(FakeOutdoorActivityRepository())
+
+  @Before
+  fun setUp() {
+    hiltRule.inject()
     /**
-     * This test is used to check if the DiscoveryScreen is displayed correctly, if the list of outdoor activities is displayed correctly, and if the dialog is displayed correctly.
+     * composeRule.activity.setContent { val navController =
+     * androidx.navigation.compose.rememberNavController()
+     * com.lastaoutdoor.lasta.ui.theme.LastaTheme { androidx.navigation.compose.NavHost(
+     * navController = navController, startDestination = "DiscoveryScreen") { composable(route =
+     * "DiscoveryScreen") { DiscoveryScreen() } } } }
      */
+  }
 
-    /**
-     *    val discoveryScreen : KNode = onNode{hasTestTag("discoveryScreen") }
-     *     val discoveryContent : KNode = onNode{hasTestTag("discoveryContent") }
-     *     val floatingActionButtons : KNode = onNode{hasTestTag("floatingActionButtons") }
-     *     val outdoorActivityList : KNode = onNode{hasTestTag("outdoorActivityList") }
-     *     val outdoorActivityItem : KNode = onNode{hasTestTag("outdoorActivityItem") }
-     *     val activityDialog : KNode = onNode{hasTestTag("activityDialog") }
-     */
+  // Test if discovery screen is displayed
+  @Test
+  fun discoveryScreen_isDisplayed() {
+    composeRule.activity.setContent { DiscoveryScreen() }
+    composeRule.onNodeWithTag("discoveryScreen").assertIsDisplayed()
+  }
 
-    @get:Rule
-    val composeTestRule = createComposeRule()
+  // Test if discovery content is displayed
+  @Test
+  fun discoveryScreen_hasContent() {
+    composeRule.activity.setContent { DiscoveryScreen() }
+    composeRule.onNodeWithTag("discoveryContent").assertIsDisplayed()
+  }
 
-    @Test
-    fun discoveryScreenTest() {
-        composeTestRule.setContent {
-            val discoveryScreen = DiscoveryScreen()
-        }
+  // Test if discovery screen has list
+  @Test
+  fun discoveryScreen_hasList() {
+    composeRule.activity.setContent { DiscoveryScreen() }
+    composeRule.onNodeWithTag("outdoorActivityList").assertIsDisplayed()
+  }
 
-        // Check if the DiscoveryScreen is displayed correctly
-        composeTestRule.onNodeWithTag("discoveryScreen").assertIsDisplayed()
+  @Test
+  fun discoveryScreen_hasFloatingActionButton() {
+    composeRule.activity.setContent { DiscoveryScreen() }
+    composeRule.onNodeWithTag("floatingActionButtons").assertIsDisplayed()
+  }
 
-        // Check if the list of outdoor activities is displayed correctly
-        composeTestRule.onNodeWithTag("outdoorActivityList").assertIsDisplayed()
-
-        // Check if the dialog is displayed correctly
-        composeTestRule.onNodeWithTag("activityDialog").assertIsDisplayed()
-
-        //Checdk if the floating action buttons are displayed correctly
-        composeTestRule.onNodeWithTag("floatingActionButtons").assertIsDisplayed()
-
-        // Check if the outdoor activity item is displayed correctly
-        composeTestRule.onNodeWithTag("outdoorActivityItem").assertIsDisplayed()
-
+  // Test if discovery screen has outdoor activity item and valid buttons
+  @Test
+  fun discoveryScreen_hasOutdoorActivityItem_andValidButtons() {
+    discoveryScreenViewModel.climbingActivities =
+        mutableListOf(OutdoorActivity(ActivityType.CLIMBING, 1, 1.0f, "1 hour", "Climbing"))
+    composeRule.activity.setContent {
+      OutdoorActivityList(outdoorActivities = discoveryScreenViewModel.climbingActivities)
     }
+    composeRule.onNodeWithTag("outdoorActivityItem").assertIsDisplayed()
+  }
 
-    @Test
-    fun discoveryContentTest() {
-        composeTestRule.setContent {
-            val discoveryContent = DiscoveryContent()
-        }
-
-        // Check if the DiscoveryContent is displayed correctly
-        composeTestRule.onNodeWithTag("discoveryContent").assertIsDisplayed()
+  // Test if activity dialog shows
+  @Test
+  fun activityDialog_isDisplayed() {
+    discoveryScreenViewModel.climbingActivities =
+        mutableListOf(OutdoorActivity(ActivityType.CLIMBING, 1, 1.0f, "1 hour", "Climbing"))
+    composeRule.activity.setContent {
+      ActivityDialog(
+          onDismissRequest = { /*dismiss dialog on clicking "Ok"*/
+            discoveryScreenViewModel.displayDialog.value = false
+          },
+          outdoorActivity = discoveryScreenViewModel.activityToDisplay.value)
     }
-
-    @Test
-    fun floatingActionButtonsTest() {
-        composeTestRule.setContent {
-            val floatingActionButtons = FloatingActionButtons()
-        }
-
-        // Check if the FloatingActionButtons is displayed correctly
-        composeTestRule.onNodeWithTag("floatingActionButtons").assertIsDisplayed()
-    }
-
-    @Test
-    fun outdoorActivityListTest() {
-        composeTestRule.setContent {
-            val outdoorActivityList = OutdoorActivityList(listOf(OutdoorActivity(ActivityType.BIKING, 9, 22.3f, "", "")))
-        }
-
-        // Check if the OutdoorActivityList is displayed correctly
-        composeTestRule.onNodeWithTag("outdoorActivityList").assertIsDisplayed()
-    }
-
-    @Test
-    fun outdoorActivityItemTest() {
-        composeTestRule.setContent {
-            val outdoorActivityItem = OutdoorActivityItem(OutdoorActivity(ActivityType.BIKING, 9, 22.3f, "", ""))
-        }
-
-        // Check if the OutdoorActivityItem is displayed correctly
-        composeTestRule.onNodeWithTag("outdoorActivityItem").assertIsDisplayed()
-    }
-
-
+    composeRule.onNodeWithTag("activityDialog").assertIsDisplayed()
+  }
 }

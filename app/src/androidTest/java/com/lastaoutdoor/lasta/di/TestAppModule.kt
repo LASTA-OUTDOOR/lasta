@@ -11,7 +11,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.ApiService
-import com.lastaoutdoor.lasta.data.api.OutdoorActivityRepositoryImpl
+import com.lastaoutdoor.lasta.data.api.FakeOutdoorActivityRepository
 import com.lastaoutdoor.lasta.data.auth.AuthRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.ActivitiesRepositoryImpl
 import com.lastaoutdoor.lasta.data.preferences.PreferencesRepositoryImpl
@@ -21,18 +21,24 @@ import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
 import com.lastaoutdoor.lasta.repository.PreferencesRepository
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import dagger.hilt.testing.TestInstallIn
 import javax.inject.Singleton
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-/** Hilt Module for providing dependencies */
-@InstallIn(SingletonComponent::class)
+/** Fake Hilt Module for providing dependencies */
+@TestInstallIn(components = [SingletonComponent::class], replaces = [AppModule::class])
 @Module
-object AppModule {
+object TestAppModule {
 
+  @Singleton
+  @Provides
+  fun provideOutdoorActivitiesRepository(): OutdoorActivityRepository =
+      FakeOutdoorActivityRepository()
+
+  // All these to build
   @Singleton @Provides fun provideFirebaseAuth() = Firebase.auth
 
   @Singleton
@@ -75,16 +81,11 @@ object AppModule {
       signInRequest: BeginSignInRequest
   ): AuthRepository = AuthRepositoryImpl(auth, oneTapClient, signInRequest)
 
+  /** Provides the [PreferencesDataStore] class */
   @Singleton
   @Provides
   fun providePreferencesRepository(@ApplicationContext context: Context): PreferencesRepository =
       PreferencesRepositoryImpl(context)
-
-  /** Provides the [GoogleAuth] class */
-  @Singleton
-  @Provides
-  fun provideOutdoorActivitiesRepository(apiService: ApiService): OutdoorActivityRepository =
-      OutdoorActivityRepositoryImpl(apiService)
 
   @Singleton
   @Provides
