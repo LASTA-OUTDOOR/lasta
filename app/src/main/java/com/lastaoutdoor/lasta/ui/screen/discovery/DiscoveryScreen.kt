@@ -129,7 +129,8 @@ fun OutdoorActivityItem(
           // set its theme from themes.xml
 
           modifier =
-              Modifier.border(
+              Modifier.testTag("startButton")
+                  .border(
                       width = 1.dp,
                       color = Color(0xFFFF7009),
                       shape = RoundedCornerShape(size = 20.dp))
@@ -231,19 +232,19 @@ fun ActivityDialog(onDismissRequest: () -> Unit, outdoorActivity: OutdoorActivit
             text =
                 if (outdoorActivity.locationName != "") "Location: " + outdoorActivity.locationName
                 else "No available Location",
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(16.dp).testTag("locationText"),
         )
         Text(
             text =
                 if (outdoorActivity.duration != "") "Duration: " + outdoorActivity.duration
                 else "No available duration",
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(16.dp).testTag("durationText"),
         )
         Text(
             text =
                 if (outdoorActivity.difficulty != 0) "Difficulty: ${outdoorActivity.difficulty}"
                 else "No available difficulty",
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(16.dp).testTag("difficultyText"),
         )
 
         Row(
@@ -252,7 +253,7 @@ fun ActivityDialog(onDismissRequest: () -> Unit, outdoorActivity: OutdoorActivit
         ) {
           TextButton(
               onClick = { onDismissRequest() },
-              modifier = Modifier.padding(8.dp),
+              modifier = Modifier.padding(8.dp).testTag("okButton"),
           ) {
             Text("Ok")
           }

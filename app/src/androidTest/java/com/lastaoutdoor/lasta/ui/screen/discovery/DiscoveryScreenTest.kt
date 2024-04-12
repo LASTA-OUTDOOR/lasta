@@ -2,8 +2,10 @@ package com.lastaoutdoor.lasta.ui.screen.discovery
 
 import androidx.activity.compose.setContent
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
 import com.lastaoutdoor.lasta.data.api.FakeOutdoorActivityRepository
 import com.lastaoutdoor.lasta.data.model.activity.ActivityType
 import com.lastaoutdoor.lasta.data.model.activity.OutdoorActivity
@@ -77,21 +79,53 @@ class DiscoveryScreenTest {
     composeRule.activity.setContent {
       OutdoorActivityList(outdoorActivities = discoveryScreenViewModel.climbingActivities)
     }
+    composeRule.onNodeWithTag("moreInfoButton").performClick()
+    composeRule.onNodeWithTag("mapButton").performClick()
+    composeRule.onNodeWithTag("startButton").performClick()
+    composeRule.onNodeWithTag("outdoorActivityItem").assertExists()
     composeRule.onNodeWithTag("outdoorActivityItem").assertIsDisplayed()
   }
 
-  // Test if activity dialog shows
+  // Test if activity dialog with valid info shows
   @Test
   fun activityDialog_isDisplayed() {
-    discoveryScreenViewModel.climbingActivities =
-        mutableListOf(OutdoorActivity(ActivityType.CLIMBING, 1, 1.0f, "1 hour", "Climbing"))
+    val act = OutdoorActivity(ActivityType.CLIMBING, 1, 1.0f, "1 hour", "Zurich")
     composeRule.activity.setContent {
       ActivityDialog(
           onDismissRequest = { /*dismiss dialog on clicking "Ok"*/
             discoveryScreenViewModel.displayDialog.value = false
           },
-          outdoorActivity = discoveryScreenViewModel.activityToDisplay.value)
+          outdoorActivity = act)
     }
+    composeRule.onNodeWithTag("okButton").performClick()
+    composeRule.onNodeWithTag("locationText").assertTextContains("Location: Zurich")
+    composeRule.onNodeWithTag("durationText").assertTextContains("Duration: 1 hour")
+    composeRule.onNodeWithTag("difficultyText").assertTextContains("Difficulty: 1")
+    composeRule.onNodeWithTag("activityDialog").assertIsDisplayed()
+  }
+
+  // Test if activity dialog with empty info shows
+  @Test
+  fun activityDialog_isDisplayed_emptyInfo() {
+    val act = OutdoorActivity(ActivityType.CLIMBING, 0, 1.0f, "", "")
+    composeRule.activity.setContent {
+      ActivityDialog(
+          onDismissRequest = { /*dismiss dialog on clicking "Ok"*/
+            discoveryScreenViewModel.displayDialog.value = false
+          },
+          outdoorActivity = act)
+    }
+    composeRule.onNodeWithTag("locationText").assertTextContains("No available Location")
+    composeRule.onNodeWithTag("durationText").assertTextContains("No available duration")
+    composeRule.onNodeWithTag("difficultyText").assertTextContains("No available difficulty")
+    composeRule.onNodeWithTag("activityDialog").assertIsDisplayed()
+  }
+
+  // Test that setting dialog.value to true calls ActivityDialog
+  @Test
+  fun showDialog_isCalled() {
+    discoveryScreenViewModel.displayDialog.value = true
+    composeRule.activity.setContent { DiscoveryContent() }
     composeRule.onNodeWithTag("activityDialog").assertIsDisplayed()
   }
 }
