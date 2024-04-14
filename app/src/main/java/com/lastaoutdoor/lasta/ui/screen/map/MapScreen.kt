@@ -36,9 +36,13 @@ import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.viewmodel.MapViewModel
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import okhttp3.internal.wait
 
 // Called after a click on a pointer on the map
 // @param viewModel: the viewmodel
@@ -190,12 +194,18 @@ private fun GoogleMapComposable(
           onClick = {
             updateSheet()
             viewModel.updateSelectedMarker(marker)
-            cameraPositionState.move(CameraUpdateFactory.newCameraPosition(CameraPosition.fromLatLngZoom(marker.position, 15f)) as CameraUpdate)
+
+                //camera moves to the marker when clicked
+              cameraPositionState.move(
+              CameraUpdateFactory.newCameraPosition(
+                  CameraPosition.fromLatLngZoom(marker.position, 15f)) as CameraUpdate)
+
+
             true
           })
     }
     // display all the itineraries fetched by the viewmodel
     // Commented because not ready for Milestone 1
-    // viewModel.state.itineraryList.forEach { itinerary -> Polyline(points = itinerary.points) }
+    viewModel.state.itineraryList.forEach { itinerary -> Polyline(points = itinerary.points) }
   }
 }

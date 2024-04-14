@@ -83,71 +83,71 @@ constructor(private val outdoorActivityRepository: OutdoorActivityRepository) : 
   }
 
   // Returns relations that represents hiking activities
-    private fun fetchHikingActivities(
-        rad: Double,
-        centerLocation: LatLng
-    ): List<Relation> {
+  private fun fetchHikingActivities(rad: Double, centerLocation: LatLng): List<Relation> {
 
-      var hikingRelation: List<Relation> = emptyList()
+    var hikingRelation: List<Relation> = emptyList()
 
-      val hikingThread = Thread {
-        hikingRelation =
-            outdoorActivityRepository
-                .getHikingActivities(rad.toInt(), centerLocation.latitude,
-   centerLocation.longitude)
-                .elements
-      }
-
-      hikingThread.start()
-      hikingThread.join()
-
-      return hikingRelation
+    val hikingThread = Thread {
+      hikingRelation =
+          outdoorActivityRepository
+              .getHikingActivities(rad.toInt(), centerLocation.latitude, centerLocation.longitude)
+              .elements
     }
 
-    // Converts the relations to markers -> starting marker of a hike
-    private fun getMarkersFromRelations(hikingRelations: List<Relation>): List<HikingMarker> {
+    hikingThread.start()
+    hikingThread.join()
 
-      val markers = mutableListOf<HikingMarker>()
+    return hikingRelation
+  }
 
-      hikingRelations.forEach {
-          val rel = it.ways ?: emptyList()
-          if(rel.isNotEmpty()) {
-              val node = rel.first().nodes ?: emptyList()
-              if(node.isNotEmpty()) {
-                  markers.add(
-                      HikingMarker(
-                          "Hiking: " + (it.tags.name ?: "Unnamed"),
-                          LatLng(node.first().lat, node.first().lon),
-                          it.locationName ?: "No location name",
-                          R.drawable.hiking_icon))
-              }
-          }
+  // Converts the relations to markers -> starting marker of a hike
+  private fun getMarkersFromRelations(hikingRelations: List<Relation>): List<HikingMarker> {
 
+    val markers = mutableListOf<HikingMarker>()
+
+    hikingRelations.forEach {
+      val rel = it.ways ?: emptyList()
+      if (rel.isNotEmpty()) {
+        val node = rel.first().nodes ?: emptyList()
+        if (node.isNotEmpty()) {
+          markers.add(
+              HikingMarker(
+                  "Hiking: " + (it.tags.name ?: "Unnamed"),
+                  LatLng(node.first().lat, node.first().lon),
+                  it.locationName ?: "No location name",
+                  R.drawable.hiking_icon))
+        }
       }
-
-      return markers.toList()
     }
+
+    return markers.toList()
+  }
 
   // Still TODO /!\ -> get the itinerary of a hiking activity (Doesn't work, we cannot just draw and
   // fetch all itineraries for big distances)
-//    private fun getItineraryFromRelations(hikingRelations: List<Relation>): List<MapItinerary> {
-//
-//      val itinerary = mutableListOf<MapItinerary>()
-//
-//      // go through each relation to find the ways and nodes composing it
-//      hikingRelations.forEach { relation ->
-//        val pointsList = mutableListOf<LatLng>()
-//        relation.ways.forEach { way ->
-//          way.nodes.forEach { position -> pointsList.add(LatLng(position.lat, position.lon)) }
-//        }
-//
-//        itinerary.add(
-//            MapItinerary(relation.id, relation.tags.name ?: "No given name", points = pointsList)
-//        )
-//      }
-//
-//      return itinerary.toList()
-//    }
+      private fun getItineraryFromRelations(hikingRelations: List<Relation>): List<MapItinerary> {
+
+        val itinerary = mutableListOf<MapItinerary>()
+
+        // go through each relation to find the ways and nodes composing it
+        hikingRelations.forEach { relation ->
+
+          val ways = relation.ways ?: emptyList()
+
+          val pointsList = mutableListOf<LatLng>()
+          ways.forEach { way ->
+            val nodes = way.nodes ?: emptyList()
+            nodes.forEach { position -> pointsList.add(LatLng(position.lat, position.lon)) }
+          }
+
+          itinerary.add(
+              MapItinerary(relation.id, relation.tags.name ?: "No given name", points =
+   pointsList)
+          )
+        }
+
+        return itinerary.toList()
+      }
 
   // Update the markers on the map with a new center location and radius
   fun updateMarkers(centerLocation: LatLng, rad: Double) {
@@ -164,7 +164,7 @@ constructor(private val outdoorActivityRepository: OutdoorActivityRepository) : 
     state.markerList = climbingMarkers
     state.markerList = state.markerList.plus(hikingMarkers)
 
-    // state.itineraryList = state.itineraryList.plus(getItineraryFromRelations(hikingRelations))
+    state.itineraryList = state.itineraryList.plus(getItineraryFromRelations(hikingRelations))
 
   }
 }

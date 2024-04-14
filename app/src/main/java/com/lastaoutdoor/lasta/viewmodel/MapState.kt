@@ -3,6 +3,7 @@ package com.lastaoutdoor.lasta.viewmodel
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.MapUiSettings
+import com.lastaoutdoor.lasta.data.model.map.MapItinerary
 import com.lastaoutdoor.lasta.data.model.map.Marker
 
 // state for the map on the mapScreen
@@ -20,8 +21,7 @@ class MapState {
   var markerList: List<Marker> = emptyList()
 
   // Itinerary to display
-  // COMMENTED because not ready for Milestone 1
-  // var itineraryList: List<MapItinerary> = emptyList()
+  var itineraryList: List<MapItinerary> = emptyList()
 
   // The marker displayed in the more info bottom sheet
   var selectedMarker: Marker? = null
