@@ -26,6 +26,8 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.firebase.ui.auth.AuthUI.getApplicationContext
+import com.google.android.gms.maps.CameraUpdate
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -183,15 +185,15 @@ private fun GoogleMapComposable(
       Marker(
           state = MarkerState(position = marker.position),
           title = marker.name,
-          icon = BitmapDescriptorFactory.fromResource(R.drawable.climbing_icon),
+          icon = BitmapDescriptorFactory.fromResource(marker.icon),
           snippet = marker.description,
           onClick = {
             updateSheet()
             viewModel.updateSelectedMarker(marker)
+            cameraPositionState.move(CameraUpdateFactory.newCameraPosition(CameraPosition.fromLatLngZoom(marker.position, 15f)) as CameraUpdate)
             true
           })
     }
-
     // display all the itineraries fetched by the viewmodel
     // Commented because not ready for Milestone 1
     // viewModel.state.itineraryList.forEach { itinerary -> Polyline(points = itinerary.points) }
