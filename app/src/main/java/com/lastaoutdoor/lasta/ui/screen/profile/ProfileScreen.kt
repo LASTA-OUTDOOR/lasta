@@ -234,7 +234,7 @@ fun TimeFrameSelection(profileScreenViewModel: ProfileScreenViewModel = hiltView
               .padding(1.dp) // Padding for the border effect
               .then(borderModifier)) {
         val timeFrame by profileScreenViewModel.timeFrame.collectAsState()
-        TimeFrame.values().forEach { timeframe ->
+        TimeFrame.values().forEachIndexed { index, timeframe ->
           // Determine background and text color based on selection
           val backgroundColor = if (timeFrame == timeframe) Color(0xFFFDB813) else Color.Transparent
           val textColor = if (timeFrame == timeframe) Color.White else Color.Black
@@ -246,7 +246,8 @@ fun TimeFrameSelection(profileScreenViewModel: ProfileScreenViewModel = hiltView
                       containerColor = backgroundColor, contentColor = textColor),
               shape = shape,
               modifier =
-                  Modifier.padding(horizontal = 2.dp)
+                  Modifier.testTag("TimeFrameItem$index")
+                      .padding(horizontal = 2.dp)
                       .height(50.dp)
                       .defaultMinSize(minWidth = 50.dp) // Minimum width for all buttons
               ) {
@@ -332,7 +333,7 @@ fun Chart(
             Text("hikes")
           }
           ActivitiesDatabaseType.Sports.CLIMBING -> {
-            Text("climbs")
+            Text("climbs", modifier = Modifier.testTag("TestClimb"))
           }
         }
       }
@@ -385,11 +386,10 @@ fun Chart(
 @Composable
 fun RecentActivities(
     activities: List<ActivitiesDatabaseType>,
-    profileScreenViewModel: ProfileScreenViewModel = hiltViewModel()
 ) {
-  val sport by profileScreenViewModel.sport.collectAsState()
   Text("Recent Activities", style = TextStyle(fontSize = 20.sp), fontWeight = FontWeight.Bold)
   for (a in activities.reversed()) {
+    val sport = a.sport
     Card(
         modifier = Modifier.padding(12.dp).fillMaxWidth().testTag("RecentActivitiesItem"),
         elevation = CardDefaults.cardElevation(4.dp),
@@ -435,7 +435,8 @@ fun RecentActivities(
                           text =
                               String.format(
                                   "%.2f", metersToKilometers(climb.elevationGainedInMeters)),
-                          fontWeight = FontWeight.Bold)
+                          fontWeight = FontWeight.Bold,
+                          modifier = Modifier.testTag("TestAndrew1"))
                       Text(text = "Elevation")
                     }
                   }
@@ -454,7 +455,8 @@ fun RecentActivities(
                       val climb = a as ActivitiesDatabaseType.Climb
                       Text(
                           text = String.format("%.2f", metersToKilometers(climb.numberOfPitches)),
-                          fontWeight = FontWeight.Bold)
+                          fontWeight = FontWeight.Bold,
+                          modifier = Modifier.testTag("TestAndrew2"))
                       Text(text = "Pitches")
                     }
                   }
