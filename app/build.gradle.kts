@@ -150,7 +150,6 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.androidx.core.testing)
-    testImplementation(libs.mockk.agent.jvm)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation("io.mockk:mockk:1.13.10")
     testImplementation("io.mockk:mockk-agent-jvm:1.13.10")

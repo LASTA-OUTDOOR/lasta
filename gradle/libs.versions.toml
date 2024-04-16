@@ -19,6 +19,7 @@ hiltAndroidTesting = "2.37"
 hiltNavigationCompose = "1.2.0"
 kotlin = "1.8.10"
 coreKtx = "1.12.0"
+kotlinxCoroutinesTest = "1.8.1-Beta"
 ktfmt = "0.17.0"
 junit = "4.13.2"
 junitVersion = "1.1.5"
@@ -71,6 +72,7 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
