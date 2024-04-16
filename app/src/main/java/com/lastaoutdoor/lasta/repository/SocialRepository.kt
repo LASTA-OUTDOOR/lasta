@@ -9,5 +9,5 @@ interface SocialRepository {
   fun getFriends(): List<UserModel>?
 
   // returns all the activities done by friends in the last
-  fun getLatestFriendActivities(days: Int): List<ActivitiesDatabaseType>
+  fun getLatestFriendActivities(days: Int): List<ActivitiesDatabaseType>?
 }

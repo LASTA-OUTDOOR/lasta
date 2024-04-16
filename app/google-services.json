@@ -70,6 +70,14 @@
           }
         },
         {
+          "client_id": "720666228102-jvlbs9hc14otl5t443r5rtcguhpqoid9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lastaoutdoor.lasta",
+            "certificate_hash": "bc2a74f86a37d4b3eb457afbe758e4e6cf3a238b"
+          }
+        },
+        {
           "client_id": "720666228102-o6eqt0mbni4t6b264i1l16b0a84v56s5.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -92,7 +100,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBSlfP6OWaK12W02HeDOS33ipriSj53nWU"
+          "current_key": "AIzaSyBpBg6hv5yfYt_Gkq5TBLdb1J-5Cj9mXBo"
         }
       ],
       "services": {

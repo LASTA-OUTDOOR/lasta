@@ -7,10 +7,10 @@ import com.lastaoutdoor.lasta.repository.SocialRepository
 
 class SocialRepositoryImpl(private val context: Context) : SocialRepository {
   override fun getFriends(): List<UserModel>? {
-    TODO("Not yet implemented")
+    return null
   }
 
-  override fun getLatestFriendActivities(days: Int): List<ActivitiesDatabaseType> {
-    TODO("Not yet implemented")
+  override fun getLatestFriendActivities(days: Int): List<ActivitiesDatabaseType>? {
+    return null
   }
 }
