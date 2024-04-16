@@ -1,3 +1,4 @@
+import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
@@ -30,11 +31,25 @@ android {
         val properties = Properties()
         properties.load(project.rootProject.file("local.properties").inputStream())
         // Set API keys in BuildConfig
-        resValue ("string", "MAPS_API_KEY", "\"${properties.getProperty("MAPS_API_KEY")}\"")
+        resValue("string", "MAPS_API_KEY", "\"${properties.getProperty("MAPS_API_KEY")}\"")
+    }
+
+    val keystorePropertiesFile = rootProject.file("keystore.properties")
+    val keystoreProperties = Properties()
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+
+    signingConfigs {
+        create("release") {
+            storeFile = project.rootProject.file("keystore.jks")
+            storePassword = keystoreProperties["storePassword"] as String
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["keyPassword"] as String
+        }
     }
 
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
