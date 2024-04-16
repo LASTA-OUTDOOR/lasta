@@ -1,3 +1,4 @@
+import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
@@ -20,7 +21,7 @@ android {
         minSdk = 28
         targetSdk = 34
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.1.1"
 
         testInstrumentationRunner = "com.lastaoutdoor.lasta.HiltTestRunner"
         vectorDrawables {
@@ -28,13 +29,27 @@ android {
         }
 
         val properties = Properties()
-        properties.load(project.rootProject.file("local.properties").inputStream())
+        properties.load(project.rootProject.file("./local.properties").inputStream())
         // Set API keys in BuildConfig
-        resValue ("string", "MAPS_API_KEY", "\"${properties.getProperty("MAPS_API_KEY")}\"")
+        resValue("string", "MAPS_API_KEY", "\"${properties.getProperty("MAPS_API_KEY")}\"")
+    }
+
+    val keystorePropertiesFile = project.rootProject.file("./keystore.properties")
+    val keystoreProperties = Properties()
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+
+    signingConfigs {
+        create("release") {
+            storeFile = project.rootProject.file("./keystore.jks")
+            storePassword = keystoreProperties["storePassword"] as String
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["keyPassword"] as String
+        }
     }
 
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -135,12 +150,10 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.androidx.core.testing)
-    testImplementation("junit:junit:4.12")
-    testImplementation("junit:junit:4.12")
+    testImplementation(libs.kotlinx.coroutines.test)
     testImplementation("io.mockk:mockk:1.13.10")
     testImplementation("io.mockk:mockk-agent-jvm:1.13.10")
     testImplementation("app.cash.turbine:turbine:0.5.2")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 
     globalTestImplementation(libs.androidx.junit)
     globalTestImplementation(libs.androidx.espresso.core)
@@ -170,7 +183,6 @@ dependencies {
     implementation(libs.firebase.database.ktx)
     implementation(libs.firebase.firestore.v24100)
     implementation (libs.firebase.ui.auth)
-    implementation("com.google.firebase:firebase-auth")
     implementation(platform(libs.firebase.bom))
     // --------- Kaspresso test framework ----------
     globalTestImplementation(libs.kaspresso)
