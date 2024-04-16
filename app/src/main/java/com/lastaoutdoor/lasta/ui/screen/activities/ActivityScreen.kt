@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,7 +32,8 @@ import com.lastaoutdoor.lasta.ui.theme.LastaTheme
 @Preview
 @Composable
 fun ActivityScreen(){
-    LazyColumn(modifier = Modifier.padding(16.dp)) {
+    LazyColumn(modifier = Modifier.padding(8.dp)) {
+        item { Spacer(modifier = Modifier.height(15.dp)) }
         item {TopBar()}
     }
 }
@@ -39,19 +41,23 @@ fun ActivityScreen(){
 @Composable
 fun TopBar(){
     Row(modifier = Modifier.fillMaxWidth()) {
-        Column {BackArrowButton()
-        }
-
+        TopBarLogo(R.drawable.arrow_back)
+        Spacer(modifier = Modifier.width(180.dp))
+        TopBarLogo(R.drawable.archive)
+        TopBarLogo(R.drawable.share)
+        TopBarLogo(R.drawable.favourite)
     }
 }
 
 @Composable
-fun BackArrowButton(){
+fun TopBarLogo(logoPainterId : Int){
     IconButton(onClick = { /* go back */ }) {
         Icon(
-            painter = painterResource(id = R.drawable.arrow_back),
-            contentDescription = "Back Arrow",
-            modifier = Modifier.padding(1.dp).width(26.dp) .height(26.dp),
+            painter = painterResource(id =logoPainterId),
+            contentDescription = "Top Bar logo",
+            modifier = Modifier
+                .width(26.dp)
+                .height(26.dp),
             tint =  Color(0, 150, 207, 255)
         )
     }
