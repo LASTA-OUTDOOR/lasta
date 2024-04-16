@@ -34,7 +34,7 @@ android {
         resValue("string", "MAPS_API_KEY", "\"${properties.getProperty("MAPS_API_KEY")}\"")
     }
 
-    val keystorePropertiesFile = rootProject.file("keystore.properties")
+    val keystorePropertiesFile = project.rootProject.file("keystore.properties")
     val keystoreProperties = Properties()
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 
