@@ -1,4 +1,5 @@
 name: APK Build
+run-name: APK v${{ inputs.tag_name }} / ${{ inputs.build_type }}
 
 # Run the workflow when commits are pushed on main or when a PR is modified
 on:
@@ -8,11 +9,11 @@ on:
         required: true
         type: string
         description: "Tag Name"
-      release_notes:
-        type: string
+      build_type:
         required: true
-        default: 'Manual Debug Build'
-        description: 'Release Notes'
+        type: string
+        description: "debug or release"
+        default: "release"
 
 jobs:
   build:
@@ -34,15 +35,12 @@ jobs:
           distribution: "temurin"
           java-version: "17"
 
-      - name: Setup Gradle
+      - name: Gradle cache
         uses: gradle/actions/setup-gradle@v3
 
       - name: Grant execute permission for gradlew
         run: |
           chmod +x ./gradlew
-
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v2.0.10
 
       - name: Create signing files
         env:
@@ -52,9 +50,9 @@ jobs:
           KEYSTORE_PROPERTIES: ${{ secrets.KEYSTORE_PROPERTIES }}
         run: |
           echo "MAPS_API_KEY=$MAPS_API_KEY" > ./local.properties
-          echo $GOOGLE_SERVICES_JSON > ./app/google-services.json
+          echo $GOOGLE_SERVICES_JSON | base64 -di > ./app/google-services.json
           echo $KEYSTORE | base64 -di > ./keystore.jks
-          echo $KEYSTORE_PROPERTIES > ./keystore.properties
+          echo $KEYSTORE_PROPERTIES | base64 -di > ./keystore.properties
 
       - name: Building Release APK
         run: ./gradlew assembleRelease
@@ -66,5 +64,5 @@ jobs:
       - name: Upload Release Build to Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: release-apk-v${{ inputs.tag_name }}
+          name: ${{ inputs.build_type }}-apk-v${{ inputs.tag_name }}
           path: ${{ steps.releaseApk.outputs.apkfile }}
