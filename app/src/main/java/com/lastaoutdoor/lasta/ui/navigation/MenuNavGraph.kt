@@ -7,7 +7,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.lastaoutdoor.lasta.ui.screen.discovery.DiscoveryScreen
-import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
 import com.lastaoutdoor.lasta.ui.screen.profile.ProfileScreen
 import com.lastaoutdoor.lasta.ui.screen.social.SocialScreen
 
