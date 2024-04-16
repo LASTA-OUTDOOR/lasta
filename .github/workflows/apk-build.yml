@@ -4,11 +4,14 @@ run-name: APK v${{ inputs.tag_name }} / ${{ inputs.build_type }}
 # Run the workflow when commits are pushed on main or when a PR is modified
 on:
   workflow_dispatch:
+    # We have 2 workflow user inputs: Choosing the tag name and what type of build
+    # we want to perform (debug or release)
     inputs:
       tag_name:
         required: true
         type: string
         description: "Tag Name"
+        default: "0.1.1"
       build_type:
         required: true
         type: string
@@ -42,6 +45,7 @@ jobs:
         run: |
           chmod +x ./gradlew
 
+      # Here we make sure all hidden files are correctly imported for the build
       - name: Create signing files
         env:
           MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
@@ -54,6 +58,8 @@ jobs:
           echo $KEYSTORE | base64 -di > ./keystore.jks
           echo $KEYSTORE_PROPERTIES | base64 -di > ./keystore.properties
 
+      # We build the APK
+      # TODO: Check if debug mode, then run in debug mode
       - name: Building Release APK
         run: ./gradlew assembleRelease
 
@@ -61,6 +67,7 @@ jobs:
         id: releaseApk
         run: echo "apkfile=$(find app/build/outputs/apk/release/*.apk)" >> $GITHUB_OUTPUT
 
+      # We upload the APK to the artifacts
       - name: Upload Release Build to Artifacts
         uses: actions/upload-artifact@v4
         with:
