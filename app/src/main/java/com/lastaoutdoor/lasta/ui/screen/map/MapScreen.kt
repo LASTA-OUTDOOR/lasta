@@ -56,7 +56,9 @@ fun InformationSheet(
     ModalBottomSheet(
         onDismissRequest = { onDismissRequest() },
         sheetState = sheetState,
-        modifier = Modifier.fillMaxSize().testTag("bottomSheet"),
+        modifier = Modifier
+            .fillMaxSize()
+            .testTag("bottomSheet"),
     ) {
       Column(modifier = Modifier.padding(16.dp)) {
         Text(
@@ -149,6 +151,11 @@ fun MapScreen(viewModel: MapViewModel = hiltViewModel()) {
       viewModel.updateMarkers(centerLocation, rad)
     }
   }
+
+  LaunchedEffect(Unit) {
+      viewModel.updateMarkers(cameraPositionState.position.target, 1000.0)
+  }
+
   // draw the map
   GoogleMapComposable(viewModel, cameraPositionState, { isSheetOpen = true })
 }
