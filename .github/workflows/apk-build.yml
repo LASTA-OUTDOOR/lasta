@@ -4,6 +4,10 @@ name: APK Build
 on:
   workflow_dispatch:
     inputs:
+      tag_name:
+        required: true
+        type: string
+        description: "Tag Name"
       release_notes:
         type: string
         required: true
@@ -37,27 +41,30 @@ jobs:
         run: |
           chmod +x ./gradlew
 
-      - name: Create local.properties used for Map
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2.0.10
+
+      - name: Create signing files
         env:
           MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+          KEYSTORE: ${{ secrets.KEYSTORE }}
+          KEYSTORE_PROPERTIES: ${{ secrets.KEYSTORE_PROPERTIES }}
         run: |
-            echo "MAPS_API_KEY=$MAPS_API_KEY" > ./local.properties
-            echo "File created"
+          echo "MAPS_API_KEY=$MAPS_API_KEY" > local.properties
+          echo $GOOGLE_SERVICES_JSON | base64 -di > ./app/google-services.json
+          echo $KEYSTORE | base64 -di > keystore.jks
+          echo $KEYSTORE_PROPERTIES | base64 -di > keystore.properties
 
-      - name: Building APK
-        run: ./gradlew build
+      - name: Building Release APK
+        run: ./gradlew assembleRelease
 
-      - name: Upload APK to Artifacts
+      - name: Get release file apk path
+        id: releaseApk
+        run: echo "apkfile=$(find app/build/outputs/apk/release/*.apk)" >> $GITHUB_OUTPUT
+
+      - name: Upload Release Build to Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug
-          path: app/build/outputs/apk/debug/app-debug.apk
-
-      - name: Upload artifact to Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{secrets.FIREBASE_APP_ID}}
-          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-          groups: testers
-          file: app/build/outputs/apk/debug/app-debug.apk
-          releaseNotes: ${{ inputs.release_notes }}
+          name: release-apk-v${{ inputs.tag_name }}
+          path: ${{ steps.releaseApk.outputs.apkfile }}
