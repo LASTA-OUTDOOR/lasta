@@ -31,7 +31,9 @@ fun ConnectionMissing() {
         Text(
             text =
                 "This content requires an internet connection. Please check your connection and try again.",
-            style = TextStyle(fontWeight = FontWeight.Normal, fontSize = 20.sp, textAlign = TextAlign.Center),
+            style =
+                TextStyle(
+                    fontWeight = FontWeight.Normal, fontSize = 20.sp, textAlign = TextAlign.Center),
             modifier = Modifier.padding(top = 8.dp))
       }
 }
@@ -51,3 +53,20 @@ fun FriendsMissing() {
         Button(onClick = { /*TODO*/}) { Text(text = "Try adding more friends!") }
       }
 }
+
+@Composable
+fun MessageMissing() {
+  Column(
+      modifier = Modifier.fillMaxSize(),
+      verticalArrangement = Arrangement.Center,
+      horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            text = "You don't have any messages yet...",
+            style =
+                TextStyle(
+                    fontWeight = FontWeight.Normal, fontSize = 20.sp, textAlign = TextAlign.Center),
+            modifier = Modifier.padding(15.dp))
+        Button(onClick = { /*TODO*/ }) { Text(text = "Start a conversation!") }
+      }
+}
+

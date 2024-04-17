@@ -21,7 +21,7 @@ fun MenuNavGraph(
       route = RootScreen.Main.route,
       modifier = modifier.testTag("MenuNavGraph"),
       startDestination = LeafScreen.Discover.route) {
-        composable(LeafScreen.Map.route) { SocialScreen() }
+        composable(LeafScreen.Social.route) { SocialScreen() }
         composable(LeafScreen.Discover.route) { DiscoveryScreen() }
         composable(LeafScreen.Profile.route) {
           ProfileScreen(rootNavController = rootNavController)

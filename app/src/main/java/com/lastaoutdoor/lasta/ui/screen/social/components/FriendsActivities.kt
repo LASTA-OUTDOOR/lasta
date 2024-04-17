@@ -22,7 +22,7 @@ import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
 @Composable
 fun FriendsActivityList(viewModel: SocialViewModel = hiltViewModel()) {
-  if (viewModel.friends.isNullOrEmpty()) {
+  if (viewModel.latestFriendActivities.isNullOrEmpty()) {
     FriendsMissing()
     return
   }

@@ -8,14 +8,13 @@ import com.lastaoutdoor.lasta.repository.SocialRepository
 class SocialRepositoryImpl(private val context: Context) : SocialRepository {
   override fun getFriends(): List<UserModel>? {
     return listOf(
-      UserModel(
-        "1",
-        "John Doe",
-        "https://randomuser",
-        "https://randomuser",
-        null,
-      )
-    )
+        UserModel(
+            "1",
+            "John Doe",
+            "https://randomuser",
+            "https://randomuser",
+            null,
+        ))
   }
 
   override fun getLatestFriendActivities(days: Int): List<ActivitiesDatabaseType>? {
@@ -23,4 +22,7 @@ class SocialRepositoryImpl(private val context: Context) : SocialRepository {
   }
 
   override var isConnected: Boolean = true
+    override fun getMessages(): List<String>? {
+        return null
+    }
 }
