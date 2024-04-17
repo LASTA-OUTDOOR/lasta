@@ -43,11 +43,11 @@ fun TabMenu(){
         }
     }
 
-    //use the state varibale to choose which composable to display -> callbacks in the view model ?
+    //use the state varibale to choose which composable to display
     when(state){
         0 -> FriendsActivityList()
-        1 -> ConnectionMissing()
-        2 -> FriendsMissing()
+        1 -> ConnectionMissing() //TODO: appropriate composable
+        2 -> FriendsMissing() //TODO: apppropriate composable
     }
 
 }
