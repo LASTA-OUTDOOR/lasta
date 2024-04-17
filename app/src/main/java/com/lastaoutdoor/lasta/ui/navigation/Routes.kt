@@ -8,6 +8,8 @@ sealed class RootScreen(val route: String) {
 
   object Login : RootScreen("Login")
 
+  object Setup : RootScreen("Setup")
+
   object Main : RootScreen("Main")
 }
 

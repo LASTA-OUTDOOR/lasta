@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import com.lastaoutdoor.lasta.ui.screen.loading.LoadingScreen
 import com.lastaoutdoor.lasta.ui.screen.login.LoginScreen
 import com.lastaoutdoor.lasta.ui.screen.main.MainScreen
+import com.lastaoutdoor.lasta.ui.screen.setup.SetupScreen
 
 @Composable
 fun MainAppNavGraph(
@@ -21,6 +22,7 @@ fun MainAppNavGraph(
       startDestination = RootScreen.Loading.route) {
         composable(RootScreen.Loading.route) { LoadingScreen(navController = navController) }
         composable(RootScreen.Login.route) { LoginScreen(navController = navController) }
+        composable(RootScreen.Setup.route) { SetupScreen(navController = navController) }
         composable(RootScreen.Main.route) { MainScreen(rootNavController = navController) }
       }
 }
