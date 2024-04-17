@@ -35,13 +35,12 @@ object AppModule {
 
   @Singleton @Provides fun provideFirebaseAuth() = Firebase.auth
 
-  @Singleton
-  @Provides
+  @Singleton @Provides
   fun provideOneTapClient(@ApplicationContext context: Context): SignInClient =
       Identity.getSignInClient(context)
 
   /** Provides the [Firebase.firestore] class */
-  @Provides @Singleton fun provideFirebaseUser() = Firebase.firestore
+  @Provides @Singleton fun provideFirebaseFirestore() = Firebase.firestore
 
   /** Provides the [ApiService] class */
   @Singleton
@@ -51,11 +50,23 @@ object AppModule {
           .setGoogleIdTokenRequestOptions(
               BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                   .setSupported(true)
-                  .setFilterByAuthorizedAccounts(false)
+                  .setFilterByAuthorizedAccounts(true)
                   .setServerClientId(context.getString(R.string.web_client_id))
                   .build())
           .setAutoSelectEnabled(true)
           .build()
+
+    @Singleton
+    @Provides
+    fun provideSignUpRequest(@ApplicationContext context: Context): BeginSignInRequest =
+        BeginSignInRequest.builder()
+            .setGoogleIdTokenRequestOptions(
+                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                    .setSupported(true)
+                    .setFilterByAuthorizedAccounts(false)
+                    .setServerClientId(context.getString(R.string.web_client_id))
+                    .build())
+            .build()
 
   @Singleton
   @Provides
@@ -72,8 +83,9 @@ object AppModule {
   fun provideAuthRepository(
       auth: FirebaseAuth,
       oneTapClient: SignInClient,
-      signInRequest: BeginSignInRequest
-  ): AuthRepository = AuthRepositoryImpl(auth, oneTapClient, signInRequest)
+      signInRequest: BeginSignInRequest,
+      signUpRequest: BeginSignInRequest,
+  ): AuthRepository = AuthRepositoryImpl(auth, oneTapClient, signInRequest, signUpRequest)
 
   @Singleton
   @Provides
