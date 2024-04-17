@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.lastaoutdoor.lasta.data.db.DatabaseManager
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.data.model.profile.DaysInWeek
 import com.lastaoutdoor.lasta.data.model.profile.MonthsInYear
@@ -71,13 +72,14 @@ import java.util.Calendar
 @Composable
 fun ProfileScreen(
     profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(),
-    rootNavController: NavHostController,
-    authViewModel: AuthViewModel = hiltViewModel()
+    rootNavController: NavHostController
 ) {
   // profileScreenVIewModel.addTrailToUserActivities()
   val activities by profileScreenViewModel.trails.collectAsState()
 
-  LazyColumn(modifier = Modifier.padding(16.dp).testTag("ProfileScreen")) {
+  LazyColumn(modifier = Modifier
+      .padding(16.dp)
+      .testTag("ProfileScreen")) {
     item { UserInfo(rootNavController) }
     item {
       SportSelection()
@@ -163,7 +165,9 @@ fun UserInfo(
       AsyncImage(
           model = profilePictureUrl,
           contentDescription = "Profile picture",
-          modifier = Modifier.size(70.dp).clip(CircleShape),
+          modifier = Modifier
+              .size(70.dp)
+              .clip(CircleShape),
           contentScale = ContentScale.Crop)
     }
     Column(modifier = Modifier.padding(0.dp, 8.dp, 16.dp, 0.dp)) {
@@ -188,6 +192,7 @@ fun HikingRow(
     selectedHikingLevel: HikingLevel,
     preferences: PreferencesViewModel = hiltViewModel(),
 ) {
+    val userId by preferences.userId.collectAsState(initial = "")
   Row(
       modifier = Modifier.fillMaxWidth(.7f),
       horizontalArrangement = Arrangement.SpaceEvenly,
@@ -197,7 +202,8 @@ fun HikingRow(
           RadioButton(
               modifier = Modifier.testTag("HikingLevelItem$index"),
               selected = hikingLevel == selectedHikingLevel,
-              onClick = { preferences.updateHikingLevel(hikingLevel) })
+              onClick = { preferences.updateHikingLevel(hikingLevel)
+              DatabaseManager().updateFieldInUser(userId, "hikingLevel", hikingLevel.toString()) })
         }
       }
 }
@@ -225,14 +231,17 @@ fun SportSelection(profileScreenViewModel: ProfileScreenViewModel = hiltViewMode
 fun TimeFrameSelection(profileScreenViewModel: ProfileScreenViewModel = hiltViewModel()) {
   val shape = RoundedCornerShape(20.dp)
   val borderModifier =
-      Modifier.padding(4.dp).border(width = 1.dp, color = Color.Black, shape = shape)
+      Modifier
+          .padding(4.dp)
+          .border(width = 1.dp, color = Color.Black, shape = shape)
 
   Row(
       modifier =
-          Modifier.clip(shape)
-              .background(MaterialTheme.colorScheme.background)
-              .padding(1.dp) // Padding for the border effect
-              .then(borderModifier)) {
+      Modifier
+          .clip(shape)
+          .background(MaterialTheme.colorScheme.background)
+          .padding(1.dp) // Padding for the border effect
+          .then(borderModifier)) {
         val timeFrame by profileScreenViewModel.timeFrame.collectAsState()
         TimeFrame.values().forEachIndexed { index, timeframe ->
           // Determine background and text color based on selection
@@ -246,10 +255,11 @@ fun TimeFrameSelection(profileScreenViewModel: ProfileScreenViewModel = hiltView
                       containerColor = backgroundColor, contentColor = textColor),
               shape = shape,
               modifier =
-                  Modifier.testTag("TimeFrameItem$index")
-                      .padding(horizontal = 2.dp)
-                      .height(50.dp)
-                      .defaultMinSize(minWidth = 50.dp) // Minimum width for all buttons
+              Modifier
+                  .testTag("TimeFrameItem$index")
+                  .padding(horizontal = 2.dp)
+                  .height(50.dp)
+                  .defaultMinSize(minWidth = 50.dp) // Minimum width for all buttons
               ) {
                 Text(
                     text = timeframe.name,
@@ -391,14 +401,19 @@ fun RecentActivities(
   for (a in activities.reversed()) {
     val sport = a.sport
     Card(
-        modifier = Modifier.padding(12.dp).fillMaxWidth().testTag("RecentActivitiesItem"),
+        modifier = Modifier
+            .padding(12.dp)
+            .fillMaxWidth()
+            .testTag("RecentActivitiesItem"),
         elevation = CardDefaults.cardElevation(4.dp),
         shape = RoundedCornerShape(8.dp)) {
           Row(
               modifier = Modifier.padding(8.dp, 0.dp),
               verticalAlignment = Alignment.CenterVertically) {
                 // Image on the left
-                Box(modifier = Modifier.size(100.dp).padding(8.dp)) {
+                Box(modifier = Modifier
+                    .size(100.dp)
+                    .padding(8.dp)) {
                   /*
                   Image(
                       bitmap = imageBitmap,
@@ -418,7 +433,9 @@ fun RecentActivities(
           // Text information on the right
 
           Row(
-              modifier = Modifier.fillMaxWidth().padding(16.dp),
+              modifier = Modifier
+                  .fillMaxWidth()
+                  .padding(16.dp),
               horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
                   when (sport) {

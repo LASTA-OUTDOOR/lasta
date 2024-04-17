@@ -27,6 +27,7 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
 
 /** Hilt Module for providing dependencies */
 @InstallIn(SingletonComponent::class)
@@ -42,9 +43,8 @@ object AppModule {
   /** Provides the [Firebase.firestore] class */
   @Provides @Singleton fun provideFirebaseFirestore() = Firebase.firestore
 
-  /** Provides the [ApiService] class */
-  @Singleton
   @Provides
+  @Named("signInRequest")
   fun provideSignInRequest(@ApplicationContext context: Context): BeginSignInRequest =
       BeginSignInRequest.builder()
           .setGoogleIdTokenRequestOptions(
@@ -56,8 +56,8 @@ object AppModule {
           .setAutoSelectEnabled(true)
           .build()
 
-    @Singleton
     @Provides
+    @Named("signUpRequest")
     fun provideSignUpRequest(@ApplicationContext context: Context): BeginSignInRequest =
         BeginSignInRequest.builder()
             .setGoogleIdTokenRequestOptions(
@@ -83,7 +83,9 @@ object AppModule {
   fun provideAuthRepository(
       auth: FirebaseAuth,
       oneTapClient: SignInClient,
+      @Named("signInRequest")
       signInRequest: BeginSignInRequest,
+      @Named("signUpRequest")
       signUpRequest: BeginSignInRequest,
   ): AuthRepository = AuthRepositoryImpl(auth, oneTapClient, signInRequest, signUpRequest)
 

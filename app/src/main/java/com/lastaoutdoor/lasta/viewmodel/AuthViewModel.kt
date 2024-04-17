@@ -25,9 +25,9 @@ constructor(private val authRepo: AuthRepository, val oneTapClient: SignInClient
   var user: UserModel? by mutableStateOf(null)
   var signedOut: Boolean by mutableStateOf(false)
 
-  fun startGoogleSignIn(isSignUp: Boolean) {
+  fun startGoogleSignIn() {
     viewModelScope.launch {
-      authRepo.startGoogleSignIn(isSignUp).collect { response ->
+      authRepo.startGoogleSignIn().collect { response ->
         when (response) {
           is Response.Loading -> {}
           is Success -> {
@@ -42,9 +42,10 @@ constructor(private val authRepo: AuthRepository, val oneTapClient: SignInClient
     }
   }
 
-  fun finishGoogleSignIn(googleCredential: AuthCredential, isSignUp: Boolean) {
+
+  fun finishGoogleSignIn(googleCredential: AuthCredential) {
     viewModelScope.launch {
-      authRepo.finishGoogleSignIn(googleCredential, isSignUp).collect { response ->
+      authRepo.finishGoogleSignIn(googleCredential).collect { response ->
         when (response) {
           is Response.Loading -> {}
           is Success -> {

@@ -22,7 +22,7 @@ import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 fun LoginScreen(
     navController: NavHostController,
     authViewModel: AuthViewModel = hiltViewModel(),
-    preferencesViewModel: PreferencesViewModel = hiltViewModel()
+    preferencesViewModel: PreferencesViewModel = hiltViewModel(),
 ) {
   Modifier.testTag("LoginScreen")
 

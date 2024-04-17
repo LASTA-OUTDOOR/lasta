@@ -35,9 +35,8 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
                 "email" to user.email,
                 "displayName" to user.userName,
                 "profilePictureUrl" to user.profilePictureUrl,
-                "hikingLevel" to user.prefSettings?.hikingLevel.toString()
+                "hikingLevel" to user.hikingLevel.toString()
             )
-
         userDocumentRef.set(userData, SetOptions.merge())
     }
 
@@ -48,10 +47,11 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
             val email = document.getString("email") ?: ""
             val displayName = document.getString("displayName") ?: ""
             val profilePictureUrl = document.getString("profilePictureUrl") ?: ""
-            val hikingLevel = document.getString("hikingLevel") ?: ""
-            return UserModel(uid, displayName, email, profilePictureUrl, UserPreferences(false, uid, displayName, email, profilePictureUrl, HikingLevel.valueOf(hikingLevel)))
+            var hikingLevel = document.getString("hikingLevel") ?: ""
+            if (hikingLevel == "null" || hikingLevel == "") hikingLevel = "BEGINNER"
+            return UserModel(uid, displayName, email, profilePictureUrl, HikingLevel.valueOf(hikingLevel))
         }
-        return UserModel("", "", "", "", UserPreferences(false, "", "", "", "", HikingLevel.BEGINNER))
+        return UserModel("", "", "", "", HikingLevel.BEGINNER)
     }
 
 
@@ -89,6 +89,20 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
 
         // Set the field in the document
         userDocumentRef.set(data, SetOptions.merge())
+    }
+
+    fun updateUserInfo(user: UserModel) {
+        val userDocumentRef = database.collection(USERS_COLLECTION).document(user.userId)
+
+        // Create a data map with the user's information
+        val userData =
+            hashMapOf(
+                "email" to user.email,
+                "displayName" to user.userName,
+                "profilePictureUrl" to user.profilePictureUrl,
+                "hikingLevel" to user.hikingLevel.toString()
+            )
+        userDocumentRef.set(userData, SetOptions.merge())
     }
 
     /**
