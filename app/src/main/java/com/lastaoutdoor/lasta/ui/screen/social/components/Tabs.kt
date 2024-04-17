@@ -11,10 +11,12 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TabMenu() {
+fun TabMenu(viewModel: SocialViewModel = hiltViewModel()) {
 
   var state by remember { mutableIntStateOf(0) }
   val titles = listOf("Feed", "Friends", "Message")
@@ -32,8 +34,17 @@ fun TabMenu() {
 
   // use the state variable to choose which composable to display
   when (state) {
-    0 -> FriendsActivityList()
-    1 -> FriendsList() // TODO: appropriate composable
-    2 -> MessageList() // TODO: apppropriate composable
+    0 -> {
+      viewModel.hideTopButton()
+      FriendsActivityList()
+    }
+    1 -> {
+      viewModel.showTopButton("Add Friend", onClick = { /*TODO*/})
+      FriendsList()
+    }
+    2 -> {
+      viewModel.showTopButton("New Message", onClick = { /*TODO*/})
+      MessageList()
+    }
   }
 }

@@ -66,7 +66,6 @@ fun MessageMissing() {
                 TextStyle(
                     fontWeight = FontWeight.Normal, fontSize = 20.sp, textAlign = TextAlign.Center),
             modifier = Modifier.padding(15.dp))
-        Button(onClick = { /*TODO*/ }) { Text(text = "Start a conversation!") }
+        Button(onClick = { /*TODO*/}) { Text(text = "Start a conversation!") }
       }
 }
-

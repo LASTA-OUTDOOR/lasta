@@ -21,26 +21,30 @@ import com.lastaoutdoor.lasta.ui.screen.social.components.TabMenu
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
 @Composable
-fun Header() {
+fun Header(viewModel: SocialViewModel = hiltViewModel()) {
   Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
     Text(
         text = "Community",
         style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 24.sp),
-        modifier = Modifier.align(Alignment.CenterVertically))
-//    Button(
-//        onClick = { /* Your button click logic here */},
-//        modifier = Modifier.align(Alignment.CenterVertically)) {
-//          Text(text = "+")
-//        }
-      Spacer(modifier = Modifier.padding(top=8.dp, bottom=40.dp).align(Alignment.CenterVertically))
+        modifier = Modifier.align(Alignment.CenterVertically),
+    )
+    if (viewModel.friendButton) {
+      Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+        Button(
+            onClick = { viewModel.topButtonOnClick },
+            modifier = Modifier.align(Alignment.CenterVertically)) {
+              Text(text = viewModel.topButtonText)
+            }
+      }
+    }
+    Spacer(
+        modifier = Modifier.padding(top = 8.dp, bottom = 40.dp).align(Alignment.CenterVertically))
   }
 }
 
 @Composable
 fun SocialScreen(viewModel: SocialViewModel = hiltViewModel()) {
-  Column(modifier = Modifier
-      .fillMaxSize()
-      .padding(16.dp)) {
+  Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
 
     // Page title and button
     Header()

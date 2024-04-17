@@ -1,5 +1,6 @@
 package com.lastaoutdoor.lasta.ui.screen.social.components
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,31 +21,31 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FriendsList(viewModel: SocialViewModel = hiltViewModel()) {
-    if (viewModel.friends.isNullOrEmpty()) {
-        FriendsMissing()
-        return
-    }
-    LazyColumn { items(10) { FriendsCard(it) } }
+  if (viewModel.friends.isNullOrEmpty()) {
+    FriendsMissing()
+    return
+  }
+  LazyColumn { items(10) { FriendsCard(it) } }
 }
-
 
 @Composable
 fun FriendsCard(i: Int) {
-    Card(
-        colors =
-        CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-        ),
-        modifier = Modifier.height(height = 100.dp).fillMaxWidth().padding(8.dp)) {
+  Card(
+      colors =
+          CardDefaults.cardColors(
+              containerColor = MaterialTheme.colorScheme.surfaceVariant,
+          ),
+      modifier = Modifier.height(height = 100.dp).fillMaxWidth().padding(8.dp)) {
         Row {
-            Icon(
-                Icons.Filled.AccountCircle,
-                contentDescription = "Profile picture",
-                modifier = Modifier.padding(8.dp).size(30.dp).align(Alignment.CenterVertically))
-            Text(text = "Friend $i", modifier = Modifier.align(Alignment.CenterVertically))
+          Icon(
+              Icons.Filled.AccountCircle,
+              contentDescription = "Profile picture",
+              modifier = Modifier.padding(8.dp).size(30.dp).align(Alignment.CenterVertically))
+          Text(text = "Friend $i", modifier = Modifier.align(Alignment.CenterVertically))
         }
         Text(text = "Hiked 200km and went for a MC Donalds", modifier = Modifier.padding(8.dp))
-    }
+      }
 }

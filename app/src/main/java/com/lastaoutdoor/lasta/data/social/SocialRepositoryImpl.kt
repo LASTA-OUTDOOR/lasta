@@ -22,7 +22,8 @@ class SocialRepositoryImpl(private val context: Context) : SocialRepository {
   }
 
   override var isConnected: Boolean = true
-    override fun getMessages(): List<String>? {
-        return null
-    }
+
+  override fun getMessages(): List<String>? {
+    return null
+  }
 }

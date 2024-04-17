@@ -15,7 +15,5 @@ interface SocialRepository {
   var isConnected: Boolean
 
   // returns all the messages
-    fun getMessages(): List<String>?
-
-
+  fun getMessages(): List<String>?
 }
