@@ -40,9 +40,6 @@ jobs:
           distribution: "temurin"
           java-version: "17"
 
-      - name: Create a local.properties file (required by KTFMT)
-        run: echo "Subsitute local.properties" > local.properties && echo "File created"
-
       # Caching is a very useful part of a CI, as a workflow is executed in a clean environment every time,
       # this means that one would need to re-download and re-process gradle files for every run. Which is very time consuming.
       #
@@ -71,6 +68,18 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: false
           script: echo "Generated AVD snapshot for caching."
+
+      - name: Create signing files
+        env:
+          MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+          KEYSTORE: ${{ secrets.KEYSTORE }}
+          KEYSTORE_PROPERTIES: ${{ secrets.KEYSTORE_PROPERTIES }}
+        run: |
+          echo "MAPS_API_KEY=$MAPS_API_KEY" > ./local.properties
+          echo $GOOGLE_SERVICES_JSON | base64 -di > ./app/google-services.json
+          echo $KEYSTORE | base64 -di > ./keystore.jks
+          echo $KEYSTORE_PROPERTIES | base64 -di > ./keystore.properties
 
       - name: Grant execute permission for gradlew
         run: |
