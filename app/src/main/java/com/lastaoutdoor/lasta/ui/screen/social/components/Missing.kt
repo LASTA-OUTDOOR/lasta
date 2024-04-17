@@ -31,7 +31,7 @@ fun ConnectionMissing() {
         Text(
             text =
                 "This content requires an internet connection. Please check your connection and try again.",
-            style = TextStyle(fontWeight = FontWeight.Medium, fontSize = 20.sp),
+            style = TextStyle(fontWeight = FontWeight.Normal, fontSize = 20.sp, textAlign = TextAlign.Center),
             modifier = Modifier.padding(top = 8.dp))
       }
 }

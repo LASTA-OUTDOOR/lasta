@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lastaoutdoor.lasta.ui.screen.social.components.ConnectionMissing
 import com.lastaoutdoor.lasta.ui.screen.social.components.FriendsActivityList
+import com.lastaoutdoor.lasta.ui.screen.social.components.TabMenu
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
 @Composable
@@ -36,31 +37,16 @@ fun Header() {
 }
 
 @Composable
-fun SubTitle() {
-  Text(
-      text = "Your friend's activity",
-      style = TextStyle(fontWeight = FontWeight.Medium, fontSize = 20.sp),
-      modifier = Modifier.padding(top = 8.dp))
-}
-
-@Composable
 fun SocialScreen(viewModel: SocialViewModel = hiltViewModel()) {
-  Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+  Column(modifier = Modifier
+      .fillMaxSize()
+      .padding(16.dp)) {
 
-    // page title and button
+    // Page title and button
     Header()
 
-    // Sub-title
-    SubTitle()
-
-    // Do we have an internet connection?
-    // yes: show the list of friends activities
-    if (viewModel.isConnected)
-      FriendsActivityList()
-    else
-      ConnectionMissing()
-    // no: show a message to the user
-    // ConnectionMissing()
+    // Tabs
+    TabMenu()
 
   }
 }
