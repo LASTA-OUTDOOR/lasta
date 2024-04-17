@@ -9,4 +9,6 @@ import javax.inject.Inject
 class SocialViewModel @Inject constructor(private val repository: SocialRepository) : ViewModel() {
 
   val friends = repository.getFriends()
+
+  val isConnected = repository.isConnected
 }

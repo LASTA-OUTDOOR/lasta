@@ -9,3 +9,5 @@
 .cxx
 local.properties
 .env
+keystore.properties
+keystore.jks

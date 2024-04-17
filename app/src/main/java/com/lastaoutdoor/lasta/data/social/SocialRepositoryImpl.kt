@@ -13,4 +13,6 @@ class SocialRepositoryImpl(private val context: Context) : SocialRepository {
   override fun getLatestFriendActivities(days: Int): List<ActivitiesDatabaseType>? {
     return null
   }
+
+  override var isConnected: Boolean = false
 }

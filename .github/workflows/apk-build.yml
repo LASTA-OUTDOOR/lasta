@@ -1,8 +1,22 @@
 name: APK Build
+run-name: APK v${{ inputs.tag_name }} / ${{ inputs.build_type }}
 
 # Run the workflow when commits are pushed on main or when a PR is modified
 on:
   workflow_dispatch:
+    # We have 2 workflow user inputs: Choosing the tag name and what type of build
+    # we want to perform (debug or release)
+    inputs:
+      tag_name:
+        required: true
+        type: string
+        description: "Tag Name"
+        default: "0.1.1"
+      build_type:
+        required: true
+        type: string
+        description: "debug or release"
+        default: "release"
 
 jobs:
   build:
@@ -24,22 +38,38 @@ jobs:
           distribution: "temurin"
           java-version: "17"
 
+      - name: Gradle cache
+        uses: gradle/actions/setup-gradle@v3
+
       - name: Grant execute permission for gradlew
         run: |
           chmod +x ./gradlew
 
-      - name: Create local.properties used for Map
+      # Here we make sure all hidden files are correctly imported for the build
+      - name: Create signing files
         env:
           MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+          KEYSTORE: ${{ secrets.KEYSTORE }}
+          KEYSTORE_PROPERTIES: ${{ secrets.KEYSTORE_PROPERTIES }}
         run: |
-            echo "MAPS_API_KEY=$MAPS_API_KEY" > ./local.properties
-            echo "File created"
+          echo "MAPS_API_KEY=$MAPS_API_KEY" > ./local.properties
+          echo $GOOGLE_SERVICES_JSON | base64 -di > ./app/google-services.json
+          echo $KEYSTORE | base64 -di > ./keystore.jks
+          echo $KEYSTORE_PROPERTIES | base64 -di > ./keystore.properties
 
-      - name: Building APK
-        run: ./gradlew build
+      # We build the APK
+      # TODO: Check if debug mode, then run in debug mode
+      - name: Building Release APK
+        run: ./gradlew assembleRelease
 
-      - name: Upload APK to Artifacts
+      - name: Get release file apk path
+        id: releaseApk
+        run: echo "apkfile=$(find app/build/outputs/apk/release/*.apk)" >> $GITHUB_OUTPUT
+
+      # We upload the APK to the artifacts
+      - name: Upload Release Build to Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: ${{ inputs.build_type }}-apk-v${{ inputs.tag_name }}
+          path: ${{ steps.releaseApk.outputs.apkfile }}

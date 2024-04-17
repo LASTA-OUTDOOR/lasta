@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.lastaoutdoor.lasta.ui.screen.social.components.ConnectionMissing
 import com.lastaoutdoor.lasta.ui.screen.social.components.FriendsActivityList
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
@@ -54,7 +55,10 @@ fun SocialScreen(viewModel: SocialViewModel = hiltViewModel()) {
 
     // Do we have an internet connection?
     // yes: show the list of friends activities
-    FriendsActivityList()
+    if (viewModel.isConnected)
+      FriendsActivityList()
+    else
+      ConnectionMissing()
     // no: show a message to the user
     // ConnectionMissing()
 

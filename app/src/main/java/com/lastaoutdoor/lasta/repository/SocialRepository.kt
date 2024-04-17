@@ -10,4 +10,5 @@ interface SocialRepository {
 
   // returns all the activities done by friends in the last
   fun getLatestFriendActivities(days: Int): List<ActivitiesDatabaseType>?
+  var isConnected: Boolean
 }
