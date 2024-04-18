@@ -11,24 +11,23 @@ private val DarkColorScheme =
     darkColorScheme(
         primary = LastaBlue,  // This is the color for backgrounds and surfaces
         secondary = LastaGreen, // This is the color for text and icons
-        onPrimary = White,
-        background = DarkBackground,
-        surfaceVariant = DarkSurfaceVariant,
-        onSurfaceVariant = White,
-        onBackground = White,
-        primaryContainer = LastaGreen,
-        secondaryContainer = SecondaryContainerColor,
+        onPrimary = White, // This is the color for text and icons on top of primary
+        background = DarkBackground, // This is the color for the background
+        surfaceVariant = DarkSurfaceVariant, // This is the color for card surfaces
+        onSurfaceVariant = White, // This is the color for text and icons on top of surfaceVariant
+        onBackground = White, // This is the color for text and icons on top of background
+        primaryContainer = LastaGreen, // This is the color for primary containers
+        secondaryContainer = SecondaryContainerColor, // This is the color for secondary containers
     )
 
 private val LightColorScheme =
     lightColorScheme(
         primary = LastaBlue, // This is the color for backgrounds and surfaces
         secondary = LastaGreen, // This is the color for text and icons
-        surfaceVariant = SurfaceGreen, // This is the color for card surfaces
+        surfaceVariant = SurfaceVariant, // This is the color for card surfaces
         onPrimary = White, // This is the color for text and icons on top of primary
         primaryContainer = LastaGreen, // This is the color for primary containers
         secondaryContainer = SecondaryContainerColor, // This is the color for secondary containers
-
         )
 
 @Composable
@@ -38,6 +37,7 @@ fun LastaTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
+    // choose color scheme based on darkTheme
   val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
 
   MaterialTheme(colorScheme = colorScheme, typography = Typography, content = content)
