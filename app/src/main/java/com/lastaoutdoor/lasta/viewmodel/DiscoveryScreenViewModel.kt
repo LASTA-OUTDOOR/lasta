@@ -1,6 +1,5 @@
 package com.lastaoutdoor.lasta.viewmodel
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.data.model.activity.ActivityType
@@ -27,10 +26,15 @@ class DiscoveryScreenViewModel
 constructor(private val repository: OutdoorActivityRepository) : ViewModel() {
 
   var climbingActivities: MutableList<OutdoorActivity> = mutableListOf()
+
   private val _screen = MutableStateFlow(DiscoveryScreenType.LIST)
   val screen: StateFlow<DiscoveryScreenType> = _screen
 
-  fun fetchClimbingActivities(
+  init {
+    fetchClimbingActivities()
+  }
+
+  private fun fetchClimbingActivities(
       rad: Double = 10000.0,
       centerLocation: LatLng = LatLng(46.519962, 6.633597)
   ) {
@@ -59,16 +63,6 @@ constructor(private val repository: OutdoorActivityRepository) : ViewModel() {
               "",
               node.tags.name ?: "Unnamed Climbing Activity"))
     }
-  }
-  /*Toggles the dialog box on/off*/
-  val displayDialog = mutableStateOf(false)
-  /*Just a default activity to fill in the mutable state*/
-  val dummyActivity = OutdoorActivity(ActivityType.HIKING, 3, 5.0f, "2 hours", "Zurich")
-  val activityToDisplay = mutableStateOf(dummyActivity)
-
-  fun showDialog(outdoorActivity: OutdoorActivity) {
-    activityToDisplay.value = outdoorActivity
-    displayDialog.value = true
   }
 
   fun setScreen(screen: DiscoveryScreenType) {
