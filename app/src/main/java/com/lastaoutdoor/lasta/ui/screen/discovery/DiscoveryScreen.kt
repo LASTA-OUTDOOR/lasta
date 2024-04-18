@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -19,14 +20,20 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -37,12 +44,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.model.activity.OutdoorActivity
+import com.lastaoutdoor.lasta.ui.components.DisplaySelection
+import com.lastaoutdoor.lasta.ui.components.SearchBarComponent
+import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenType
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenViewModel
 
 @Composable
@@ -51,7 +62,68 @@ fun DiscoveryScreen() {
   Scaffold(
       modifier = Modifier.testTag("discoveryScreen"),
       floatingActionButton = { FloatingActionButtons() }) { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding)) { DiscoveryContent() }
+        Column(modifier = Modifier.padding(innerPadding)) {
+          HeaderComposable()
+          DiscoveryContent()
+        }
+      }
+}
+
+@Preview
+@Composable
+fun HeaderComposable(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel()) {
+  val screen by discoveryScreenViewModel.screen.collectAsState()
+  val iconSize = 48.dp // Adjust icon size as needed
+
+  Surface(
+      modifier = Modifier.fillMaxWidth(),
+      color = MaterialTheme.colorScheme.background,
+      shadowElevation = 3.dp) {
+        Column {
+          // Location bar
+          Row(
+              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+              verticalAlignment = Alignment.CenterVertically) {
+                Column {
+                  Row() {
+                    Text(text = "Ecublens", style = MaterialTheme.typography.titleMedium)
+
+                    IconButton(onClick = { /*TODO*/}, modifier = Modifier.size(24.dp)) {
+                      Icon(
+                          Icons.Outlined.KeyboardArrowDown,
+                          contentDescription = "Filter",
+                          modifier = Modifier.size(24.dp))
+                    }
+                  }
+
+                  Text(text = "Less than 3 km", style = MaterialTheme.typography.bodySmall)
+                }
+              }
+
+          // Search bar with toggle buttons
+          Row(
+              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+              verticalAlignment = Alignment.CenterVertically) {
+                SearchBarComponent(Modifier.weight(1f), onSearch = { /*TODO*/})
+                Spacer(modifier = Modifier.width(8.dp))
+                IconButton(onClick = { /*TODO*/}, modifier = Modifier.size(iconSize)) {
+                  Icon(
+                      painter = painterResource(id = R.drawable.filter_icon),
+                      contentDescription = "Filter",
+                      modifier = Modifier.size(24.dp))
+                }
+              }
+          Row(
+              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+              verticalAlignment = Alignment.CenterVertically,
+              horizontalArrangement = Arrangement.Center) {
+                DisplaySelection(
+                    DiscoveryScreenType.values().toList(),
+                    screen,
+                    discoveryScreenViewModel::setScreen,
+                    DiscoveryScreenType::toString)
+              }
+        }
       }
 }
 
@@ -97,8 +169,7 @@ fun FloatingActionButtons() {
 fun OutdoorActivityList(outdoorActivities: List<OutdoorActivity>) {
   /** Our list of activities which is lazy in order to display only the first ones. */
   LazyColumn(
-      modifier = Modifier.fillMaxSize().testTag("outdoorActivityList"),
-      contentPadding = PaddingValues(16.dp)) {
+      modifier = Modifier.testTag("outdoorActivityList"), contentPadding = PaddingValues(16.dp)) {
         items(outdoorActivities) { outdoorActivity -> OutdoorActivityItem(outdoorActivity) }
       }
 }
