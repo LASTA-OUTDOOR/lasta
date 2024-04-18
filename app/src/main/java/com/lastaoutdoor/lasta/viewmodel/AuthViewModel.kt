@@ -42,7 +42,6 @@ constructor(private val authRepo: AuthRepository, val oneTapClient: SignInClient
     }
   }
 
-
   fun finishGoogleSignIn(googleCredential: AuthCredential) {
     viewModelScope.launch {
       authRepo.finishGoogleSignIn(googleCredential).collect { response ->

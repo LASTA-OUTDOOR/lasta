@@ -8,26 +8,24 @@ import com.google.firebase.auth.FirebaseAuth
 import com.lastaoutdoor.lasta.data.db.DatabaseManager
 import com.lastaoutdoor.lasta.data.model.user.HikingLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
-import com.lastaoutdoor.lasta.data.model.user.UserPreferences
 import com.lastaoutdoor.lasta.repository.AuthRepository
 import com.lastaoutdoor.lasta.utils.Response
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.tasks.await
 
 @Singleton
-class AuthRepositoryImpl @Inject constructor(
+class AuthRepositoryImpl
+@Inject
+constructor(
     private val auth: FirebaseAuth,
     private var oneTapClient: SignInClient,
-    @Named("signInRequest")
-    private var signInRequest: BeginSignInRequest,
-    @Named("signUpRequest")
-    private var signUpRequest: BeginSignInRequest
+    @Named("signInRequest") private var signInRequest: BeginSignInRequest,
+    @Named("signUpRequest") private var signUpRequest: BeginSignInRequest
 ) : AuthRepository {
-
 
   override suspend fun startGoogleSignIn(): Flow<Response<BeginSignInResult>> = flow {
     try {
@@ -44,7 +42,7 @@ class AuthRepositoryImpl @Inject constructor(
   }
 
   override suspend fun finishGoogleSignIn(
-    googleCredential: AuthCredential,
+      googleCredential: AuthCredential,
   ): Flow<Response<UserModel>> = flow {
     try {
       emit(Response.Loading)
@@ -55,13 +53,7 @@ class AuthRepositoryImpl @Inject constructor(
         if (isSignUp) {
           // This is a sign-up, so create a new UserModel
           println("User is signing up")
-          val userModel = UserModel(
-            user.uid,
-            user.displayName ?: "",
-            user.email ?: "",
-            user.photoUrl?.toString() ?: "",
-            HikingLevel.BEGINNER
-          )
+          val userModel = UserModel(user, HikingLevel.BEGINNER)
 
           // Add the user to the Firestore database
           DatabaseManager().addUserToDatabase(userModel)
@@ -73,13 +65,13 @@ class AuthRepositoryImpl @Inject constructor(
           println("User is signing in")
           val userModel = DatabaseManager().getUserFromDatabase(user.uid)
           if (userModel.userId.isNotEmpty()) {
-            val newUserModel = UserModel(
-              userModel.userId,
-              user.displayName ?: "",
-              user.email ?: "",
-              user.photoUrl?.toString() ?: "",
-              userModel.hikingLevel
-            )
+            val newUserModel =
+                UserModel(
+                    userModel.userId,
+                    user.displayName ?: "",
+                    user.email ?: "",
+                    user.photoUrl?.toString() ?: "",
+                    userModel.hikingLevel)
             DatabaseManager().updateUserInfo(newUserModel)
             emit(Response.Success(newUserModel))
           } else {

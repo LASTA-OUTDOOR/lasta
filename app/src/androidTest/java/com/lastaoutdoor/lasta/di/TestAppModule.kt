@@ -11,7 +11,6 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.ApiService
-import com.lastaoutdoor.lasta.data.api.FakeOutdoorActivityRepository
 import com.lastaoutdoor.lasta.data.api.OutdoorActivityRepositoryImpl
 import com.lastaoutdoor.lasta.data.auth.AuthRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.ActivitiesRepositoryImpl
@@ -25,91 +24,90 @@ import dagger.Provides
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
+import javax.inject.Named
 import javax.inject.Singleton
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Named
 
 /** Fake Hilt Module for providing dependencies */
 @TestInstallIn(components = [SingletonComponent::class], replaces = [AppModule::class])
 @Module
 object TestAppModule {
 
-    @Singleton @Provides fun provideFirebaseAuth() = Firebase.auth
+  @Singleton @Provides fun provideFirebaseAuth() = Firebase.auth
 
-    @Singleton @Provides
-    fun provideOneTapClient(@ApplicationContext context: Context): SignInClient =
-        Identity.getSignInClient(context)
+  @Singleton
+  @Provides
+  fun provideOneTapClient(@ApplicationContext context: Context): SignInClient =
+      Identity.getSignInClient(context)
 
-    /** Provides the [Firebase.firestore] class */
-    @Provides @Singleton fun provideFirebaseFirestore() = Firebase.firestore
+  /** Provides the [Firebase.firestore] class */
+  @Provides @Singleton fun provideFirebaseFirestore() = Firebase.firestore
 
-    @Provides
-    @Named("signInRequest")
-    fun provideSignInRequest(@ApplicationContext context: Context): BeginSignInRequest =
-        BeginSignInRequest.builder()
-            .setGoogleIdTokenRequestOptions(
-                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                    .setSupported(true)
-                    .setFilterByAuthorizedAccounts(true)
-                    .setServerClientId(context.getString(R.string.web_client_id))
-                    .build())
-            .setAutoSelectEnabled(true)
-            .build()
+  @Provides
+  @Named("signInRequest")
+  fun provideSignInRequest(@ApplicationContext context: Context): BeginSignInRequest =
+      BeginSignInRequest.builder()
+          .setGoogleIdTokenRequestOptions(
+              BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                  .setSupported(true)
+                  .setFilterByAuthorizedAccounts(true)
+                  .setServerClientId(context.getString(R.string.web_client_id))
+                  .build())
+          .setAutoSelectEnabled(true)
+          .build()
 
-    @Provides
-    @Named("signUpRequest")
-    fun provideSignUpRequest(@ApplicationContext context: Context): BeginSignInRequest =
-        BeginSignInRequest.builder()
-            .setGoogleIdTokenRequestOptions(
-                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                    .setSupported(true)
-                    .setFilterByAuthorizedAccounts(false)
-                    .setServerClientId(context.getString(R.string.web_client_id))
-                    .build())
-            .build()
+  @Provides
+  @Named("signUpRequest")
+  fun provideSignUpRequest(@ApplicationContext context: Context): BeginSignInRequest =
+      BeginSignInRequest.builder()
+          .setGoogleIdTokenRequestOptions(
+              BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                  .setSupported(true)
+                  .setFilterByAuthorizedAccounts(false)
+                  .setServerClientId(context.getString(R.string.web_client_id))
+                  .build())
+          .build()
 
-    @Singleton
-    @Provides
-    fun provideAPIService(@ApplicationContext context: Context): ApiService =
-        Retrofit.Builder()
-            .baseUrl(context.getString(R.string.osm_base_url))
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(ApiService::class.java)
+  @Singleton
+  @Provides
+  fun provideAPIService(@ApplicationContext context: Context): ApiService =
+      Retrofit.Builder()
+          .baseUrl(context.getString(R.string.osm_base_url))
+          .addConverterFactory(GsonConverterFactory.create())
+          .build()
+          .create(ApiService::class.java)
 
-    /** Provides the [OutdoorActivityRepository] class */
-    @Singleton
-    @Provides
-    fun provideAuthRepository(
-        auth: FirebaseAuth,
-        oneTapClient: SignInClient,
-        @Named("signInRequest")
-        signInRequest: BeginSignInRequest,
-        @Named("signUpRequest")
-        signUpRequest: BeginSignInRequest,
-    ): AuthRepository = AuthRepositoryImpl(auth, oneTapClient, signInRequest, signUpRequest)
+  /** Provides the [OutdoorActivityRepository] class */
+  @Singleton
+  @Provides
+  fun provideAuthRepository(
+      auth: FirebaseAuth,
+      oneTapClient: SignInClient,
+      @Named("signInRequest") signInRequest: BeginSignInRequest,
+      @Named("signUpRequest") signUpRequest: BeginSignInRequest,
+  ): AuthRepository = AuthRepositoryImpl(auth, oneTapClient, signInRequest, signUpRequest)
 
-    @Singleton
-    @Provides
-    fun providePreferencesRepository(@ApplicationContext context: Context): PreferencesRepository =
-        PreferencesRepositoryImpl(context)
+  @Singleton
+  @Provides
+  fun providePreferencesRepository(@ApplicationContext context: Context): PreferencesRepository =
+      PreferencesRepositoryImpl(context)
 
-    /** Provides the [GoogleAuth] class */
-    @Singleton
-    @Provides
-    fun provideOutdoorActivitiesRepository(apiService: ApiService): OutdoorActivityRepository =
-        OutdoorActivityRepositoryImpl(apiService)
+  /** Provides the [GoogleAuth] class */
+  @Singleton
+  @Provides
+  fun provideOutdoorActivitiesRepository(apiService: ApiService): OutdoorActivityRepository =
+      OutdoorActivityRepositoryImpl(apiService)
 
-    @Singleton
-    @Provides
-    fun provideActivitiesRepository(
-        @ApplicationContext context: Context,
-        database: FirebaseFirestore
-    ): ActivitiesRepository {
-        return ActivitiesRepositoryImpl(database, context)
-    }
+  @Singleton
+  @Provides
+  fun provideActivitiesRepository(
+      @ApplicationContext context: Context,
+      database: FirebaseFirestore
+  ): ActivitiesRepository {
+    return ActivitiesRepositoryImpl(database, context)
+  }
 
-    /** Provides the [TimeProvider] class */
-    @Provides @Singleton fun provideTimeProvider(): TimeProvider = RealTimeProvider()
+  /** Provides the [TimeProvider] class */
+  @Provides @Singleton fun provideTimeProvider(): TimeProvider = RealTimeProvider()
 }

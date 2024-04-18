@@ -13,13 +13,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
-import com.lastaoutdoor.lasta.ui.navigation.RootScreen
+import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
 import com.lastaoutdoor.lasta.ui.screen.login.components.LoginContent
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 
 @Composable
 fun LoginScreen(
+    // rootNavController: NavHostController,
     navController: NavHostController,
     authViewModel: AuthViewModel = hiltViewModel(),
     preferencesViewModel: PreferencesViewModel = hiltViewModel(),
@@ -52,8 +53,8 @@ fun LoginScreen(
     authViewModel.user?.let {
       preferencesViewModel.updateIsLoggedIn(true)
       preferencesViewModel.updateUserInfo(it)
-      navController.popBackStack()
-      navController.navigate(RootScreen.Main.route)
+      // navController.popBackStack()
+      navController.navigate(LeafScreen.Setup.route)
     }
   }
   Spacer(modifier = Modifier.testTag("loginScreenMain"))
