@@ -17,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -26,11 +25,14 @@ import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
 @Composable
 fun MessageList(viewModel: SocialViewModel = hiltViewModel()) {
-  if (!viewModel.messages.isNullOrEmpty()) {
+  if (!viewModel.isConnected) {
+    ConnectionMissing()
+  } else if (viewModel.messages.isNullOrEmpty()) {
     MessageMissing()
     return
+  } else {
+    LazyColumn { items(10) { MessageCard(it) } }
   }
-  LazyColumn { items(10) { MessageCard(i = it) } }
 }
 
 @Composable
@@ -41,16 +43,18 @@ fun MessageCard(i: Int) {
               containerColor = MaterialTheme.colorScheme.surfaceVariant,
           ),
       modifier = Modifier.height(height = 100.dp).fillMaxWidth().padding(8.dp)) {
-      Column (modifier = Modifier.padding(8.dp)){
+        Column(modifier = Modifier.padding(8.dp)) {
           Row() {
-              Icon(
-                  Icons.Filled.AccountCircle,
-                  contentDescription = "Profile picture",
-                  modifier = Modifier.size(30.dp).align(Alignment.CenterVertically)
-              )
-              Text(text = " Friend $i", modifier = Modifier.align(Alignment.CenterVertically), fontWeight = FontWeight.Bold)
+            Icon(
+                Icons.Filled.AccountCircle,
+                contentDescription = "Profile picture",
+                modifier = Modifier.size(30.dp).align(Alignment.CenterVertically))
+            Text(
+                text = " Friend $i",
+                modifier = Modifier.align(Alignment.CenterVertically),
+                fontWeight = FontWeight.Bold)
           }
           Text(text = "Hiii, What are you doing tomorrow ?", overflow = TextOverflow.Ellipsis)
+        }
       }
-  }
 }

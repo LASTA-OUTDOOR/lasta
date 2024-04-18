@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -21,7 +22,7 @@ import com.lastaoutdoor.lasta.R
 @Composable
 fun ConnectionMissing() {
   Column(
-      modifier = Modifier.fillMaxSize(),
+      modifier = Modifier.fillMaxSize().testTag("ConnectionMissing"),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally) {
         Image(
@@ -29,8 +30,7 @@ fun ConnectionMissing() {
             contentDescription = "Internet Icon")
 
         Text(
-            text =
-                "This content requires an internet connection. Please check your connection and try again.",
+            text = "This content requires an internet connection.",
             style =
                 TextStyle(
                     fontWeight = FontWeight.Normal, fontSize = 20.sp, textAlign = TextAlign.Center),
@@ -41,7 +41,7 @@ fun ConnectionMissing() {
 @Composable
 fun FriendsMissing() {
   Column(
-      modifier = Modifier.fillMaxSize(),
+      modifier = Modifier.fillMaxSize().testTag("FriendMissing"),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
@@ -57,7 +57,7 @@ fun FriendsMissing() {
 @Composable
 fun MessageMissing() {
   Column(
-      modifier = Modifier.fillMaxSize(),
+      modifier = Modifier.fillMaxSize().testTag("MessageMissing"),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally) {
         Text(

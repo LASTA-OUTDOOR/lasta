@@ -29,11 +29,13 @@ import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
 @Composable
 fun FriendsActivityList(viewModel: SocialViewModel = hiltViewModel()) {
-  if (!viewModel.latestFriendActivities.isNullOrEmpty()) {
+  if (!viewModel.isConnected) {
+    ConnectionMissing()
+  } else if (viewModel.latestFriendActivities.isNullOrEmpty()) {
     FriendsMissing()
-    return
+  } else {
+    LazyColumn { items(10) { FriendsActivityCard(it) } }
   }
-  LazyColumn { items(10) { FriendsActivityCard(it) } }
 }
 
 @Composable
@@ -43,32 +45,32 @@ fun FriendsActivityCard(i: Int) {
           CardDefaults.cardColors(
               containerColor = MaterialTheme.colorScheme.surfaceVariant,
           ),
-      modifier = Modifier
-          .fillMaxWidth()
-          .padding(8.dp)) {
-      Column(modifier = Modifier.padding(8.dp)){
-          Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically){
-              Text(
-                  text = "Activity title",
-                  style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
-              )
-              Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                  Text(text = "Friend $i ", modifier = Modifier.align(Alignment.CenterVertically))
-                  Icon(
-                      Icons.Filled.AccountCircle,
-                      contentDescription = "Profile picture",
-                      modifier = Modifier
-                          .size(30.dp)
-                          .align(Alignment.CenterVertically))
-              }
+      modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
+          Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = "Activity title",
+                style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+              Text(text = "Friend $i ", modifier = Modifier.align(Alignment.CenterVertically))
+              Icon(
+                  Icons.Filled.AccountCircle,
+                  contentDescription = "Profile picture",
+                  modifier = Modifier.size(30.dp).align(Alignment.CenterVertically))
+            }
           }
-          Text(text = "Morning run from Lausanne to Yverdon, nothing fancy but I'm really good and fast", modifier = Modifier.padding(8.dp), overflow = TextOverflow.Ellipsis)
+          Text(
+              text =
+                  "Morning run from Lausanne to Yverdon, nothing fancy but I'm really good and fast",
+              modifier = Modifier.padding(8.dp),
+              overflow = TextOverflow.Ellipsis)
           HorizontalDivider(thickness = 1.dp, color = Color.Gray)
-          Row (modifier = Modifier.fillMaxWidth().padding(8.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-              Text("Time : 45minutes")
-              Text("Distance : 20km")
-          }
-      }
-
+          Row(
+              modifier = Modifier.fillMaxWidth().padding(8.dp),
+              horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("Time : 45minutes")
+                Text("Distance : 20km")
+              }
+        }
       }
 }

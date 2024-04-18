@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -22,24 +23,27 @@ import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
 @Composable
 fun Header(viewModel: SocialViewModel = hiltViewModel()) {
-  Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-    Text(
-        text = "Community",
-        style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 24.sp),
-        modifier = Modifier.align(Alignment.CenterVertically),
-    )
-    if (viewModel.friendButton) {
-      Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-        Button(
-            onClick = { viewModel.topButtonOnClick },
-            modifier = Modifier.align(Alignment.CenterVertically)) {
-              Text(text = viewModel.topButtonText)
-            }
+  Row(
+      modifier = Modifier.fillMaxWidth().testTag("Header"),
+      horizontalArrangement = Arrangement.SpaceBetween) {
+        Text(
+            text = "Community",
+            style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 24.sp),
+            modifier = Modifier.align(Alignment.CenterVertically),
+        )
+        if (viewModel.friendButton) {
+          Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+            Button(
+                onClick = { viewModel.topButtonOnClick },
+                modifier = Modifier.align(Alignment.CenterVertically).testTag("TopButton")) {
+                  Text(text = viewModel.topButtonText)
+                }
+          }
+        }
+        Spacer(
+            modifier =
+                Modifier.padding(top = 8.dp, bottom = 40.dp).align(Alignment.CenterVertically))
       }
-    }
-    Spacer(
-        modifier = Modifier.padding(top = 8.dp, bottom = 40.dp).align(Alignment.CenterVertically))
-  }
 }
 
 @Composable

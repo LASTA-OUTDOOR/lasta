@@ -2,7 +2,6 @@ package com.lastaoutdoor.lasta.ui.screen.social.components
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRowScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,11 +28,13 @@ import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FriendsList(viewModel: SocialViewModel = hiltViewModel()) {
-  if (viewModel.friends.isNullOrEmpty()) {
+  if (!viewModel.isConnected) {
+    ConnectionMissing()
+  } else if (viewModel.friends.isNullOrEmpty()) {
     FriendsMissing()
-    return
+  } else {
+    LazyColumn { items(10) { FriendsCard(it) } }
   }
-  LazyColumn { items(10) { FriendsCard(it) } }
 }
 
 @Composable
@@ -43,20 +44,17 @@ fun FriendsCard(i: Int) {
           CardDefaults.cardColors(
               containerColor = MaterialTheme.colorScheme.surfaceVariant,
           ),
-      modifier = Modifier
-          .height(height = 100.dp)
-          .fillMaxWidth()
-          .padding(8.dp)) {
+      modifier = Modifier.height(height = 100.dp).fillMaxWidth().padding(8.dp)) {
         Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
           Icon(
               Icons.Filled.AccountCircle,
               contentDescription = "Profile picture",
-              modifier = Modifier
-                  .size(60.dp)
-                  .align(Alignment.CenterVertically).fillMaxHeight())
+              modifier = Modifier.size(60.dp).align(Alignment.CenterVertically).fillMaxHeight())
           Column(modifier = Modifier.padding(8.dp)) {
-              Text(text = "Friend Name $i", fontWeight = FontWeight.Bold)
-              Text(text = "Bio: This is what a biography would look like", overflow = TextOverflow.Ellipsis)
+            Text(text = "Friend Name $i", fontWeight = FontWeight.Bold)
+            Text(
+                text = "Bio: This is what a biography would look like",
+                overflow = TextOverflow.Ellipsis)
           }
         }
       }
