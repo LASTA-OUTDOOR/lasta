@@ -3,15 +3,10 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.db.ActivitiesRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.DatabaseManager
-import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
-import com.lastaoutdoor.lasta.data.model.user.UserModel
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -21,12 +16,11 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.robolectric.annotation.Config
-import java.lang.reflect.Method
 
 @ExperimentalCoroutinesApi
 @Config(manifest = Config.NONE)
 class DatabaseManagerTest {
-  //private val userModel : UserModel = UserModel()
+  // private val userModel : UserModel = UserModel()
   private val firestore: FirebaseFirestore = mockk(relaxed = true)
   private val context: Context = mockk()
   private val user: FirebaseUser = mockk()
@@ -85,6 +79,4 @@ class DatabaseManagerTest {
       assert(result == expectedValue)
     }
   }
-
-
 }
