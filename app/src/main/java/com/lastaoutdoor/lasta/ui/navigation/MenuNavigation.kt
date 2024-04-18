@@ -2,14 +2,14 @@ package com.lastaoutdoor.lasta.ui.navigation
 
 import androidx.compose.material.Badge
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Face
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -37,8 +37,8 @@ fun MenuNavigation(navController: NavHostController) {
       listOf(
           MenuNavigationItem(
               route = LeafScreen.Discover.route,
-              selectedIcon = Icons.Filled.Add,
-              unselectedIcon = Icons.Outlined.Add,
+              selectedIcon = Icons.Filled.Search,
+              unselectedIcon = Icons.Outlined.Search,
               hasNews = false),
           MenuNavigationItem(
               route = LeafScreen.Favorites.route,
@@ -59,29 +59,33 @@ fun MenuNavigation(navController: NavHostController) {
   val navBackStackEntry by navController.currentBackStackEntryAsState()
   val currentDestination = navBackStackEntry?.destination
 
-  NavigationBar(modifier = Modifier.testTag("MenuNavigation")) {
-    items.forEach { item ->
-      val selected = currentDestination?.route == item.route
-      NavigationBarItem(
-          selected = selected,
-          onClick = {
-            navController.navigate(item.route) {
-              popUpTo(navController.graph.findStartDestination().id) { saveState = true }
-              launchSingleTop = true
-              restoreState = true
-            }
-          },
-          label = { Text(item.route) },
-          icon = {
-            BadgedBox(badge = { if (item.hasNews) Badge() }) {
-              Icon(
-                  imageVector =
-                      if (selected) {
-                        item.selectedIcon
-                      } else item.unselectedIcon,
-                  contentDescription = item.route)
-            }
-          })
+  if (currentDestination?.route != LeafScreen.MoreInfo.route) {
+    NavigationBar(modifier = Modifier.testTag("MenuNavigation")) {
+      items.forEach { item ->
+        val selected = currentDestination?.route == item.route
+        NavigationBarItem(
+            selected = selected,
+            onClick = {
+              navController.navigate(item.route) {
+                popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                launchSingleTop = true
+                restoreState = true
+              }
+            },
+            label = { Text(item.route) },
+            icon = {
+              BadgedBox(badge = { if (item.hasNews) Badge() }) {
+                Icon(
+                    imageVector =
+                        if (selected) {
+                          item.selectedIcon
+                        } else item.unselectedIcon,
+                    contentDescription = item.route)
+              }
+            })
+      }
     }
+  } else {
+    Unit
   }
 }
