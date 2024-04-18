@@ -4,9 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.navigation.compose.rememberNavController
 import com.lastaoutdoor.lasta.ui.navigation.MainAppNavGraph
 import com.lastaoutdoor.lasta.ui.theme.LastaTheme
+import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
