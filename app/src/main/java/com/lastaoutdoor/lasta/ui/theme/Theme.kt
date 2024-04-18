@@ -1,51 +1,34 @@
 package com.lastaoutdoor.lasta.ui.theme
 
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 
 // TODO: Make sure the color schemes match the wanted design
 private val DarkColorScheme =
     darkColorScheme(
-        primary = Black,  // This is the color for backgrounds and surfaces
-        secondary = White, // This is the color for text and icons
-        tertiary = LastaBlue, // This is the color for primary actions
-        //background = LastaBlue,
-        surface = LastaGreen, // This is the color for the surfaces
-        onPrimary = MarkerGreen, // This is the color for unselected markers
-        onSecondary = MarkerBlue, // This is the color for selected markers
-        //onTertiary = Color.White,
-        //onBackground = LastaBlue,
-        //onSurface = LastaBlue,
-        surfaceBright = YellowDifficulty, // This is the color for the medium difficulty level
-        surfaceDim = LastaBlue, // This is the color for the easy difficulty level
-        surfaceVariant = RedDifficulty, // This is the color for the hard difficulty level
-        error = Color.Red
+        primary = LastaBlue,  // This is the color for backgrounds and surfaces
+        secondary = LastaGreen, // This is the color for text and icons
+        onPrimary = White,
+        background = DarkBackground,
+        surfaceVariant = DarkSurfaceVariant,
+        onSurfaceVariant = White,
+        onBackground = White,
+        primaryContainer = LastaGreen,
+        secondaryContainer = SecondaryContainerColor,
     )
 
 private val LightColorScheme =
     lightColorScheme(
-        primary = White, // This is the color for backgrounds and surfaces
-        secondary = Black, // This is the color for text and icons
-        tertiary = LastaBlue, // This is the color for primary actions
-        //background = LastaBlue,
-        surface = LastaGreen, // This is the color for the surfaces
-        onPrimary = MarkerGreen, // This is the color for unselected markers
-        onSecondary = MarkerBlue, // This is the color for selected markers
-        //onTertiary = Color.White,
-        //onBackground = LastaBlue,
-        //onSurface = LastaBlue,
-        surfaceBright = YellowDifficulty, // This is the color for the medium difficulty level
-        surfaceDim = LastaBlue, // This is the color for the easy difficulty level
-        surfaceVariant = RedDifficulty, // This is the color for the hard difficulty level
-        error = Color.Red // This is the color for errors
+        primary = LastaBlue, // This is the color for backgrounds and surfaces
+        secondary = LastaGreen, // This is the color for text and icons
+        surfaceVariant = SurfaceGreen, // This is the color for card surfaces
+        onPrimary = White, // This is the color for text and icons on top of primary
+        primaryContainer = LastaGreen, // This is the color for primary containers
+        secondaryContainer = SecondaryContainerColor, // This is the color for secondary containers
+
         )
 
 @Composable
@@ -55,15 +38,7 @@ fun LastaTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-  val colorScheme =
-      when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-          val context = LocalContext.current
-          if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-      }
+  val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
 
   MaterialTheme(colorScheme = colorScheme, typography = Typography, content = content)
 }
