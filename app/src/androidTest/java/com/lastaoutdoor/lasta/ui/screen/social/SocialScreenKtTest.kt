@@ -1,18 +1,21 @@
 package com.lastaoutdoor.lasta.ui.screen.social
 
 import androidx.activity.compose.setContent
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.assertIsNotSelected
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
+import com.lastaoutdoor.lasta.data.model.user.HikingLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
+import com.lastaoutdoor.lasta.data.model.user.UserPreferences
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.repository.SocialRepository
 import com.lastaoutdoor.lasta.ui.MainActivity
@@ -20,6 +23,7 @@ import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import java.util.Date
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
@@ -30,10 +34,6 @@ class FakeSocialRepository : SocialRepository {
   var friends: ArrayList<UserModel> = ArrayList()
   var activities: ArrayList<ActivitiesDatabaseType> = ArrayList()
   var messages: ArrayList<String> = ArrayList()
-
-  fun setFriends(friends: List<UserModel>) {
-    this.friends.addAll(friends)
-  }
 
   override fun getFriends(): List<UserModel>? {
     return friends
@@ -47,10 +47,19 @@ class FakeSocialRepository : SocialRepository {
     return messages
   }
 
-  fun clean() {
-    friends.clear()
-    activities.clear()
-    messages.clear()
+  override fun setMessages(messages: List<String>) {
+    this.messages.clear()
+    this.messages.addAll(messages)
+  }
+
+  override fun setFriends(friend: List<UserModel>) {
+    this.friends.clear()
+    this.friends.addAll(friend)
+  }
+
+  override fun setLatestFriendActivities(activities: List<ActivitiesDatabaseType>) {
+    this.activities.clear()
+    this.activities.addAll(activities)
   }
 }
 
@@ -94,7 +103,7 @@ class SocialScreenKtTest {
   }
 
   @Test
-  fun testTabSelection(){
+  fun testTabSelection() {
     // Set the content to the social screen
     composeRule.activity.setContent { SocialScreen() }
 
@@ -119,7 +128,6 @@ class SocialScreenKtTest {
     composeRule.onNodeWithText("Feed").assertIsNotSelected()
     composeRule.onNodeWithTag("TopButton").assertIsDisplayed()
 
-
     // Click on the feed tab
     composeRule.onNodeWithText("Feed").performClick()
 
@@ -130,7 +138,7 @@ class SocialScreenKtTest {
   }
 
   @Test
-  fun testEmptyStates(){
+  fun testEmptyStates() {
     // Test that the list
     composeRule.activity.setContent {
       socialViewModel = hiltViewModel()
@@ -138,34 +146,90 @@ class SocialScreenKtTest {
       SocialScreen()
     }
 
-    //Feed
+    // Feed
     composeRule.onNodeWithTag("ConnectionMissing").assertIsNotDisplayed()
     composeRule.onNodeWithTag("FriendMissing").assertIsDisplayed()
 
-    //Friends
+    // Friends
     composeRule.onNodeWithText("Friends").performClick()
     composeRule.onNodeWithTag("FriendMissing").assertIsDisplayed()
     composeRule.onNodeWithTag("ConnectionMissing").assertIsNotDisplayed()
 
-    //Message
+    // Message
     composeRule.onNodeWithText("Message").performClick()
     composeRule.onNodeWithTag("ConnectionMissing").assertIsNotDisplayed()
     composeRule.onNodeWithTag("MessageMissing").assertIsDisplayed()
-
   }
 
-
   @Test
-  fun testFilledFeed(){
+  fun testFilledFeed() {
+
+    // Fake data
+    val act = ActivitiesDatabaseType.Trail(0, null, null, null, Date(), Date(), 0.0, 0, 0, 0)
+    val activities = listOf(act, act, act)
+
     // Set the content to the social screen
     composeRule.activity.setContent {
       socialViewModel = hiltViewModel()
       socialViewModel.isConnected = true
+      socialViewModel.repository.setLatestFriendActivities(activities)
       SocialScreen()
     }
 
-    // Set the viewmodel
-
+    // Check that the add friend is not displayed
+    composeRule.onNodeWithTag("FriendMissing").assertIsNotDisplayed()
+    composeRule.onAllNodesWithTag("Activity").assertCountEquals(3)
   }
 
+  @Test
+  fun testFilledFriends() {
+
+    // Fake data
+    val friend =
+        UserModel(
+            "1",
+            "name",
+            "email",
+            "photo",
+            UserPreferences(true, "1", "1", "1", "1", HikingLevel.BEGINNER))
+    val friends = listOf(friend, friend, friend)
+
+    // Set the content to the social screen
+    composeRule.activity.setContent {
+      socialViewModel = hiltViewModel()
+      socialViewModel.isConnected = true
+      socialViewModel.repository.setFriends(friends)
+      SocialScreen()
+    }
+
+    // go to the friends tab
+    composeRule.onNodeWithText("Friends").performClick()
+
+    // Check that the add friend is not displayed
+    composeRule.onNodeWithTag("FriendMissing").assertIsNotDisplayed()
+    composeRule.onAllNodesWithTag("Friend").assertCountEquals(3)
+  }
+
+  @Test
+  fun testFilledMessages() {
+
+    // Fake data
+    val message = "message"
+    val messages = listOf(message, message, message, message, message)
+
+    // Set the content to the social screen
+    composeRule.activity.setContent {
+      socialViewModel = hiltViewModel()
+      socialViewModel.isConnected = true
+      socialViewModel.repository.setMessages(messages)
+      SocialScreen()
+    }
+
+    // go to the friends tab
+    composeRule.onNodeWithText("Message").performClick()
+
+    // Check that the add friend is not displayed
+    composeRule.onNodeWithTag("MessageMissing").assertIsNotDisplayed()
+    composeRule.onAllNodesWithTag("Message").assertCountEquals(5)
+  }
 }

@@ -15,7 +15,6 @@ import com.lastaoutdoor.lasta.data.api.OutdoorActivityRepositoryImpl
 import com.lastaoutdoor.lasta.data.auth.AuthRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.ActivitiesRepositoryImpl
 import com.lastaoutdoor.lasta.data.preferences.PreferencesRepositoryImpl
-import com.lastaoutdoor.lasta.data.social.SocialRepositoryImpl
 import com.lastaoutdoor.lasta.repository.ActivitiesRepository
 import com.lastaoutdoor.lasta.repository.AuthRepository
 import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository

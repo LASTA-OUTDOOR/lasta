@@ -19,12 +19,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
 @Composable
@@ -34,25 +36,29 @@ fun FriendsActivityList(viewModel: SocialViewModel = hiltViewModel()) {
   } else if (viewModel.latestFriendActivities.isNullOrEmpty()) {
     FriendsMissing()
   } else {
-    LazyColumn { items(10) { FriendsActivityCard(it) } }
+    LazyColumn {
+      items(viewModel.latestFriendActivities.size) {
+        FriendsActivityCard(viewModel.latestFriendActivities[it])
+      }
+    }
   }
 }
 
 @Composable
-fun FriendsActivityCard(i: Int) {
+fun FriendsActivityCard(activity: ActivitiesDatabaseType) {
   Card(
       colors =
           CardDefaults.cardColors(
               containerColor = MaterialTheme.colorScheme.surfaceVariant,
           ),
-      modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+      modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("Activity")) {
         Column(modifier = Modifier.padding(8.dp)) {
           Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = "Activity title",
                 style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-              Text(text = "Friend $i ", modifier = Modifier.align(Alignment.CenterVertically))
+              Text(text = "Friend", modifier = Modifier.align(Alignment.CenterVertically))
               Icon(
                   Icons.Filled.AccountCircle,
                   contentDescription = "Profile picture",

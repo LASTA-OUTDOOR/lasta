@@ -13,4 +13,15 @@ interface SocialRepository {
 
   // returns all the messages
   fun getMessages(): List<String>?
+
+  // For testing purposes
+
+  // changes the list of message
+  fun setMessages(messages: List<String>)
+
+  // changes the list of friends
+  fun setFriends(friend: List<UserModel>)
+
+  // changes the list of activities
+  fun setLatestFriendActivities(activities: List<ActivitiesDatabaseType>)
 }

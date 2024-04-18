@@ -19,10 +19,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -33,28 +35,26 @@ fun FriendsList(viewModel: SocialViewModel = hiltViewModel()) {
   } else if (viewModel.friends.isNullOrEmpty()) {
     FriendsMissing()
   } else {
-    LazyColumn { items(10) { FriendsCard(it) } }
+    LazyColumn { items(viewModel.friends.size) { FriendsCard(viewModel.friends[it]) } }
   }
 }
 
 @Composable
-fun FriendsCard(i: Int) {
+fun FriendsCard(friend: UserModel) {
   Card(
       colors =
           CardDefaults.cardColors(
               containerColor = MaterialTheme.colorScheme.surfaceVariant,
           ),
-      modifier = Modifier.height(height = 100.dp).fillMaxWidth().padding(8.dp)) {
+      modifier = Modifier.height(height = 100.dp).fillMaxWidth().padding(8.dp).testTag("Friend")) {
         Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
           Icon(
               Icons.Filled.AccountCircle,
               contentDescription = "Profile picture",
               modifier = Modifier.size(60.dp).align(Alignment.CenterVertically).fillMaxHeight())
           Column(modifier = Modifier.padding(8.dp)) {
-            Text(text = "Friend Name $i", fontWeight = FontWeight.Bold)
-            Text(
-                text = "Bio: This is what a biography would look like",
-                overflow = TextOverflow.Ellipsis)
+            Text(text = friend.userName ?: "Name error", fontWeight = FontWeight.Bold)
+            Text(text = "TO BE IMPLEMENTED - User status", overflow = TextOverflow.Ellipsis)
           }
         }
       }

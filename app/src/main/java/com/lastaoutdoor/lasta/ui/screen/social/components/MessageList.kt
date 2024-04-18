@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -31,18 +32,18 @@ fun MessageList(viewModel: SocialViewModel = hiltViewModel()) {
     MessageMissing()
     return
   } else {
-    LazyColumn { items(10) { MessageCard(it) } }
+    LazyColumn { items(viewModel.messages.size) { MessageCard(viewModel.messages[it]) } }
   }
 }
 
 @Composable
-fun MessageCard(i: Int) {
+fun MessageCard(message: String) {
   Card(
       colors =
           CardDefaults.cardColors(
               containerColor = MaterialTheme.colorScheme.surfaceVariant,
           ),
-      modifier = Modifier.height(height = 100.dp).fillMaxWidth().padding(8.dp)) {
+      modifier = Modifier.height(height = 100.dp).fillMaxWidth().padding(8.dp).testTag("Message")) {
         Column(modifier = Modifier.padding(8.dp)) {
           Row() {
             Icon(
@@ -50,11 +51,11 @@ fun MessageCard(i: Int) {
                 contentDescription = "Profile picture",
                 modifier = Modifier.size(30.dp).align(Alignment.CenterVertically))
             Text(
-                text = " Friend $i",
+                text = "John Doe",
                 modifier = Modifier.align(Alignment.CenterVertically),
                 fontWeight = FontWeight.Bold)
           }
-          Text(text = "Hiii, What are you doing tomorrow ?", overflow = TextOverflow.Ellipsis)
+          Text(text = message, overflow = TextOverflow.Ellipsis)
         }
       }
 }

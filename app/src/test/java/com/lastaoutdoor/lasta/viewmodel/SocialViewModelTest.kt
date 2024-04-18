@@ -25,10 +25,19 @@ class FakeSocialRepository : SocialRepository {
     return messages
   }
 
-  fun clean() {
-    friends.clear()
-    activities.clear()
-    messages.clear()
+  override fun setMessages(messages: List<String>) {
+    this.messages.clear()
+    this.messages.addAll(messages)
+  }
+
+  override fun setFriends(friend: List<UserModel>) {
+    this.friends.clear()
+    this.friends.addAll(friend)
+  }
+
+  override fun setLatestFriendActivities(activities: List<ActivitiesDatabaseType>) {
+    this.activities.clear()
+    this.activities.addAll(activities)
   }
 }
 
