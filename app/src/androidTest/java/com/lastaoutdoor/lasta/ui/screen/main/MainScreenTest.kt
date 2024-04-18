@@ -25,34 +25,34 @@ import org.junit.Test
 @UninstallModules(AppModule::class)
 class MainScreenTest {
 
-    // Allow Hilt to inject dependencies
-    @get:Rule(order = 0) val hiltRule = HiltAndroidRule(this)
+  // Allow Hilt to inject dependencies
+  @get:Rule(order = 0) val hiltRule = HiltAndroidRule(this)
 
-    // Create a compose rule
-    @get:Rule(order = 1) val composeRule = createAndroidComposeRule<MainActivity>()
+  // Create a compose rule
+  @get:Rule(order = 1) val composeRule = createAndroidComposeRule<MainActivity>()
 
-    // Set up the test
-    @Before
-    fun setUp() {
-        hiltRule.inject()
-        composeRule.activity.setContent {
-            val navController = rememberNavController()
-            NavHost(
-                navController = navController,
-                modifier = Modifier.testTag("MainAppNavGraph"),
-                route = RootScreen.Root.route,
-                startDestination = RootScreen.Main.route) {
-                composable(RootScreen.Loading.route) { LoadingScreen(navController = navController) }
-                composable(RootScreen.Login.route) { LoginScreen(navController = navController) }
-                composable(RootScreen.Main.route) { MainScreen(rootNavController = navController) }
-            }
-        }
+  // Set up the test
+  @Before
+  fun setUp() {
+    hiltRule.inject()
+    composeRule.activity.setContent {
+      val navController = rememberNavController()
+      NavHost(
+          navController = navController,
+          modifier = Modifier.testTag("MainAppNavGraph"),
+          route = RootScreen.Root.route,
+          startDestination = RootScreen.Main.route) {
+            composable(RootScreen.Loading.route) { LoadingScreen(navController = navController) }
+            composable(RootScreen.Login.route) { LoginScreen(navController = navController) }
+            composable(RootScreen.Main.route) { MainScreen(rootNavController = navController) }
+          }
     }
+  }
 
-    // Test the main navigation for login and initial loading
-    @Test
-    fun mainAppNavGraphIsDisplayed() {
-        // Check if the main nav graph is present
-        composeRule.onNodeWithTag("MainScreen").assertIsDisplayed()
-    }
+  // Test the main navigation for login and initial loading
+  @Test
+  fun mainAppNavGraphIsDisplayed() {
+    // Check if the main nav graph is present
+    composeRule.onNodeWithTag("MainScreen").assertIsDisplayed()
+  }
 }

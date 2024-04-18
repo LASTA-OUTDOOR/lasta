@@ -25,4 +25,3 @@ val White = Color(0xFFFFFFFF)
 val Black = Color(0xFF000000)
 val MarkerGreen = Color(0xFF0F9D58)
 val MarkerBlue = Color(0xFF0F00FF)
-

@@ -81,9 +81,7 @@ fun DiscoveryContent(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltVi
 @Composable
 fun FloatingActionButtons() {
   Column(
-      modifier = Modifier
-          .padding(16.dp)
-          .testTag("floatingActionButtons"),
+      modifier = Modifier.padding(16.dp).testTag("floatingActionButtons"),
       verticalArrangement = Arrangement.Bottom,
       horizontalAlignment = Alignment.End) {
         FloatingActionButton(onClick = { /*TODO*/}, modifier = Modifier.padding(bottom = 8.dp)) {
@@ -99,9 +97,7 @@ fun FloatingActionButtons() {
 fun OutdoorActivityList(outdoorActivities: List<OutdoorActivity>) {
   /** Our list of activities which is lazy in order to display only the first ones. */
   LazyColumn(
-      modifier = Modifier
-          .fillMaxSize()
-          .testTag("outdoorActivityList"),
+      modifier = Modifier.fillMaxSize().testTag("outdoorActivityList"),
       contentPadding = PaddingValues(16.dp)) {
         items(outdoorActivities) { outdoorActivity -> OutdoorActivityItem(outdoorActivity) }
       }
@@ -112,9 +108,7 @@ fun OutdoorActivityItem(
     outdoorActivity: OutdoorActivity,
     discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel()
 ) {
-  Card(modifier = Modifier
-      .padding(8.dp)
-      .testTag("outdoorActivityItem")) {
+  Card(modifier = Modifier.padding(8.dp).testTag("outdoorActivityItem")) {
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
       Row(
           // modifier = Modifier.fillMaxWidth(),
@@ -134,9 +128,9 @@ fun OutdoorActivityItem(
           onClick = { /* Switch page and start activity itinerary */},
           // set its theme from themes.xml
 
-          modifier =
-              Modifier.testTag("startButton"),
-          colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)) {
+          modifier = Modifier.testTag("startButton"),
+          colors =
+              ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)) {
             Text(
                 text = "START",
                 style =
@@ -149,15 +143,13 @@ fun OutdoorActivityItem(
             Spacer(modifier = Modifier.width(10.dp))
             Image(
                 modifier =
-                Modifier
-                    .shadow(
-                        elevation = 4.dp,
-                        spotColor = Color(0x40000000),
-                        ambientColor = Color(0x40000000)
-                    )
-                    .padding(1.dp)
-                    .width(16.dp)
-                    .height(19.dp),
+                    Modifier.shadow(
+                            elevation = 4.dp,
+                            spotColor = Color(0x40000000),
+                            ambientColor = Color(0x40000000))
+                        .padding(1.dp)
+                        .width(16.dp)
+                        .height(19.dp),
                 // will need to change resource to play_button
                 painter = painterResource(id = R.drawable.play_button),
                 contentDescription = "play image for button",
@@ -169,8 +161,7 @@ fun OutdoorActivityItem(
               /** Calls the view model to toggle activity dialog */
               discoveryScreenViewModel.showDialog(outdoorActivity)
             },
-            modifier =
-                Modifier.testTag("moreInfoButton")) {
+            modifier = Modifier.testTag("moreInfoButton")) {
               Text(
                   text = "MORE INFO",
                   style =
@@ -184,8 +175,7 @@ fun OutdoorActivityItem(
 
         Button(
             onClick = { /* Switch to map view and see location of activity */},
-            modifier =
-                Modifier.testTag("mapButton")) {
+            modifier = Modifier.testTag("mapButton")) {
               Text(
                   text = "VIEW ON MAP",
                   style =
@@ -201,17 +191,12 @@ fun OutdoorActivityItem(
   }
 }
 
-
 /** The composable for the "more info" dialog box */
 @Composable
 fun ActivityDialog(onDismissRequest: () -> Unit, outdoorActivity: OutdoorActivity) {
   Dialog(onDismissRequest = { onDismissRequest() }) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(400.dp)
-            .padding(16.dp)
-            .testTag("activityDialog"),
+        modifier = Modifier.fillMaxWidth().height(400.dp).padding(16.dp).testTag("activityDialog"),
         shape = RoundedCornerShape(16.dp),
     ) {
       Column(
@@ -223,25 +208,19 @@ fun ActivityDialog(onDismissRequest: () -> Unit, outdoorActivity: OutdoorActivit
             text =
                 if (outdoorActivity.locationName != "") "Location: " + outdoorActivity.locationName
                 else "No available location",
-            modifier = Modifier
-                .padding(16.dp)
-                .testTag("locationText"),
+            modifier = Modifier.padding(16.dp).testTag("locationText"),
         )
         Text(
             text =
                 if (outdoorActivity.duration != "") "Duration: " + outdoorActivity.duration
                 else "No available duration",
-            modifier = Modifier
-                .padding(16.dp)
-                .testTag("durationText"),
+            modifier = Modifier.padding(16.dp).testTag("durationText"),
         )
         Text(
             text =
                 if (outdoorActivity.difficulty != 0) "Difficulty: ${outdoorActivity.difficulty}"
                 else "No available difficulty",
-            modifier = Modifier
-                .padding(16.dp)
-                .testTag("difficultyText"),
+            modifier = Modifier.padding(16.dp).testTag("difficultyText"),
         )
 
         Row(
@@ -250,9 +229,7 @@ fun ActivityDialog(onDismissRequest: () -> Unit, outdoorActivity: OutdoorActivit
         ) {
           TextButton(
               onClick = { onDismissRequest() },
-              modifier = Modifier
-                  .padding(8.dp)
-                  .testTag("okButton"),
+              modifier = Modifier.padding(8.dp).testTag("okButton"),
           ) {
             Text("Ok")
           }

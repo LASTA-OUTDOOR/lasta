@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 // TODO: Make sure the color schemes match the wanted design
 private val DarkColorScheme =
     darkColorScheme(
-        primary = PrimaryBlue,  // This is the color for backgrounds and surfaces
+        primary = PrimaryBlue, // This is the color for backgrounds and surfaces
         secondary = AccentGreen, // This is the color for text and icons
         onPrimary = White, // This is the color for text and icons on top of primary
         onSecondary = White, // This is the color for text and icons on top of secondary
@@ -19,9 +19,11 @@ private val DarkColorScheme =
         onBackground = White, // This is the color for text and icons on top of background
         primaryContainer = AccentGreen, // This is the color for primary containers
         secondaryContainer = SecondaryContainerColor, // This is the color for secondary containers
-        onSecondaryContainer = VeryLightBlue, // This is the color for text and icons on top of secondaryContainer
-        onSurface = VeryLightBlue// This is the color for text and icons on top of secondaryContainer
-    )
+        onSecondaryContainer =
+            VeryLightBlue, // This is the color for text and icons on top of secondaryContainer
+        onSurface =
+            VeryLightBlue // This is the color for text and icons on top of secondaryContainer
+        )
 
 private val LightColorScheme =
     lightColorScheme(
@@ -34,8 +36,9 @@ private val LightColorScheme =
         secondaryContainer = SecondaryContainerColor, // This is the color for secondary containers
         onBackground = Black, // This is the color for text and icons on top of background
         onSurfaceVariant = Black, // This is the color for text and icons on top of surfaceVariant
-        onSecondaryContainer = PrimaryBlue, // This is the color for text and icons on top of secondaryContainer
-        onSurface = PrimaryBlue// This is the color for text and icons on top of secondaryContainer
+        onSecondaryContainer =
+            PrimaryBlue, // This is the color for text and icons on top of secondaryContainer
+        onSurface = PrimaryBlue // This is the color for text and icons on top of secondaryContainer
         )
 
 @Composable
@@ -45,7 +48,7 @@ fun LastaTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    // choose color scheme based on darkTheme
+  // choose color scheme based on darkTheme
   val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
 
   MaterialTheme(colorScheme = colorScheme, typography = Typography, content = content)
