@@ -1,5 +1,6 @@
 package com.lastaoutdoor.lasta.ui.screen.social.components
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,6 +17,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
@@ -37,13 +41,16 @@ fun MessageCard(i: Int) {
               containerColor = MaterialTheme.colorScheme.surfaceVariant,
           ),
       modifier = Modifier.height(height = 100.dp).fillMaxWidth().padding(8.dp)) {
-        Row {
-          Icon(
-              Icons.Filled.AccountCircle,
-              contentDescription = "Profile picture",
-              modifier = Modifier.padding(8.dp).size(30.dp).align(Alignment.CenterVertically))
-          Text(text = "Friend $i", modifier = Modifier.align(Alignment.CenterVertically))
-        }
-        Text(text = "Hiked 200km and went for a MC Donalds", modifier = Modifier.padding(8.dp))
+      Column (modifier = Modifier.padding(8.dp)){
+          Row() {
+              Icon(
+                  Icons.Filled.AccountCircle,
+                  contentDescription = "Profile picture",
+                  modifier = Modifier.size(30.dp).align(Alignment.CenterVertically)
+              )
+              Text(text = " Friend $i", modifier = Modifier.align(Alignment.CenterVertically), fontWeight = FontWeight.Bold)
+          }
+          Text(text = "Hiii, What are you doing tomorrow ?", overflow = TextOverflow.Ellipsis)
       }
+  }
 }
