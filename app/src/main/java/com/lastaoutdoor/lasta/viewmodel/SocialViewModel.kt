@@ -8,11 +8,10 @@ import com.lastaoutdoor.lasta.repository.SocialRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
-// TODO: put this in data package
-data class TopButton(val text: String, val onClick: () -> Unit)
-
 @HiltViewModel
-class SocialViewModel @Inject constructor(private val repository: SocialRepository) : ViewModel() {
+class SocialViewModel
+@Inject constructor(val repository: SocialRepository)
+  : ViewModel() {
 
   private val numberOfDays = 7
 
@@ -26,7 +25,8 @@ class SocialViewModel @Inject constructor(private val repository: SocialReposito
   // returns all the activities done by friends in the last 7 days
   var latestFriendActivities = repository.getLatestFriendActivities(numberOfDays)
 
-  val isConnected = repository.isConnected
+  //TODO: adapt this with andew's code
+  val isConnected by mutableStateOf(false)
 
   var topButtonText by mutableStateOf("Default button")
   var topButtonOnClick by mutableStateOf({})

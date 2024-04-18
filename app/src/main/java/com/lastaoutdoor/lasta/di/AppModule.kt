@@ -29,7 +29,6 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-
 /** Hilt Module for providing dependencies */
 @InstallIn(SingletonComponent::class)
 @Module
@@ -101,8 +100,10 @@ object AppModule {
   @Provides @Singleton fun provideTimeProvider(): TimeProvider = RealTimeProvider()
 
   /** Provides the [SocialRepository] class */
-  @Provides
   @Singleton
-  fun provideSocialRepository(@ApplicationContext context: Context): SocialRepository =
-      SocialRepositoryImpl(context)
+  @Provides
+  fun provideSocialRepository(): SocialRepository {
+      return SocialRepositoryImpl()
+  }
 }
+

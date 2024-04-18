@@ -43,7 +43,7 @@ fun Header(viewModel: SocialViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun SocialScreen(viewModel: SocialViewModel = hiltViewModel()) {
+fun SocialScreen() {
   Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
 
     // Page title and button
