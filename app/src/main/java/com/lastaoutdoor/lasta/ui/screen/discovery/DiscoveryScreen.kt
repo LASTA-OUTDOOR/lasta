@@ -1,12 +1,13 @@
 package com.lastaoutdoor.lasta.ui.screen.discovery
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -31,7 +32,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -41,6 +43,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
 import com.lastaoutdoor.lasta.ui.components.SearchBarComponent
+import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
 import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenType
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenViewModel
@@ -50,19 +53,20 @@ fun DiscoveryScreen(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltVie
   val screen by discoveryScreenViewModel.screen.collectAsState()
 
   if (screen == DiscoveryScreenType.LIST) {
-    LazyColumn(modifier = Modifier.testTag("discoveryScreen")) {
-      item { HeaderComposable() }
+    LazyColumn(
+        modifier =
+            Modifier.testTag("discoveryScreen").background(MaterialTheme.colorScheme.background)) {
+          item { HeaderComposable() }
 
-      item {
-        Spacer(modifier = Modifier.height(8.dp))
-        ActivitiesDisplay()
-      }
-    }
+          item {
+            SeparatorComponent() // Add a separator between the header and the activities
+            Spacer(modifier = Modifier.height(8.dp))
+            ActivitiesDisplay()
+          }
+        }
   } else if (screen == DiscoveryScreenType.MAP) {
-    Column {
-      HeaderComposable()
-      Box(modifier = Modifier.fillMaxHeight()) { MapScreen() }
-    }
+    MapScreen()
+    HeaderComposable()
   }
 }
 
@@ -73,7 +77,7 @@ fun HeaderComposable(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltVi
   val iconSize = 48.dp // Adjust icon size as needed
 
   Surface(
-      modifier = Modifier.fillMaxWidth(),
+      modifier = Modifier.fillMaxWidth().graphicsLayer { alpha = 0.9f },
       color = MaterialTheme.colorScheme.background,
       shadowElevation = 3.dp) {
         Column {
@@ -156,38 +160,57 @@ fun ActivitiesDisplay(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltV
                 .padding(vertical = 8.dp, horizontal = 16.dp)
                 .clickable(onClick = { /* Handle click */}),
         shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
     ) {
       Column {
         Row(
             modifier = Modifier.fillMaxWidth().padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically) {
-              Text(
-                  text = a.getActivityType().toString(),
-                  modifier = Modifier.padding(4.dp).weight(1f),
-                  color = Color.Blue)
-              Icon(
-                  imageVector = Icons.Default.FavoriteBorder,
-                  contentDescription = "Favorite",
-                  tint = Color.Gray)
-            }
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically) {
-              Text(text = a.locationName ?: "Unnamed Activity", fontWeight = FontWeight.Bold)
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween) {
+              Box(
+                  modifier =
+                      Modifier.shadow(4.dp, RoundedCornerShape(30))
+                          .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
+                          .padding(PaddingValues(8.dp))) {
+                    Text(
+                        text = "Climbing",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onPrimary)
+                  }
+
+              IconButton(
+                  onClick = { /*TODO*/ /* changed to this when favorite Icons.Filled.Favorite*/},
+                  modifier = Modifier.size(24.dp)) {
+                    Icon(
+                        Icons.Filled.FavoriteBorder,
+                        contentDescription = "Filter",
+                        modifier = Modifier.size(24.dp))
+                  }
             }
 
+        Spacer(modifier = Modifier.height(16.dp))
         Row(
             modifier = Modifier.fillMaxWidth().padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically) {
+              Text(
+                  text = a.locationName ?: "Unnamed Activity",
+                  style = MaterialTheme.typography.titleMedium,
+                  fontWeight = FontWeight.Bold)
+            }
+        SeparatorComponent()
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
             verticalAlignment = Alignment.CenterVertically) {
               Icon(
                   imageVector = Icons.Default.Star,
                   contentDescription = "Rating",
                   tint = MaterialTheme.colorScheme.primary)
-              Text(text = "4.3")
-              Text(text = "Medium")
-              Text(text = "1,5 km")
+              Text(text = "? popularity")
+              Spacer(modifier = Modifier.width(8.dp))
+              Text(text = if (a.difficulty != 0) "Difficulty: ${a.difficulty}" else "? difficulty")
+              Spacer(modifier = Modifier.width(16.dp))
+              // Distance from the user's location, NOT THE LENGTH OF THE ACTIVITY!!!
+              Text(text = "? km")
             }
       }
     }
