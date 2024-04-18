@@ -49,6 +49,6 @@ fun <T> Spinner(
             })
       }
     }
-    Text(selectedItem.toString(), fontWeight = FontWeight.Bold, style = TextStyle(fontSize = 24.sp))
+    Text(selectedItem.toString(), fontWeight = FontWeight.Normal, style = TextStyle(fontSize = 24.sp))
   }
 }
