@@ -9,25 +9,33 @@ import androidx.compose.runtime.Composable
 // TODO: Make sure the color schemes match the wanted design
 private val DarkColorScheme =
     darkColorScheme(
-        primary = LastaBlue,  // This is the color for backgrounds and surfaces
-        secondary = LastaGreen, // This is the color for text and icons
+        primary = PrimaryBlue,  // This is the color for backgrounds and surfaces
+        secondary = AccentGreen, // This is the color for text and icons
         onPrimary = White, // This is the color for text and icons on top of primary
+        onSecondary = White, // This is the color for text and icons on top of secondary
         background = DarkBackground, // This is the color for the background
         surfaceVariant = DarkSurfaceVariant, // This is the color for card surfaces
         onSurfaceVariant = White, // This is the color for text and icons on top of surfaceVariant
         onBackground = White, // This is the color for text and icons on top of background
-        primaryContainer = LastaGreen, // This is the color for primary containers
+        primaryContainer = AccentGreen, // This is the color for primary containers
         secondaryContainer = SecondaryContainerColor, // This is the color for secondary containers
+        onSecondaryContainer = VeryLightBlue, // This is the color for text and icons on top of secondaryContainer
+        onSurface = VeryLightBlue// This is the color for text and icons on top of secondaryContainer
     )
 
 private val LightColorScheme =
     lightColorScheme(
-        primary = LastaBlue, // This is the color for backgrounds and surfaces
-        secondary = LastaGreen, // This is the color for text and icons
-        surfaceVariant = SurfaceVariant, // This is the color for card surfaces
+        primary = PrimaryBlue, // This is the color for backgrounds and surfaces
+        secondary = AccentGreen, // This is the color for text and icons
         onPrimary = White, // This is the color for text and icons on top of primary
-        primaryContainer = LastaGreen, // This is the color for primary containers
+        onSecondary = White, // This is the color for text and icons on top of secondary
+        surfaceVariant = SurfaceVariant, // This is the color for card surfaces
+        primaryContainer = AccentGreen, // This is the color for primary containers
         secondaryContainer = SecondaryContainerColor, // This is the color for secondary containers
+        onBackground = Black, // This is the color for text and icons on top of background
+        onSurfaceVariant = Black, // This is the color for text and icons on top of surfaceVariant
+        onSecondaryContainer = PrimaryBlue, // This is the color for text and icons on top of secondaryContainer
+        onSurface = PrimaryBlue// This is the color for text and icons on top of secondaryContainer
         )
 
 @Composable
