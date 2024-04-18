@@ -18,12 +18,16 @@ private val DarkColorScheme =
         secondary = White, // This is the color for text and icons
         tertiary = LastaBlue, // This is the color for primary actions
         //background = LastaBlue,
-        //surface = LastaBlue,
+        surface = LastaGreen, // This is the color for the surfaces
         onPrimary = MarkerGreen, // This is the color for unselected markers
         onSecondary = MarkerBlue, // This is the color for selected markers
         //onTertiary = Color.White,
         //onBackground = LastaBlue,
         //onSurface = LastaBlue,
+        surfaceBright = YellowDifficulty, // This is the color for the medium difficulty level
+        surfaceDim = LastaBlue, // This is the color for the easy difficulty level
+        surfaceVariant = RedDifficulty, // This is the color for the hard difficulty level
+        error = Color.Red
     )
 
 private val LightColorScheme =
@@ -31,13 +35,17 @@ private val LightColorScheme =
         primary = White, // This is the color for backgrounds and surfaces
         secondary = Black, // This is the color for text and icons
         tertiary = LastaBlue, // This is the color for primary actions
-        background = LastaBlue,
-        surface = LastaBlue,
-        onPrimary = Color.White,
-        onSecondary = Color.White,
-        onTertiary = Color.White,
-        onBackground = LastaBlue,
-        onSurface = LastaBlue,
+        //background = LastaBlue,
+        surface = LastaGreen, // This is the color for the surfaces
+        onPrimary = MarkerGreen, // This is the color for unselected markers
+        onSecondary = MarkerBlue, // This is the color for selected markers
+        //onTertiary = Color.White,
+        //onBackground = LastaBlue,
+        //onSurface = LastaBlue,
+        surfaceBright = YellowDifficulty, // This is the color for the medium difficulty level
+        surfaceDim = LastaBlue, // This is the color for the easy difficulty level
+        surfaceVariant = RedDifficulty, // This is the color for the hard difficulty level
+        error = Color.Red // This is the color for errors
         )
 
 @Composable
