@@ -8,25 +8,36 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 // TODO: Make sure the color schemes match the wanted design
 private val DarkColorScheme =
-    darkColorScheme(primary = Purple80, secondary = PurpleGrey80, tertiary = Pink80)
+    darkColorScheme(
+        primary = Black,  // This is the color for backgrounds and surfaces
+        secondary = White, // This is the color for text and icons
+        tertiary = LastaBlue, // This is the color for primary actions
+        //background = LastaBlue,
+        //surface = LastaBlue,
+        onPrimary = MarkerGreen, // This is the color for unselected markers
+        onSecondary = MarkerBlue, // This is the color for selected markers
+        //onTertiary = Color.White,
+        //onBackground = LastaBlue,
+        //onSurface = LastaBlue,
+    )
 
 private val LightColorScheme =
     lightColorScheme(
-        primary = Purple40, secondary = PurpleGrey40, tertiary = Pink40
-
-        /* Other default colors to override
-        background = Color(0xFFFFFBFE),
-        surface = Color(0xFFFFFBFE),
+        primary = White, // This is the color for backgrounds and surfaces
+        secondary = Black, // This is the color for text and icons
+        tertiary = LastaBlue, // This is the color for primary actions
+        background = LastaBlue,
+        surface = LastaBlue,
         onPrimary = Color.White,
         onSecondary = Color.White,
         onTertiary = Color.White,
-        onBackground = Color(0xFF1C1B1F),
-        onSurface = Color(0xFF1C1B1F),
-        */
+        onBackground = LastaBlue,
+        onSurface = LastaBlue,
         )
 
 @Composable
