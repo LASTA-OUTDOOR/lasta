@@ -36,7 +36,8 @@ fun <T> DropDownMenuComponent(
       Icon(
           imageVector = Icons.Outlined.KeyboardArrowDown,
           contentDescription = "Dropdown",
-          modifier = Modifier.clickable(onClick = { expanded = true }).testTag("spinnerIcon"))
+          modifier = Modifier.clickable(onClick = { expanded = true }).testTag("spinnerIcon"),
+          tint = MaterialTheme.colorScheme.onPrimary)
     }
 
     DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
