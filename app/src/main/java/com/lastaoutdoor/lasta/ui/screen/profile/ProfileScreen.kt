@@ -1,13 +1,10 @@
 package com.lastaoutdoor.lasta.ui.screen.profile
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,7 +15,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -35,7 +31,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
@@ -54,10 +49,11 @@ import com.lastaoutdoor.lasta.data.model.profile.TimeFrame
 import com.lastaoutdoor.lasta.data.model.profile.WeeksInMonth
 import com.lastaoutdoor.lasta.data.model.profile.Year
 import com.lastaoutdoor.lasta.data.model.user.HikingLevel
+import com.lastaoutdoor.lasta.ui.components.DisplaySelection
+import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
 import com.lastaoutdoor.lasta.ui.navigation.RootScreen
 import com.lastaoutdoor.lasta.ui.screen.profile.components.BarGraph
 import com.lastaoutdoor.lasta.ui.screen.profile.components.BarType
-import com.lastaoutdoor.lasta.ui.screen.profile.components.Spinner
 import com.lastaoutdoor.lasta.utils.chartDisplayValues
 import com.lastaoutdoor.lasta.utils.formatDate
 import com.lastaoutdoor.lasta.utils.metersToKilometers
@@ -71,25 +67,32 @@ import java.util.Calendar
 @Composable
 fun ProfileScreen(
     profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(),
-    rootNavController: NavHostController,
-    authViewModel: AuthViewModel = hiltViewModel()
+    rootNavController: NavHostController
 ) {
   // profileScreenVIewModel.addTrailToUserActivities()
   val activities by profileScreenViewModel.trails.collectAsState()
+  val timeFrame by profileScreenViewModel.timeFrame.collectAsState()
+  val sport by profileScreenViewModel.sport.collectAsState()
 
   LazyColumn(modifier = Modifier.padding(16.dp).testTag("ProfileScreen")) {
     item { UserInfo(rootNavController) }
     item {
-      SportSelection()
+      SportSelection(sport, profileScreenViewModel::setSport)
       Spacer(modifier = Modifier.height(16.dp))
     }
 
     item {
-      TimeFrameSelection()
+      Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+        DisplaySelection(
+            TimeFrame.values().toList(),
+            timeFrame,
+            profileScreenViewModel::setTimeFrame,
+            TimeFrame::toString)
+      }
       Spacer(modifier = Modifier.height(16.dp))
     }
     item {
-      Chart(activities)
+      Chart(activities, timeFrame, sport)
       Spacer(modifier = Modifier.height(16.dp))
     }
     item { RecentActivities(activities = activities) }
@@ -203,73 +206,34 @@ fun HikingRow(
 }
 
 @Composable
-fun SportSelection(profileScreenViewModel: ProfileScreenViewModel = hiltViewModel()) {
-  val sport by profileScreenViewModel.sport.collectAsState()
-
+fun SportSelection(
+    sport: ActivitiesDatabaseType.Sports,
+    onSelected: (ActivitiesDatabaseType.Sports) -> Unit
+) {
   Row {
     // Sample data for the Spinner
-    val spinnerItems = ActivitiesDatabaseType.Sports.values().toList()
+    val menuItems = ActivitiesDatabaseType.Sports.values().toList()
     // Observe LiveData and convert to Composable State
     // profileScreenVIewModel.addTrailToUserActivities()
     // Now trailListState is a normal List<Trail> that you can use in Compose
 
-    Spinner(
-        items = spinnerItems,
+    DropDownMenuComponent(
+        items = menuItems,
         selectedItem = sport,
-        onItemSelected = { newSport -> profileScreenViewModel.setSport(newSport) },
-        "Activitiy")
+        onItemSelected = { newSport -> onSelected(newSport) },
+        "Activity")
   }
-}
-
-@Composable
-fun TimeFrameSelection(profileScreenViewModel: ProfileScreenViewModel = hiltViewModel()) {
-  val shape = RoundedCornerShape(20.dp)
-  val borderModifier =
-      Modifier.padding(4.dp).border(width = 1.dp, color = Color.Black, shape = shape)
-
-  Row(
-      modifier =
-          Modifier.clip(shape)
-              .background(MaterialTheme.colorScheme.background)
-              .padding(1.dp) // Padding for the border effect
-              .then(borderModifier)) {
-        val timeFrame by profileScreenViewModel.timeFrame.collectAsState()
-        TimeFrame.values().forEachIndexed { index, timeframe ->
-          // Determine background and text color based on selection
-          val backgroundColor = if (timeFrame == timeframe) Color(0xFFFDB813) else Color.Transparent
-          val textColor = if (timeFrame == timeframe) Color.White else Color.Black
-
-          Button(
-              onClick = { profileScreenViewModel.setTimeFrame(timeframe) },
-              colors =
-                  ButtonDefaults.buttonColors(
-                      containerColor = backgroundColor, contentColor = textColor),
-              shape = shape,
-              modifier =
-                  Modifier.testTag("TimeFrameItem$index")
-                      .padding(horizontal = 2.dp)
-                      .height(50.dp)
-                      .defaultMinSize(minWidth = 50.dp) // Minimum width for all buttons
-              ) {
-                Text(
-                    text = timeframe.name,
-                    color = textColor,
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp))
-              }
-        }
-      }
 }
 
 @Composable
 fun Chart(
     activities: List<ActivitiesDatabaseType>,
-    profileScreenViewModel: ProfileScreenViewModel = hiltViewModel()
+    timeFrame: TimeFrame,
+    sport: ActivitiesDatabaseType.Sports
 ) {
   Column(modifier = Modifier.padding(8.dp)) {
 
     // Bar graph x and y data
-    val timeFrame by profileScreenViewModel.timeFrame.collectAsState()
-    val sport by profileScreenViewModel.sport.collectAsState()
 
     // Based on the collected timeFrame, adapt the chart dynamically
     val (values, abscissa) =

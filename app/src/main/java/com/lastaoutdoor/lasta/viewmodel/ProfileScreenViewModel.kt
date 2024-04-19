@@ -1,6 +1,5 @@
 package com.lastaoutdoor.lasta.viewmodel
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Timestamp
@@ -24,7 +23,6 @@ constructor(private val repository: ActivitiesRepository, private val timeProvid
 
   // TODO : MAKE IT WITH UserModel
   private val user = FirebaseAuth.getInstance().currentUser
-  private val time = mutableStateOf(TimeFrame.W)
 
   // Cache for storing fetched trails
   private val _allTrailsCache = MutableStateFlow<List<ActivitiesDatabaseType>>(emptyList())

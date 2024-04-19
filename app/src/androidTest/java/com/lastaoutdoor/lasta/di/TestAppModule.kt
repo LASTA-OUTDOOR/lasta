@@ -11,14 +11,18 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.ApiService
-import com.lastaoutdoor.lasta.data.api.FakeOutdoorActivityRepository
+import com.lastaoutdoor.lasta.data.api.OutdoorActivityRepositoryImpl
 import com.lastaoutdoor.lasta.data.auth.AuthRepositoryImpl
+import com.lastaoutdoor.lasta.data.connectivity.ConnectivityRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.ActivitiesRepositoryImpl
 import com.lastaoutdoor.lasta.data.preferences.PreferencesRepositoryImpl
 import com.lastaoutdoor.lasta.repository.ActivitiesRepository
 import com.lastaoutdoor.lasta.repository.AuthRepository
+import com.lastaoutdoor.lasta.repository.ConnectivityRepository
 import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
 import com.lastaoutdoor.lasta.repository.PreferencesRepository
+import com.lastaoutdoor.lasta.repository.SocialRepository
+import com.lastaoutdoor.lasta.ui.screen.social.FakeSocialRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -33,12 +37,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 @Module
 object TestAppModule {
 
-  @Singleton
-  @Provides
-  fun provideOutdoorActivitiesRepository(): OutdoorActivityRepository =
-      FakeOutdoorActivityRepository()
-
-  // All these to build
   @Singleton @Provides fun provideFirebaseAuth() = Firebase.auth
 
   @Singleton
@@ -81,21 +79,36 @@ object TestAppModule {
       signInRequest: BeginSignInRequest
   ): AuthRepository = AuthRepositoryImpl(auth, oneTapClient, signInRequest)
 
-  /** Provides the [PreferencesDataStore] class */
   @Singleton
   @Provides
   fun providePreferencesRepository(@ApplicationContext context: Context): PreferencesRepository =
       PreferencesRepositoryImpl(context)
+
+  /** Provides the [GoogleAuth] class */
+  @Singleton
+  @Provides
+  fun provideOutdoorActivitiesRepository(apiService: ApiService): OutdoorActivityRepository =
+      OutdoorActivityRepositoryImpl(apiService)
 
   @Singleton
   @Provides
   fun provideActivitiesRepository(
       @ApplicationContext context: Context,
       database: FirebaseFirestore
-  ): ActivitiesRepository {
-    return ActivitiesRepositoryImpl(database, context)
-  }
+  ): ActivitiesRepository = ActivitiesRepositoryImpl(database, context)
+
+  @Singleton
+  @Provides
+  fun provideConnectivityRepository(@ApplicationContext context: Context): ConnectivityRepository =
+      ConnectivityRepositoryImpl(context)
 
   /** Provides the [TimeProvider] class */
   @Provides @Singleton fun provideTimeProvider(): TimeProvider = RealTimeProvider()
+
+  /** Provides the [SocialRepository] class */
+  @Singleton
+  @Provides
+  fun provideSocialRepository(): SocialRepository {
+    return FakeSocialRepository()
+  }
 }

@@ -5,6 +5,7 @@ import com.google.android.gms.auth.api.identity.BeginSignInResult
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
+import com.lastaoutdoor.lasta.data.model.user.HikingLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.repository.AuthRepository
 import com.lastaoutdoor.lasta.utils.Response
@@ -35,7 +36,9 @@ class AuthRepositoryImpl(
       emit(Response.Loading)
       val user = auth.signInWithCredential(googleCredential).await().user
       user?.run {
-        emit(Response.Success(UserModel(uid, displayName, email, photoUrl.toString(), null)))
+        emit(
+            Response.Success(
+                UserModel(uid, displayName, email, photoUrl.toString(), HikingLevel.BEGINNER)))
       } ?: run { emit(Response.Failure(Exception("User is null"))) }
     } catch (e: Exception) {
       emit(Response.Failure(e))
