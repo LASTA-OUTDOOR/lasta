@@ -47,8 +47,7 @@ fun SetupScreen(
           Text(
               text = "Settings",
               style = MaterialTheme.typography.headlineLarge,
-              color = MaterialTheme.colorScheme.onBackground
-          )
+              color = MaterialTheme.colorScheme.onBackground)
         }
 
         Spacer(modifier = Modifier.height(50.dp))
@@ -57,7 +56,9 @@ fun SetupScreen(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
-              Text(text = "Select your language: ", style = MaterialTheme.typography.bodyLarge,
+              Text(
+                  text = "Select your language: ",
+                  style = MaterialTheme.typography.bodyLarge,
                   color = MaterialTheme.colorScheme.onBackground)
               DropDownMenuComponent(
                   items = languages,
@@ -88,7 +89,7 @@ fun SetupScreen(
                       if (isHikingSelected) {
                         ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onBackground)
+                            contentColor = MaterialTheme.colorScheme.onPrimary)
                       } else {
                         ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -103,12 +104,11 @@ fun SetupScreen(
                       if (!isHikingSelected) {
                         ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary
-                        )
+                            contentColor = MaterialTheme.colorScheme.onPrimary)
                       } else {
                         ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onPrimary)
+                            contentColor = MaterialTheme.colorScheme.onSecondary)
                       }) {
                     Text(text = outdoorActivities[1])
                   }
