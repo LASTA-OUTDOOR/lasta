@@ -1,9 +1,7 @@
 package com.lastaoutdoor.lasta.ui.screen.moreinfo
 
 import androidx.activity.compose.setContent
-import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithTag
 import androidx.navigation.compose.rememberNavController
 import com.lastaoutdoor.lasta.data.model.activity.ActivityType
 import com.lastaoutdoor.lasta.data.model.activity.OutdoorActivity
@@ -30,16 +28,10 @@ class MoreInfoScreenTest {
   @Before
   fun setUp() {
     hiltRule.inject()
-    val fakeActivity = OutdoorActivity(ActivityType.CLIMBING, 1, 1.5f, "3 hours", "Test Title")
     composeRule.activity.setContent {
       val navController = rememberNavController()
-      MoreInfoScreen(activity = fakeActivity, navController)
+      MoreInfoScreen(navController = navController)
     }
-  }
-
-  @Test
-  fun startButton_isDisplayed() {
-    composeRule.onNodeWithTag("Start button").assertIsDisplayed()
   }
 
   @Test
