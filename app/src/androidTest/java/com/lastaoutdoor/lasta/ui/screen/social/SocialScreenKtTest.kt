@@ -191,7 +191,8 @@ class SocialScreenKtTest {
             "name",
             "email",
             "photo",
-            UserPreferences(true, "1", "1", "1", "1", HikingLevel.BEGINNER))
+          HikingLevel.BEGINNER
+        )
     val friends = listOf(friend, friend, friend)
 
     // Set the content to the social screen
