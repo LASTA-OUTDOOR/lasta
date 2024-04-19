@@ -47,6 +47,7 @@ fun SetupScreen(
           Text(
               text = "Settings",
               style = MaterialTheme.typography.headlineLarge,
+              color = MaterialTheme.colorScheme.onPrimary
           )
         }
 
@@ -56,7 +57,8 @@ fun SetupScreen(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
-              Text(text = "Select your language: ", style = MaterialTheme.typography.bodyLarge)
+              Text(text = "Select your language: ", style = MaterialTheme.typography.bodyLarge,
+                  color = MaterialTheme.colorScheme.onPrimary)
               DropDownMenuComponent(
                   items = languages,
                   selectedItem = selectedLanguage,
@@ -71,7 +73,8 @@ fun SetupScreen(
             horizontalArrangement = Arrangement.SpaceBetween) {
               Text(
                   text = "Select your favorite outdoor activity: ",
-                  style = MaterialTheme.typography.bodyLarge)
+                  style = MaterialTheme.typography.bodyLarge,
+                  color = MaterialTheme.colorScheme.onPrimary)
             }
 
         Row(
