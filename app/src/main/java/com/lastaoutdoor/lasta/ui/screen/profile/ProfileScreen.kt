@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.lastaoutdoor.lasta.data.db.DatabaseManager
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.data.model.profile.DaysInWeek
 import com.lastaoutdoor.lasta.data.model.profile.MonthsInYear
@@ -191,6 +192,7 @@ fun HikingRow(
     selectedHikingLevel: HikingLevel,
     preferences: PreferencesViewModel = hiltViewModel(),
 ) {
+  val userId by preferences.userId.collectAsState(initial = "")
   Row(
       modifier = Modifier.fillMaxWidth(.7f),
       horizontalArrangement = Arrangement.SpaceEvenly,
@@ -200,7 +202,10 @@ fun HikingRow(
           RadioButton(
               modifier = Modifier.testTag("HikingLevelItem$index"),
               selected = hikingLevel == selectedHikingLevel,
-              onClick = { preferences.updateHikingLevel(hikingLevel) })
+              onClick = {
+                preferences.updateHikingLevel(hikingLevel)
+                DatabaseManager().updateFieldInUser(userId, "hikingLevel", hikingLevel.toString())
+              })
         }
       }
 }

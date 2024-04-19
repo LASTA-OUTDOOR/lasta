@@ -8,6 +8,7 @@ import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,11 +32,12 @@ fun <T> DropDownMenuComponent(
 
   Column {
     Row {
-      Text(fieldText)
+      Text(fieldText, color = MaterialTheme.colorScheme.onBackground)
       Icon(
           imageVector = Icons.Outlined.KeyboardArrowDown,
           contentDescription = "Dropdown",
-          modifier = Modifier.clickable(onClick = { expanded = true }).testTag("spinnerIcon"))
+          modifier = Modifier.clickable(onClick = { expanded = true }).testTag("spinnerIcon"),
+          tint = MaterialTheme.colorScheme.onBackground)
     }
 
     DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
@@ -52,6 +54,7 @@ fun <T> DropDownMenuComponent(
     Text(
         selectedItem.toString(),
         fontWeight = FontWeight.Normal,
-        style = TextStyle(fontSize = 24.sp))
+        style = TextStyle(fontSize = 24.sp),
+        color = MaterialTheme.colorScheme.onBackground)
   }
 }

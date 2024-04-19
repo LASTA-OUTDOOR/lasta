@@ -78,7 +78,7 @@ class PreferencesViewModelTest {
             "John Doe",
             "testemail@gmail.com",
             "https://www.example.com/profile.jpg",
-            HikingLevel.BEGINNER)
+            HikingLevel.INTERMEDIATE)
 
     val expectedUserName = "John Doe"
 
@@ -103,7 +103,7 @@ class PreferencesViewModelTest {
             "John Doe",
             "testemail@gmail.com",
             "https://www.example.com/profile.jpg",
-            HikingLevel.BEGINNER)
+            HikingLevel.ADVANCED)
 
     val expectedEmail = "testemail@gmail.com"
 
@@ -195,7 +195,7 @@ class PreferencesViewModelTest {
             "John Doe",
             "testemail@gmail.com",
             "https://www.example.com/profile.jpg",
-            HikingLevel.BEGINNER)
+            HikingLevel.ADVANCED)
     fakePreferencesRepo.updateUserInfo(user)
 
     // When
@@ -208,7 +208,7 @@ class PreferencesViewModelTest {
       preferencesViewModel.userName.collect { assertEquals(it, "") }
       preferencesViewModel.email.collect { assertEquals(it, "") }
       preferencesViewModel.profilePictureUrl.collect { assertEquals(it, "") }
-      preferencesViewModel.hikingLevel.collect { assertEquals(it, HikingLevel.BEGINNER) }
+      preferencesViewModel.hikingLevel.collect { assertEquals(it, HikingLevel.ADVANCED) }
     }
 
     delay(1000) // Wait for 1 second

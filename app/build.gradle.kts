@@ -190,7 +190,7 @@ dependencies {
 
 
     //Hilt
-    androidTestImplementation(libs.hilt.android.testing)
+    androidTestImplementation(libs.hilt.android.testing.v244)
     kaptAndroidTest(libs.hilt.android.compiler)
 
     // ----------       Robolectric     ------------

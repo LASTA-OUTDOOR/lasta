@@ -28,6 +28,7 @@ import dagger.Provides
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
+import javax.inject.Named
 import javax.inject.Singleton
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -45,12 +46,24 @@ object TestAppModule {
       Identity.getSignInClient(context)
 
   /** Provides the [Firebase.firestore] class */
-  @Provides @Singleton fun provideFirebaseUser() = Firebase.firestore
+  @Provides @Singleton fun provideFirebaseFirestore() = Firebase.firestore
 
-  /** Provides the [ApiService] class */
-  @Singleton
   @Provides
+  @Named("signInRequest")
   fun provideSignInRequest(@ApplicationContext context: Context): BeginSignInRequest =
+      BeginSignInRequest.builder()
+          .setGoogleIdTokenRequestOptions(
+              BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                  .setSupported(true)
+                  .setFilterByAuthorizedAccounts(true)
+                  .setServerClientId(context.getString(R.string.web_client_id))
+                  .build())
+          .setAutoSelectEnabled(true)
+          .build()
+
+  @Provides
+  @Named("signUpRequest")
+  fun provideSignUpRequest(@ApplicationContext context: Context): BeginSignInRequest =
       BeginSignInRequest.builder()
           .setGoogleIdTokenRequestOptions(
               BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
@@ -58,7 +71,6 @@ object TestAppModule {
                   .setFilterByAuthorizedAccounts(false)
                   .setServerClientId(context.getString(R.string.web_client_id))
                   .build())
-          .setAutoSelectEnabled(true)
           .build()
 
   @Singleton
@@ -76,15 +88,15 @@ object TestAppModule {
   fun provideAuthRepository(
       auth: FirebaseAuth,
       oneTapClient: SignInClient,
-      signInRequest: BeginSignInRequest
-  ): AuthRepository = AuthRepositoryImpl(auth, oneTapClient, signInRequest)
+      @Named("signInRequest") signInRequest: BeginSignInRequest,
+      @Named("signUpRequest") signUpRequest: BeginSignInRequest,
+  ): AuthRepository = AuthRepositoryImpl(auth, oneTapClient, signInRequest, signUpRequest)
 
   @Singleton
   @Provides
   fun providePreferencesRepository(@ApplicationContext context: Context): PreferencesRepository =
       PreferencesRepositoryImpl(context)
 
-  /** Provides the [GoogleAuth] class */
   @Singleton
   @Provides
   fun provideOutdoorActivitiesRepository(apiService: ApiService): OutdoorActivityRepository =
