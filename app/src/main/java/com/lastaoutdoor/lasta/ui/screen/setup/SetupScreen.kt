@@ -18,8 +18,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.lastaoutdoor.lasta.data.db.DatabaseManager
+import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
 import com.lastaoutdoor.lasta.ui.navigation.RootScreen
-import com.lastaoutdoor.lasta.ui.screen.profile.components.Spinner
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 
 @SuppressLint("MutableCollectionMutableState")
@@ -57,7 +57,7 @@ fun SetupScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
               Text(text = "Select your language: ", style = MaterialTheme.typography.bodyLarge)
-              Spinner(
+              DropDownMenuComponent(
                   items = languages,
                   selectedItem = selectedLanguage,
                   onItemSelected = { selectedLanguage = it },
