@@ -52,7 +52,6 @@ constructor(
         val isSignUp = userCredential.additionalUserInfo?.isNewUser ?: false
         if (isSignUp) {
           // This is a sign-up, so create a new UserModel
-          println("User is signing up")
           val userModel = UserModel(user, HikingLevel.BEGINNER)
 
           // Add the user to the Firestore database
@@ -62,7 +61,6 @@ constructor(
           emit(Response.Success(userModel))
         } else {
           // This is a sign-in, retrieve user data from Firestore
-          println("User is signing in")
           val userModel = DatabaseManager().getUserFromDatabase(user.uid)
           if (userModel.userId.isNotEmpty()) {
             val newUserModel =
