@@ -88,7 +88,7 @@ fun SetupScreen(
                             contentColor = MaterialTheme.colorScheme.onPrimary)
                       } else {
                         ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.secondary,
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
                             contentColor = MaterialTheme.colorScheme.onSecondary)
                       }) {
                     Text(text = outdoorActivities[0])
@@ -103,7 +103,7 @@ fun SetupScreen(
                             contentColor = MaterialTheme.colorScheme.onPrimary)
                       } else {
                         ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.secondary,
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
                             contentColor = MaterialTheme.colorScheme.onSecondary)
                       }) {
                     Text(text = outdoorActivities[1])
