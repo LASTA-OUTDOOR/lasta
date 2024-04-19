@@ -21,6 +21,8 @@ import com.lastaoutdoor.lasta.repository.AuthRepository
 import com.lastaoutdoor.lasta.repository.ConnectivityRepository
 import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
 import com.lastaoutdoor.lasta.repository.PreferencesRepository
+import com.lastaoutdoor.lasta.repository.SocialRepository
+import com.lastaoutdoor.lasta.ui.screen.social.FakeSocialRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -102,4 +104,11 @@ object TestAppModule {
 
   /** Provides the [TimeProvider] class */
   @Provides @Singleton fun provideTimeProvider(): TimeProvider = RealTimeProvider()
+
+  /** Provides the [SocialRepository] class */
+  @Singleton
+  @Provides
+  fun provideSocialRepository(): SocialRepository {
+    return FakeSocialRepository()
+  }
 }

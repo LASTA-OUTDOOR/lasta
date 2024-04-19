@@ -149,6 +149,9 @@ fun MapScreen(viewModel: MapViewModel = hiltViewModel()) {
       viewModel.updateMarkers(centerLocation, rad)
     }
   }
+
+  LaunchedEffect(Unit) { viewModel.updateMarkers(cameraPositionState.position.target, 1000.0) }
+
   // draw the map
   GoogleMapComposable(viewModel, cameraPositionState, { isSheetOpen = true })
 }
