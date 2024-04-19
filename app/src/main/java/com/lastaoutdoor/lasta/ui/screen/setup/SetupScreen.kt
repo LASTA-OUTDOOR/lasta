@@ -47,7 +47,7 @@ fun SetupScreen(
           Text(
               text = "Settings",
               style = MaterialTheme.typography.headlineLarge,
-              color = MaterialTheme.colorScheme.onPrimary
+              color = MaterialTheme.colorScheme.onBackground
           )
         }
 
@@ -58,7 +58,7 @@ fun SetupScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
               Text(text = "Select your language: ", style = MaterialTheme.typography.bodyLarge,
-                  color = MaterialTheme.colorScheme.onPrimary)
+                  color = MaterialTheme.colorScheme.onBackground)
               DropDownMenuComponent(
                   items = languages,
                   selectedItem = selectedLanguage,
@@ -74,7 +74,7 @@ fun SetupScreen(
               Text(
                   text = "Select your favorite outdoor activity: ",
                   style = MaterialTheme.typography.bodyLarge,
-                  color = MaterialTheme.colorScheme.onPrimary)
+                  color = MaterialTheme.colorScheme.onBackground)
             }
 
         Row(
@@ -88,7 +88,7 @@ fun SetupScreen(
                       if (isHikingSelected) {
                         ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary)
+                            contentColor = MaterialTheme.colorScheme.onBackground)
                       } else {
                         ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -103,7 +103,8 @@ fun SetupScreen(
                       if (!isHikingSelected) {
                         ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary)
+                            contentColor = MaterialTheme.colorScheme.onBackground
+                        )
                       } else {
                         ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.secondaryContainer,

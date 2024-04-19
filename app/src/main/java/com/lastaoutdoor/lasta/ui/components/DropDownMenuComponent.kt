@@ -32,12 +32,12 @@ fun <T> DropDownMenuComponent(
 
   Column {
     Row {
-      Text(fieldText, color = MaterialTheme.colorScheme.onPrimary)
+      Text(fieldText, color = MaterialTheme.colorScheme.onBackground)
       Icon(
           imageVector = Icons.Outlined.KeyboardArrowDown,
           contentDescription = "Dropdown",
           modifier = Modifier.clickable(onClick = { expanded = true }).testTag("spinnerIcon"),
-          tint = MaterialTheme.colorScheme.onPrimary)
+          tint = MaterialTheme.colorScheme.onBackground)
     }
 
     DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
