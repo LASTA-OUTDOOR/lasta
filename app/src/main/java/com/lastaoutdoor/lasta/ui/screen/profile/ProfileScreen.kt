@@ -217,7 +217,7 @@ fun SportSelection(profileScreenViewModel: ProfileScreenViewModel = hiltViewMode
         items = spinnerItems,
         selectedItem = sport,
         onItemSelected = { newSport -> profileScreenViewModel.setSport(newSport) },
-        "Activitiy")
+        "Activity")
   }
 }
 
