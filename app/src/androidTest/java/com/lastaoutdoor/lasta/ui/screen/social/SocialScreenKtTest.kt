@@ -15,7 +15,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.data.model.user.HikingLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
-import com.lastaoutdoor.lasta.data.model.user.UserPreferences
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.repository.SocialRepository
 import com.lastaoutdoor.lasta.ui.MainActivity
@@ -185,14 +184,7 @@ class SocialScreenKtTest {
   fun testFilledFriends() {
 
     // Fake data
-    val friend =
-        UserModel(
-            "1",
-            "name",
-            "email",
-            "photo",
-          HikingLevel.BEGINNER
-        )
+    val friend = UserModel("1", "name", "email", "photo", HikingLevel.BEGINNER)
     val friends = listOf(friend, friend, friend)
 
     // Set the content to the social screen
