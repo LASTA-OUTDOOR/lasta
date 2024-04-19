@@ -32,7 +32,7 @@ fun <T> DropDownMenuComponent(
 
   Column {
     Row {
-      Text(fieldText)
+      Text(fieldText, color = MaterialTheme.colorScheme.onPrimary)
       Icon(
           imageVector = Icons.Outlined.KeyboardArrowDown,
           contentDescription = "Dropdown",
