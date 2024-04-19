@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.ui.screen.activities
+package com.lastaoutdoor.lasta.ui.screen.moreinfo
 
 import androidx.activity.compose.setContent
 import androidx.compose.ui.test.assertIsDisplayed
@@ -9,6 +9,8 @@ import com.lastaoutdoor.lasta.data.model.activity.ActivityType
 import com.lastaoutdoor.lasta.data.model.activity.OutdoorActivity
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.ui.MainActivity
+import com.lastaoutdoor.lasta.ui.screen.activities.MoreInfoScreen
+import com.lastaoutdoor.lasta.ui.screen.activities.fetchDiffText
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -19,7 +21,7 @@ import org.junit.Test
 
 @HiltAndroidTest
 @UninstallModules(AppModule::class)
-class ActivityScreenTest {
+class MoreInfoScreenTest {
   @get:Rule(order = 0) val hiltRule = HiltAndroidRule(this)
 
   // Create a compose rule
