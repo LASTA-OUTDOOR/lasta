@@ -13,9 +13,14 @@ sealed class RootScreen(val route: String) {
 
 /** Sealed class representing all possible leaf screens in the application */
 sealed class LeafScreen(val route: String) {
-  object Social : LeafScreen("Community")
 
   object Discover : LeafScreen("Discover")
 
+  object Favorites : LeafScreen("Favorites")
+
+  object Social : LeafScreen("Socials")
+
   object Profile : LeafScreen("Profile")
+
+  object MoreInfo : LeafScreen("MoreInfo")
 }

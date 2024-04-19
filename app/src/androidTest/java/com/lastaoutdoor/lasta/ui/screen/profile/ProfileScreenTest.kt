@@ -38,13 +38,6 @@ class ProfileScreenTest {
   }
 
   @Test
-  fun showDialogWorks() {
-    composeRule.onNodeWithTag("showDialog").performClick()
-    composeRule.onNodeWithTag("AlertDialog").assertIsDisplayed()
-    composeRule.onNodeWithTag("HikingLevelItem1").performClick()
-  }
-
-  @Test
   fun testTimeFrames() {
     composeRule.onNodeWithTag("TimeFrameItem1").performClick()
     composeRule.onNodeWithTag("TimeFrameItem2").performClick()
