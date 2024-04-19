@@ -30,13 +30,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.data.model.activity.ActivityType
 import com.lastaoutdoor.lasta.data.model.activity.OutdoorActivity
 import com.lastaoutdoor.lasta.ui.theme.Black
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
 import com.lastaoutdoor.lasta.ui.theme.YellowDifficulty
 
 @Composable
-fun MoreInfoScreen(activity: OutdoorActivity, navController: NavController) {
+fun MoreInfoScreen(activity: OutdoorActivity = OutdoorActivity(ActivityType.CLIMBING, 0, 1.5f, "3 hours", "Test Title"), navController: NavController) {
   LazyColumn(modifier = Modifier.padding(8.dp)) {
     item { Spacer(modifier = Modifier.height(15.dp)) }
     // contains the top icon buttons
@@ -131,7 +132,6 @@ fun RatingDisplay(rating: Double) {
                 fontSize = 16.sp,
                 lineHeight = 24.sp,
                 fontWeight = FontWeight(500),
-                color = Black,
                 letterSpacing = 0.15.sp,
             ))
   }
@@ -214,7 +214,7 @@ fun ActivityTitleText(activity: OutdoorActivity) {
   Column(modifier = Modifier.padding(vertical = 25.dp, horizontal = 5.dp)) {
     Text(
         text = activity.locationName ?: "No Title",
-        style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight(600), color = Black))
+        style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight(600)))
     Text(
         text = activity.duration ?: "No Duration",
         style =

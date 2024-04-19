@@ -20,7 +20,6 @@ fun MenuNavGraph(
     navController: NavHostController,
     modifier: Modifier
 ) {
-  val fakeActivity = OutdoorActivity(ActivityType.CLIMBING, 0, 1.5f, "3 hours", "Test Title")
   NavHost(
       navController = navController,
       route = RootScreen.Main.route,
@@ -33,7 +32,7 @@ fun MenuNavGraph(
           ProfileScreen(rootNavController = rootNavController)
         }
         composable(LeafScreen.MoreInfo.route) {
-          MoreInfoScreen(activity = fakeActivity, navController)
+          MoreInfoScreen(navController=navController)
         }
       }
 }
