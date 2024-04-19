@@ -55,6 +55,6 @@ fun <T> DropDownMenuComponent(
         selectedItem.toString(),
         fontWeight = FontWeight.Normal,
         style = TextStyle(fontSize = 24.sp),
-        color = MaterialTheme.colorScheme.onPrimary)
+        color = MaterialTheme.colorScheme.onBackground)
   }
 }
