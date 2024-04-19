@@ -13,12 +13,16 @@ import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.ApiService
 import com.lastaoutdoor.lasta.data.api.OutdoorActivityRepositoryImpl
 import com.lastaoutdoor.lasta.data.auth.AuthRepositoryImpl
+import com.lastaoutdoor.lasta.data.connectivity.ConnectivityRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.ActivitiesRepositoryImpl
 import com.lastaoutdoor.lasta.data.preferences.PreferencesRepositoryImpl
+import com.lastaoutdoor.lasta.data.social.SocialRepositoryImpl
 import com.lastaoutdoor.lasta.repository.ActivitiesRepository
 import com.lastaoutdoor.lasta.repository.AuthRepository
+import com.lastaoutdoor.lasta.repository.ConnectivityRepository
 import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
 import com.lastaoutdoor.lasta.repository.PreferencesRepository
+import com.lastaoutdoor.lasta.repository.SocialRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -91,10 +95,20 @@ object AppModule {
   fun provideActivitiesRepository(
       @ApplicationContext context: Context,
       database: FirebaseFirestore
-  ): ActivitiesRepository {
-    return ActivitiesRepositoryImpl(database, context)
-  }
+  ): ActivitiesRepository = ActivitiesRepositoryImpl(database, context)
+
+  @Singleton
+  @Provides
+  fun provideConnectivityRepository(@ApplicationContext context: Context): ConnectivityRepository =
+      ConnectivityRepositoryImpl(context)
 
   /** Provides the [TimeProvider] class */
   @Provides @Singleton fun provideTimeProvider(): TimeProvider = RealTimeProvider()
+
+  /** Provides the [SocialRepository] class */
+  @Singleton
+  @Provides
+  fun provideSocialRepository(): SocialRepository {
+    return SocialRepositoryImpl()
+  }
 }

@@ -67,8 +67,7 @@ import java.util.Calendar
 @Composable
 fun ProfileScreen(
     profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(),
-    rootNavController: NavHostController,
-    authViewModel: AuthViewModel = hiltViewModel()
+    rootNavController: NavHostController
 ) {
   // profileScreenVIewModel.addTrailToUserActivities()
   val activities by profileScreenViewModel.trails.collectAsState()
@@ -222,7 +221,7 @@ fun SportSelection(
         items = menuItems,
         selectedItem = sport,
         onItemSelected = { newSport -> onSelected(newSport) },
-        "Activitiy")
+        "Activity")
   }
 }
 

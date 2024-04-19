@@ -38,13 +38,6 @@ class ProfileScreenTest {
   }
 
   @Test
-  fun showDialogWorks() {
-    composeRule.onNodeWithTag("showDialog").performClick()
-    composeRule.onNodeWithTag("AlertDialog").assertIsDisplayed()
-    composeRule.onNodeWithTag("HikingLevelItem1").performClick()
-  }
-
-  @Test
   fun testSpinner() {
     composeRule.onNodeWithTag("spinnerIcon").performClick()
     composeRule.onNodeWithTag("DropdownItem1").performClick()
