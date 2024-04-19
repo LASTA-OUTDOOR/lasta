@@ -1,8 +1,6 @@
 package com.lastaoutdoor.lasta.ui.screen.discovery
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -20,9 +18,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -128,16 +128,9 @@ fun OutdoorActivityItem(
           onClick = { /* Switch page and start activity itinerary */},
           // set its theme from themes.xml
 
-          modifier =
-              Modifier.testTag("startButton")
-                  .border(
-                      width = 1.dp,
-                      color = Color(0xFFFF7009),
-                      shape = RoundedCornerShape(size = 20.dp))
-                  // .width(104.dp)
-                  // .height(30.dp)
-                  .background(
-                      color = Color(0xFFFF7009), shape = RoundedCornerShape(size = 20.dp))) {
+          modifier = Modifier.testTag("startButton"),
+          colors =
+              ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)) {
             Text(
                 text = "START",
                 style =
@@ -168,15 +161,7 @@ fun OutdoorActivityItem(
               /** Calls the view model to toggle activity dialog */
               discoveryScreenViewModel.showDialog(outdoorActivity)
             },
-            modifier =
-                Modifier.border(
-                        width = 1.dp,
-                        color = Color(0xFF6609FF),
-                        shape = RoundedCornerShape(size = 20.dp))
-                    // .width(104.dp)
-                    // .height(30.dp)
-                    .background(color = Color(0xFF6609FF), shape = RoundedCornerShape(size = 20.dp))
-                    .testTag("moreInfoButton")) {
+            modifier = Modifier.testTag("moreInfoButton")) {
               Text(
                   text = "MORE INFO",
                   style =
@@ -190,16 +175,7 @@ fun OutdoorActivityItem(
 
         Button(
             onClick = { /* Switch to map view and see location of activity */},
-            modifier =
-                Modifier.testTag("mapButton")
-                    .border(
-                        width = 1.dp,
-                        color = Color(0xFF0989FF),
-                        shape = RoundedCornerShape(size = 20.dp))
-                    // .width(104.dp)
-                    // .height(30.dp)
-                    .background(
-                        color = Color(0xFF0989FF), shape = RoundedCornerShape(size = 20.dp))) {
+            modifier = Modifier.testTag("mapButton")) {
               Text(
                   text = "VIEW ON MAP",
                   style =
