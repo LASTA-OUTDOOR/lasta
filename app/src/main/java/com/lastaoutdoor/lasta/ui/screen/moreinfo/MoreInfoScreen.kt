@@ -173,6 +173,7 @@ fun ElevatedDifficultyDisplay(diff: String) {
       }
 }
 
+//Top Bar that displays the four clickable logos with distinct usages
 @Composable
 fun TopBar(navController: NavController) {
   Row(modifier = Modifier.fillMaxWidth()) {
