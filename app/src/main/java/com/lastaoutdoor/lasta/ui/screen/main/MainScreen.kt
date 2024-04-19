@@ -1,10 +1,9 @@
 package com.lastaoutdoor.lasta.ui.screen.main
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,15 +20,21 @@ import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.viewmodel.ConnectivityViewModel
 
 @Composable
-fun MainScreen(rootNavController: NavHostController, connectivityViewModel: ConnectivityViewModel = hiltViewModel()) {
+fun MainScreen(
+    rootNavController: NavHostController,
+    connectivityViewModel: ConnectivityViewModel = hiltViewModel()
+) {
   val navController = rememberNavController()
   val snackBarHostState = remember { SnackbarHostState() }
   val connectionState = connectivityViewModel.connectionState.collectAsState()
-  
+
   if (connectionState.value == ConnectionState.OFFLINE) {
-      LaunchedEffect(connectionState) {
-          snackBarHostState.showSnackbar(message = "You are offline", withDismissAction = true, duration = SnackbarDuration.Indefinite)
-      }
+    LaunchedEffect(connectionState) {
+      snackBarHostState.showSnackbar(
+          message = "You are offline",
+          withDismissAction = true,
+          duration = SnackbarDuration.Indefinite)
+    }
   }
 
   Scaffold(
