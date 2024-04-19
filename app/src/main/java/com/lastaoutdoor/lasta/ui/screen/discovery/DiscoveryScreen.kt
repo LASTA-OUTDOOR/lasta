@@ -40,16 +40,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
 import com.lastaoutdoor.lasta.ui.components.SearchBarComponent
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
+import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
 import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenType
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenViewModel
 
 @Composable
-fun DiscoveryScreen(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel()) {
+fun DiscoveryScreen(
+    navController: NavController,
+    discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel()
+) {
   val screen by discoveryScreenViewModel.screen.collectAsState()
 
   if (screen == DiscoveryScreenType.LIST) {
@@ -61,7 +66,7 @@ fun DiscoveryScreen(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltVie
           item {
             SeparatorComponent() // Add a separator between the header and the activities
             Spacer(modifier = Modifier.height(8.dp))
-            ActivitiesDisplay()
+            ActivitiesDisplay(navController)
           }
         }
   } else if (screen == DiscoveryScreenType.MAP) {
@@ -150,7 +155,10 @@ fun HeaderComposable(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltVi
 }
 
 @Composable
-fun ActivitiesDisplay(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel()) {
+fun ActivitiesDisplay(
+    navController: NavController,
+    discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel()
+) {
   val activities = discoveryScreenViewModel.climbingActivities
   for (a in activities) {
     Card(
@@ -158,7 +166,7 @@ fun ActivitiesDisplay(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltV
             Modifier.fillMaxWidth()
                 .wrapContentHeight()
                 .padding(vertical = 8.dp, horizontal = 16.dp)
-                .clickable(onClick = { /* Handle click */}),
+                .clickable(onClick = { navController.navigate(LeafScreen.MoreInfo.route) }),
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
     ) {

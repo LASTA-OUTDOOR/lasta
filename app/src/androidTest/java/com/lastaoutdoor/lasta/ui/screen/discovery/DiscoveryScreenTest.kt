@@ -4,6 +4,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.navigation.compose.rememberNavController
 import com.lastaoutdoor.lasta.data.api.FakeOutdoorActivityRepository
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.ui.MainActivity
@@ -40,7 +41,10 @@ class DiscoveryScreenTest {
   // Test if discovery screen is displayed
   @Test
   fun discoveryScreen_isDisplayed() {
-    composeRule.activity.setContent { DiscoveryScreen() }
+    composeRule.activity.setContent {
+      val navController = rememberNavController()
+      DiscoveryScreen(navController)
+    }
     composeRule.onNodeWithTag("discoveryScreen").assertIsDisplayed()
   }
   /*
