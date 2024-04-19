@@ -1,0 +1,27 @@
+package com.lastaoutdoor.lasta.repository
+
+import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
+import com.lastaoutdoor.lasta.data.model.user.UserModel
+
+interface SocialRepository {
+
+  // returns all the friends of the userS
+  fun getFriends(): List<UserModel>?
+
+  // returns all the activities done by friends in the last
+  fun getLatestFriendActivities(days: Int): List<ActivitiesDatabaseType>?
+
+  // returns all the messages
+  fun getMessages(): List<String>?
+
+  // For testing purposes
+
+  // changes the list of message
+  fun setMessages(messages: List<String>)
+
+  // changes the list of friends
+  fun setFriends(friend: List<UserModel>)
+
+  // changes the list of activities
+  fun setLatestFriendActivities(activities: List<ActivitiesDatabaseType>)
+}

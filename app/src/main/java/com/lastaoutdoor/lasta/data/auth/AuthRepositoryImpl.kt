@@ -42,7 +42,7 @@ constructor(
   }
 
   override suspend fun finishGoogleSignIn(
-      googleCredential: AuthCredential,
+      googleCredential: AuthCredential
   ): Flow<Response<UserModel>> = flow {
     try {
       emit(Response.Loading)
