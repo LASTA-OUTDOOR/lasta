@@ -103,12 +103,12 @@ fun SetupScreen(
                       if (!isHikingSelected) {
                         ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onBackground
+                            contentColor = MaterialTheme.colorScheme.onPrimary
                         )
                       } else {
                         ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onSecondary)
+                            contentColor = MaterialTheme.colorScheme.onPrimary)
                       }) {
                     Text(text = outdoorActivities[1])
                   }
