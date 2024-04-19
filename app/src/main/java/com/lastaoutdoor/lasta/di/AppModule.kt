@@ -58,7 +58,7 @@ object AppModule {
                   .setFilterByAuthorizedAccounts(true)
                   .setServerClientId(context.getString(R.string.web_client_id))
                   .build())
-          .setAutoSelectEnabled(true)
+          .setAutoSelectEnabled(false)
           .build()
 
   @Provides
