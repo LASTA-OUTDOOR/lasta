@@ -37,7 +37,11 @@ import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
 import com.lastaoutdoor.lasta.ui.theme.YellowDifficulty
 
 @Composable
-fun MoreInfoScreen(activity: OutdoorActivity = OutdoorActivity(ActivityType.CLIMBING, 0, 1.5f, "3 hours", "Test Title"), navController: NavController) {
+fun MoreInfoScreen(
+    activity: OutdoorActivity =
+        OutdoorActivity(ActivityType.CLIMBING, 0, 1.5f, "3 hours", "Test Title"),
+    navController: NavController
+) {
   LazyColumn(modifier = Modifier.padding(8.dp)) {
     item { Spacer(modifier = Modifier.height(15.dp)) }
     // contains the top icon buttons

@@ -6,8 +6,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.lastaoutdoor.lasta.data.model.activity.ActivityType
-import com.lastaoutdoor.lasta.data.model.activity.OutdoorActivity
 import com.lastaoutdoor.lasta.ui.screen.activities.MoreInfoScreen
 import com.lastaoutdoor.lasta.ui.screen.discovery.DiscoveryScreen
 import com.lastaoutdoor.lasta.ui.screen.favorites.FavoritesScreen
@@ -31,8 +29,6 @@ fun MenuNavGraph(
         composable(LeafScreen.Profile.route) {
           ProfileScreen(rootNavController = rootNavController)
         }
-        composable(LeafScreen.MoreInfo.route) {
-          MoreInfoScreen(navController=navController)
-        }
+        composable(LeafScreen.MoreInfo.route) { MoreInfoScreen(navController = navController) }
       }
 }
