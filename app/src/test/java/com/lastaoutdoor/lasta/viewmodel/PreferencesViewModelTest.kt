@@ -49,7 +49,11 @@ class PreferencesViewModelTest {
     // Given
     val user =
         UserModel(
-            "123", "John Doe", "testemail@gmail.com", "https://www.example.com/profile.jpg", null)
+            "123",
+            "John Doe",
+            "testemail@gmail.com",
+            "https://www.example.com/profile.jpg",
+            HikingLevel.BEGINNER)
 
     val expectedUserId = "123"
 
@@ -70,7 +74,11 @@ class PreferencesViewModelTest {
     // Given
     val user =
         UserModel(
-            "123", "John Doe", "testemail@gmail.com", "https://www.example.com/profile.jpg", null)
+            "123",
+            "John Doe",
+            "testemail@gmail.com",
+            "https://www.example.com/profile.jpg",
+            HikingLevel.BEGINNER)
 
     val expectedUserName = "John Doe"
 
@@ -91,7 +99,11 @@ class PreferencesViewModelTest {
     // Given
     val user =
         UserModel(
-            "123", "John Doe", "testemail@gmail.com", "https://www.example.com/profile.jpg", null)
+            "123",
+            "John Doe",
+            "testemail@gmail.com",
+            "https://www.example.com/profile.jpg",
+            HikingLevel.BEGINNER)
 
     val expectedEmail = "testemail@gmail.com"
 
@@ -112,7 +124,11 @@ class PreferencesViewModelTest {
     // Given
     val user =
         UserModel(
-            "123", "John Doe", "testemail@gmail.com", "https://www.example.com/profile.jpg", null)
+            "123",
+            "John Doe",
+            "testemail@gmail.com",
+            "https://www.example.com/profile.jpg",
+            HikingLevel.BEGINNER)
 
     val expectedProfilePictureUrl = "https://www.example.com/profile.jpg"
 
@@ -133,7 +149,11 @@ class PreferencesViewModelTest {
     // Given
     val user =
         UserModel(
-            "123", "John Doe", "testemail@gmail.com", "https://www.example.com/profile.jpg", null)
+            "123",
+            "John Doe",
+            "testemail@gmail.com",
+            "https://www.example.com/profile.jpg",
+            HikingLevel.BEGINNER)
 
     val expectedHikingLevel = HikingLevel.BEGINNER
 
@@ -171,7 +191,11 @@ class PreferencesViewModelTest {
     // Given
     val user =
         UserModel(
-            "123", "John Doe", "testemail@gmail.com", "https://www.example.com/profile.jpg", null)
+            "123",
+            "John Doe",
+            "testemail@gmail.com",
+            "https://www.example.com/profile.jpg",
+            HikingLevel.BEGINNER)
     fakePreferencesRepo.updateUserInfo(user)
 
     // When
