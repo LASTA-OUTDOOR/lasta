@@ -72,23 +72,18 @@ fun DiscoveryScreen(
 ) {
   val screen by discoveryScreenViewModel.screen.collectAsState()
 
+  var isRangePopup by rememberSaveable { mutableStateOf(false) }
 
-
-    var isRangePopup by rememberSaveable { mutableStateOf(false) }
-
-    RangeSearchComposable(
-        discoveryScreenViewModel = discoveryScreenViewModel,
-        isRangePopup = isRangePopup,
-        onDismissRequest = { isRangePopup = false })
-
+  RangeSearchComposable(
+      discoveryScreenViewModel = discoveryScreenViewModel,
+      isRangePopup = isRangePopup,
+      onDismissRequest = { isRangePopup = false })
 
   if (screen == DiscoveryScreenType.LIST) {
     LazyColumn(
         modifier =
-        Modifier
-            .testTag("discoveryScreen")
-            .background(MaterialTheme.colorScheme.background)) {
-          item { HeaderComposable(updatePopup = {isRangePopup = true}) }
+            Modifier.testTag("discoveryScreen").background(MaterialTheme.colorScheme.background)) {
+          item { HeaderComposable(updatePopup = { isRangePopup = true }) }
 
           item {
             SeparatorComponent() // Add a separator between the header and the activities
@@ -98,29 +93,28 @@ fun DiscoveryScreen(
         }
   } else if (screen == DiscoveryScreenType.MAP) {
     MapScreen()
-    HeaderComposable(updatePopup = {isRangePopup = true})
+    HeaderComposable(updatePopup = { isRangePopup = true })
   }
 }
 
 @Composable
-fun HeaderComposable(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel(), updatePopup: () -> Unit) {
+fun HeaderComposable(
+    discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel(),
+    updatePopup: () -> Unit
+) {
   val screen by discoveryScreenViewModel.screen.collectAsState()
-    val range by discoveryScreenViewModel.range.collectAsState()
-    val selectedLocality = discoveryScreenViewModel.selectedLocality.collectAsState().value
+  val range by discoveryScreenViewModel.range.collectAsState()
+  val selectedLocality = discoveryScreenViewModel.selectedLocality.collectAsState().value
   val iconSize = 48.dp // Adjust icon size as needed
 
   Surface(
-      modifier = Modifier
-          .fillMaxWidth()
-          .graphicsLayer { alpha = 0.9f },
+      modifier = Modifier.fillMaxWidth().graphicsLayer { alpha = 0.9f },
       color = MaterialTheme.colorScheme.background,
       shadowElevation = 3.dp) {
         Column {
           // Location bar
           Row(
-              modifier = Modifier
-                  .fillMaxWidth()
-                  .padding(horizontal = 16.dp, vertical = 8.dp),
+              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
               verticalAlignment = Alignment.CenterVertically) {
                 Column {
                   Row {
@@ -134,15 +128,15 @@ fun HeaderComposable(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltVi
                     }
                   }
 
-                  Text(text = "Less than ${(range / 1000).toInt()} km", style = MaterialTheme.typography.bodySmall)
+                  Text(
+                      text = "Less than ${(range / 1000).toInt()} km",
+                      style = MaterialTheme.typography.bodySmall)
                 }
               }
 
           // Search bar with toggle buttons
           Row(
-              modifier = Modifier
-                  .fillMaxWidth()
-                  .padding(horizontal = 16.dp, vertical = 8.dp),
+              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
               verticalAlignment = Alignment.CenterVertically) {
                 SearchBarComponent(Modifier.weight(1f), onSearch = { /*TODO*/})
                 Spacer(modifier = Modifier.width(8.dp))
@@ -154,9 +148,7 @@ fun HeaderComposable(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltVi
                 }
               }
           Row(
-              modifier = Modifier
-                  .fillMaxWidth()
-                  .padding(horizontal = 16.dp, vertical = 8.dp),
+              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
               verticalAlignment = Alignment.CenterVertically,
               horizontalArrangement = Arrangement.Center) {
                 DisplaySelection(
@@ -168,9 +160,7 @@ fun HeaderComposable(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltVi
 
           if (screen == DiscoveryScreenType.LIST) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically) {
                   Text("Filtering by:", style = MaterialTheme.typography.bodyMedium)
                   Spacer(modifier = Modifier.width(8.dp))
@@ -179,8 +169,7 @@ fun HeaderComposable(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltVi
                       style = MaterialTheme.typography.bodyMedium,
                       color = MaterialTheme.colorScheme.primary)
 
-                  IconButton(onClick = { /*TODO*/
-                  }, modifier = Modifier.size(24.dp)) {
+                  IconButton(onClick = { /*TODO*/}, modifier = Modifier.size(24.dp)) {
                     Icon(
                         Icons.Outlined.KeyboardArrowDown,
                         contentDescription = "Filter",
@@ -202,27 +191,23 @@ fun ActivitiesDisplay(
   for (a in activities) {
     Card(
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(vertical = 8.dp, horizontal = 16.dp)
-            .clickable(onClick = { navController.navigate(LeafScreen.MoreInfo.route) }),
+            Modifier.fillMaxWidth()
+                .wrapContentHeight()
+                .padding(vertical = 8.dp, horizontal = 16.dp)
+                .clickable(onClick = { navController.navigate(LeafScreen.MoreInfo.route) }),
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
     ) {
       Column {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
               Box(
                   modifier =
-                  Modifier
-                      .shadow(4.dp, RoundedCornerShape(30))
-                      .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
-                      .padding(PaddingValues(8.dp))) {
+                      Modifier.shadow(4.dp, RoundedCornerShape(30))
+                          .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
+                          .padding(PaddingValues(8.dp))) {
                     Text(
                         text = "Climbing",
                         style = MaterialTheme.typography.labelMedium,
@@ -241,9 +226,7 @@ fun ActivitiesDisplay(
 
         Spacer(modifier = Modifier.height(16.dp))
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
             verticalAlignment = Alignment.CenterVertically) {
               Text(
                   text = a.locationName ?: "Unnamed Activity",
@@ -252,9 +235,7 @@ fun ActivitiesDisplay(
             }
         SeparatorComponent()
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
             verticalAlignment = Alignment.CenterVertically) {
               Icon(
                   imageVector = Icons.Default.Star,
@@ -274,166 +255,154 @@ fun ActivitiesDisplay(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RangeSearchComposable(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel(), isRangePopup: Boolean, onDismissRequest: () -> Unit){
-    //create local variable to hold the current range whcih will then be sent as argument to the discoveryScreenViewModel.getActivities with the range
-    val range by discoveryScreenViewModel.range.collectAsState()
-    val screen by discoveryScreenViewModel.screen.collectAsState()
+fun RangeSearchComposable(
+    discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel(),
+    isRangePopup: Boolean,
+    onDismissRequest: () -> Unit
+) {
+  // create local variable to hold the current range whcih will then be sent as argument to the
+  // discoveryScreenViewModel.getActivities with the range
+  val range by discoveryScreenViewModel.range.collectAsState()
+  val screen by discoveryScreenViewModel.screen.collectAsState()
 
+  // list view search popup
+  if (isRangePopup && screen == DiscoveryScreenType.LIST) {
 
-    //list view search popup
-    if (isRangePopup && screen == DiscoveryScreenType.LIST) {
-
-        ModalBottomSheet(onDismissRequest = onDismissRequest, modifier = Modifier.fillMaxWidth()) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                //Select the City
-                Text(
-                    text = "Select the locality",
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        lineHeight = 24.sp,
-                        fontWeight = FontWeight(500)
-                    ))
-                Spacer(modifier = Modifier.height(8.dp))
-                //Dropdown to select the city
-                CitySelectionDropdown(discoveryScreenViewModel)
-                //Select the distance radius
-                Text(
-                    text = "Select the distance radius",
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        lineHeight = 24.sp,
-                        fontWeight = FontWeight(500)
-                    ))
-                Spacer(modifier = Modifier.height(8.dp))
-                //Slider to select the range
-                Row {
-                    Slider(
-                        value = range.toFloat(),
-                        onValueChange = {  discoveryScreenViewModel.setRange(it.toDouble().coerceIn(1000.0, 50000.0)) },
-                        valueRange = 0f..50000f,
-                        steps = 100,
-                        modifier = Modifier.width(305.dp)
-                    )
-                    Text(
-                        //put range in km
-                        text = "${(range / 1000).toInt()} km",
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(8.dp)
-                    )
-                }
-
-                //Button to apply the range
-                ElevatedButton(
-                    onClick = {
-                        discoveryScreenViewModel.fetchClimbingActivities(range, discoveryScreenViewModel.selectedLocality.value.second)
-                        onDismissRequest()
-                    },
-                    modifier = Modifier
-                        .width(305.dp)
-                        .height(48.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
-                    Text(
-                        "Search",
-                        style =
-                        TextStyle(
-                            fontSize = 22.sp,
-                            lineHeight = 28.sp,
-                            fontWeight = FontWeight(400),
-                        )
-                    )
-                }
+    ModalBottomSheet(onDismissRequest = onDismissRequest, modifier = Modifier.fillMaxWidth()) {
+      Column(
+          horizontalAlignment = Alignment.CenterHorizontally,
+          modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+            // Select the City
+            Text(
+                text = "Select the locality",
+                style =
+                    TextStyle(fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
+            Spacer(modifier = Modifier.height(8.dp))
+            // Dropdown to select the city
+            CitySelectionDropdown(discoveryScreenViewModel)
+            // Select the distance radius
+            Text(
+                text = "Select the distance radius",
+                style =
+                    TextStyle(fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
+            Spacer(modifier = Modifier.height(8.dp))
+            // Slider to select the range
+            Row {
+              Slider(
+                  value = range.toFloat(),
+                  onValueChange = {
+                    discoveryScreenViewModel.setRange(it.toDouble().coerceIn(1000.0, 50000.0))
+                  },
+                  valueRange = 0f..50000f,
+                  steps = 100,
+                  modifier = Modifier.width(305.dp))
+              Text(
+                  // put range in km
+                  text = "${(range / 1000).toInt()} km",
+                  style = MaterialTheme.typography.bodyMedium,
+                  modifier = Modifier.padding(8.dp))
             }
-        }
+
+            // Button to apply the range
+            ElevatedButton(
+                onClick = {
+                  discoveryScreenViewModel.fetchClimbingActivities(
+                      range, discoveryScreenViewModel.selectedLocality.value.second)
+                  onDismissRequest()
+                },
+                modifier = Modifier.width(305.dp).height(48.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
+                  Text(
+                      "Search",
+                      style =
+                          TextStyle(
+                              fontSize = 22.sp,
+                              lineHeight = 28.sp,
+                              fontWeight = FontWeight(400),
+                          ))
+                }
+          }
     }
+  }
 
-    //map range search popup
-    if (isRangePopup && screen == DiscoveryScreenType.MAP) {
-        ModalBottomSheet(onDismissRequest = onDismissRequest, modifier = Modifier.fillMaxWidth()) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Text(
-                    text = "Select the distance",
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        lineHeight = 24.sp,
-                        fontWeight = FontWeight(500)
-                ))
-                Spacer(modifier = Modifier.height(8.dp))
-                //Slider to select the range
-                Row {
-                    Slider(
-                        value = range.toFloat(),
-                        onValueChange = { discoveryScreenViewModel.setRange(it.toDouble().coerceIn(1000.0, 50000.0)) },
-                        valueRange = 0f..50000f,
-                        steps = 100,
-                        modifier = Modifier.width(305.dp)
-                    )
-                    Text(
-                        //put range in km
-                        text = "${(range / 1000).toInt()} km",
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(8.dp)
-                    )
-                }
-
-                //Button to apply the range
-                ElevatedButton(
-                    onClick = {
-                        //discoveryScreenViewModel.getActivities(range)
-                        onDismissRequest()
-                    },
-                    modifier = Modifier
-                        .width(305.dp)
-                        .height(48.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
-                    Text(
-                        "Apply",
-                        style =
-                        TextStyle(
-                            fontSize = 22.sp,
-                            lineHeight = 28.sp,
-                            fontWeight = FontWeight(400),
-                        )
-                    )
-                }
+  // map range search popup
+  if (isRangePopup && screen == DiscoveryScreenType.MAP) {
+    ModalBottomSheet(onDismissRequest = onDismissRequest, modifier = Modifier.fillMaxWidth()) {
+      Column(
+          horizontalAlignment = Alignment.CenterHorizontally,
+          modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+            Text(
+                text = "Select the distance",
+                style =
+                    TextStyle(fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
+            Spacer(modifier = Modifier.height(8.dp))
+            // Slider to select the range
+            Row {
+              Slider(
+                  value = range.toFloat(),
+                  onValueChange = {
+                    discoveryScreenViewModel.setRange(it.toDouble().coerceIn(1000.0, 50000.0))
+                  },
+                  valueRange = 0f..50000f,
+                  steps = 100,
+                  modifier = Modifier.width(305.dp))
+              Text(
+                  // put range in km
+                  text = "${(range / 1000).toInt()} km",
+                  style = MaterialTheme.typography.bodyMedium,
+                  modifier = Modifier.padding(8.dp))
             }
-        }
+
+            // Button to apply the range
+            ElevatedButton(
+                onClick = {
+                  discoveryScreenViewModel.fetchClimbingActivities(
+                      range, discoveryScreenViewModel.selectedLocality.value.second)
+                  onDismissRequest()
+                },
+                modifier = Modifier.width(305.dp).height(48.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
+                  Text(
+                      "Apply",
+                      style =
+                          TextStyle(
+                              fontSize = 22.sp,
+                              lineHeight = 28.sp,
+                              fontWeight = FontWeight(400),
+                          ))
+                }
+          }
     }
+  }
 }
 
-//Dropdown to select the city
+// Dropdown to select the city
 @Composable
 fun CitySelectionDropdown(discoveryScreenViewModel: DiscoveryScreenViewModel) {
-    var expanded by remember { mutableStateOf(false) }
-    val localities = discoveryScreenViewModel.localities
-    var selectedLocality = discoveryScreenViewModel.selectedLocality.collectAsState().value
+  var expanded by remember { mutableStateOf(false) }
+  val localities = discoveryScreenViewModel.localities
+  var selectedLocality = discoveryScreenViewModel.selectedLocality.collectAsState().value
 
-    Box(modifier = Modifier.wrapContentSize()) {
-        Text(selectedLocality.first, modifier = Modifier.clickable(onClick = { expanded = true }), style = TextStyle(
-            fontSize = 22.sp,
-            lineHeight = 28.sp,
-            fontWeight = FontWeight(400),
-            color = AccentGreen
-        ))
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            localities.forEach { locality ->
-                DropdownMenuItem(
-                    text = { Text(locality.first, color = AccentGreen) },
-                    onClick = {
-                        discoveryScreenViewModel.setSelectedLocality(locality)
-                        expanded = false
-                })
-            }
-        }
+  Box(modifier = Modifier.wrapContentSize()) {
+    Text(
+        selectedLocality.first,
+        modifier = Modifier.clickable(onClick = { expanded = true }),
+        style =
+            TextStyle(
+                fontSize = 22.sp,
+                lineHeight = 28.sp,
+                fontWeight = FontWeight(400),
+                color = AccentGreen))
+    DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+      localities.forEach { locality ->
+        DropdownMenuItem(
+            text = { Text(locality.first, color = AccentGreen) },
+            onClick = {
+              discoveryScreenViewModel.setSelectedLocality(locality)
+              expanded = false
+            })
+      }
     }
-    Spacer(modifier = Modifier.height(8.dp))
+  }
+  Spacer(modifier = Modifier.height(8.dp))
 }
