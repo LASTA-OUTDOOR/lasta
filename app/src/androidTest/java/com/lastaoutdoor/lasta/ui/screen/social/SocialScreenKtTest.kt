@@ -115,7 +115,6 @@ class SocialScreenKtTest {
       SocialScreen(navController)
     }
 
-
     // Header (title)
     composeRule.onNodeWithTag("Header").assertIsDisplayed()
 

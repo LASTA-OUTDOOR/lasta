@@ -28,18 +28,18 @@ import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
 @Composable
 fun MessageList(viewModel: SocialViewModel = hiltViewModel()) {
-    val isConnected = viewModel.isConnected.collectAsState()
-    when {
-        isConnected.value == ConnectionState.OFFLINE -> {
-            ConnectionMissing()
-        }
-        viewModel.messages.isNullOrEmpty() -> {
-            MessageMissing()
-        }
-        else -> {
-            LazyColumn { items(viewModel.messages.size) { MessageCard(viewModel.messages[it]) } }
-        }
+  val isConnected = viewModel.isConnected.collectAsState()
+  when {
+    isConnected.value == ConnectionState.OFFLINE -> {
+      ConnectionMissing()
     }
+    viewModel.messages.isNullOrEmpty() -> {
+      MessageMissing()
+    }
+    else -> {
+      LazyColumn { items(viewModel.messages.size) { MessageCard(viewModel.messages[it]) } }
+    }
+  }
 }
 
 @Composable
@@ -49,19 +49,13 @@ fun MessageCard(message: String) {
           CardDefaults.cardColors(
               containerColor = MaterialTheme.colorScheme.surfaceVariant,
           ),
-      modifier = Modifier
-          .height(height = 100.dp)
-          .fillMaxWidth()
-          .padding(8.dp)
-          .testTag("Message")) {
+      modifier = Modifier.height(height = 100.dp).fillMaxWidth().padding(8.dp).testTag("Message")) {
         Column(modifier = Modifier.padding(8.dp)) {
           Row() {
             Icon(
                 Icons.Filled.AccountCircle,
                 contentDescription = "Profile picture",
-                modifier = Modifier
-                    .size(30.dp)
-                    .align(Alignment.CenterVertically))
+                modifier = Modifier.size(30.dp).align(Alignment.CenterVertically))
             Text(
                 text = "John Doe",
                 modifier = Modifier.align(Alignment.CenterVertically),

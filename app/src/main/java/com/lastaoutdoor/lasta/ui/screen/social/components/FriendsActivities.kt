@@ -33,22 +33,22 @@ import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
 @Composable
 fun FriendsActivityList(viewModel: SocialViewModel = hiltViewModel()) {
-    val isConnected = viewModel.isConnected.collectAsState()
-    when {
-        isConnected.value == ConnectionState.OFFLINE -> {
-            ConnectionMissing()
-        }
-        viewModel.latestFriendActivities.isNullOrEmpty() -> {
-            FriendsMissing()
-        }
-        else -> {
-            LazyColumn {
-                items(viewModel.latestFriendActivities.size) {
-                    FriendsActivityCard(viewModel.latestFriendActivities[it])
-                }
-            }
-        }
+  val isConnected = viewModel.isConnected.collectAsState()
+  when {
+    isConnected.value == ConnectionState.OFFLINE -> {
+      ConnectionMissing()
     }
+    viewModel.latestFriendActivities.isNullOrEmpty() -> {
+      FriendsMissing()
+    }
+    else -> {
+      LazyColumn {
+        items(viewModel.latestFriendActivities.size) {
+          FriendsActivityCard(viewModel.latestFriendActivities[it])
+        }
+      }
+    }
+  }
 }
 
 @Composable

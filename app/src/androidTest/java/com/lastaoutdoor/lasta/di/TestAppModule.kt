@@ -111,8 +111,7 @@ object TestAppModule {
 
   @Singleton
   @Provides
-  fun provideConnectivityRepository(): ConnectivityRepository =
-      FakeConnectivityRepository()
+  fun provideConnectivityRepository(): ConnectivityRepository = FakeConnectivityRepository()
 
   /** Provides the [TimeProvider] class */
   @Provides @Singleton fun provideTimeProvider(): TimeProvider = RealTimeProvider()
