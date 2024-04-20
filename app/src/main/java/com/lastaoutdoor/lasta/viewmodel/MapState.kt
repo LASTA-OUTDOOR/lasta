@@ -3,6 +3,7 @@ package com.lastaoutdoor.lasta.viewmodel
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.MapUiSettings
+import com.lastaoutdoor.lasta.data.model.map.HikingMarker
 import com.lastaoutdoor.lasta.data.model.map.MapItinerary
 import com.lastaoutdoor.lasta.data.model.map.Marker
 
@@ -20,8 +21,14 @@ class MapState {
   // List of markers to display on the map
   var markerList: List<Marker> = emptyList()
 
-  // Itinerary to display
-  var itineraryList: List<MapItinerary> = emptyList()
+  // List of hiking markers to display on the map (first of itinerary)
+  var itineraryStartMarkers: List<HikingMarker> = emptyList()
+
+  // Itinerary to display : relation id points to the itinerary
+  var itineraryMap: Map<Long, MapItinerary> = emptyMap()
+
+  // Displayed itinerary
+  var selectedItinerary: MapItinerary? = null
 
   // The marker displayed in the more info bottom sheet
   var selectedMarker: Marker? = null
