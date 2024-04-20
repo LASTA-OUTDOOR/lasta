@@ -254,92 +254,103 @@ class MapViewModelTest {
     assertEquals(marker, viewModel.state.selectedMarker)
   }
 
-  //test clear selected itinerary
-    @Test
-    fun testClearSelectedItinerary() {
-        clear()
-        assertNull(viewModel.state.selectedItinerary)
+  // test clear selected itinerary
+  @Test
+  fun testClearSelectedItinerary() {
+    clear()
+    assertNull(viewModel.state.selectedItinerary)
 
-        val itinerary = MapItinerary(1, "Itinerary", emptyList())
-        viewModel.state.selectedItinerary = itinerary
-        assertNotNull(viewModel.state.selectedItinerary)
+    val itinerary = MapItinerary(1, "Itinerary", emptyList())
+    viewModel.state.selectedItinerary = itinerary
+    assertNotNull(viewModel.state.selectedItinerary)
 
-        viewModel.clearSelectedItinerary()
-        assertNull(viewModel.state.selectedItinerary)
-    }
+    viewModel.clearSelectedItinerary()
+    assertNull(viewModel.state.selectedItinerary)
+  }
 
+  // This test is a global test for itineraries since it is hard to isolate only one bit of it
+  @Test
+  fun testItinerary() {
+    clear()
+    assertNull(viewModel.state.selectedItinerary)
 
-  //This test is a global test for itineraries since it is hard to isolate only one bit of it
-    @Test
-    fun testItinerary() {
-      clear()
-      assertNull(viewModel.state.selectedItinerary)
-
-      repository.addHikingRelation(
-          Relation(
-              "Hiking",
-              1,
-              Tags("Hiking", "hiking"),
-              listOf(SimpleWay(listOf(Position(lausanne.latitude, lausanne.longitude)))),
-              Bounds(0.0, 0.0, 0.0, 0.0),
-              ActivityType.HIKING, 0, 0f, "", "Test location"
-          )
-      )
-      viewModel.updateMarkers(lausanne, 10000.0)
-      assertEquals(1, viewModel.state.itineraryStartMarkers.size)
-      viewModel.updateSelectedItinerary(1)
-      assertNotNull(viewModel.state.selectedItinerary)
-      assertEquals(1L, viewModel.state.selectedItinerary?.id)
-      assertEquals("Hiking", viewModel.state.selectedItinerary?.name)
-    }
-    //test when ways is null
+    repository.addHikingRelation(
+        Relation(
+            "Hiking",
+            1,
+            Tags("Hiking", "hiking"),
+            listOf(SimpleWay(listOf(Position(lausanne.latitude, lausanne.longitude)))),
+            Bounds(0.0, 0.0, 0.0, 0.0),
+            ActivityType.HIKING,
+            0,
+            0f,
+            "",
+            "Test location"))
+    viewModel.updateMarkers(lausanne, 10000.0)
+    assertEquals(1, viewModel.state.itineraryStartMarkers.size)
+    viewModel.updateSelectedItinerary(1)
+    assertNotNull(viewModel.state.selectedItinerary)
+    assertEquals(1L, viewModel.state.selectedItinerary?.id)
+    assertEquals("Hiking", viewModel.state.selectedItinerary?.name)
+  }
+  // test when ways is null
   @Test
   fun testItineraryWayNull() {
-        clear()
+    clear()
 
-        repository.addHikingRelation(
-            Relation(
-                "Hiking",
-                1,
-                Tags("Hiking", "hiking"),
-                null,
-                Bounds(0.0, 0.0, 0.0, 0.0),
-                ActivityType.HIKING, 0, 0f, "", "Test location"
-            )
-        )
-        viewModel.updateMarkers(lausanne, 10000.0)
-        assertEquals(0, viewModel.state.itineraryStartMarkers.size)
-    }
-    // Test when node is null
-      @Test
-      fun testItineraryNodeNull() {
-        clear()
-        repository.addHikingRelation(
-            Relation(
-                "Hiking",
-                1,
-                Tags("Hiking", "hiking"),
-                listOf(SimpleWay(null)),
-                Bounds(0.0, 0.0, 0.0, 0.0),
-                ActivityType.HIKING, 0, 0f, "", "Test location"))
-        viewModel.updateMarkers(lausanne, 10000.0)
-        assertEquals(0, viewModel.state.itineraryStartMarkers.size)
-      }
+    repository.addHikingRelation(
+        Relation(
+            "Hiking",
+            1,
+            Tags("Hiking", "hiking"),
+            null,
+            Bounds(0.0, 0.0, 0.0, 0.0),
+            ActivityType.HIKING,
+            0,
+            0f,
+            "",
+            "Test location"))
+    viewModel.updateMarkers(lausanne, 10000.0)
+    assertEquals(0, viewModel.state.itineraryStartMarkers.size)
+  }
+  // Test when node is null
+  @Test
+  fun testItineraryNodeNull() {
+    clear()
+    repository.addHikingRelation(
+        Relation(
+            "Hiking",
+            1,
+            Tags("Hiking", "hiking"),
+            listOf(SimpleWay(null)),
+            Bounds(0.0, 0.0, 0.0, 0.0),
+            ActivityType.HIKING,
+            0,
+            0f,
+            "",
+            "Test location"))
+    viewModel.updateMarkers(lausanne, 10000.0)
+    assertEquals(0, viewModel.state.itineraryStartMarkers.size)
+  }
 
-    // Test when name in tags is null
-      @Test
-      fun testItineraryNameNull() {
-        clear()
-        repository.addHikingRelation(
-            Relation(
-                "Hiking",
-                1,
-                Tags(null, "hiking"),
-                listOf(SimpleWay(listOf(Position(lausanne.latitude, lausanne.longitude)))),
-                Bounds(0.0, 0.0, 0.0, 0.0),
-                ActivityType.HIKING, 0, 0f, "", "Test location"))
-        viewModel.updateMarkers(lausanne, 10000.0)
-        assertEquals(1, viewModel.state.itineraryStartMarkers.size)
-        assertEquals("Hiking: Unnamed", viewModel.state.itineraryStartMarkers[0].name)
-    }
+  // Test when name in tags is null
+  @Test
+  fun testItineraryNameNull() {
+    clear()
+    repository.addHikingRelation(
+        Relation(
+            "Hiking",
+            1,
+            Tags(null, "hiking"),
+            listOf(SimpleWay(listOf(Position(lausanne.latitude, lausanne.longitude)))),
+            Bounds(0.0, 0.0, 0.0, 0.0),
+            ActivityType.HIKING,
+            0,
+            0f,
+            "",
+            "Test location"))
+    viewModel.updateMarkers(lausanne, 10000.0)
+    assertEquals(1, viewModel.state.itineraryStartMarkers.size)
+    assertEquals("Hiking: Unnamed", viewModel.state.itineraryStartMarkers[0].name)
+  }
 }
