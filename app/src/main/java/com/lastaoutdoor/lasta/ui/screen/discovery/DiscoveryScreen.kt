@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -23,6 +24,8 @@ import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -36,6 +39,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -56,6 +60,7 @@ import com.lastaoutdoor.lasta.ui.components.SearchBarComponent
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
 import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
 import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
+import com.lastaoutdoor.lasta.ui.theme.AccentGreen
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenType
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenViewModel
@@ -101,6 +106,7 @@ fun DiscoveryScreen(
 fun HeaderComposable(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel(), updatePopup: () -> Unit) {
   val screen by discoveryScreenViewModel.screen.collectAsState()
     val range by discoveryScreenViewModel.range.collectAsState()
+    val selectedLocality = discoveryScreenViewModel.selectedLocality.collectAsState().value
   val iconSize = 48.dp // Adjust icon size as needed
 
   Surface(
@@ -118,7 +124,7 @@ fun HeaderComposable(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltVi
               verticalAlignment = Alignment.CenterVertically) {
                 Column {
                   Row {
-                    Text(text = "Ecublens", style = MaterialTheme.typography.titleMedium)
+                    Text(text = selectedLocality.first, style = MaterialTheme.typography.bodyMedium)
 
                     IconButton(onClick = updatePopup, modifier = Modifier.size(24.dp)) {
                       Icon(
@@ -276,6 +282,7 @@ fun RangeSearchComposable(discoveryScreenViewModel: DiscoveryScreenViewModel = h
 
     //list view search popup
     if (isRangePopup && screen == DiscoveryScreenType.LIST) {
+
         ModalBottomSheet(onDismissRequest = onDismissRequest, modifier = Modifier.fillMaxWidth()) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -283,6 +290,18 @@ fun RangeSearchComposable(discoveryScreenViewModel: DiscoveryScreenViewModel = h
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
+                //Select the City
+                Text(
+                    text = "Select the locality",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        lineHeight = 24.sp,
+                        fontWeight = FontWeight(500)
+                    ))
+                Spacer(modifier = Modifier.height(8.dp))
+                //Dropdown to select the city
+                CitySelectionDropdown(discoveryScreenViewModel)
+                //Select the distance radius
                 Text(
                     text = "Select the distance radius",
                     style = TextStyle(
@@ -311,8 +330,7 @@ fun RangeSearchComposable(discoveryScreenViewModel: DiscoveryScreenViewModel = h
                 //Button to apply the range
                 ElevatedButton(
                     onClick = {
-                        discoveryScreenViewModel.setRange(range)
-                        discoveryScreenViewModel.fetchClimbingActivities(range)
+                        discoveryScreenViewModel.fetchClimbingActivities(range, discoveryScreenViewModel.selectedLocality.value.second)
                         onDismissRequest()
                     },
                     modifier = Modifier
@@ -390,4 +408,32 @@ fun RangeSearchComposable(discoveryScreenViewModel: DiscoveryScreenViewModel = h
             }
         }
     }
+}
+
+//Dropdown to select the city
+@Composable
+fun CitySelectionDropdown(discoveryScreenViewModel: DiscoveryScreenViewModel) {
+    var expanded by remember { mutableStateOf(false) }
+    val localities = discoveryScreenViewModel.localities
+    var selectedLocality = discoveryScreenViewModel.selectedLocality.collectAsState().value
+
+    Box(modifier = Modifier.wrapContentSize()) {
+        Text(selectedLocality.first, modifier = Modifier.clickable(onClick = { expanded = true }), style = TextStyle(
+            fontSize = 22.sp,
+            lineHeight = 28.sp,
+            fontWeight = FontWeight(400),
+            color = AccentGreen
+        ))
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            localities.forEach { locality ->
+                DropdownMenuItem(
+                    text = { Text(locality.first, color = AccentGreen) },
+                    onClick = {
+                        discoveryScreenViewModel.setSelectedLocality(locality)
+                        expanded = false
+                })
+            }
+        }
+    }
+    Spacer(modifier = Modifier.height(8.dp))
 }

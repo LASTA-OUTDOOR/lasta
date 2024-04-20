@@ -33,6 +33,18 @@ constructor(private val repository: OutdoorActivityRepository) : ViewModel() {
     private val _range = MutableStateFlow(10000.0)
     val range: StateFlow<Double> = _range
 
+    // List of localities with their LatLng coordinates
+    val localities = listOf(
+        "Ecublens" to LatLng(46.519962, 6.633597),
+        "Geneva" to LatLng(46.2043907, 6.1431577),
+        "Payerne" to LatLng(46.834190, 6.928969),
+        "Matterhorn" to LatLng(45.980537, 7.641618)
+    )
+    // Selected locality
+    private val _selectedLocality = MutableStateFlow(localities[0])
+    val selectedLocality: StateFlow<Pair<String, LatLng>> = _selectedLocality
+
+
   init {
     fetchClimbingActivities()
   }
@@ -73,7 +85,13 @@ constructor(private val repository: OutdoorActivityRepository) : ViewModel() {
     _screen.value = screen
   }
 
+    // Set the range for the activities
     fun setRange(range: Double) {
         _range.value = range
+    }
+
+    // Set the selected locality
+    fun setSelectedLocality(locality: Pair<String, LatLng>) {
+        _selectedLocality.value = locality
     }
 }
