@@ -36,7 +36,7 @@ class SocialViewModel @Inject constructor(val repository: SocialRepository) : Vi
   fun showTopButton(text: String, onClick: () -> Unit) {
     // show add friend button
     topButtonText = text
-    topButtonOnClick = onClick
+    topButtonOnClick = { onClick() }
     friendButton = true
   }
 

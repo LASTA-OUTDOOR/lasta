@@ -84,7 +84,7 @@ class SocialScreenKtTest {
   fun initialState() {
 
     // Set the content to the social screen
-    composeRule.activity.setContent { SocialScreen() }
+    composeRule.activity.setContent { SocialScreen(navController) }
 
     // Header (title)
     composeRule.onNodeWithTag("Header").assertIsDisplayed()
@@ -104,7 +104,7 @@ class SocialScreenKtTest {
   @Test
   fun testTabSelection() {
     // Set the content to the social screen
-    composeRule.activity.setContent { SocialScreen() }
+    composeRule.activity.setContent { SocialScreen(navController) }
 
     // initial tab selection
     composeRule.onNodeWithText("Feed").assertIsSelected()
@@ -142,7 +142,7 @@ class SocialScreenKtTest {
     composeRule.activity.setContent {
       socialViewModel = hiltViewModel()
       socialViewModel.isConnected = true
-      SocialScreen()
+      SocialScreen(navController)
     }
 
     // Feed
@@ -172,7 +172,7 @@ class SocialScreenKtTest {
       socialViewModel = hiltViewModel()
       socialViewModel.isConnected = true
       socialViewModel.repository.setLatestFriendActivities(activities)
-      SocialScreen()
+      SocialScreen(navController)
     }
 
     // Check that the add friend is not displayed
@@ -192,7 +192,7 @@ class SocialScreenKtTest {
       socialViewModel = hiltViewModel()
       socialViewModel.isConnected = true
       socialViewModel.repository.setFriends(friends)
-      SocialScreen()
+      SocialScreen(navController)
     }
 
     // go to the friends tab
@@ -215,7 +215,7 @@ class SocialScreenKtTest {
       socialViewModel = hiltViewModel()
       socialViewModel.isConnected = true
       socialViewModel.repository.setMessages(messages)
-      SocialScreen()
+      SocialScreen(navController)
     }
 
     // go to the friends tab

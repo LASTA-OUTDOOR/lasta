@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.lastaoutdoor.lasta.ui.screen.social.components.TabMenu
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
@@ -34,7 +35,7 @@ fun Header(viewModel: SocialViewModel = hiltViewModel()) {
         if (viewModel.friendButton) {
           Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
             Button(
-                onClick = { viewModel.topButtonOnClick },
+                onClick = { viewModel.topButtonOnClick.invoke() },
                 modifier = Modifier.align(Alignment.CenterVertically).testTag("TopButton")) {
                   Text(text = viewModel.topButtonText)
                 }
@@ -47,13 +48,13 @@ fun Header(viewModel: SocialViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun SocialScreen() {
+fun SocialScreen(navController: NavHostController) {
   Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
 
     // Page title and button
     Header()
 
     // Tabs
-    TabMenu()
+    TabMenu(navController)
   }
 }
