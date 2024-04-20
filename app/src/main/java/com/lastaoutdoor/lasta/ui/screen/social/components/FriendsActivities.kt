@@ -16,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,21 +28,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
+import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
 @Composable
 fun FriendsActivityList(viewModel: SocialViewModel = hiltViewModel()) {
-  if (!viewModel.isConnected) {
-    ConnectionMissing()
-  } else if (viewModel.latestFriendActivities.isNullOrEmpty()) {
-    FriendsMissing()
-  } else {
-    LazyColumn {
-      items(viewModel.latestFriendActivities.size) {
-        FriendsActivityCard(viewModel.latestFriendActivities[it])
-      }
+    val isConnected = viewModel.isConnected.collectAsState()
+    when {
+        isConnected.value == ConnectionState.OFFLINE -> {
+            ConnectionMissing()
+        }
+        viewModel.latestFriendActivities.isNullOrEmpty() -> {
+            FriendsMissing()
+        }
+        else -> {
+            LazyColumn {
+                items(viewModel.latestFriendActivities.size) {
+                    FriendsActivityCard(viewModel.latestFriendActivities[it])
+                }
+            }
+        }
     }
-  }
 }
 
 @Composable

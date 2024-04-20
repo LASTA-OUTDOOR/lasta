@@ -18,7 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import com.lastaoutdoor.lasta.ui.screen.social.components.TabMenu
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
@@ -48,7 +48,7 @@ fun Header(viewModel: SocialViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun SocialScreen(navController: NavHostController) {
+fun SocialScreen(navController: NavController) {
   Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
 
     // Page title and button

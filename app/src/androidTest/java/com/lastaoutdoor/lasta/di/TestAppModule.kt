@@ -13,7 +13,6 @@ import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.ApiService
 import com.lastaoutdoor.lasta.data.api.OutdoorActivityRepositoryImpl
 import com.lastaoutdoor.lasta.data.auth.AuthRepositoryImpl
-import com.lastaoutdoor.lasta.data.connectivity.ConnectivityRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.ActivitiesRepositoryImpl
 import com.lastaoutdoor.lasta.data.preferences.PreferencesRepositoryImpl
 import com.lastaoutdoor.lasta.repository.ActivitiesRepository
@@ -22,6 +21,7 @@ import com.lastaoutdoor.lasta.repository.ConnectivityRepository
 import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
 import com.lastaoutdoor.lasta.repository.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.SocialRepository
+import com.lastaoutdoor.lasta.ui.screen.social.FakeConnectivityRepository
 import com.lastaoutdoor.lasta.ui.screen.social.FakeSocialRepository
 import dagger.Module
 import dagger.Provides
@@ -111,8 +111,8 @@ object TestAppModule {
 
   @Singleton
   @Provides
-  fun provideConnectivityRepository(@ApplicationContext context: Context): ConnectivityRepository =
-      ConnectivityRepositoryImpl(context)
+  fun provideConnectivityRepository(): ConnectivityRepository =
+      FakeConnectivityRepository()
 
   /** Provides the [TimeProvider] class */
   @Provides @Singleton fun provideTimeProvider(): TimeProvider = RealTimeProvider()

@@ -2,7 +2,11 @@ package com.lastaoutdoor.lasta.viewmodel
 
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.data.model.user.UserModel
+import com.lastaoutdoor.lasta.repository.ConnectivityRepository
 import com.lastaoutdoor.lasta.repository.SocialRepository
+import com.lastaoutdoor.lasta.utils.ConnectionState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -41,6 +45,20 @@ class FakeSocialRepository : SocialRepository {
   }
 }
 
+class FakeConnectivityRepository : ConnectivityRepository {
+
+  private val _connectionState = MutableStateFlow<ConnectionState>(ConnectionState.CONNECTED)
+  override val connectionState: StateFlow<ConnectionState> = _connectionState
+
+  fun setConnectionStateToTrue() {
+    _connectionState.value = ConnectionState.CONNECTED
+  }
+
+  fun setConnectionStateToFalse() {
+    _connectionState.value = ConnectionState.OFFLINE
+  }
+}
+
 class SocialViewModelTest {
 
   private val repo = FakeSocialRepository()
@@ -48,7 +66,7 @@ class SocialViewModelTest {
 
   @Before
   fun setUp() {
-    viewModel = SocialViewModel(repo)
+    viewModel = SocialViewModel(repo, FakeConnectivityRepository())
   }
 
   @Test

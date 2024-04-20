@@ -6,5 +6,5 @@ import androidx.navigation.NavHostController
 
 @Composable
 fun NewMessageScreen(navController: NavHostController) {
-    Text("New Message Screen")
+  Text("New Message Screen")
 }

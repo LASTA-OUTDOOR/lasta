@@ -1,20 +1,32 @@
 package com.lastaoutdoor.lasta.viewmodel
 
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.lastaoutdoor.lasta.repository.ConnectivityRepository
 import com.lastaoutdoor.lasta.repository.SocialRepository
+import com.lastaoutdoor.lasta.utils.ConnectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class SocialViewModel @Inject constructor(val repository: SocialRepository) : ViewModel() {
+class SocialViewModel
+@Inject
+constructor(val repository: SocialRepository, val connectionRepo: ConnectivityRepository) :
+    ViewModel() {
 
   private val numberOfDays = 7
 
+  //
   var friendButton by mutableStateOf(false)
 
+  // returns all the messages of the user
   val messages = repository.getMessages()
 
   // returns all the friends of the users
@@ -23,8 +35,12 @@ class SocialViewModel @Inject constructor(val repository: SocialRepository) : Vi
   // returns all the activities done by friends in the last 7 days
   val latestFriendActivities = repository.getLatestFriendActivities(numberOfDays)
 
-  // TODO: adapt this with andew's code
-  var isConnected by mutableStateOf(false)
+  // Fetch connection info from the repository, set isConnected to true if connected, false otherwise
+  var isConnected: StateFlow<ConnectionState> =
+    connectionRepo.connectionState.stateIn(
+      initialValue = ConnectionState.OFFLINE,
+      scope = viewModelScope,
+      started = SharingStarted.WhileSubscribed(5000))
 
   var topButtonText by mutableStateOf("Default button")
   var topButtonOnClick by mutableStateOf({})

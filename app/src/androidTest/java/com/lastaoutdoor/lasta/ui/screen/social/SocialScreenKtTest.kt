@@ -12,17 +12,23 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.data.model.user.HikingLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.di.AppModule
+import com.lastaoutdoor.lasta.repository.ConnectivityRepository
 import com.lastaoutdoor.lasta.repository.SocialRepository
 import com.lastaoutdoor.lasta.ui.MainActivity
+import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import java.util.Date
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
@@ -62,6 +68,20 @@ class FakeSocialRepository : SocialRepository {
   }
 }
 
+class FakeConnectivityRepository : ConnectivityRepository {
+
+  private val _connectionState = MutableStateFlow<ConnectionState>(ConnectionState.CONNECTED)
+  override val connectionState: StateFlow<ConnectionState> = _connectionState
+
+  fun setConnectionStateToTrue() {
+    _connectionState.value = ConnectionState.CONNECTED
+  }
+
+  fun setConnectionStateToFalse() {
+    _connectionState.value = ConnectionState.OFFLINE
+  }
+}
+
 @HiltAndroidTest
 @UninstallModules(AppModule::class)
 class SocialScreenKtTest {
@@ -74,10 +94,15 @@ class SocialScreenKtTest {
   // Viewmodel and repository
   private lateinit var socialViewModel: SocialViewModel
 
+  // Navigation controller
+  private lateinit var navController: NavController
+
   // Set up the test
   @Before
   fun setUp() {
     hiltRule.inject()
+    // set up the navigation controller
+    navController = NavHostController(composeRule.activity)
   }
 
   @Test

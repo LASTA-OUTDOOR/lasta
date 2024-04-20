@@ -15,6 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -22,18 +23,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
 @Composable
 fun MessageList(viewModel: SocialViewModel = hiltViewModel()) {
-  if (!viewModel.isConnected) {
-    ConnectionMissing()
-  } else if (viewModel.messages.isNullOrEmpty()) {
-    MessageMissing()
-    return
-  } else {
-    LazyColumn { items(viewModel.messages.size) { MessageCard(viewModel.messages[it]) } }
-  }
+    val isConnected = viewModel.isConnected.collectAsState()
+    when {
+        isConnected.value == ConnectionState.OFFLINE -> {
+            ConnectionMissing()
+        }
+        viewModel.messages.isNullOrEmpty() -> {
+            MessageMissing()
+        }
+        else -> {
+            LazyColumn { items(viewModel.messages.size) { MessageCard(viewModel.messages[it]) } }
+        }
+    }
 }
 
 @Composable
@@ -43,13 +49,19 @@ fun MessageCard(message: String) {
           CardDefaults.cardColors(
               containerColor = MaterialTheme.colorScheme.surfaceVariant,
           ),
-      modifier = Modifier.height(height = 100.dp).fillMaxWidth().padding(8.dp).testTag("Message")) {
+      modifier = Modifier
+          .height(height = 100.dp)
+          .fillMaxWidth()
+          .padding(8.dp)
+          .testTag("Message")) {
         Column(modifier = Modifier.padding(8.dp)) {
           Row() {
             Icon(
                 Icons.Filled.AccountCircle,
                 contentDescription = "Profile picture",
-                modifier = Modifier.size(30.dp).align(Alignment.CenterVertically))
+                modifier = Modifier
+                    .size(30.dp)
+                    .align(Alignment.CenterVertically))
             Text(
                 text = "John Doe",
                 modifier = Modifier.align(Alignment.CenterVertically),
