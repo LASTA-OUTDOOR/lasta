@@ -7,9 +7,9 @@ import com.lastaoutdoor.lasta.data.model.activity.OutdoorActivity
 import com.lastaoutdoor.lasta.data.model.api.Node
 import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import javax.inject.Inject
 
 enum class DiscoveryScreenType {
   LIST,
@@ -30,11 +30,13 @@ constructor(private val repository: OutdoorActivityRepository) : ViewModel() {
   private val _screen = MutableStateFlow(DiscoveryScreenType.LIST)
   val screen: StateFlow<DiscoveryScreenType> = _screen
 
+    private val _range = MutableStateFlow(10000.0)
+    val range: StateFlow<Double> = _range
+
   init {
     fetchClimbingActivities()
   }
-
-  private fun fetchClimbingActivities(
+    fun fetchClimbingActivities(
       rad: Double = 10000.0,
       centerLocation: LatLng = LatLng(46.519962, 6.633597)
   ) {
@@ -65,7 +67,13 @@ constructor(private val repository: OutdoorActivityRepository) : ViewModel() {
     }
   }
 
+
+
   fun setScreen(screen: DiscoveryScreenType) {
     _screen.value = screen
   }
+
+    fun setRange(range: Double) {
+        _range.value = range
+    }
 }

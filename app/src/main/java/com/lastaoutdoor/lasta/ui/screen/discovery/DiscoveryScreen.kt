@@ -20,25 +20,34 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.lastaoutdoor.lasta.R
@@ -47,6 +56,7 @@ import com.lastaoutdoor.lasta.ui.components.SearchBarComponent
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
 import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
 import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
+import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenType
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenViewModel
 
@@ -57,11 +67,23 @@ fun DiscoveryScreen(
 ) {
   val screen by discoveryScreenViewModel.screen.collectAsState()
 
+
+
+    var isRangePopup by rememberSaveable { mutableStateOf(false) }
+
+    RangeSearchComposable(
+        discoveryScreenViewModel = discoveryScreenViewModel,
+        isRangePopup = isRangePopup,
+        onDismissRequest = { isRangePopup = false })
+
+
   if (screen == DiscoveryScreenType.LIST) {
     LazyColumn(
         modifier =
-            Modifier.testTag("discoveryScreen").background(MaterialTheme.colorScheme.background)) {
-          item { HeaderComposable() }
+        Modifier
+            .testTag("discoveryScreen")
+            .background(MaterialTheme.colorScheme.background)) {
+          item { HeaderComposable(updatePopup = {isRangePopup = true}) }
 
           item {
             SeparatorComponent() // Add a separator between the header and the activities
@@ -71,30 +93,34 @@ fun DiscoveryScreen(
         }
   } else if (screen == DiscoveryScreenType.MAP) {
     MapScreen()
-    HeaderComposable()
+    HeaderComposable(updatePopup = {isRangePopup = true})
   }
 }
 
-@Preview
 @Composable
-fun HeaderComposable(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel()) {
+fun HeaderComposable(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel(), updatePopup: () -> Unit) {
   val screen by discoveryScreenViewModel.screen.collectAsState()
+    val range by discoveryScreenViewModel.range.collectAsState()
   val iconSize = 48.dp // Adjust icon size as needed
 
   Surface(
-      modifier = Modifier.fillMaxWidth().graphicsLayer { alpha = 0.9f },
+      modifier = Modifier
+          .fillMaxWidth()
+          .graphicsLayer { alpha = 0.9f },
       color = MaterialTheme.colorScheme.background,
       shadowElevation = 3.dp) {
         Column {
           // Location bar
           Row(
-              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+              modifier = Modifier
+                  .fillMaxWidth()
+                  .padding(horizontal = 16.dp, vertical = 8.dp),
               verticalAlignment = Alignment.CenterVertically) {
                 Column {
                   Row {
                     Text(text = "Ecublens", style = MaterialTheme.typography.titleMedium)
 
-                    IconButton(onClick = { /*TODO*/}, modifier = Modifier.size(24.dp)) {
+                    IconButton(onClick = updatePopup, modifier = Modifier.size(24.dp)) {
                       Icon(
                           Icons.Outlined.KeyboardArrowDown,
                           contentDescription = "Filter",
@@ -102,13 +128,15 @@ fun HeaderComposable(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltVi
                     }
                   }
 
-                  Text(text = "Less than 3 km", style = MaterialTheme.typography.bodySmall)
+                  Text(text = "Less than ${(range / 1000).toInt()} km", style = MaterialTheme.typography.bodySmall)
                 }
               }
 
           // Search bar with toggle buttons
           Row(
-              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+              modifier = Modifier
+                  .fillMaxWidth()
+                  .padding(horizontal = 16.dp, vertical = 8.dp),
               verticalAlignment = Alignment.CenterVertically) {
                 SearchBarComponent(Modifier.weight(1f), onSearch = { /*TODO*/})
                 Spacer(modifier = Modifier.width(8.dp))
@@ -120,7 +148,9 @@ fun HeaderComposable(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltVi
                 }
               }
           Row(
-              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+              modifier = Modifier
+                  .fillMaxWidth()
+                  .padding(horizontal = 16.dp, vertical = 8.dp),
               verticalAlignment = Alignment.CenterVertically,
               horizontalArrangement = Arrangement.Center) {
                 DisplaySelection(
@@ -132,7 +162,9 @@ fun HeaderComposable(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltVi
 
           if (screen == DiscoveryScreenType.LIST) {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically) {
                   Text("Filtering by:", style = MaterialTheme.typography.bodyMedium)
                   Spacer(modifier = Modifier.width(8.dp))
@@ -141,7 +173,8 @@ fun HeaderComposable(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltVi
                       style = MaterialTheme.typography.bodyMedium,
                       color = MaterialTheme.colorScheme.primary)
 
-                  IconButton(onClick = { /*TODO*/}, modifier = Modifier.size(24.dp)) {
+                  IconButton(onClick = { /*TODO*/
+                  }, modifier = Modifier.size(24.dp)) {
                     Icon(
                         Icons.Outlined.KeyboardArrowDown,
                         contentDescription = "Filter",
@@ -163,23 +196,27 @@ fun ActivitiesDisplay(
   for (a in activities) {
     Card(
         modifier =
-            Modifier.fillMaxWidth()
-                .wrapContentHeight()
-                .padding(vertical = 8.dp, horizontal = 16.dp)
-                .clickable(onClick = { navController.navigate(LeafScreen.MoreInfo.route) }),
+        Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .clickable(onClick = { navController.navigate(LeafScreen.MoreInfo.route) }),
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
     ) {
       Column {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
               Box(
                   modifier =
-                      Modifier.shadow(4.dp, RoundedCornerShape(30))
-                          .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
-                          .padding(PaddingValues(8.dp))) {
+                  Modifier
+                      .shadow(4.dp, RoundedCornerShape(30))
+                      .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
+                      .padding(PaddingValues(8.dp))) {
                     Text(
                         text = "Climbing",
                         style = MaterialTheme.typography.labelMedium,
@@ -198,7 +235,9 @@ fun ActivitiesDisplay(
 
         Spacer(modifier = Modifier.height(16.dp))
         Row(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically) {
               Text(
                   text = a.locationName ?: "Unnamed Activity",
@@ -207,7 +246,9 @@ fun ActivitiesDisplay(
             }
         SeparatorComponent()
         Row(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically) {
               Icon(
                   imageVector = Icons.Default.Star,
@@ -223,4 +264,130 @@ fun ActivitiesDisplay(
       }
     }
   }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RangeSearchComposable(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel(), isRangePopup: Boolean, onDismissRequest: () -> Unit){
+    //create local variable to hold the current range whcih will then be sent as argument to the discoveryScreenViewModel.getActivities with the range
+    val range by discoveryScreenViewModel.range.collectAsState()
+    val screen by discoveryScreenViewModel.screen.collectAsState()
+
+
+    //list view search popup
+    if (isRangePopup && screen == DiscoveryScreenType.LIST) {
+        ModalBottomSheet(onDismissRequest = onDismissRequest, modifier = Modifier.fillMaxWidth()) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "Select the distance radius",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        lineHeight = 24.sp,
+                        fontWeight = FontWeight(500)
+                    ))
+                Spacer(modifier = Modifier.height(8.dp))
+                //Slider to select the range
+                Row {
+                    Slider(
+                        value = range.toFloat(),
+                        onValueChange = {  discoveryScreenViewModel.setRange(it.toDouble().coerceIn(1000.0, 50000.0)) },
+                        valueRange = 0f..50000f,
+                        steps = 100,
+                        modifier = Modifier.width(305.dp)
+                    )
+                    Text(
+                        //put range in km
+                        text = "${(range / 1000).toInt()} km",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                }
+
+                //Button to apply the range
+                ElevatedButton(
+                    onClick = {
+                        discoveryScreenViewModel.setRange(range)
+                        discoveryScreenViewModel.fetchClimbingActivities(range)
+                        onDismissRequest()
+                    },
+                    modifier = Modifier
+                        .width(305.dp)
+                        .height(48.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
+                    Text(
+                        "Search",
+                        style =
+                        TextStyle(
+                            fontSize = 22.sp,
+                            lineHeight = 28.sp,
+                            fontWeight = FontWeight(400),
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    //map range search popup
+    if (isRangePopup && screen == DiscoveryScreenType.MAP) {
+        ModalBottomSheet(onDismissRequest = onDismissRequest, modifier = Modifier.fillMaxWidth()) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "Select the distance",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        lineHeight = 24.sp,
+                        fontWeight = FontWeight(500)
+                ))
+                Spacer(modifier = Modifier.height(8.dp))
+                //Slider to select the range
+                Row {
+                    Slider(
+                        value = range.toFloat(),
+                        onValueChange = { discoveryScreenViewModel.setRange(it.toDouble().coerceIn(1000.0, 50000.0)) },
+                        valueRange = 0f..50000f,
+                        steps = 100,
+                        modifier = Modifier.width(305.dp)
+                    )
+                    Text(
+                        //put range in km
+                        text = "${(range / 1000).toInt()} km",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                }
+
+                //Button to apply the range
+                ElevatedButton(
+                    onClick = {
+                        //discoveryScreenViewModel.getActivities(range)
+                        onDismissRequest()
+                    },
+                    modifier = Modifier
+                        .width(305.dp)
+                        .height(48.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
+                    Text(
+                        "Apply",
+                        style =
+                        TextStyle(
+                            fontSize = 22.sp,
+                            lineHeight = 28.sp,
+                            fontWeight = FontWeight(400),
+                        )
+                    )
+                }
+            }
+        }
+    }
 }
