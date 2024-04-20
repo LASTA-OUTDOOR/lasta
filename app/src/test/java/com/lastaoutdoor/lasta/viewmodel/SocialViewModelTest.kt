@@ -1,5 +1,7 @@
 package com.lastaoutdoor.lasta.viewmodel
 
+import androidx.compose.runtime.collectAsState
+import androidx.test.core.app.ActivityScenario.launch
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.repository.ConnectivityRepository
@@ -7,6 +9,11 @@ import com.lastaoutdoor.lasta.repository.SocialRepository
 import com.lastaoutdoor.lasta.utils.ConnectionState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.job
+import kotlinx.coroutines.test.runTest
+import org.junit.Assert
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -71,7 +78,12 @@ class SocialViewModelTest {
 
   @Test
   fun `Default values`() {
-    assertFalse(viewModel.isConnected)
+
+    runTest {
+      viewModel.isConnected.take(1).collect() { state ->
+        assertEquals(ConnectionState.OFFLINE, state)
+      }
+    }
     assert(viewModel.getNumberOfDays() == 7)
     assertFalse(viewModel.friendButton)
     assertTrue(viewModel.messages.isNullOrEmpty())

@@ -109,7 +109,12 @@ class SocialScreenKtTest {
   fun initialState() {
 
     // Set the content to the social screen
-    composeRule.activity.setContent { SocialScreen(navController) }
+    composeRule.activity.setContent {
+      socialViewModel = hiltViewModel()
+      (socialViewModel.connectionRepo as FakeConnectivityRepository).setConnectionStateToFalse()
+      SocialScreen(navController)
+    }
+
 
     // Header (title)
     composeRule.onNodeWithTag("Header").assertIsDisplayed()
@@ -129,7 +134,11 @@ class SocialScreenKtTest {
   @Test
   fun testTabSelection() {
     // Set the content to the social screen
-    composeRule.activity.setContent { SocialScreen(navController) }
+    composeRule.activity.setContent {
+      socialViewModel = hiltViewModel()
+      (socialViewModel.connectionRepo as FakeConnectivityRepository).setConnectionStateToFalse()
+      SocialScreen(navController)
+    }
 
     // initial tab selection
     composeRule.onNodeWithText("Feed").assertIsSelected()
@@ -166,7 +175,7 @@ class SocialScreenKtTest {
     // Test that the list
     composeRule.activity.setContent {
       socialViewModel = hiltViewModel()
-      socialViewModel.isConnected = true
+      (socialViewModel.connectionRepo as FakeConnectivityRepository).setConnectionStateToTrue()
       SocialScreen(navController)
     }
 
@@ -195,7 +204,7 @@ class SocialScreenKtTest {
     // Set the content to the social screen
     composeRule.activity.setContent {
       socialViewModel = hiltViewModel()
-      socialViewModel.isConnected = true
+      (socialViewModel.connectionRepo as FakeConnectivityRepository).setConnectionStateToTrue()
       socialViewModel.repository.setLatestFriendActivities(activities)
       SocialScreen(navController)
     }
@@ -215,7 +224,7 @@ class SocialScreenKtTest {
     // Set the content to the social screen
     composeRule.activity.setContent {
       socialViewModel = hiltViewModel()
-      socialViewModel.isConnected = true
+      (socialViewModel.connectionRepo as FakeConnectivityRepository).setConnectionStateToTrue()
       socialViewModel.repository.setFriends(friends)
       SocialScreen(navController)
     }
@@ -238,7 +247,7 @@ class SocialScreenKtTest {
     // Set the content to the social screen
     composeRule.activity.setContent {
       socialViewModel = hiltViewModel()
-      socialViewModel.isConnected = true
+      (socialViewModel.connectionRepo as FakeConnectivityRepository).setConnectionStateToTrue()
       socialViewModel.repository.setMessages(messages)
       SocialScreen(navController)
     }
