@@ -13,17 +13,22 @@ import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.ApiService
 import com.lastaoutdoor.lasta.data.api.OutdoorActivityRepositoryImpl
 import com.lastaoutdoor.lasta.data.auth.AuthRepositoryImpl
+import com.lastaoutdoor.lasta.data.connectivity.ConnectivityRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.ActivitiesRepositoryImpl
 import com.lastaoutdoor.lasta.data.preferences.PreferencesRepositoryImpl
+import com.lastaoutdoor.lasta.data.social.SocialRepositoryImpl
 import com.lastaoutdoor.lasta.repository.ActivitiesRepository
 import com.lastaoutdoor.lasta.repository.AuthRepository
+import com.lastaoutdoor.lasta.repository.ConnectivityRepository
 import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
 import com.lastaoutdoor.lasta.repository.PreferencesRepository
+import com.lastaoutdoor.lasta.repository.SocialRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Named
 import javax.inject.Singleton
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -41,12 +46,24 @@ object AppModule {
       Identity.getSignInClient(context)
 
   /** Provides the [Firebase.firestore] class */
-  @Provides @Singleton fun provideFirebaseUser() = Firebase.firestore
+  @Provides @Singleton fun provideFirebaseFirestore() = Firebase.firestore
 
-  /** Provides the [ApiService] class */
-  @Singleton
   @Provides
+  @Named("signInRequest")
   fun provideSignInRequest(@ApplicationContext context: Context): BeginSignInRequest =
+      BeginSignInRequest.builder()
+          .setGoogleIdTokenRequestOptions(
+              BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                  .setSupported(true)
+                  .setFilterByAuthorizedAccounts(true)
+                  .setServerClientId(context.getString(R.string.web_client_id))
+                  .build())
+          .setAutoSelectEnabled(false)
+          .build()
+
+  @Provides
+  @Named("signUpRequest")
+  fun provideSignUpRequest(@ApplicationContext context: Context): BeginSignInRequest =
       BeginSignInRequest.builder()
           .setGoogleIdTokenRequestOptions(
               BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
@@ -54,7 +71,6 @@ object AppModule {
                   .setFilterByAuthorizedAccounts(false)
                   .setServerClientId(context.getString(R.string.web_client_id))
                   .build())
-          .setAutoSelectEnabled(true)
           .build()
 
   @Singleton
@@ -72,8 +88,9 @@ object AppModule {
   fun provideAuthRepository(
       auth: FirebaseAuth,
       oneTapClient: SignInClient,
-      signInRequest: BeginSignInRequest
-  ): AuthRepository = AuthRepositoryImpl(auth, oneTapClient, signInRequest)
+      @Named("signInRequest") signInRequest: BeginSignInRequest,
+      @Named("signUpRequest") signUpRequest: BeginSignInRequest,
+  ): AuthRepository = AuthRepositoryImpl(auth, oneTapClient, signInRequest, signUpRequest)
 
   @Singleton
   @Provides
@@ -91,10 +108,20 @@ object AppModule {
   fun provideActivitiesRepository(
       @ApplicationContext context: Context,
       database: FirebaseFirestore
-  ): ActivitiesRepository {
-    return ActivitiesRepositoryImpl(database, context)
-  }
+  ): ActivitiesRepository = ActivitiesRepositoryImpl(database, context)
+
+  @Singleton
+  @Provides
+  fun provideConnectivityRepository(@ApplicationContext context: Context): ConnectivityRepository =
+      ConnectivityRepositoryImpl(context)
 
   /** Provides the [TimeProvider] class */
   @Provides @Singleton fun provideTimeProvider(): TimeProvider = RealTimeProvider()
+
+  /** Provides the [SocialRepository] class */
+  @Singleton
+  @Provides
+  fun provideSocialRepository(): SocialRepository {
+    return SocialRepositoryImpl()
+  }
 }

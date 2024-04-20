@@ -1,13 +1,14 @@
-package com.lastaoutdoor.lasta.ui.screen.profile.components
+package com.lastaoutdoor.lasta.ui.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,7 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun <T> Spinner(
+fun <T> DropDownMenuComponent(
     items: List<T>, // Items to display in the dropdown
     selectedItem: T, // The currently selected item from the ViewModel
     onItemSelected: (T) -> Unit, // Callback to invoke when an item is selected
@@ -31,11 +32,12 @@ fun <T> Spinner(
 
   Column {
     Row {
-      Text(fieldText)
+      Text(fieldText, color = MaterialTheme.colorScheme.onBackground)
       Icon(
-          imageVector = Icons.Filled.ArrowDropDown,
+          imageVector = Icons.Outlined.KeyboardArrowDown,
           contentDescription = "Dropdown",
-          modifier = Modifier.clickable(onClick = { expanded = true }).testTag("spinnerIcon"))
+          modifier = Modifier.clickable(onClick = { expanded = true }).testTag("spinnerIcon"),
+          tint = MaterialTheme.colorScheme.onBackground)
     }
 
     DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
@@ -49,6 +51,10 @@ fun <T> Spinner(
             })
       }
     }
-    Text(selectedItem.toString(), fontWeight = FontWeight.Bold, style = TextStyle(fontSize = 24.sp))
+    Text(
+        selectedItem.toString(),
+        fontWeight = FontWeight.Normal,
+        style = TextStyle(fontSize = 24.sp),
+        color = MaterialTheme.colorScheme.onBackground)
   }
 }
