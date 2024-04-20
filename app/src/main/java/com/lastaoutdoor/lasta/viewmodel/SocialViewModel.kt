@@ -20,6 +20,8 @@ class SocialViewModel
 constructor(val repository: SocialRepository, val connectionRepo: ConnectivityRepository) :
     ViewModel() {
 
+  var friendRequestFeedback: String? = null
+
   private val numberOfDays = 7
 
   //
@@ -59,5 +61,19 @@ constructor(val repository: SocialRepository, val connectionRepo: ConnectivityRe
   fun hideTopButton() {
     // hide add friend button
     friendButton = false
+  }
+
+  // called after a click on the add friend button
+  fun requestFriend(email: String) {
+    // 1. verifiy formatting of email
+
+    if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+      // 2. send friend request
+      if (repository.sendFriendRequest(email)) friendRequestFeedback = "Friend request sent"
+      else friendRequestFeedback = "Failed to send friend request"
+    } else {
+      friendRequestFeedback = "Invalid email address"
+      return
+    }
   }
 }

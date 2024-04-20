@@ -45,12 +45,11 @@ fun FriendsMissing() {
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
-            text = "We didn't find any activities performed by your friends lately...",
+            text = "It appears you don't have any friends yet... \r\n Start by adding some!",
             style =
                 TextStyle(
                     fontWeight = FontWeight.Normal, fontSize = 20.sp, textAlign = TextAlign.Center),
             modifier = Modifier.padding(15.dp))
-        Button(onClick = { /*TODO*/}) { Text(text = "Try adding more friends!") }
       }
 }
 

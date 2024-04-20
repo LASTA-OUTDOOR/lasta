@@ -18,9 +18,7 @@ class SocialRepositoryImpl @Inject constructor() : SocialRepository {
     return null
   }
 
-  override fun setMessages(messages: List<String>) {}
-
-  override fun setFriends(friend: List<UserModel>) {}
-
-  override fun setLatestFriendActivities(activities: List<ActivitiesDatabaseType>) {}
+  override fun sendFriendRequest(email: String): Boolean {
+    return false
+  }
 }

@@ -52,17 +52,21 @@ class FakeSocialRepository : SocialRepository {
     return messages
   }
 
-  override fun setMessages(messages: List<String>) {
+  override fun sendFriendRequest(email: String): Boolean {
+    return false
+  }
+
+  fun setMessages(messages: List<String>) {
     this.messages.clear()
     this.messages.addAll(messages)
   }
 
-  override fun setFriends(friend: List<UserModel>) {
+  fun setFriends(friend: List<UserModel>) {
     this.friends.clear()
     this.friends.addAll(friend)
   }
 
-  override fun setLatestFriendActivities(activities: List<ActivitiesDatabaseType>) {
+  fun setLatestFriendActivities(activities: List<ActivitiesDatabaseType>) {
     this.activities.clear()
     this.activities.addAll(activities)
   }
@@ -204,7 +208,7 @@ class SocialScreenKtTest {
     composeRule.activity.setContent {
       socialViewModel = hiltViewModel()
       (socialViewModel.connectionRepo as FakeConnectivityRepository).setConnectionStateToTrue()
-      socialViewModel.repository.setLatestFriendActivities(activities)
+      (socialViewModel.repository as FakeSocialRepository).setLatestFriendActivities(activities)
       SocialScreen(navController)
     }
 
@@ -224,7 +228,7 @@ class SocialScreenKtTest {
     composeRule.activity.setContent {
       socialViewModel = hiltViewModel()
       (socialViewModel.connectionRepo as FakeConnectivityRepository).setConnectionStateToTrue()
-      socialViewModel.repository.setFriends(friends)
+      (socialViewModel.repository as FakeSocialRepository).setFriends(friends)
       SocialScreen(navController)
     }
 
@@ -247,7 +251,7 @@ class SocialScreenKtTest {
     composeRule.activity.setContent {
       socialViewModel = hiltViewModel()
       (socialViewModel.connectionRepo as FakeConnectivityRepository).setConnectionStateToTrue()
-      socialViewModel.repository.setMessages(messages)
+      (socialViewModel.repository as FakeSocialRepository).setMessages(messages)
       SocialScreen(navController)
     }
 
