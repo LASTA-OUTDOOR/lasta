@@ -9,7 +9,7 @@ class Relation(
     @SerializedName("type") @Expose val type: String,
     @SerializedName("id") @Expose val id: Long,
     @SerializedName("tags") @Expose val tags: Tags,
-    @SerializedName("members") @Expose val ways: List<SimpleWay>,
+    @SerializedName("members") @Expose val ways: List<SimpleWay>?,
     @SerializedName("bounds") @Expose val bounds: Bounds,
     activityType: ActivityType,
     difficulty: Int,

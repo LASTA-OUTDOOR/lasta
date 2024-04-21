@@ -42,5 +42,6 @@ data class HikingMarker(
     override val position: LatLng,
     override val description: String,
     override val icon: Int,
+    val id: Long,
     override val activity: ActivityType = ActivityType.HIKING
 ) : Marker

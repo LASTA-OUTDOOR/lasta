@@ -124,7 +124,7 @@ class ApiDataClassesTest {
     val sw = SimpleWay(listOf(Position(1.0, 1.0)))
 
     assert(
-        sw.nodes[0] == Position(1.0, 1.0) &&
+        (sw.nodes?.get(0) ?: emptyList<Position>()) == Position(1.0, 1.0) &&
             sw.toString() == "Simple Way : [Position(lat=1.0, lon=1.0)]\n")
   }
 
@@ -159,7 +159,7 @@ class ApiDataClassesTest {
             rel.id == 0L &&
             rel.tags == Tags("name", "sport") &&
             rel.bounds == Bounds(-1.0, -1.0, -1.0, -1.0) &&
-            rel.ways[0].nodes[0].lat == 1.0 &&
+            (rel.ways?.get(0)?.nodes?.get(0)?.lat ?: 0.0) == 1.0 &&
             rel.getActivityType() == ActivityType.HIKING &&
             rel.difficulty == 0 &&
             rel.length == 0.0f &&
