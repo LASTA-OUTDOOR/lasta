@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.firebase.ui.auth.AuthUI.getApplicationContext
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -34,15 +35,17 @@ import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.viewmodel.MapViewModel
+import kotlinx.coroutines.launch
 
 // Called after a click on a pointer on the map
 // @param viewModel: the viewmodel
 // @param sheetState: the state of the sheet
 // @param isSheetOpen: whether the sheet is open or not
 // @param onDismissRequest: function to close the sheet and update the state
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InformationSheet(
     viewModel: MapViewModel = hiltViewModel(),
@@ -150,10 +153,11 @@ fun MapScreen(viewModel: MapViewModel = hiltViewModel()) {
     }
   }
 
-  LaunchedEffect(Unit) { viewModel.updateMarkers(cameraPositionState.position.target, 1000.0) }
+  // LaunchedEffect will draw the markers directly without a need to trigger the camera movement
+  LaunchedEffect(Unit) { viewModel.updateMarkers(cameraPositionState.position.target, 5000.0) }
 
   // draw the map
-  GoogleMapComposable(viewModel, cameraPositionState, { isSheetOpen = true })
+  GoogleMapComposable(viewModel, cameraPositionState) { isSheetOpen = true }
 }
 
 // Composable that displays the Google Map
@@ -181,22 +185,54 @@ private fun GoogleMapComposable(
       },
   ) {
 
-    // display all the markers fetched by the viewmodel
+    // TODO: find a working way to get these part out of the composable. (It blocks the
+    // recomposition if I do it and cannot figure out why)
+
+    // display all the classical markers fetched by the viewmodel
     viewModel.state.markerList.forEach { marker ->
       Marker(
           state = MarkerState(position = marker.position),
           title = marker.name,
-          icon = BitmapDescriptorFactory.fromResource(R.drawable.climbing_icon),
+          icon = BitmapDescriptorFactory.fromResource(marker.icon),
           snippet = marker.description,
           onClick = {
             updateSheet()
             viewModel.updateSelectedMarker(marker)
+            viewModel.clearSelectedItinerary()
+            // camera moves to the marker when clicked
+            cameraPositionState.move(
+                CameraUpdateFactory.newCameraPosition(
+                    CameraPosition.fromLatLngZoom(marker.position, viewModel.selectedZoom)))
+
+            true
+          },
+      )
+    }
+
+    viewModel.state.itineraryStartMarkers.forEach { marker ->
+      Marker(
+          state = MarkerState(position = marker.position),
+          title = marker.name,
+          icon = BitmapDescriptorFactory.fromResource(marker.icon),
+          snippet = marker.description,
+          onClick = {
+            updateSheet()
+            viewModel.updateSelectedMarker(marker)
+            viewModel.updateSelectedItinerary(marker.id)
+            // camera moves to the marker when clicked
+            cameraPositionState.move(
+                CameraUpdateFactory.newCameraPosition(
+                    CameraPosition.fromLatLngZoom(marker.position, viewModel.selectedZoom)))
             true
           })
     }
 
-    // display all the itineraries fetched by the viewmodel
-    // Commented because not ready for Milestone 1
-    // viewModel.state.itineraryList.forEach { itinerary -> Polyline(points = itinerary.points) }
+    // display the itinerary if it is selected
+    viewModel.state.selectedItinerary?.let {
+      Polyline(
+          points = it.points,
+          width = 10f,
+      )
+    }
   }
 }

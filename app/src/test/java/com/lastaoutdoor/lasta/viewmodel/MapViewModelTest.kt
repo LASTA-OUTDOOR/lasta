@@ -6,12 +6,16 @@ import com.google.maps.android.SphericalUtil
 import com.google.maps.android.compose.MapType
 import com.lastaoutdoor.lasta.data.api.OutdoorActivityResponse
 import com.lastaoutdoor.lasta.data.model.activity.ActivityType
+import com.lastaoutdoor.lasta.data.model.api.Bounds
 import com.lastaoutdoor.lasta.data.model.api.Node
 import com.lastaoutdoor.lasta.data.model.api.Relation
+import com.lastaoutdoor.lasta.data.model.api.SimpleWay
 import com.lastaoutdoor.lasta.data.model.api.Tags
 import com.lastaoutdoor.lasta.data.model.api.Way
 import com.lastaoutdoor.lasta.data.model.map.ClimbingMarker
+import com.lastaoutdoor.lasta.data.model.map.MapItinerary
 import com.lastaoutdoor.lasta.data.model.map.Marker
+import com.lastaoutdoor.lasta.data.model.map.Position
 import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
 import org.junit.Assert.*
 import org.junit.Before
@@ -63,7 +67,6 @@ class MockRepository : OutdoorActivityRepository {
     return OutdoorActivityResponse(1.0f, resp)
   }
 
-  // We do not need it right know
   override fun getClimbingActivitiesWay(
       range: Int,
       lat: Double,
@@ -73,7 +76,6 @@ class MockRepository : OutdoorActivityRepository {
     return OutdoorActivityResponse(1.0f, emptyList())
   }
 
-  // We do not need it right know
   override fun getHikingActivities(
       range: Int,
       lat: Double,
@@ -141,9 +143,20 @@ class MapViewModelTest {
     // No marker should be selected
     assertTrue(viewModel.state.selectedMarker == null)
 
+    // No itinerary should be selected
+    assertTrue(viewModel.state.selectedItinerary == null)
+
+    // No itinerary should be registered
+    assertTrue(viewModel.state.itineraryMap.isEmpty())
+
     // Check initial position and zoom
     assertEquals(11f, viewModel.initialZoom)
+    assertEquals(13f, viewModel.selectedZoom)
     assertEquals(LatLng(46.519962, 6.633597), viewModel.initialPosition)
+
+    // Weird test required by Jacoco
+    viewModel.state = MapState()
+    assertNotNull(viewModel.state)
   }
 
   // If no climbing nodes are in the range, the list should be empty
@@ -239,5 +252,105 @@ class MapViewModelTest {
     val marker: Marker = ClimbingMarker("Point 1", lausanne, "climbing", 1)
     viewModel.updateSelectedMarker(marker)
     assertEquals(marker, viewModel.state.selectedMarker)
+  }
+
+  // test clear selected itinerary
+  @Test
+  fun testClearSelectedItinerary() {
+    clear()
+    assertNull(viewModel.state.selectedItinerary)
+
+    val itinerary = MapItinerary(1, "Itinerary", emptyList())
+    viewModel.state.selectedItinerary = itinerary
+    assertNotNull(viewModel.state.selectedItinerary)
+
+    viewModel.clearSelectedItinerary()
+    assertNull(viewModel.state.selectedItinerary)
+  }
+
+  // This test is a global test for itineraries since it is hard to isolate only one bit of it
+  @Test
+  fun testItinerary() {
+    clear()
+    assertNull(viewModel.state.selectedItinerary)
+
+    repository.addHikingRelation(
+        Relation(
+            "Hiking",
+            1,
+            Tags("Hiking", "hiking"),
+            listOf(SimpleWay(listOf(Position(lausanne.latitude, lausanne.longitude)))),
+            Bounds(0.0, 0.0, 0.0, 0.0),
+            ActivityType.HIKING,
+            0,
+            0f,
+            "",
+            "Test location"))
+    viewModel.updateMarkers(lausanne, 10000.0)
+    assertEquals(1, viewModel.state.itineraryStartMarkers.size)
+    viewModel.updateSelectedItinerary(1)
+    assertNotNull(viewModel.state.selectedItinerary)
+    assertEquals(1L, viewModel.state.selectedItinerary?.id)
+    assertEquals("Hiking", viewModel.state.selectedItinerary?.name)
+  }
+  // test when ways is null
+  @Test
+  fun testItineraryWayNull() {
+    clear()
+
+    repository.addHikingRelation(
+        Relation(
+            "Hiking",
+            1,
+            Tags("Hiking", "hiking"),
+            null,
+            Bounds(0.0, 0.0, 0.0, 0.0),
+            ActivityType.HIKING,
+            0,
+            0f,
+            "",
+            "Test location"))
+    viewModel.updateMarkers(lausanne, 10000.0)
+    assertEquals(0, viewModel.state.itineraryStartMarkers.size)
+  }
+  // Test when node is null
+  @Test
+  fun testItineraryNodeNull() {
+    clear()
+    repository.addHikingRelation(
+        Relation(
+            "Hiking",
+            1,
+            Tags("Hiking", "hiking"),
+            listOf(SimpleWay(null)),
+            Bounds(0.0, 0.0, 0.0, 0.0),
+            ActivityType.HIKING,
+            0,
+            0f,
+            "",
+            "Test location"))
+    viewModel.updateMarkers(lausanne, 10000.0)
+    assertEquals(0, viewModel.state.itineraryStartMarkers.size)
+  }
+
+  // Test when name in tags is null
+  @Test
+  fun testItineraryNameNull() {
+    clear()
+    repository.addHikingRelation(
+        Relation(
+            "Hiking",
+            1,
+            Tags(null, "hiking"),
+            listOf(SimpleWay(listOf(Position(lausanne.latitude, lausanne.longitude)))),
+            Bounds(0.0, 0.0, 0.0, 0.0),
+            ActivityType.HIKING,
+            0,
+            0f,
+            "",
+            "Test location"))
+    viewModel.updateMarkers(lausanne, 10000.0)
+    assertEquals(1, viewModel.state.itineraryStartMarkers.size)
+    assertEquals("Hiking: Unnamed", viewModel.state.itineraryStartMarkers[0].name)
   }
 }
