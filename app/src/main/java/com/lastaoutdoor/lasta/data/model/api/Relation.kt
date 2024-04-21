@@ -2,8 +2,9 @@ package com.lastaoutdoor.lasta.data.model.api
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.lastaoutdoor.lasta.data.model.activity.Activity
 import com.lastaoutdoor.lasta.data.model.activity.ActivityType
-import com.lastaoutdoor.lasta.data.model.activity.OutdoorActivity
+import com.lastaoutdoor.lasta.data.model.activity.Difficulty
 
 class Relation(
     @SerializedName("type") @Expose val type: String,
@@ -12,16 +13,14 @@ class Relation(
     @SerializedName("members") @Expose val ways: List<SimpleWay>?,
     @SerializedName("bounds") @Expose val bounds: Bounds,
     activityType: ActivityType,
-    difficulty: Int,
+    difficulty: Difficulty,
     length: Float,
     duration: String?,
     locationName: String?
-) :
-    OutdoorActivity(
-        activityType, difficulty, length, duration ?: "not given", locationName ?: "unnamed") {
+) : Activity(activityType, difficulty, length, duration ?: "not given", locationName ?: "unnamed") {
 
   override fun toString(): String {
-    return (" type: $type id: $id  activityType: ${getActivityType()} name: ${tags.name} bounds: $bounds\n")
+    return (" type: $type id: $id  activityType: $activityType name: ${tags.name} bounds: $bounds\n")
   }
 }
 

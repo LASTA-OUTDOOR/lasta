@@ -3,8 +3,9 @@ package com.lastaoutdoor.lasta.ui.screen.moreinfo
 import androidx.activity.compose.setContent
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.navigation.compose.rememberNavController
+import com.lastaoutdoor.lasta.data.model.activity.Activity
 import com.lastaoutdoor.lasta.data.model.activity.ActivityType
-import com.lastaoutdoor.lasta.data.model.activity.OutdoorActivity
+import com.lastaoutdoor.lasta.data.model.activity.Difficulty
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.ui.MainActivity
 import com.lastaoutdoor.lasta.ui.screen.activities.MoreInfoScreen
@@ -36,10 +37,14 @@ class MoreInfoScreenTest {
 
   @Test
   fun testFetchDiff() {
-    val fakeActivity = OutdoorActivity(ActivityType.CLIMBING, 0, 1.5f, "3 hours", "Test Title")
-    val fakeActivity2 = OutdoorActivity(ActivityType.CLIMBING, 1, 1.5f, "3 hours", "Test Title")
-    val fakeActivity3 = OutdoorActivity(ActivityType.CLIMBING, 2, 1.5f, "3 hours", "Test Title")
-    val fakeActivity4 = OutdoorActivity(ActivityType.CLIMBING, 3, 1.5f, "3 hours", "Test Title")
+    val fakeActivity =
+        Activity(ActivityType.CLIMBING, Difficulty.EASY, 1.5f, "3 hours", "Test Title")
+    val fakeActivity2 =
+        Activity(ActivityType.CLIMBING, Difficulty.NORMAL, 1.5f, "3 hours", "Test Title")
+    val fakeActivity3 =
+        Activity(ActivityType.CLIMBING, Difficulty.NORMAL, 1.5f, "3 hours", "Test Title")
+    val fakeActivity4 =
+        Activity(ActivityType.CLIMBING, Difficulty.HARD, 1.5f, "3 hours", "Test Title")
     assertEquals("Easy", fetchDiffText(activity = fakeActivity))
     assertEquals("Medium", fetchDiffText(activity = fakeActivity2))
     assertEquals("Difficult", fetchDiffText(activity = fakeActivity3))
