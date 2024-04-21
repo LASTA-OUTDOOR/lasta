@@ -99,7 +99,10 @@ class DiscoveryScreenTest {
   @Test
   fun localityDropdown_isDisplayed() {
     composeRule.activity.setContent {
-      DiscoveryScreen(navController = rememberNavController(), discoveryScreenViewModel, moreInfoScreenViewModel = hiltViewModel())
+      DiscoveryScreen(
+          navController = rememberNavController(),
+          discoveryScreenViewModel,
+          moreInfoScreenViewModel = hiltViewModel())
     }
     composeRule.onNodeWithTag("listSearchOptionsEnableButton").performClick()
     composeRule.onNodeWithTag("localitySelectionDropdown").assertIsDisplayed()
@@ -111,7 +114,10 @@ class DiscoveryScreenTest {
   @Test
   fun modalUpperSheet_isDisplayed() {
     composeRule.activity.setContent {
-      DiscoveryScreen(navController = rememberNavController(), discoveryScreenViewModel, moreInfoScreenViewModel = hiltViewModel())
+      DiscoveryScreen(
+          navController = rememberNavController(),
+          discoveryScreenViewModel,
+          moreInfoScreenViewModel = hiltViewModel())
     }
     composeRule.onNodeWithTag("listSearchOptionsEnableButton").performClick()
     composeRule.onNodeWithTag("modalUpperSheet").assertIsDisplayed()

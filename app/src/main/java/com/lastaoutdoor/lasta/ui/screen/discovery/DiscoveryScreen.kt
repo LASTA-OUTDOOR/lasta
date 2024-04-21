@@ -1,6 +1,5 @@
 package com.lastaoutdoor.lasta.ui.screen.discovery
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -74,15 +73,13 @@ fun DiscoveryScreen(
   if (screen == DiscoveryScreenType.LIST) {
     LazyColumn(
         modifier =
-        Modifier
-            .testTag("discoveryScreen")
-            .background(MaterialTheme.colorScheme.background)) {
+            Modifier.testTag("discoveryScreen").background(MaterialTheme.colorScheme.background)) {
           item { HeaderComposable(updatePopup = { isRangePopup = true }) }
 
           item {
             SeparatorComponent() // Add a separator between the header and the activities
             Spacer(modifier = Modifier.height(8.dp))
-            ActivitiesDisplay(navController,moreInfoScreenViewModel=moreInfoScreenViewModel)
+            ActivitiesDisplay(navController, moreInfoScreenViewModel = moreInfoScreenViewModel)
           }
         }
   } else if (screen == DiscoveryScreenType.MAP) {
@@ -105,17 +102,13 @@ fun HeaderComposable(
   val iconSize = 48.dp // Adjust icon size as needed
 
   Surface(
-      modifier = Modifier
-          .fillMaxWidth()
-          .graphicsLayer { alpha = 0.9f },
+      modifier = Modifier.fillMaxWidth().graphicsLayer { alpha = 0.9f },
       color = MaterialTheme.colorScheme.background,
       shadowElevation = 3.dp) {
         Column {
           // Location bar
           Row(
-              modifier = Modifier
-                  .fillMaxWidth()
-                  .padding(horizontal = 16.dp, vertical = 8.dp),
+              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
               verticalAlignment = Alignment.CenterVertically) {
                 Column {
                   Row {
@@ -123,9 +116,7 @@ fun HeaderComposable(
 
                     IconButton(
                         onClick = updatePopup,
-                        modifier = Modifier
-                            .size(24.dp)
-                            .testTag("listSearchOptionsEnableButton")) {
+                        modifier = Modifier.size(24.dp).testTag("listSearchOptionsEnableButton")) {
                           Icon(
                               Icons.Outlined.KeyboardArrowDown,
                               contentDescription = "Filter",
@@ -141,9 +132,7 @@ fun HeaderComposable(
 
           // Search bar with toggle buttons
           Row(
-              modifier = Modifier
-                  .fillMaxWidth()
-                  .padding(horizontal = 16.dp, vertical = 8.dp),
+              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
               verticalAlignment = Alignment.CenterVertically) {
                 SearchBarComponent(Modifier.weight(1f), onSearch = { /*TODO*/})
                 Spacer(modifier = Modifier.width(8.dp))
@@ -155,9 +144,7 @@ fun HeaderComposable(
                 }
               }
           Row(
-              modifier = Modifier
-                  .fillMaxWidth()
-                  .padding(horizontal = 16.dp, vertical = 8.dp),
+              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
               verticalAlignment = Alignment.CenterVertically,
               horizontalArrangement = Arrangement.Center) {
                 DisplaySelection(
@@ -169,9 +156,7 @@ fun HeaderComposable(
 
           if (screen == DiscoveryScreenType.LIST) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically) {
                   Text("Filtering by:", style = MaterialTheme.typography.bodyMedium)
                   Spacer(modifier = Modifier.width(8.dp))
@@ -203,29 +188,27 @@ fun ActivitiesDisplay(
   for (a in activities) {
     Card(
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(vertical = 8.dp, horizontal = 16.dp)
-            .clickable(onClick = {
-                moreInfoScreenViewModel.changeActivityToDisplay(a)
-                navController.navigate(LeafScreen.MoreInfo.route) }),
+            Modifier.fillMaxWidth()
+                .wrapContentHeight()
+                .padding(vertical = 8.dp, horizontal = 16.dp)
+                .clickable(
+                    onClick = {
+                      moreInfoScreenViewModel.changeActivityToDisplay(a)
+                      navController.navigate(LeafScreen.MoreInfo.route)
+                    }),
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
     ) {
       Column {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
               Box(
                   modifier =
-                  Modifier
-                      .shadow(4.dp, RoundedCornerShape(30))
-                      .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
-                      .padding(PaddingValues(8.dp))) {
+                      Modifier.shadow(4.dp, RoundedCornerShape(30))
+                          .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
+                          .padding(PaddingValues(8.dp))) {
                     Text(
                         text = "Climbing",
                         style = MaterialTheme.typography.labelMedium,
@@ -244,9 +227,7 @@ fun ActivitiesDisplay(
 
         Spacer(modifier = Modifier.height(16.dp))
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
             verticalAlignment = Alignment.CenterVertically) {
               Text(
                   text = a.locationName ?: "Unnamed Activity",
@@ -255,9 +236,7 @@ fun ActivitiesDisplay(
             }
         SeparatorComponent()
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
             verticalAlignment = Alignment.CenterVertically) {
               Icon(
                   imageVector = Icons.Default.Star,

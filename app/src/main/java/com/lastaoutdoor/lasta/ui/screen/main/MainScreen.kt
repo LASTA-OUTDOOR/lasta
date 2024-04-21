@@ -18,7 +18,6 @@ import com.lastaoutdoor.lasta.ui.navigation.MenuNavGraph
 import com.lastaoutdoor.lasta.ui.navigation.MenuNavigation
 import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.viewmodel.ConnectivityViewModel
-import com.lastaoutdoor.lasta.viewmodel.MoreInfoScreenViewModel
 
 @Composable
 fun MainScreen(
