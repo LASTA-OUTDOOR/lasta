@@ -12,12 +12,13 @@ import org.junit.Test
 class DataClassesTest {
   @Test
   fun hikingMarker() {
-    val hm = HikingMarker("name", LatLng(1.0, 1.0), "desc", 4)
+    val hm = HikingMarker("name", LatLng(1.0, 1.0), "desc", 0, 4)
     assert(
         hm.name == "name" &&
             hm.position == LatLng(1.0, 1.0) &&
             hm.description == "desc" &&
-            hm.icon == 4)
+            hm.icon == 0 &&
+            hm.id == 4L)
   }
 
   @Test

@@ -30,6 +30,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -37,7 +40,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -46,6 +48,8 @@ import com.lastaoutdoor.lasta.ui.components.DisplaySelection
 import com.lastaoutdoor.lasta.ui.components.SearchBarComponent
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
 import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
+import com.lastaoutdoor.lasta.ui.screen.discovery.components.ModalUpperSheet
+import com.lastaoutdoor.lasta.ui.screen.discovery.components.RangeSearchComposable
 import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenType
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenViewModel
@@ -57,11 +61,18 @@ fun DiscoveryScreen(
 ) {
   val screen by discoveryScreenViewModel.screen.collectAsState()
 
+  var isRangePopup by rememberSaveable { mutableStateOf(false) }
+
+  RangeSearchComposable(
+      discoveryScreenViewModel = discoveryScreenViewModel,
+      isRangePopup = isRangePopup,
+      onDismissRequest = { isRangePopup = false })
+
   if (screen == DiscoveryScreenType.LIST) {
     LazyColumn(
         modifier =
             Modifier.testTag("discoveryScreen").background(MaterialTheme.colorScheme.background)) {
-          item { HeaderComposable() }
+          item { HeaderComposable(updatePopup = { isRangePopup = true }) }
 
           item {
             SeparatorComponent() // Add a separator between the header and the activities
@@ -71,14 +82,21 @@ fun DiscoveryScreen(
         }
   } else if (screen == DiscoveryScreenType.MAP) {
     MapScreen()
-    HeaderComposable()
+    HeaderComposable(updatePopup = { isRangePopup = true })
   }
+
+  // Add the modal upper sheet
+  ModalUpperSheet(isRangePopup = isRangePopup)
 }
 
-@Preview
 @Composable
-fun HeaderComposable(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel()) {
+fun HeaderComposable(
+    discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel(),
+    updatePopup: () -> Unit
+) {
   val screen by discoveryScreenViewModel.screen.collectAsState()
+  val range by discoveryScreenViewModel.range.collectAsState()
+  val selectedLocality = discoveryScreenViewModel.selectedLocality.collectAsState().value
   val iconSize = 48.dp // Adjust icon size as needed
 
   Surface(
@@ -92,17 +110,21 @@ fun HeaderComposable(discoveryScreenViewModel: DiscoveryScreenViewModel = hiltVi
               verticalAlignment = Alignment.CenterVertically) {
                 Column {
                   Row {
-                    Text(text = "Ecublens", style = MaterialTheme.typography.titleMedium)
+                    Text(text = selectedLocality.first, style = MaterialTheme.typography.bodyMedium)
 
-                    IconButton(onClick = { /*TODO*/}, modifier = Modifier.size(24.dp)) {
-                      Icon(
-                          Icons.Outlined.KeyboardArrowDown,
-                          contentDescription = "Filter",
-                          modifier = Modifier.size(24.dp))
-                    }
+                    IconButton(
+                        onClick = updatePopup,
+                        modifier = Modifier.size(24.dp).testTag("listSearchOptionsEnableButton")) {
+                          Icon(
+                              Icons.Outlined.KeyboardArrowDown,
+                              contentDescription = "Filter",
+                              modifier = Modifier.size(24.dp))
+                        }
                   }
 
-                  Text(text = "Less than 3 km", style = MaterialTheme.typography.bodySmall)
+                  Text(
+                      text = "Less than ${(range / 1000).toInt()} km around you",
+                      style = MaterialTheme.typography.bodySmall)
                 }
               }
 
