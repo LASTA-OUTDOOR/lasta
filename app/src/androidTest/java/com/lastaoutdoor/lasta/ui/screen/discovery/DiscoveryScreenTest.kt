@@ -97,11 +97,9 @@ class DiscoveryScreenTest {
   @Test
   fun localityDropdown_isDisplayed() {
     composeRule.activity.setContent {
-      RangeSearchComposable(
-          discoveryScreenViewModel,
-          isRangePopup = true,
-          onDismissRequest = { /*dismiss dialog on clicking "Ok"*/})
+      DiscoveryScreen(navController = rememberNavController(), discoveryScreenViewModel)
     }
+    composeRule.onNodeWithTag("listSearchOptionsEnableButton").performClick()
     composeRule.onNodeWithTag("localitySelectionDropdown").assertIsDisplayed()
     // click on the locality selection dropdown
     composeRule.onNodeWithTag("localitySelectionDropdownButton").performClick()

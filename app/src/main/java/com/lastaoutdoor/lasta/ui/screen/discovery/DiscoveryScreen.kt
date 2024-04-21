@@ -120,12 +120,14 @@ fun HeaderComposable(
                   Row {
                     Text(text = selectedLocality.first, style = MaterialTheme.typography.bodyMedium)
 
-                    IconButton(onClick = updatePopup, modifier = Modifier.size(24.dp)) {
-                      Icon(
-                          Icons.Outlined.KeyboardArrowDown,
-                          contentDescription = "Filter",
-                          modifier = Modifier.size(24.dp))
-                    }
+                    IconButton(
+                        onClick = updatePopup,
+                        modifier = Modifier.size(24.dp).testTag("listSearchOptionsEnableButton")) {
+                          Icon(
+                              Icons.Outlined.KeyboardArrowDown,
+                              contentDescription = "Filter",
+                              modifier = Modifier.size(24.dp))
+                        }
                   }
 
                   Text(
@@ -409,6 +411,7 @@ fun CitySelectionDropdown(discoveryScreenViewModel: DiscoveryScreenViewModel) {
     DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
       localities.forEach { locality ->
         DropdownMenuItem(
+            modifier = Modifier.testTag("localitySelectionDropdownItem"),
             text = { Text(locality.first, color = AccentGreen) },
             onClick = {
               discoveryScreenViewModel.setSelectedLocality(locality)
