@@ -1,6 +1,10 @@
 package com.lastaoutdoor.lasta.ui.screen.social.components
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
@@ -42,12 +46,12 @@ fun TabMenu(navController: NavController, viewModel: SocialViewModel = hiltViewM
     }
     1 -> {
       viewModel.showTopButton(
-          "Add Friend", onClick = { navController.navigate(LeafScreen.AddFriend.route) })
+        Icons.Filled.Add, onClick = { navController.navigate(LeafScreen.AddFriend.route) })
       FriendsList()
     }
     2 -> {
       viewModel.showTopButton(
-          "New Message", onClick = { navController.navigate(LeafScreen.NewMessage.route) })
+        Icons.Filled.Email, onClick = { navController.navigate(LeafScreen.NewMessage.route) })
       MessageList()
     }
   }

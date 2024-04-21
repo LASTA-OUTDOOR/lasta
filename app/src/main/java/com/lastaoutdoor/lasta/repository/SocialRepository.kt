@@ -16,5 +16,5 @@ interface SocialRepository {
 
   // sends a friend request to the user with the given email, returns true if the request was sent
   // successfully
-  fun sendFriendRequest(email: String): Boolean
+  fun sendFriendRequest(uid : String, email: String): Boolean
 }

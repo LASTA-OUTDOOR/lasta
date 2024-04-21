@@ -1,5 +1,8 @@
 package com.lastaoutdoor.lasta.viewmodel
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Email
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.repository.ConnectivityRepository
@@ -85,20 +88,20 @@ class SocialViewModelTest {
       }
     }
     assert(viewModel.getNumberOfDays() == 7)
-    assertFalse(viewModel.friendButton)
+    assertFalse(viewModel.topButton)
     assertTrue(viewModel.messages.isNullOrEmpty())
     assertTrue(viewModel.friends.isNullOrEmpty())
     assertTrue(viewModel.latestFriendActivities.isNullOrEmpty())
-    assert(viewModel.topButtonText == "Default button")
+    assert(viewModel.topButtonIcon == Icons.Filled.Email)
   }
 
   @Test
   fun `Show top button`() {
-    viewModel.showTopButton("Add friend", {})
-    assertTrue(viewModel.friendButton)
-    assert(viewModel.topButtonText == "Add friend")
+    viewModel.showTopButton(Icons.Filled.Add, {})
+    assertTrue(viewModel.topButton)
+    assert(viewModel.topButtonIcon == Icons.Filled.Add)
 
     viewModel.hideTopButton()
-    assertFalse(viewModel.friendButton)
+    assertFalse(viewModel.topButton)
   }
 }

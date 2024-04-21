@@ -1,31 +1,41 @@
 package com.lastaoutdoor.lasta.viewmodel
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lastaoutdoor.lasta.repository.ConnectivityRepository
+import com.lastaoutdoor.lasta.repository.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.SocialRepository
 import com.lastaoutdoor.lasta.utils.ConnectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class SocialViewModel
 @Inject
-constructor(val repository: SocialRepository, val connectionRepo: ConnectivityRepository) :
+constructor(val repository: SocialRepository, val connectionRepo: ConnectivityRepository, val preferences: PreferencesRepository) :
     ViewModel() {
 
-  var friendRequestFeedback: String? = null
+  var friendRequestFeedback: String by mutableStateOf("")
 
   private val numberOfDays = 7
 
-  //
-  var friendButton by mutableStateOf(false)
+  // is the top button visible
+  var topButton by mutableStateOf(false)
 
   // returns all the messages of the user
   val messages = repository.getMessages()
@@ -44,36 +54,39 @@ constructor(val repository: SocialRepository, val connectionRepo: ConnectivityRe
           scope = viewModelScope,
           started = SharingStarted.WhileSubscribed(5000))
 
-  var topButtonText by mutableStateOf("Default button")
+  var topButtonIcon by mutableStateOf(Icons.Filled.Email)
   var topButtonOnClick by mutableStateOf({})
 
   fun getNumberOfDays(): Int {
     return numberOfDays
   }
 
-  fun showTopButton(text: String, onClick: () -> Unit) {
+  fun showTopButton(ico: ImageVector, onClick: () -> Unit) {
     // show add friend button
-    topButtonText = text
+    topButtonIcon = ico
     topButtonOnClick = { onClick() }
-    friendButton = true
+    topButton = true
   }
 
   fun hideTopButton() {
     // hide add friend button
-    friendButton = false
+    topButton = false
   }
 
   // called after a click on the add friend button
   fun requestFriend(email: String) {
-    // 1. verifiy formatting of email
+    viewModelScope.launch{
+      // verify formatting of email
+      friendRequestFeedback = if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        //get current user id from the flow
+        val userId = preferences.userPreferencesFlow.first().uid
+        // 2. send friend request
+        if (repository.sendFriendRequest(userId ,email)) "Friend request sent"
+        else "Failed to send friend request"
 
-    if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-      // 2. send friend request
-      if (repository.sendFriendRequest(email)) friendRequestFeedback = "Friend request sent"
-      else friendRequestFeedback = "Failed to send friend request"
-    } else {
-      friendRequestFeedback = "Invalid email address"
-      return
-    }
+      } else {
+        "The email address is not valid"
+      }
+  }
   }
 }

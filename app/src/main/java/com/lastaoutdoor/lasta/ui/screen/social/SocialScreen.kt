@@ -37,16 +37,17 @@ fun Header(navController: NavController, viewModel: SocialViewModel = hiltViewMo
             style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 24.sp),
             modifier = Modifier.align(Alignment.CenterVertically),
         )
-        if (viewModel.friendButton) {
-          Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-            Button(
+
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+          if (viewModel.topButton) {
+            IconButton(
                 onClick = { viewModel.topButtonOnClick.invoke() },
                 modifier = Modifier.align(Alignment.CenterVertically).testTag("TopButton")) {
-                  Text(text = viewModel.topButtonText)
+                  Icon(viewModel.topButtonIcon, contentDescription = "Top Action Button")
                 }
-            IconButton(onClick = { navController.navigate(LeafScreen.Notifications.route) }) {
-              Icon(Icons.Filled.Notifications, contentDescription = "Notification Icon")
-            }
+          }
+          IconButton(onClick = { navController.navigate(LeafScreen.Notifications.route) }) {
+            Icon(Icons.Filled.Notifications, contentDescription = "Notification Icon")
           }
         }
         Spacer(

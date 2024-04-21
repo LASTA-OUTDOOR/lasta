@@ -52,9 +52,8 @@ fun AddFriendScreen(
           Button(onClick = { viewmodel.requestFriend(text) }) { Text("Send friend request") }
 
           // Error message / Feedback
-          if (!viewmodel.friendRequestFeedback.isNullOrEmpty()) {
-            Text(viewmodel.friendRequestFeedback!!, style = MaterialTheme.typography.bodyLarge)
-          }
+          Text(viewmodel.friendRequestFeedback, style = MaterialTheme.typography.bodyLarge)
+
         }
   }
 }

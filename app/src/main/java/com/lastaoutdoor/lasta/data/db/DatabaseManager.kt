@@ -35,7 +35,9 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
             "email" to user.email,
             "displayName" to user.userName,
             "profilePictureUrl" to user.profilePictureUrl,
-            "hikingLevel" to user.hikingLevel.toString())
+            "hikingLevel" to user.hikingLevel.toString(),
+            "friends" to emptyList<String>()
+        )
     userDocumentRef.set(userData, SetOptions.merge())
   }
 
@@ -51,6 +53,22 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
       return UserModel(uid, displayName, email, profilePictureUrl, HikingLevel.valueOf(hikingLevel))
     }
     return UserModel("", "", "", "", HikingLevel.BEGINNER)
+  }
+
+  suspend fun getUserFromEmail(mail: String) : UserModel? {
+      val userDocumentRef = database.collection(USERS_COLLECTION)
+        val query = userDocumentRef.whereEqualTo("email", mail).get().await()
+        if (!query.isEmpty) {
+            val document = query.documents[0]
+            val email = document.getString("email") ?: ""
+            val displayName = document.getString("displayName") ?: ""
+            val profilePictureUrl = document.getString("profilePictureUrl") ?: ""
+            var hikingLevel = document.getString("hikingLevel") ?: ""
+            if (hikingLevel == "null" || hikingLevel == "") hikingLevel = "BEGINNER"
+            return UserModel(document.id, displayName, email, profilePictureUrl, HikingLevel.valueOf(hikingLevel))
+        }else{
+            return null
+        }
   }
 
   /**
@@ -248,7 +266,18 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
     userDocumentRef.set(data, SetOptions.merge())
   }
 
-  /**
+    /**
+     * Function that stores a friend request in the Firestore database
+     *
+     * @param user The user to add the friend request to
+     * @return The user's preferences
+     */
+    fun addFriendRequest(user: UserModel) {
+
+
+    }
+
+    /**
    * Function to get a user's preferences from the Firestore database
    *
    * @param uid The unique identifier of the user
