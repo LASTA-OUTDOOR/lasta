@@ -14,34 +14,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -50,10 +39,8 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.lastaoutdoor.lasta.R
@@ -61,9 +48,9 @@ import com.lastaoutdoor.lasta.ui.components.DisplaySelection
 import com.lastaoutdoor.lasta.ui.components.SearchBarComponent
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
 import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
+import com.lastaoutdoor.lasta.ui.screen.discovery.components.ModalUpperSheet
+import com.lastaoutdoor.lasta.ui.screen.discovery.components.RangeSearchComposable
 import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
-import com.lastaoutdoor.lasta.ui.theme.AccentGreen
-import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenType
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenViewModel
 
@@ -258,225 +245,4 @@ fun ActivitiesDisplay(
       }
     }
   }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun RangeSearchComposable(
-    discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel(),
-    isRangePopup: Boolean,
-    onDismissRequest: () -> Unit
-) {
-  // create local variable to hold the current range whcih will then be sent as argument to the
-  // discoveryScreenViewModel.getActivities with the range
-  val range by discoveryScreenViewModel.range.collectAsState()
-  val screen by discoveryScreenViewModel.screen.collectAsState()
-
-  // list view search popup
-  if (isRangePopup && screen == DiscoveryScreenType.LIST) {
-
-    ModalBottomSheet(
-        onDismissRequest = onDismissRequest,
-        modifier = Modifier.fillMaxWidth().testTag("searchOptions")) {
-          Column(
-              horizontalAlignment = Alignment.CenterHorizontally,
-              modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-                // Select the City
-                Text(
-                    text = "Locality :",
-                    style =
-                        TextStyle(
-                            fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
-                Spacer(modifier = Modifier.height(8.dp))
-                // Dropdown to select the city
-                LocalitySelectionDropdown(discoveryScreenViewModel)
-                // Select the distance radius
-                Text(
-                    text = "Distance radius :",
-                    style =
-                        TextStyle(
-                            fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
-                Spacer(modifier = Modifier.height(8.dp))
-                // Slider to select the range
-                Row {
-                  Slider(
-                      value = range.toFloat(),
-                      onValueChange = {
-                        discoveryScreenViewModel.setRange(it.toDouble().coerceIn(1000.0, 50000.0))
-                      },
-                      valueRange = 0f..50000f,
-                      steps = 100,
-                      modifier = Modifier.width(300.dp).testTag("listSearchOptionsSlider"))
-                  Text(
-                      // put range in km
-                      text = "${(range / 1000).toInt()}km",
-                      style = MaterialTheme.typography.bodyMedium,
-                      modifier = Modifier.padding(8.dp))
-                }
-
-                // Button to apply the range
-                ElevatedButton(
-                    onClick = {
-                      discoveryScreenViewModel.fetchClimbingActivities(
-                          range, discoveryScreenViewModel.selectedLocality.value.second)
-                      onDismissRequest()
-                    },
-                    modifier =
-                        Modifier.width(305.dp)
-                            .height(48.dp)
-                            .testTag("listSearchOptionsApplyButton"),
-                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
-                      Text(
-                          "Search",
-                          style =
-                              TextStyle(
-                                  fontSize = 22.sp,
-                                  lineHeight = 28.sp,
-                                  fontWeight = FontWeight(400),
-                              ))
-                    }
-              }
-        }
-  }
-
-  // map range search popup
-  if (isRangePopup && screen == DiscoveryScreenType.MAP) {
-    ModalBottomSheet(
-        onDismissRequest = onDismissRequest,
-        modifier = Modifier.fillMaxWidth().testTag("rangeSearch")) {
-          Column(
-              horizontalAlignment = Alignment.CenterHorizontally,
-              modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-                Text(
-                    text = "Select the distance radius",
-                    style =
-                        TextStyle(
-                            fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
-                // Slider to select the range
-                Row {
-                  Slider(
-                      value = range.toFloat(),
-                      onValueChange = {
-                        discoveryScreenViewModel.setRange(it.toDouble().coerceIn(1000.0, 50000.0))
-                      },
-                      valueRange = 0f..50000f,
-                      steps = 100,
-                      modifier = Modifier.width(300.dp).testTag("mapRangeSearchSlider"))
-                  Text(
-                      // put range in km
-                      text = "${(range / 1000).toInt()}km",
-                      style = MaterialTheme.typography.bodyMedium,
-                      modifier = Modifier.padding(8.dp))
-                }
-
-                // Search bar to search by locality
-                Row {
-                  Text(
-                      text = "Locality : ",
-                      style =
-                          TextStyle(
-                              fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
-                  Spacer(modifier = Modifier.height(8.dp))
-                  // Dropdown to select the city
-                  LocalitySelectionDropdown(discoveryScreenViewModel)
-                }
-                Spacer(modifier = Modifier.height(12.dp))
-
-                // option to use current location with blue text and location icon
-                Row(
-                    modifier =
-                        Modifier.clickable { /*TODO SET SELECTEDLOCALITY TO CURRENT POSITION */}) {
-                      Icon(
-                          imageVector = Icons.Default.LocationOn,
-                          contentDescription = "Settings",
-                          tint = MaterialTheme.colorScheme.primary)
-                      Text(
-                          text = "Use my current location",
-                          style =
-                              TextStyle(
-                                  fontSize = 16.sp,
-                                  lineHeight = 24.sp,
-                                  fontWeight = FontWeight(500),
-                                  color = PrimaryBlue))
-                    }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                // Button to apply the range
-                ElevatedButton(
-                    onClick = {
-                      discoveryScreenViewModel.fetchClimbingActivities(
-                          range, discoveryScreenViewModel.selectedLocality.value.second)
-                      onDismissRequest()
-                    },
-                    modifier =
-                        Modifier.width(305.dp).height(48.dp).testTag("mapRangeSearchApplyButton"),
-                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
-                      Text(
-                          "Apply",
-                          style =
-                              TextStyle(
-                                  fontSize = 22.sp,
-                                  lineHeight = 28.sp,
-                                  fontWeight = FontWeight(400),
-                              ))
-                    }
-              }
-        }
-  }
-}
-
-@Composable
-fun ModalUpperSheet(isRangePopup: Boolean) {
-  if (isRangePopup) {
-    Surface(
-        modifier = Modifier.testTag("modalUpperSheet").height(200.dp),
-    ) {
-      Column(modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(16.dp)) {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-          // put a small setting icon here with the settings built in icon
-          Icon(
-              imageVector = Icons.Default.Settings,
-              contentDescription = "Settings",
-              tint = MaterialTheme.colorScheme.secondary)
-          Text(
-              text = "   Modify your search settings   ",
-          )
-          Icon(
-              imageVector = Icons.Default.Settings,
-              contentDescription = "Settings",
-              tint = MaterialTheme.colorScheme.secondary)
-        }
-      }
-    }
-  }
-}
-
-// Dropdown to select the city
-@Composable
-fun LocalitySelectionDropdown(discoveryScreenViewModel: DiscoveryScreenViewModel) {
-  var expanded by remember { mutableStateOf(false) }
-  val localities = discoveryScreenViewModel.localities
-  var selectedLocality = discoveryScreenViewModel.selectedLocality.collectAsState().value
-
-  Box(modifier = Modifier.wrapContentSize().testTag("localitySelectionDropdown")) {
-    Text(
-        selectedLocality.first,
-        modifier =
-            Modifier.clickable(onClick = { expanded = true })
-                .testTag("localitySelectionDropdownButton"),
-        style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight(400), color = AccentGreen))
-    DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-      localities.forEach { locality ->
-        DropdownMenuItem(
-            modifier = Modifier.testTag("localitySelectionDropdownItem"),
-            text = { Text(locality.first, color = AccentGreen) },
-            onClick = {
-              discoveryScreenViewModel.setSelectedLocality(locality)
-              expanded = false
-            })
-      }
-    }
-  }
-  Spacer(modifier = Modifier.height(8.dp))
 }
