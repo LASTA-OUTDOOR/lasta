@@ -17,6 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +33,12 @@ import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FriendsList(viewModel: SocialViewModel = hiltViewModel()) {
+
+  LaunchedEffect(Unit) {
+
+      viewModel.refreshFriends()
+  }
+
   val isConnected = viewModel.isConnected.collectAsState()
   when {
     isConnected.value == ConnectionState.OFFLINE -> {
@@ -53,12 +60,19 @@ fun FriendsCard(friend: UserModel) {
           CardDefaults.cardColors(
               containerColor = MaterialTheme.colorScheme.surfaceVariant,
           ),
-      modifier = Modifier.height(height = 100.dp).fillMaxWidth().padding(8.dp).testTag("Friend")) {
+      modifier = Modifier
+          .height(height = 100.dp)
+          .fillMaxWidth()
+          .padding(8.dp)
+          .testTag("Friend")) {
         Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
           Icon(
               Icons.Filled.AccountCircle,
               contentDescription = "Profile picture",
-              modifier = Modifier.size(60.dp).align(Alignment.CenterVertically).fillMaxHeight())
+              modifier = Modifier
+                  .size(60.dp)
+                  .align(Alignment.CenterVertically)
+                  .fillMaxHeight())
           Column(modifier = Modifier.padding(8.dp)) {
             Text(text = friend.userName ?: "Name error", fontWeight = FontWeight.Bold)
             Text(text = "TO BE IMPLEMENTED - User status", overflow = TextOverflow.Ellipsis)

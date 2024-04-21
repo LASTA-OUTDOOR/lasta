@@ -1,40 +1,35 @@
 package com.lastaoutdoor.lasta.data.social
 
-import com.google.firebase.firestore.FirebaseFirestore
 import com.lastaoutdoor.lasta.data.db.DatabaseManager
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.data.model.user.UserModel
-import com.lastaoutdoor.lasta.data.preferences.PreferencesRepositoryImpl
 import com.lastaoutdoor.lasta.repository.SocialRepository
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
+import kotlinx.coroutines.runBlocking
 
-class SocialRepositoryImpl
-@Inject constructor() : SocialRepository {
+class SocialRepositoryImpl @Inject constructor() : SocialRepository {
 
   // database manager for firestore interactions
   private val manager = DatabaseManager()
 
-  override fun getFriends(): List<UserModel>? {
-    return null
+  override fun getFriends(userId: String): List<UserModel> {
+    return manager.getFriends(userId)
   }
 
-  override fun getLatestFriendActivities(days: Int): List<ActivitiesDatabaseType>? {
-    return null
+  override fun getLatestFriendActivities(userId: String, days: Int): List<ActivitiesDatabaseType> {
+    return emptyList()
   }
 
-  override fun getMessages(): List<String>? {
-    return null
+  override fun getMessages(userId: String): List<String> {
+    return emptyList()
   }
 
   // send a friend request to the user with the given email
   override fun sendFriendRequest(uid: String, email: String): Boolean {
 
-    //Verify if the user exists
+    // Verify if the user exists
     var user: UserModel?
-    runBlocking {
-      user = manager.getUserFromEmail(email)
-    }
+    runBlocking { user = manager.getUserFromEmail(email) }
     if (user == null) {
       return false
     }
@@ -44,5 +39,20 @@ class SocialRepositoryImpl
     return true
   }
 
+  // returns all the friend requests
+  override fun getFriendRequests(userId: String): List<UserModel> {
 
+    // get the friend requests
+    return manager.getFriendRequests(userId)
+  }
+
+  // accept a friend request
+  override fun acceptFriendRequest(source: String, requester: String) {
+    manager.acceptFriendRequest(source, requester)
+  }
+
+  // decline a friend request
+  override fun declineFriendRequest(source: String, requester: String) {
+    manager.declineFriendRequest(source, requester)
+  }
 }

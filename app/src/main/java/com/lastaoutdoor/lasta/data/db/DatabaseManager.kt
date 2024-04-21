@@ -9,6 +9,7 @@ import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.data.model.user.HikingLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.data.model.user.UserPreferences
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 
 private const val USERS_COLLECTION = "users"
@@ -37,8 +38,7 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
             "displayName" to user.userName,
             "profilePictureUrl" to user.profilePictureUrl,
             "hikingLevel" to user.hikingLevel.toString(),
-            "friends" to emptyList<String>()
-        )
+            "friends" to emptyList<String>())
     userDocumentRef.set(userData, SetOptions.merge())
   }
 
@@ -56,20 +56,21 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
     return UserModel("", "", "", "", HikingLevel.BEGINNER)
   }
 
-  suspend fun getUserFromEmail(mail: String) : UserModel? {
-      val userDocumentRef = database.collection(USERS_COLLECTION)
-        val query = userDocumentRef.whereEqualTo("email", mail).get().await()
-        if (!query.isEmpty) {
-            val document = query.documents[0]
-            val email = document.getString("email") ?: ""
-            val displayName = document.getString("displayName") ?: ""
-            val profilePictureUrl = document.getString("profilePictureUrl") ?: ""
-            var hikingLevel = document.getString("hikingLevel") ?: ""
-            if (hikingLevel == "null" || hikingLevel == "") hikingLevel = "BEGINNER"
-            return UserModel(document.id, displayName, email, profilePictureUrl, HikingLevel.valueOf(hikingLevel))
-        }else{
-            return null
-        }
+  suspend fun getUserFromEmail(mail: String): UserModel? {
+    val userDocumentRef = database.collection(USERS_COLLECTION)
+    val query = userDocumentRef.whereEqualTo("email", mail).get().await()
+    if (!query.isEmpty) {
+      val document = query.documents[0]
+      val email = document.getString("email") ?: ""
+      val displayName = document.getString("displayName") ?: ""
+      val profilePictureUrl = document.getString("profilePictureUrl") ?: ""
+      var hikingLevel = document.getString("hikingLevel") ?: ""
+      if (hikingLevel == "null" || hikingLevel == "") hikingLevel = "BEGINNER"
+      return UserModel(
+          document.id, displayName, email, profilePictureUrl, HikingLevel.valueOf(hikingLevel))
+    } else {
+      return null
+    }
   }
 
   /**
@@ -267,23 +268,116 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
     userDocumentRef.set(data, SetOptions.merge())
   }
 
-    /**
-     * Function that stores a friend request in the Firestore database
-     *
-     * @param sender The user Id of the sender (String)
-     * @param user The user to add the friend request to
-     * @return The user's preferences
-     */
-    fun addFriendRequest(sender : String, user: UserModel) {
-        // Create a reference to the user's document in the Firestore database
-        val userDocumentRef = database.collection(USERS_COLLECTION).document(user.userId)
+  /**
+   * Function that stores a friend request in the Firestore database
+   *
+   * @param sender The user Id of the sender (String)
+   * @param user The user to add the friend request to
+   * @return The user's preferences
+   */
+  fun addFriendRequest(sender: String, user: UserModel) {
+    // Create a reference to the user's document in the Firestore database
+    val userDocumentRef = database.collection(USERS_COLLECTION).document(user.userId)
 
-        // Store the uid of the sender in the user's document in an array in case there are multiple requests (This does not allow duplicates)
-        userDocumentRef.update("friendRequests", FieldValue.arrayUnion(sender))
+    // Store the uid of the sender in the user's document in an array in case there are multiple
+    // requests (This does not allow duplicates)
+    userDocumentRef.update("friendRequests", FieldValue.arrayUnion(sender))
+  }
 
+  /**
+   * Function to get a user's friend requests from the Firestore database
+   *
+   * @param userId The unique identifier of the user
+   * @return The user's friend requests
+   */
+  fun getFriendRequests(userId: String): List<UserModel> {
+
+    // Create a reference to the user's document in the Firestore database
+    val userDocumentRef = database.collection(USERS_COLLECTION).document(userId)
+
+    val friendsRequests: ArrayList<UserModel> = ArrayList()
+
+    // Get the document snapshot
+    runBlocking {
+      val document = userDocumentRef.get().await()
+      // Get the list (String) of friend requests from the document
+      val friendRequests = document.get("friendRequests") as? List<*>
+      // Get the corresponding user models from the list of friend requests
+      if (friendRequests != null) {
+        for (request in friendRequests) {
+          val user = getUserFromDatabase(request as String)
+          friendsRequests += user
+        }
+      }
     }
 
+    return friendsRequests
+  }
+
+  /**
+   * Function to accept a friend request in the Firestore database
+   *
+   * @param source The unique identifier of the user accepting the friend request
+   * @param requester The unique identifier of the user who sent the friend request
+   */
+  fun acceptFriendRequest(source: String, requester: String) {
+    // Create a reference to the user's document in the Firestore database
+    val userDocumentRef = database.collection(USERS_COLLECTION).document(source)
+
+    // Remove the requester from the friend requests array
+    userDocumentRef.update("friendRequests", FieldValue.arrayRemove(requester))
+
+    // Add the requester to the friends array
+    userDocumentRef.update("friends", FieldValue.arrayUnion(requester))
+
+    // Create a reference to the requester's document in the Firestore database
+    val requesterDocumentRef = database.collection(USERS_COLLECTION).document(requester)
+
+    // Add the source to the requester's friends array
+    requesterDocumentRef.update("friends", FieldValue.arrayUnion(source))
+  }
+
+  /**
+   * Function to decline a friend request in the Firestore database
+   *
+   * @param source The unique identifier of the user declining the friend request
+   * @param requester The unique identifier of the user who sent the friend request
+   */
+  fun declineFriendRequest(source: String, requester: String) {
+    // Create a reference to the user's document in the Firestore database
+    val userDocumentRef = database.collection(USERS_COLLECTION).document(source)
+
+    // Remove the requester from the friend requests array
+    userDocumentRef.update("friendRequests", FieldValue.arrayRemove(requester))
+  }
+
     /**
+     * Function to get a user's friends from the Firestore database
+     *
+     * @param userId The unique identifier of the user
+     * @return The user's friends
+     */
+  fun getFriends(userId: String): List<UserModel> {
+    // Create a reference to the user's document in the Firestore database
+    val userDocumentRef = database.collection(USERS_COLLECTION).document(userId)
+
+    //get the list of friends Id
+    val friendsId = runBlocking {  userDocumentRef.get().await().get("friends") as? List<*> }
+
+    //get the corresponding user models from the list of friends
+    val friends: ArrayList<UserModel> = ArrayList()
+    if (friendsId != null) {
+      for (friendId in friendsId) {
+        val user = runBlocking { getUserFromDatabase(friendId as String) }
+        friends += user
+      }
+    }
+
+    return friends
+
+  }
+
+  /**
    * Function to get a user's preferences from the Firestore database
    *
    * @param uid The unique identifier of the user

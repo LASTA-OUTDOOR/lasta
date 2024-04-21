@@ -53,7 +53,6 @@ fun AddFriendScreen(
 
           // Error message / Feedback
           Text(viewmodel.friendRequestFeedback, style = MaterialTheme.typography.bodyLarge)
-
         }
   }
 }

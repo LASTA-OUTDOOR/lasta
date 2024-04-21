@@ -9,11 +9,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material3.Button
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -29,6 +35,14 @@ import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
 @Composable
 fun Header(navController: NavController, viewModel: SocialViewModel = hiltViewModel()) {
+
+    // This will be called when the composable becomes visible
+    LaunchedEffect(Unit) {
+        viewModel.refreshFriendRequests()
+    }
+
+  val showBadge by remember { mutableStateOf(viewModel.friendsRequest.isNotEmpty()) }
+
   Row(
       modifier = Modifier.fillMaxWidth().testTag("Header"),
       horizontalArrangement = Arrangement.SpaceBetween) {
@@ -47,7 +61,9 @@ fun Header(navController: NavController, viewModel: SocialViewModel = hiltViewMo
                 }
           }
           IconButton(onClick = { navController.navigate(LeafScreen.Notifications.route) }) {
-            Icon(Icons.Filled.Notifications, contentDescription = "Notification Icon")
+            BadgedBox(badge = { if (showBadge) Badge {} }) {
+              Icon(Icons.Filled.Notifications, contentDescription = "Notification Icon")
+            }
           }
         }
         Spacer(
