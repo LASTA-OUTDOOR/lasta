@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
@@ -305,10 +306,10 @@ fun RangeSearchComposable(
                       },
                       valueRange = 0f..50000f,
                       steps = 100,
-                      modifier = Modifier.width(305.dp).testTag("listSearchOptionsSlider"))
+                      modifier = Modifier.width(300.dp).testTag("listSearchOptionsSlider"))
                   Text(
                       // put range in km
-                      text = "${(range / 1000).toInt()} km",
+                      text = "${(range / 1000).toInt()}km",
                       style = MaterialTheme.typography.bodyMedium,
                       modifier = Modifier.padding(8.dp))
                 }
@@ -351,7 +352,6 @@ fun RangeSearchComposable(
                     style =
                         TextStyle(
                             fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
-                Spacer(modifier = Modifier.height(8.dp))
                 // Slider to select the range
                 Row {
                   Slider(
@@ -361,13 +361,46 @@ fun RangeSearchComposable(
                       },
                       valueRange = 0f..50000f,
                       steps = 100,
-                      modifier = Modifier.width(305.dp).testTag("mapRangeSearchSlider"))
+                      modifier = Modifier.width(300.dp).testTag("mapRangeSearchSlider"))
                   Text(
                       // put range in km
-                      text = "${(range / 1000).toInt()} km",
+                      text = "${(range / 1000).toInt()}km",
                       style = MaterialTheme.typography.bodyMedium,
                       modifier = Modifier.padding(8.dp))
                 }
+
+                // Search bar to search by locality
+                Row {
+                  Text(
+                      text = "Locality : ",
+                      style =
+                          TextStyle(
+                              fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
+                  Spacer(modifier = Modifier.height(8.dp))
+                  // Dropdown to select the city
+                  LocalitySelectionDropdown(discoveryScreenViewModel)
+                }
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // option to use current location with blue text and location icon
+                Row(
+                    modifier =
+                        Modifier.clickable { /*TODO SET SELECTEDLOCALITY TO CURRENT POSITION */}) {
+                      Icon(
+                          imageVector = Icons.Default.LocationOn,
+                          contentDescription = "Settings",
+                          tint = MaterialTheme.colorScheme.primary)
+                      Text(
+                          text = "Use my current location",
+                          style =
+                              TextStyle(
+                                  fontSize = 16.sp,
+                                  lineHeight = 24.sp,
+                                  fontWeight = FontWeight(500),
+                                  color = PrimaryBlue))
+                    }
+
+                Spacer(modifier = Modifier.height(12.dp))
 
                 // Button to apply the range
                 ElevatedButton(
@@ -432,12 +465,7 @@ fun LocalitySelectionDropdown(discoveryScreenViewModel: DiscoveryScreenViewModel
         modifier =
             Modifier.clickable(onClick = { expanded = true })
                 .testTag("localitySelectionDropdownButton"),
-        style =
-            TextStyle(
-                fontSize = 22.sp,
-                lineHeight = 28.sp,
-                fontWeight = FontWeight(400),
-                color = AccentGreen))
+        style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight(400), color = AccentGreen))
     DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
       localities.forEach { locality ->
         DropdownMenuItem(
