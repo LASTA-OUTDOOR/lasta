@@ -268,111 +268,122 @@ fun RangeSearchComposable(
   // list view search popup
   if (isRangePopup && screen == DiscoveryScreenType.LIST) {
 
-    ModalBottomSheet(onDismissRequest = onDismissRequest, modifier = Modifier.fillMaxWidth()) {
-      Column(
-          horizontalAlignment = Alignment.CenterHorizontally,
-          modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-            // Select the City
-            Text(
-                text = "Select the locality",
-                style =
-                    TextStyle(fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
-            Spacer(modifier = Modifier.height(8.dp))
-            // Dropdown to select the city
-            CitySelectionDropdown(discoveryScreenViewModel)
-            // Select the distance radius
-            Text(
-                text = "Select the distance radius",
-                style =
-                    TextStyle(fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
-            Spacer(modifier = Modifier.height(8.dp))
-            // Slider to select the range
-            Row {
-              Slider(
-                  value = range.toFloat(),
-                  onValueChange = {
-                    discoveryScreenViewModel.setRange(it.toDouble().coerceIn(1000.0, 50000.0))
-                  },
-                  valueRange = 0f..50000f,
-                  steps = 100,
-                  modifier = Modifier.width(305.dp))
-              Text(
-                  // put range in km
-                  text = "${(range / 1000).toInt()} km",
-                  style = MaterialTheme.typography.bodyMedium,
-                  modifier = Modifier.padding(8.dp))
-            }
-
-            // Button to apply the range
-            ElevatedButton(
-                onClick = {
-                  discoveryScreenViewModel.fetchClimbingActivities(
-                      range, discoveryScreenViewModel.selectedLocality.value.second)
-                  onDismissRequest()
-                },
-                modifier = Modifier.width(305.dp).height(48.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
+    ModalBottomSheet(
+        onDismissRequest = onDismissRequest,
+        modifier = Modifier.fillMaxWidth().testTag("searchOptions")) {
+          Column(
+              horizontalAlignment = Alignment.CenterHorizontally,
+              modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+                // Select the City
+                Text(
+                    text = "Select the locality",
+                    style =
+                        TextStyle(
+                            fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
+                Spacer(modifier = Modifier.height(8.dp))
+                // Dropdown to select the city
+                CitySelectionDropdown(discoveryScreenViewModel)
+                // Select the distance radius
+                Text(
+                    text = "Select the distance radius",
+                    style =
+                        TextStyle(
+                            fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
+                Spacer(modifier = Modifier.height(8.dp))
+                // Slider to select the range
+                Row {
+                  Slider(
+                      value = range.toFloat(),
+                      onValueChange = {
+                        discoveryScreenViewModel.setRange(it.toDouble().coerceIn(1000.0, 50000.0))
+                      },
+                      valueRange = 0f..50000f,
+                      steps = 100,
+                      modifier = Modifier.width(305.dp).testTag("listSearchOptionsSlider"))
                   Text(
-                      "Search",
-                      style =
-                          TextStyle(
-                              fontSize = 22.sp,
-                              lineHeight = 28.sp,
-                              fontWeight = FontWeight(400),
-                          ))
+                      // put range in km
+                      text = "${(range / 1000).toInt()} km",
+                      style = MaterialTheme.typography.bodyMedium,
+                      modifier = Modifier.padding(8.dp))
                 }
-          }
-    }
+
+                // Button to apply the range
+                ElevatedButton(
+                    onClick = {
+                      discoveryScreenViewModel.fetchClimbingActivities(
+                          range, discoveryScreenViewModel.selectedLocality.value.second)
+                      onDismissRequest()
+                    },
+                    modifier =
+                        Modifier.width(305.dp)
+                            .height(48.dp)
+                            .testTag("listSearchOptionsApplyButton"),
+                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
+                      Text(
+                          "Search",
+                          style =
+                              TextStyle(
+                                  fontSize = 22.sp,
+                                  lineHeight = 28.sp,
+                                  fontWeight = FontWeight(400),
+                              ))
+                    }
+              }
+        }
   }
 
   // map range search popup
   if (isRangePopup && screen == DiscoveryScreenType.MAP) {
-    ModalBottomSheet(onDismissRequest = onDismissRequest, modifier = Modifier.fillMaxWidth()) {
-      Column(
-          horizontalAlignment = Alignment.CenterHorizontally,
-          modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-            Text(
-                text = "Select the distance",
-                style =
-                    TextStyle(fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
-            Spacer(modifier = Modifier.height(8.dp))
-            // Slider to select the range
-            Row {
-              Slider(
-                  value = range.toFloat(),
-                  onValueChange = {
-                    discoveryScreenViewModel.setRange(it.toDouble().coerceIn(1000.0, 50000.0))
-                  },
-                  valueRange = 0f..50000f,
-                  steps = 100,
-                  modifier = Modifier.width(305.dp))
-              Text(
-                  // put range in km
-                  text = "${(range / 1000).toInt()} km",
-                  style = MaterialTheme.typography.bodyMedium,
-                  modifier = Modifier.padding(8.dp))
-            }
-
-            // Button to apply the range
-            ElevatedButton(
-                onClick = {
-                  discoveryScreenViewModel.fetchClimbingActivities(
-                      range, discoveryScreenViewModel.selectedLocality.value.second)
-                  onDismissRequest()
-                },
-                modifier = Modifier.width(305.dp).height(48.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
+    ModalBottomSheet(
+        onDismissRequest = onDismissRequest,
+        modifier = Modifier.fillMaxWidth().testTag("rangeSearch")) {
+          Column(
+              horizontalAlignment = Alignment.CenterHorizontally,
+              modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+                Text(
+                    text = "Select the distance",
+                    style =
+                        TextStyle(
+                            fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
+                Spacer(modifier = Modifier.height(8.dp))
+                // Slider to select the range
+                Row {
+                  Slider(
+                      value = range.toFloat(),
+                      onValueChange = {
+                        discoveryScreenViewModel.setRange(it.toDouble().coerceIn(1000.0, 50000.0))
+                      },
+                      valueRange = 0f..50000f,
+                      steps = 100,
+                      modifier = Modifier.width(305.dp).testTag("mapRangeSearchSlider"))
                   Text(
-                      "Apply",
-                      style =
-                          TextStyle(
-                              fontSize = 22.sp,
-                              lineHeight = 28.sp,
-                              fontWeight = FontWeight(400),
-                          ))
+                      // put range in km
+                      text = "${(range / 1000).toInt()} km",
+                      style = MaterialTheme.typography.bodyMedium,
+                      modifier = Modifier.padding(8.dp))
                 }
-          }
-    }
+
+                // Button to apply the range
+                ElevatedButton(
+                    onClick = {
+                      discoveryScreenViewModel.fetchClimbingActivities(
+                          range, discoveryScreenViewModel.selectedLocality.value.second)
+                      onDismissRequest()
+                    },
+                    modifier =
+                        Modifier.width(305.dp).height(48.dp).testTag("mapRangeSearchApplyButton"),
+                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
+                      Text(
+                          "Apply",
+                          style =
+                              TextStyle(
+                                  fontSize = 22.sp,
+                                  lineHeight = 28.sp,
+                                  fontWeight = FontWeight(400),
+                              ))
+                    }
+              }
+        }
   }
 }
 
@@ -383,10 +394,12 @@ fun CitySelectionDropdown(discoveryScreenViewModel: DiscoveryScreenViewModel) {
   val localities = discoveryScreenViewModel.localities
   var selectedLocality = discoveryScreenViewModel.selectedLocality.collectAsState().value
 
-  Box(modifier = Modifier.wrapContentSize()) {
+  Box(modifier = Modifier.wrapContentSize().testTag("localitySelectionDropdown")) {
     Text(
         selectedLocality.first,
-        modifier = Modifier.clickable(onClick = { expanded = true }),
+        modifier =
+            Modifier.clickable(onClick = { expanded = true })
+                .testTag("localitySelectionDropdownButton"),
         style =
             TextStyle(
                 fontSize = 22.sp,

@@ -4,10 +4,14 @@ import androidx.activity.compose.setContent
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTouchInput
 import androidx.navigation.compose.rememberNavController
+import androidx.test.espresso.action.ViewActions
 import com.lastaoutdoor.lasta.data.api.FakeOutdoorActivityRepository
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.ui.MainActivity
+import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenType
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenViewModel
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -47,6 +51,62 @@ class DiscoveryScreenTest {
     }
     composeRule.onNodeWithTag("discoveryScreen").assertIsDisplayed()
   }
+
+  // Test if modal bottom sheet is displayed on list mode correctly when isRangePopup is true
+  @Test
+  fun modalBottomSheet_isDisplayed() {
+    composeRule.activity.setContent {
+      RangeSearchComposable(
+          discoveryScreenViewModel,
+          isRangePopup = true,
+          onDismissRequest = { /*dismiss dialog on clicking "Ok"*/})
+    }
+    composeRule.onNodeWithTag("searchOptions").assertIsDisplayed()
+    // slide the slider to the right
+    composeRule
+        .onNodeWithTag("listSearchOptionsSlider")
+        .performTouchInput(block = { ViewActions.swipeRight() })
+    // change the value of the slider
+    composeRule.onNodeWithTag("listSearchOptionsSlider").performClick()
+    // click on the apply button
+    composeRule.onNodeWithTag("listSearchOptionsApplyButton").performClick()
+  }
+
+  // Test if modal bottom sheet is displayed on map mode correctly when isRangePopup is true
+  @Test
+  fun modalBottomSheet_isDisplayed_mapMode() {
+    composeRule.activity.setContent {
+      discoveryScreenViewModel.setScreen(DiscoveryScreenType.MAP)
+      RangeSearchComposable(
+          discoveryScreenViewModel,
+          isRangePopup = true,
+          onDismissRequest = { /*dismiss dialog on clicking "Ok"*/})
+    }
+    composeRule.onNodeWithTag("rangeSearch").assertIsDisplayed()
+    // slide the slider to the right
+    composeRule
+        .onNodeWithTag("mapRangeSearchSlider")
+        .performTouchInput(block = { ViewActions.swipeRight() })
+    // change the value of the slider
+    composeRule.onNodeWithTag("mapRangeSearchSlider").performClick()
+    // click on the apply button
+    composeRule.onNodeWithTag("mapRangeSearchApplyButton").performClick()
+  }
+
+  // Test the locality selection dropdown
+  @Test
+  fun localityDropdown_isDisplayed() {
+    composeRule.activity.setContent {
+      RangeSearchComposable(
+          discoveryScreenViewModel,
+          isRangePopup = true,
+          onDismissRequest = { /*dismiss dialog on clicking "Ok"*/})
+    }
+    composeRule.onNodeWithTag("localitySelectionDropdown").assertIsDisplayed()
+    // click on the locality selection dropdown
+    composeRule.onNodeWithTag("localitySelectionDropdownButton").performClick()
+  }
+
   /*
     // Test if discovery content is displayed
     @Test
