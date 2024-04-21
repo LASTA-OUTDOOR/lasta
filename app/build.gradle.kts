@@ -154,6 +154,7 @@ dependencies {
     testImplementation("io.mockk:mockk:1.13.10")
     testImplementation("io.mockk:mockk-agent-jvm:1.13.10")
     testImplementation("app.cash.turbine:turbine:0.5.2")
+    testImplementation(project(":app"))
 
     globalTestImplementation(libs.androidx.junit)
     globalTestImplementation(libs.androidx.espresso.core)
