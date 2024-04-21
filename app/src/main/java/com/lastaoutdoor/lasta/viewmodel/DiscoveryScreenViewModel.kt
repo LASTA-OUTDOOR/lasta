@@ -2,8 +2,8 @@ package com.lastaoutdoor.lasta.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
+import com.lastaoutdoor.lasta.data.model.activity.Activity
 import com.lastaoutdoor.lasta.data.model.activity.ActivityType
-import com.lastaoutdoor.lasta.data.model.activity.OutdoorActivity
 import com.lastaoutdoor.lasta.data.model.api.Node
 import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +25,7 @@ class DiscoveryScreenViewModel
 @Inject
 constructor(private val repository: OutdoorActivityRepository) : ViewModel() {
 
-  var climbingActivities: MutableList<OutdoorActivity> = mutableListOf()
+  var climbingActivities: MutableList<Activity> = mutableListOf()
 
   private val _screen = MutableStateFlow(DiscoveryScreenType.LIST)
   val screen: StateFlow<DiscoveryScreenType> = _screen
@@ -70,7 +70,7 @@ constructor(private val repository: OutdoorActivityRepository) : ViewModel() {
     climbingActivities.clear()
     climbingNodes.forEach { node ->
       climbingActivities.add(
-          OutdoorActivity(
+          Activity(
               ActivityType.CLIMBING,
               node.difficulty,
               node.length,

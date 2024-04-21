@@ -30,16 +30,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.data.model.activity.Activity
 import com.lastaoutdoor.lasta.data.model.activity.ActivityType
-import com.lastaoutdoor.lasta.data.model.activity.OutdoorActivity
 import com.lastaoutdoor.lasta.ui.theme.Black
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
 import com.lastaoutdoor.lasta.ui.theme.YellowDifficulty
 
 @Composable
 fun MoreInfoScreen(
-    activity: OutdoorActivity =
-        OutdoorActivity(ActivityType.CLIMBING, 0, 1.5f, "3 hours", "Test Title"),
+    activity: Activity = Activity(ActivityType.CLIMBING, 0, 1.5f, "3 hours", "Test Title"),
     navController: NavController
 ) {
   LazyColumn(modifier = Modifier.padding(8.dp)) {
@@ -81,7 +80,7 @@ fun StartButton() {
 }
 
 @Composable
-fun MiddleZone(activity: OutdoorActivity) {
+fun MiddleZone(activity: Activity) {
   Row {
     DiffAndRating(activity)
     Spacer(Modifier.width(170.dp))
@@ -113,7 +112,7 @@ fun ViewOnMapButton() {
 }
 
 @Composable
-fun DiffAndRating(activity: OutdoorActivity) {
+fun DiffAndRating(activity: Activity) {
   Column(modifier = Modifier.padding(vertical = 5.dp)) {
     ElevatedDifficultyDisplay(diff = fetchDiffText(activity))
     RatingDisplay(4.3)
@@ -142,7 +141,7 @@ fun RatingDisplay(rating: Double) {
 }
 
 // intern helper function, WILL BE MOVED TO VIEWMODEL
-fun fetchDiffText(activity: OutdoorActivity): String {
+fun fetchDiffText(activity: Activity): String {
   return when (activity.difficulty) {
     0 -> "Easy"
     1 -> "Medium"
@@ -196,7 +195,7 @@ fun TopBarLogo(logoPainterId: Int, f: () -> Unit) {
 }
 
 @Composable
-fun ActivityTitleZone(activity: OutdoorActivity) {
+fun ActivityTitleZone(activity: Activity) {
   Row { ElevatedActivityType(activity) }
   Row {
     ActivityPicture()
@@ -215,7 +214,7 @@ fun ActivityPicture() {
 }
 
 @Composable
-fun ActivityTitleText(activity: OutdoorActivity) {
+fun ActivityTitleText(activity: Activity) {
   Column(modifier = Modifier.padding(vertical = 25.dp, horizontal = 5.dp)) {
     Text(
         text = activity.locationName ?: "No Title",
@@ -234,7 +233,7 @@ fun ActivityTitleText(activity: OutdoorActivity) {
 }
 
 @Composable
-fun ElevatedActivityType(activity: OutdoorActivity) {
+fun ElevatedActivityType(activity: Activity) {
   ElevatedButton(
       onClick = {},
       contentPadding = PaddingValues(all = 3.dp),

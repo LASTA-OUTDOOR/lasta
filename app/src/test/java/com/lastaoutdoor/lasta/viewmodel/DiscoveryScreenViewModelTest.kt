@@ -1,7 +1,5 @@
 package com.lastaoutdoor.lasta.viewmodel
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.data.model.activity.ActivityType
 import com.lastaoutdoor.lasta.data.model.api.Node

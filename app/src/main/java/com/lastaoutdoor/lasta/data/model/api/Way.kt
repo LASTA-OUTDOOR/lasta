@@ -2,8 +2,9 @@ package com.lastaoutdoor.lasta.data.model.api
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.lastaoutdoor.lasta.data.model.activity.Activity
 import com.lastaoutdoor.lasta.data.model.activity.ActivityType
-import com.lastaoutdoor.lasta.data.model.activity.OutdoorActivity
+import com.lastaoutdoor.lasta.data.model.activity.Difficulty
 import com.lastaoutdoor.lasta.data.model.map.Position
 
 class Way(
@@ -12,14 +13,14 @@ class Way(
     @SerializedName("tags") @Expose val tags: Tags,
     @SerializedName("geometry") @Expose val nodes: List<Position>,
     activityType: ActivityType,
-    difficulty: Int,
+    difficulty: Difficulty,
     length: Float,
     duration: String,
     locationName: String
-) : OutdoorActivity(activityType, difficulty, length, duration, locationName) {
+) : Activity(activityType, difficulty, length, duration, locationName) {
 
   override fun toString(): String {
-    return (" type: $type id: $id  activityType: ${getActivityType()} name: ${tags.name} nodes: $nodes\n")
+    return (" type: $type id: $id  activityType: $activityType name: ${tags.name} nodes: $nodes\n")
   }
 }
 // Used to store position within OSM Relations (i.e. list of Ways) without having to store all of

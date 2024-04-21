@@ -2,8 +2,9 @@ package com.lastaoutdoor.lasta.data.model.api
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.lastaoutdoor.lasta.data.model.activity.Activity
 import com.lastaoutdoor.lasta.data.model.activity.ActivityType
-import com.lastaoutdoor.lasta.data.model.activity.OutdoorActivity
+import com.lastaoutdoor.lasta.data.model.activity.Difficulty
 
 // represents OSM node
 open class Node(
@@ -13,13 +14,13 @@ open class Node(
     @SerializedName("lon") @Expose val lon: Double,
     @SerializedName("tags") @Expose val tags: Tags,
     activityType: ActivityType,
-    difficulty: Int,
+    difficulty: Difficulty,
     length: Float,
     duration: String?,
     locationName: String?
-) : OutdoorActivity(activityType, difficulty, length, duration, "") {
+) : Activity(activityType, difficulty, length, duration, "") {
   override fun toString(): String {
-    return (" type: $type id: $id lat: $lat lon: $lon activityType: ${getActivityType()} name: ${tags.name}\n")
+    return (" type: $type id: $id lat: $lat lon: $lon activityType: $activityType name: ${tags.name}\n")
   }
 }
 

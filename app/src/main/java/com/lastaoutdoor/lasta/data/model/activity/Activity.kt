@@ -1,11 +1,11 @@
 package com.lastaoutdoor.lasta.data.model.activity
 
-open class OutdoorActivity(
-    private var activityType: ActivityType,
-    /** The type of the activity. */
+open class Activity(
+    /** The type of activity instance */
+    var activityType: ActivityType,
 
     /** Difficulty level of activity. */
-    val difficulty: Int,
+    val difficulty: Difficulty,
 
     /** The length of the activity. */
     val length: Float,
@@ -17,13 +17,4 @@ open class OutdoorActivity(
     val locationName: String?,
 
     /** The geographic position of the activity. */
-) {
-
-  public fun setActivityType(a: ActivityType) {
-    activityType = a
-  }
-
-  public fun getActivityType(): ActivityType {
-    return activityType
-  }
-}
+)

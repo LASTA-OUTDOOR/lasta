@@ -5,6 +5,7 @@ import com.lastaoutdoor.lasta.data.model.api.Node
 import com.lastaoutdoor.lasta.data.model.api.Relation
 import com.lastaoutdoor.lasta.data.model.api.Way
 import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
+import retrofit2.Response
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -25,7 +26,7 @@ class OutdoorActivityRepositoryImpl @Inject constructor(private val apiService: 
       OutdoorActivityResponse(
           response.body()!!.version,
           (response.body()!!.elements).map {
-            it.setActivityType(ActivityType.CLIMBING)
+            it.activityType = ActivityType.CLIMBING
             it
           })
     } catch (e: Exception) {
@@ -45,7 +46,7 @@ class OutdoorActivityRepositoryImpl @Inject constructor(private val apiService: 
       OutdoorActivityResponse(
           response.body()!!.version,
           (response.body()!!.elements).map {
-            it.setActivityType(ActivityType.CLIMBING)
+            it.activityType = ActivityType.CLIMBING
             it
           })
     } catch (e: Exception) {
@@ -65,7 +66,7 @@ class OutdoorActivityRepositoryImpl @Inject constructor(private val apiService: 
       OutdoorActivityResponse(
           pr.body()!!.version,
           (pr.body()!!.elements).map {
-            it.setActivityType(ActivityType.HIKING)
+            it.activityType = ActivityType.HIKING
             it
           })
     } catch (e: Exception) {
