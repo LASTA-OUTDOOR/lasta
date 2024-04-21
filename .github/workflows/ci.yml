@@ -16,8 +16,8 @@ jobs:
   ci:
     name: CI
     # Execute the CI on the course's runners
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
-
     steps:
       # First step : Checkout the repository on the runner
       - name: Checkout
