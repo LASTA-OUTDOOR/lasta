@@ -1,6 +1,7 @@
 package com.lastaoutdoor.lasta.data.db
 
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
@@ -269,11 +270,16 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
     /**
      * Function that stores a friend request in the Firestore database
      *
+     * @param sender The user Id of the sender (String)
      * @param user The user to add the friend request to
      * @return The user's preferences
      */
-    fun addFriendRequest(user: UserModel) {
+    fun addFriendRequest(sender : String, user: UserModel) {
+        // Create a reference to the user's document in the Firestore database
+        val userDocumentRef = database.collection(USERS_COLLECTION).document(user.userId)
 
+        // Store the uid of the sender in the user's document in an array in case there are multiple requests (This does not allow duplicates)
+        userDocumentRef.update("friendRequests", FieldValue.arrayUnion(sender))
 
     }
 

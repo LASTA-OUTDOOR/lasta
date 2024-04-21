@@ -38,7 +38,9 @@ class SocialRepositoryImpl
     if (user == null) {
       return false
     }
+
     // here we know that the user exists
+    manager.addFriendRequest(uid, user!!)
     return true
   }
 
