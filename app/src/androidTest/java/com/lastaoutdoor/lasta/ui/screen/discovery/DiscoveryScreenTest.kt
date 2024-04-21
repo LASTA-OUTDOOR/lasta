@@ -105,6 +105,16 @@ class DiscoveryScreenTest {
     composeRule.onNodeWithTag("localitySelectionDropdownButton").performClick()
   }
 
+  // Test the modal upper sheet
+  @Test
+  fun modalUpperSheet_isDisplayed() {
+    composeRule.activity.setContent {
+      DiscoveryScreen(navController = rememberNavController(), discoveryScreenViewModel)
+    }
+    composeRule.onNodeWithTag("listSearchOptionsEnableButton").performClick()
+    composeRule.onNodeWithTag("modalUpperSheet").assertIsDisplayed()
+  }
+
   /*
     // Test if discovery content is displayed
     @Test

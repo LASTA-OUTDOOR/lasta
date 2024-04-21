@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material3.ButtonDefaults
@@ -95,6 +96,9 @@ fun DiscoveryScreen(
     MapScreen()
     HeaderComposable(updatePopup = { isRangePopup = true })
   }
+
+  // Add the modal upper sheet
+  ModalUpperSheet(isRangePopup = isRangePopup)
 }
 
 @Composable
@@ -131,7 +135,7 @@ fun HeaderComposable(
                   }
 
                   Text(
-                      text = "Less than ${(range / 1000).toInt()} km",
+                      text = "Less than ${(range / 1000).toInt()} km around you",
                       style = MaterialTheme.typography.bodySmall)
                 }
               }
@@ -278,16 +282,16 @@ fun RangeSearchComposable(
               modifier = Modifier.fillMaxWidth().padding(16.dp)) {
                 // Select the City
                 Text(
-                    text = "Select the locality",
+                    text = "Locality :",
                     style =
                         TextStyle(
                             fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
                 Spacer(modifier = Modifier.height(8.dp))
                 // Dropdown to select the city
-                CitySelectionDropdown(discoveryScreenViewModel)
+                LocalitySelectionDropdown(discoveryScreenViewModel)
                 // Select the distance radius
                 Text(
-                    text = "Select the distance radius",
+                    text = "Distance radius :",
                     style =
                         TextStyle(
                             fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
@@ -343,7 +347,7 @@ fun RangeSearchComposable(
               horizontalAlignment = Alignment.CenterHorizontally,
               modifier = Modifier.fillMaxWidth().padding(16.dp)) {
                 Text(
-                    text = "Select the distance",
+                    text = "Select the distance radius",
                     style =
                         TextStyle(
                             fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
@@ -389,9 +393,35 @@ fun RangeSearchComposable(
   }
 }
 
+@Composable
+fun ModalUpperSheet(isRangePopup: Boolean) {
+  if (isRangePopup) {
+    Surface(
+        modifier = Modifier.testTag("modalUpperSheet").height(200.dp),
+    ) {
+      Column(modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(16.dp)) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+          // put a small setting icon here with the settings built in icon
+          Icon(
+              imageVector = Icons.Default.Settings,
+              contentDescription = "Settings",
+              tint = MaterialTheme.colorScheme.secondary)
+          Text(
+              text = "   Modify your search settings   ",
+          )
+          Icon(
+              imageVector = Icons.Default.Settings,
+              contentDescription = "Settings",
+              tint = MaterialTheme.colorScheme.secondary)
+        }
+      }
+    }
+  }
+}
+
 // Dropdown to select the city
 @Composable
-fun CitySelectionDropdown(discoveryScreenViewModel: DiscoveryScreenViewModel) {
+fun LocalitySelectionDropdown(discoveryScreenViewModel: DiscoveryScreenViewModel) {
   var expanded by remember { mutableStateOf(false) }
   val localities = discoveryScreenViewModel.localities
   var selectedLocality = discoveryScreenViewModel.selectedLocality.collectAsState().value
