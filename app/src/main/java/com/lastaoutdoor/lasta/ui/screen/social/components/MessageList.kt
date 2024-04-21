@@ -33,7 +33,7 @@ fun MessageList(viewModel: SocialViewModel = hiltViewModel()) {
     isConnected.value == ConnectionState.OFFLINE -> {
       ConnectionMissing()
     }
-    viewModel.messages.isNullOrEmpty() -> {
+    viewModel.messages.isEmpty() -> {
       MessageMissing()
     }
     else -> {

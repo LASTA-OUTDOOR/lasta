@@ -34,17 +34,14 @@ import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 @Composable
 fun FriendsList(viewModel: SocialViewModel = hiltViewModel()) {
 
-  LaunchedEffect(Unit) {
-
-      viewModel.refreshFriends()
-  }
+  LaunchedEffect(Unit) { viewModel.refreshFriends() }
 
   val isConnected = viewModel.isConnected.collectAsState()
   when {
     isConnected.value == ConnectionState.OFFLINE -> {
       ConnectionMissing()
     }
-    viewModel.friends.isNullOrEmpty() -> {
+    viewModel.friends.isEmpty() -> {
       FriendsMissing()
     }
     else -> {
@@ -60,19 +57,12 @@ fun FriendsCard(friend: UserModel) {
           CardDefaults.cardColors(
               containerColor = MaterialTheme.colorScheme.surfaceVariant,
           ),
-      modifier = Modifier
-          .height(height = 100.dp)
-          .fillMaxWidth()
-          .padding(8.dp)
-          .testTag("Friend")) {
+      modifier = Modifier.height(height = 100.dp).fillMaxWidth().padding(8.dp).testTag("Friend")) {
         Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
           Icon(
               Icons.Filled.AccountCircle,
               contentDescription = "Profile picture",
-              modifier = Modifier
-                  .size(60.dp)
-                  .align(Alignment.CenterVertically)
-                  .fillMaxHeight())
+              modifier = Modifier.size(60.dp).align(Alignment.CenterVertically).fillMaxHeight())
           Column(modifier = Modifier.padding(8.dp)) {
             Text(text = friend.userName ?: "Name error", fontWeight = FontWeight.Bold)
             Text(text = "TO BE IMPLEMENTED - User status", overflow = TextOverflow.Ellipsis)

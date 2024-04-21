@@ -38,7 +38,7 @@ fun FriendsActivityList(viewModel: SocialViewModel = hiltViewModel()) {
     isConnected.value == ConnectionState.OFFLINE -> {
       ConnectionMissing()
     }
-    viewModel.latestFriendActivities.isNullOrEmpty() -> {
+    viewModel.latestFriendActivities.isEmpty() -> {
       FriendsMissing()
     }
     else -> {

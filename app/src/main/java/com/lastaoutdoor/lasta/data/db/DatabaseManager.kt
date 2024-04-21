@@ -351,20 +351,20 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
     userDocumentRef.update("friendRequests", FieldValue.arrayRemove(requester))
   }
 
-    /**
-     * Function to get a user's friends from the Firestore database
-     *
-     * @param userId The unique identifier of the user
-     * @return The user's friends
-     */
+  /**
+   * Function to get a user's friends from the Firestore database
+   *
+   * @param userId The unique identifier of the user
+   * @return The user's friends
+   */
   fun getFriends(userId: String): List<UserModel> {
     // Create a reference to the user's document in the Firestore database
     val userDocumentRef = database.collection(USERS_COLLECTION).document(userId)
 
-    //get the list of friends Id
-    val friendsId = runBlocking {  userDocumentRef.get().await().get("friends") as? List<*> }
+    // get the list of friends Id
+    val friendsId = runBlocking { userDocumentRef.get().await().get("friends") as? List<*> }
 
-    //get the corresponding user models from the list of friends
+    // get the corresponding user models from the list of friends
     val friends: ArrayList<UserModel> = ArrayList()
     if (friendsId != null) {
       for (friendId in friendsId) {
@@ -374,7 +374,6 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
     }
 
     return friends
-
   }
 
   /**

@@ -49,7 +49,7 @@ fun FriendsRequestList(viewModel: SocialViewModel = hiltViewModel()) {
       ConnectionMissing()
     }
     viewModel.friendsRequest.isEmpty() -> {
-      Text("You do not have any friends request yet")
+      Text("You do not have any friends request yet", Modifier.padding(8.dp))
     }
     else -> {
       LazyColumn {

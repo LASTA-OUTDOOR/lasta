@@ -17,8 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,12 +34,8 @@ import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 @Composable
 fun Header(navController: NavController, viewModel: SocialViewModel = hiltViewModel()) {
 
-    // This will be called when the composable becomes visible
-    LaunchedEffect(Unit) {
-        viewModel.refreshFriendRequests()
-    }
-
-  val showBadge by remember { mutableStateOf(viewModel.friendsRequest.isNotEmpty()) }
+  // This will be called when the composable becomes visible
+  LaunchedEffect(Unit) { viewModel.refreshFriendRequests() }
 
   Row(
       modifier = Modifier.fillMaxWidth().testTag("Header"),
@@ -60,8 +54,8 @@ fun Header(navController: NavController, viewModel: SocialViewModel = hiltViewMo
                   Icon(viewModel.topButtonIcon, contentDescription = "Top Action Button")
                 }
           }
-          IconButton(onClick = { navController.navigate(LeafScreen.Notifications.route) }) {
-            BadgedBox(badge = { if (showBadge) Badge {} }) {
+          BadgedBox(badge = { if (viewModel.hasFriendRequest) Badge {} }) {
+            IconButton(onClick = { navController.navigate(LeafScreen.Notifications.route) }) {
               Icon(Icons.Filled.Notifications, contentDescription = "Notification Icon")
             }
           }

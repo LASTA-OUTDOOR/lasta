@@ -9,7 +9,7 @@ interface SocialRepository {
   fun getFriends(userId: String): List<UserModel>
 
   // returns all the activities done by friends in the last
-  fun getLatestFriendActivities(userId: String ,days: Int): List<ActivitiesDatabaseType>
+  fun getLatestFriendActivities(userId: String, days: Int): List<ActivitiesDatabaseType>
 
   // returns all the messages
   fun getMessages(userId: String): List<String>

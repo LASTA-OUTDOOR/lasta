@@ -31,11 +31,20 @@ constructor(
     val preferences: PreferencesRepository
 ) : ViewModel() {
 
+  // get the user id
+  val userId = runBlocking { preferences.userPreferencesFlow.first().uid }
+
+  // Get all the friends request
+  var friendsRequest: List<UserModel> by mutableStateOf(repository.getFriendRequests(userId))
+
+  // feedback message for the friend request
   var friendRequestFeedback: String by mutableStateOf("")
 
-  private val numberOfDays = 7
+  // Is there a notification for a friend request
+  var hasFriendRequest: Boolean by mutableStateOf(friendsRequest.isNotEmpty())
 
-  val userId = runBlocking { preferences.userPreferencesFlow.first().uid }
+  // number of days to consider for the latest activities
+  private val numberOfDays = 7
 
   // is the top button visible
   var topButton by mutableStateOf(false)
@@ -99,7 +108,7 @@ constructor(
       repository.acceptFriendRequest(userId, friend.userId)
     }
     // update the list of friends
-    friendsRequest = friendsRequest.minus(friend)
+    refreshFriendRequests()
   }
 
   // Decline a friend request
@@ -109,26 +118,19 @@ constructor(
       repository.declineFriendRequest(userId, friend.userId)
     }
     // update the list of friends
-    friendsRequest = friendsRequest.minus(friend)
+    refreshFriendRequests()
   }
 
   // Refresh the list of friends request
   fun refreshFriendRequests() {
     viewModelScope.launch {
       friendsRequest = repository.getFriendRequests(userId)
+      hasFriendRequest = friendsRequest.isNotEmpty()
     }
   }
 
   // Refresh the list of friends
   fun refreshFriends() {
-    viewModelScope.launch {
-      friends = repository.getFriends(userId)
-    }
+    viewModelScope.launch { friends = repository.getFriends(userId) }
   }
-
-  // Get all the friends request
-  var friendsRequest: List<UserModel> by
-      mutableStateOf(
-            repository.getFriendRequests(userId)
-      )
 }
