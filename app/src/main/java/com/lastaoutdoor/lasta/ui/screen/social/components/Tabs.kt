@@ -49,8 +49,7 @@ fun TabMenu(navController: NavController, viewModel: SocialViewModel = hiltViewM
       FriendsList()
     }
     2 -> {
-      viewModel.showTopButton(
-          Icons.Filled.Email, onClick = { viewModel.displayFriendPicker() })
+      viewModel.showTopButton(Icons.Filled.Email, onClick = { viewModel.displayFriendPicker() })
       MessageList(navController)
     }
   }

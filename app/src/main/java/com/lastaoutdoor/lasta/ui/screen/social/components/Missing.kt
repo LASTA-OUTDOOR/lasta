@@ -24,9 +24,7 @@ import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 @Composable
 fun ConnectionMissing() {
   Column(
-      modifier = Modifier
-          .fillMaxSize()
-          .testTag("ConnectionMissing"),
+      modifier = Modifier.fillMaxSize().testTag("ConnectionMissing"),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally) {
         Image(
@@ -45,9 +43,7 @@ fun ConnectionMissing() {
 @Composable
 fun FriendsMissing() {
   Column(
-      modifier = Modifier
-          .fillMaxSize()
-          .testTag("FriendMissing"),
+      modifier = Modifier.fillMaxSize().testTag("FriendMissing"),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
@@ -62,9 +58,7 @@ fun FriendsMissing() {
 @Composable
 fun MessageMissing(viewModel: SocialViewModel = hiltViewModel()) {
   Column(
-      modifier = Modifier
-          .fillMaxSize()
-          .testTag("MessageMissing"),
+      modifier = Modifier.fillMaxSize().testTag("MessageMissing"),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
@@ -73,6 +67,8 @@ fun MessageMissing(viewModel: SocialViewModel = hiltViewModel()) {
                 TextStyle(
                     fontWeight = FontWeight.Normal, fontSize = 20.sp, textAlign = TextAlign.Center),
             modifier = Modifier.padding(15.dp))
-        Button(onClick = { viewModel.displayFriendPicker() }) { Text(text = "Start a conversation!") }
+        Button(onClick = { viewModel.displayFriendPicker() }) {
+          Text(text = "Start a conversation!")
+        }
       }
 }

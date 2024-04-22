@@ -28,21 +28,21 @@ import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
 @Composable
-fun MessageList(navController: NavController ,viewModel: SocialViewModel = hiltViewModel()) {
+fun MessageList(navController: NavController, viewModel: SocialViewModel = hiltViewModel()) {
   val isConnected = viewModel.isConnected.collectAsState()
   when {
     isConnected.value == ConnectionState.OFFLINE -> {
       ConnectionMissing()
     }
     viewModel.messages.isEmpty() -> {
-        if(viewModel.displayFriendPicker) {
-            FriendPicker(navController = navController)
-        }
-        MessageMissing()
+      if (viewModel.displayFriendPicker) {
+        FriendPicker(navController = navController)
+      }
+      MessageMissing()
     }
     else -> {
       // call the friend picker (displayed when clicking on the email icon)
-      if(viewModel.displayFriendPicker) {
+      if (viewModel.displayFriendPicker) {
         FriendPicker(navController = navController)
       }
 
