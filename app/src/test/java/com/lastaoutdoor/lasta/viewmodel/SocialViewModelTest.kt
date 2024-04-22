@@ -18,10 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.take
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -35,7 +32,7 @@ import org.junit.runner.Description
 
 @ExperimentalCoroutinesApi
 class MainCoroutineRule(private val dispatcher: TestDispatcher = StandardTestDispatcher()) :
-  TestWatcher() {
+    TestWatcher() {
 
   override fun starting(description: Description?) {
     super.starting(description)
@@ -145,21 +142,13 @@ class FakeConnectivityRepository : ConnectivityRepository {
 class FakePreferencesRepository(override val userPreferencesFlow: Flow<UserPreferences>) :
     PreferencesRepository {
 
-  override suspend fun updateIsLoggedIn(isLoggedIn: Boolean) {
-    TODO("Not yet implemented")
-  }
+  override suspend fun updateIsLoggedIn(isLoggedIn: Boolean) {}
 
-  override suspend fun updateUserInfo(user: UserModel?) {
-    TODO("Not yet implemented")
-  }
+  override suspend fun updateUserInfo(user: UserModel?) {}
 
-  override suspend fun updateHikingLevel(hikingLevel: HikingLevel) {
-    TODO("Not yet implemented")
-  }
+  override suspend fun updateHikingLevel(hikingLevel: HikingLevel) {}
 
-  override suspend fun clearPreferences() {
-    TODO("Not yet implemented")
-  }
+  override suspend fun clearPreferences() {}
 }
 
 class SocialViewModelTest {
@@ -204,9 +193,5 @@ class SocialViewModelTest {
     assertFalse(viewModel.topButton)
   }
 
-
-  @ExperimentalCoroutinesApi
-  @get:Rule
-  var mainCoroutineRule = MainCoroutineRule()
-
+  @ExperimentalCoroutinesApi @get:Rule var mainCoroutineRule = MainCoroutineRule()
 }

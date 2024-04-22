@@ -90,7 +90,8 @@ constructor(
     viewModelScope.launch {
       // verify formatting of email
       friendRequestFeedback =
-          if (android.util.Patterns.EMAIL_ADDRESS != null && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+          if (android.util.Patterns.EMAIL_ADDRESS != null &&
+              android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             // get current user id from the flow
             val userId = preferences.userPreferencesFlow.first().uid
             // 2. send friend request
@@ -127,5 +128,4 @@ constructor(
   fun refreshFriends() {
     viewModelScope.launch { friends = repository.getFriends(userId) }
   }
-
 }
