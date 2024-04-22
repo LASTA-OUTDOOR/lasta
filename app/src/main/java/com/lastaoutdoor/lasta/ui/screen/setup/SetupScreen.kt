@@ -31,12 +31,11 @@ fun SetupScreen(
 
   Modifier.testTag("SetupScreen")
 
-  val languages = listOf("English", "French", "Spanish")
+  val languages = listOf("English", "French", "German")
 
   var selectedLanguage by remember { mutableStateOf(languages[0]) }
   val outdoorActivities = listOf("Hiking", "Climbing")
   var isHikingSelected by remember { mutableStateOf(true) }
-  var expanded by remember { mutableStateOf(false) }
 
   Column(
       modifier = Modifier.fillMaxSize().padding(horizontal = 30.dp, vertical = 190.dp),

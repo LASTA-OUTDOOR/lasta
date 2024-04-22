@@ -109,7 +109,7 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
    * @param field The field to update
    * @param value The new value of the field
    */
-  fun updateFieldInUser(uid: String, field: String, value: String) {
+  fun updateFieldInUser(uid: String, field: String, value: Any) {
     // Create a reference to the document with the user's UID
     val userDocumentRef = database.collection(USERS_COLLECTION).document(uid)
 
@@ -272,11 +272,12 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
               userName = prefSettings["userName"] as String,
               email = prefSettings["email"] as String,
               profilePictureUrl = prefSettings["profilePictureUrl"] as String,
-              hikingLevel = prefSettings["hikingLevel"] as HikingLevel)
+              hikingLevel = prefSettings["hikingLevel"] as HikingLevel,
+              language = prefSettings["language"] as String)
         }
       }
       // Return default preferences if not found
-      return UserPreferences(false, "", "", "", "", HikingLevel.BEGINNER)
+      return UserPreferences(false, "", "", "", "", HikingLevel.BEGINNER, "English")
     }
   }
 }
