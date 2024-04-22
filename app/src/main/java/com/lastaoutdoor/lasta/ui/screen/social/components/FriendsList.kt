@@ -17,6 +17,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -25,17 +27,26 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
+import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FriendsList(viewModel: SocialViewModel = hiltViewModel()) {
-  if (!viewModel.isConnected) {
-    ConnectionMissing()
-  } else if (viewModel.friends.isNullOrEmpty()) {
-    FriendsMissing()
-  } else {
-    LazyColumn { items(viewModel.friends.size) { FriendsCard(viewModel.friends[it]) } }
+
+  LaunchedEffect(Unit) { viewModel.refreshFriends() }
+
+  val isConnected = viewModel.isConnected.collectAsState()
+  when {
+    isConnected.value == ConnectionState.OFFLINE -> {
+      ConnectionMissing()
+    }
+    viewModel.friends.isEmpty() -> {
+      FriendsMissing()
+    }
+    else -> {
+      LazyColumn { items(viewModel.friends.size) { FriendsCard(viewModel.friends[it]) } }
+    }
   }
 }
 
