@@ -15,8 +15,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import com.lastaoutdoor.lasta.R
 
 @Composable
 fun ModalUpperSheet(isRangePopup: Boolean) {
@@ -32,7 +34,7 @@ fun ModalUpperSheet(isRangePopup: Boolean) {
               contentDescription = "Settings",
               tint = MaterialTheme.colorScheme.secondary)
           Text(
-              text = "   Modify your search settings   ",
+              text = "   ${LocalContext.current.getString(R.string.modify_search)}   ",
           )
           Icon(
               imageVector = Icons.Default.Settings,

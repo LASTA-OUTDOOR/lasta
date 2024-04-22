@@ -2,10 +2,12 @@ package com.lastaoutdoor.lasta.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.ui.screen.activities.MoreInfoScreen
 import com.lastaoutdoor.lasta.ui.screen.discovery.DiscoveryScreen
 import com.lastaoutdoor.lasta.ui.screen.favorites.FavoritesScreen
@@ -21,15 +23,19 @@ fun MenuNavGraph(
     navController: NavHostController,
     modifier: Modifier
 ) {
+    val disc = LocalContext.current.getString(R.string.tab_discover)
+    val prof = LocalContext.current.getString(R.string.tab_profile)
+    val soc = LocalContext.current.getString(R.string.socials)
+    val fav = LocalContext.current.getString(R.string.favs)
   NavHost(
       navController = navController,
       route = RootScreen.Main.route,
       modifier = modifier.testTag("MenuNavGraph"),
-      startDestination = LeafScreen.Discover.route) {
-        composable(LeafScreen.Discover.route) { DiscoveryScreen(navController) }
-        composable(LeafScreen.Favorites.route) { FavoritesScreen(navController) }
-        composable(LeafScreen.Social.route) { SocialScreen(navController) }
-        composable(LeafScreen.Profile.route) {
+      startDestination = disc) {
+        composable(disc) { DiscoveryScreen(navController) }
+        composable(fav) { FavoritesScreen(navController) }
+        composable(soc) { SocialScreen(navController) }
+        composable(prof) {
           ProfileScreen(rootNavController = rootNavController)
         }
         composable(LeafScreen.MoreInfo.route) { MoreInfoScreen(navController = navController) }
