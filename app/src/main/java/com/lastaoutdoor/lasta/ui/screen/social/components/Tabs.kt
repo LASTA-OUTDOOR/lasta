@@ -45,7 +45,7 @@ fun TabMenu(navController: NavController, viewModel: SocialViewModel = hiltViewM
     }
     1 -> {
       viewModel.showTopButton(
-          Icons.Filled.Add, onClick = { navController.navigate(LeafScreen.AddFriend.route) })
+          Icons.Filled.Add, onClick = { viewModel.displayAddFriendDialog() })
       FriendsList()
     }
     2 -> {

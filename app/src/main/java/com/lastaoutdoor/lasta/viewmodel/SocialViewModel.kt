@@ -52,6 +52,9 @@ constructor(
   // Display the list of friends that can be messaged
   var displayFriendPicker by mutableStateOf(false)
 
+  // Display the dialog to add a friend
+  var displayAddFriendDialog by mutableStateOf(false)
+
   // returns all the messages of the user
   var messages = repository.getMessages(userId)
 
@@ -140,5 +143,20 @@ constructor(
   // Hide the friend picker (dismiss request)
   fun hideFriendPicker() {
     displayFriendPicker = false
+  }
+
+  // Display the dialog to add a friend
+  fun displayAddFriendDialog() {
+    displayAddFriendDialog = true
+  }
+
+  // Hide the dialog to add a friend
+  fun hideAddFriendDialog() {
+      displayAddFriendDialog = false
+  }
+  
+  // Clear the feedback message for the friend request
+  fun clearFriendRequestFeedback() {
+    friendRequestFeedback = ""
   }
 }

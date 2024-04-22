@@ -15,6 +15,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
+import com.lastaoutdoor.lasta.data.model.social.MessageModel
 import com.lastaoutdoor.lasta.data.model.user.HikingLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.di.AppModule
@@ -39,7 +40,7 @@ class FakeSocialRepository : SocialRepository {
 
   var friends: ArrayList<UserModel> = ArrayList()
   var activities: ArrayList<ActivitiesDatabaseType> = ArrayList()
-  var messages: ArrayList<String> = ArrayList()
+  var messages: ArrayList<MessageModel> = ArrayList()
 
   var sentRequest: ArrayList<String> = ArrayList()
   var receivedRequest: ArrayList<String> = ArrayList()
@@ -55,7 +56,7 @@ class FakeSocialRepository : SocialRepository {
     return activities
   }
 
-  override fun getMessages(userId: String): List<String> {
+  override fun getMessages(userId: String): List<MessageModel> {
     return messages
   }
 
@@ -80,7 +81,7 @@ class FakeSocialRepository : SocialRepository {
     receivedRequest.remove(requester)
   }
 
-  fun setMessages(messages: List<String>) {
+  fun setMessages(messages: List<MessageModel>) {
     this.messages.clear()
     this.messages.addAll(messages)
   }
@@ -293,7 +294,7 @@ class SocialScreenKtTest {
   fun testFilledMessages() {
 
     // Fake data
-    val message = "message"
+    val message = MessageModel("1", "2", "3", "4", 1)
     val messages = listOf(message, message, message, message, message)
 
     // Set the content to the social screen

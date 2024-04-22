@@ -1,6 +1,7 @@
 package com.lastaoutdoor.lasta.repository
 
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
+import com.lastaoutdoor.lasta.data.model.social.MessageModel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 
 interface SocialRepository {
@@ -12,7 +13,7 @@ interface SocialRepository {
   fun getLatestFriendActivities(userId: String, days: Int): List<ActivitiesDatabaseType>
 
   // returns all the messages
-  fun getMessages(userId: String): List<String>
+  fun getMessages(userId: String): List<MessageModel>
 
   // sends a friend request to the user with the given email, returns true if the request was sent
   // successfully

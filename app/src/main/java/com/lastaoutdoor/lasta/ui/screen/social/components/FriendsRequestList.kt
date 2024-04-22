@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -100,7 +101,7 @@ fun FriendsRequestCard(
                 Row {
                   IconButton(
                       modifier = Modifier.testTag("AcceptButton"), onClick = { accept(friend) }) {
-                        Icon(Icons.Filled.Add, contentDescription = "Accept the friend request")
+                        Icon(Icons.Filled.Check, contentDescription = "Accept the friend request")
                       }
                   IconButton(
                       modifier = Modifier.testTag("DeclineButton"), onClick = { decline(friend) }) {

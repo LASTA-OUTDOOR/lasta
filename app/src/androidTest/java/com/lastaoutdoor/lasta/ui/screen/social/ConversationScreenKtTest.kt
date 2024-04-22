@@ -19,7 +19,7 @@ import org.junit.Test
 
 @HiltAndroidTest
 @UninstallModules(AppModule::class)
-class NewMessageScreenKtTest {
+class ConversationScreenKtTest {
   @get:Rule(order = 0) val hiltRule = HiltAndroidRule(this)
 
   // Create a compose rule
@@ -46,7 +46,7 @@ class NewMessageScreenKtTest {
     composeRule.activity.setContent {
       socialViewModel = hiltViewModel()
       (socialViewModel.connectionRepo as FakeConnectivityRepository).setConnectionStateToFalse()
-      NewMessageScreen(navController)
+      ConversationScreen(navController)
     }
 
     // Header (title)

@@ -2,6 +2,7 @@ package com.lastaoutdoor.lasta.data.social
 
 import com.lastaoutdoor.lasta.data.db.DatabaseManager
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
+import com.lastaoutdoor.lasta.data.model.social.MessageModel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.repository.SocialRepository
 import javax.inject.Inject
@@ -20,7 +21,7 @@ class SocialRepositoryImpl @Inject constructor() : SocialRepository {
     return emptyList()
   }
 
-  override fun getMessages(userId: String): List<String> {
+  override fun getMessages(userId: String): List<MessageModel> {
     return emptyList()
   }
 

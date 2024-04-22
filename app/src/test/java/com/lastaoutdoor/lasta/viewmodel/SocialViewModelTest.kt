@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Email
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
+import com.lastaoutdoor.lasta.data.model.social.MessageModel
 import com.lastaoutdoor.lasta.data.model.user.HikingLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.data.model.user.UserPreferences
@@ -50,7 +51,7 @@ class FakeSocialRepository : SocialRepository {
 
   var friends: ArrayList<UserModel> = ArrayList()
   var activities: ArrayList<ActivitiesDatabaseType> = ArrayList()
-  var messages: ArrayList<String> = ArrayList()
+  var messages: ArrayList<MessageModel> = ArrayList()
 
   var sentRequest: ArrayList<String> = ArrayList()
   var receivedRequest: ArrayList<String> = ArrayList()
@@ -66,7 +67,7 @@ class FakeSocialRepository : SocialRepository {
     return activities
   }
 
-  override fun getMessages(userId: String): List<String> {
+  override fun getMessages(userId: String): List<MessageModel> {
     return messages
   }
 
@@ -91,7 +92,7 @@ class FakeSocialRepository : SocialRepository {
     receivedRequest.remove(requester)
   }
 
-  fun setMessages(messages: List<String>) {
+  fun setMessages(messages: List<MessageModel>) {
     this.messages.clear()
     this.messages.addAll(messages)
   }

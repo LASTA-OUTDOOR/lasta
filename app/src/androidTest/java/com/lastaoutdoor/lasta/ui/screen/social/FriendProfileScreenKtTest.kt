@@ -12,6 +12,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.ui.MainActivity
+import com.lastaoutdoor.lasta.ui.screen.social.components.AddFriendDialog
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -23,7 +24,7 @@ import org.junit.Test
 
 @HiltAndroidTest
 @UninstallModules(AppModule::class)
-class AddFriendScreenKtTest {
+class FriendProfileScreenKtTest {
 
   @get:Rule(order = 0) val hiltRule = HiltAndroidRule(this)
 
@@ -52,7 +53,8 @@ class AddFriendScreenKtTest {
     composeRule.activity.setContent {
       socialViewModel = hiltViewModel()
       (socialViewModel.connectionRepo as FakeConnectivityRepository).setConnectionStateToFalse()
-      AddFriendScreen(navController)
+      socialViewModel.displayAddFriendDialog()
+      AddFriendDialog()
     }
 
     // Header (title)
