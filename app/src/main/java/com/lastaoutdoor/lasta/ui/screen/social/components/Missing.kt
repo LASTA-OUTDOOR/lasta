@@ -17,12 +17,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
 @Composable
 fun ConnectionMissing() {
   Column(
-      modifier = Modifier.fillMaxSize().testTag("ConnectionMissing"),
+      modifier = Modifier
+          .fillMaxSize()
+          .testTag("ConnectionMissing"),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally) {
         Image(
@@ -41,7 +45,9 @@ fun ConnectionMissing() {
 @Composable
 fun FriendsMissing() {
   Column(
-      modifier = Modifier.fillMaxSize().testTag("FriendMissing"),
+      modifier = Modifier
+          .fillMaxSize()
+          .testTag("FriendMissing"),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
@@ -54,9 +60,11 @@ fun FriendsMissing() {
 }
 
 @Composable
-fun MessageMissing() {
+fun MessageMissing(viewModel: SocialViewModel = hiltViewModel()) {
   Column(
-      modifier = Modifier.fillMaxSize().testTag("MessageMissing"),
+      modifier = Modifier
+          .fillMaxSize()
+          .testTag("MessageMissing"),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
@@ -65,6 +73,6 @@ fun MessageMissing() {
                 TextStyle(
                     fontWeight = FontWeight.Normal, fontSize = 20.sp, textAlign = TextAlign.Center),
             modifier = Modifier.padding(15.dp))
-        Button(onClick = { /*TODO*/}) { Text(text = "Start a conversation!") }
+        Button(onClick = { viewModel.displayFriendPicker() }) { Text(text = "Start a conversation!") }
       }
 }

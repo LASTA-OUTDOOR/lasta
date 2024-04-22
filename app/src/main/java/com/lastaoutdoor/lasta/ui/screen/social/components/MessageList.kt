@@ -23,20 +23,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
 @Composable
-fun MessageList(viewModel: SocialViewModel = hiltViewModel()) {
+fun MessageList(navController: NavController ,viewModel: SocialViewModel = hiltViewModel()) {
   val isConnected = viewModel.isConnected.collectAsState()
   when {
     isConnected.value == ConnectionState.OFFLINE -> {
       ConnectionMissing()
     }
     viewModel.messages.isEmpty() -> {
-      MessageMissing()
+        if(viewModel.displayFriendPicker) {
+            FriendPicker(navController = navController)
+        }
+        MessageMissing()
     }
     else -> {
+      // call the friend picker (displayed when clicking on the email icon)
+      if(viewModel.displayFriendPicker) {
+        FriendPicker(navController = navController)
+      }
+
+      // list of messages
       LazyColumn { items(viewModel.messages.size) { MessageCard(viewModel.messages[it]) } }
     }
   }

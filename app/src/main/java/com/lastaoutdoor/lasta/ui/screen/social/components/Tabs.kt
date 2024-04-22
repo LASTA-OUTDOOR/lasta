@@ -50,8 +50,8 @@ fun TabMenu(navController: NavController, viewModel: SocialViewModel = hiltViewM
     }
     2 -> {
       viewModel.showTopButton(
-          Icons.Filled.Email, onClick = { navController.navigate(LeafScreen.NewMessage.route) })
-      MessageList()
+          Icons.Filled.Email, onClick = { viewModel.displayFriendPicker() })
+      MessageList(navController)
     }
   }
 }

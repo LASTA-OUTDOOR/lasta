@@ -49,6 +49,9 @@ constructor(
   // is the top button visible
   var topButton by mutableStateOf(false)
 
+  // Display the list of friends that can be messaged
+  var displayFriendPicker by mutableStateOf(false)
+
   // returns all the messages of the user
   var messages = repository.getMessages(userId)
 
@@ -127,5 +130,15 @@ constructor(
   // Refresh the list of friends
   fun refreshFriends() {
     viewModelScope.launch { friends = repository.getFriends(userId) }
+  }
+
+  // This displays the friend picker (in order to send a message)
+  fun displayFriendPicker() {
+    displayFriendPicker = true
+  }
+
+  // Hide the friend picker (dismiss request)
+  fun hideFriendPicker() {
+    displayFriendPicker = false
   }
 }
