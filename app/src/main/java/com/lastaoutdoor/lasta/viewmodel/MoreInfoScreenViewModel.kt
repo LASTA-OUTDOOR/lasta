@@ -14,7 +14,7 @@ class MoreInfoScreenViewModel @Inject constructor() : ViewModel() {
       OutdoorActivity(ActivityType.CLIMBING, 0, 1.5f, "3 hours", "Test Title")
   val activityToDisplay = mutableStateOf(dummyActivity)
 
-  /*Changes the int difficulty of the activity for its String equivalent*/
+  /*Changes the int difficulty of the activity for its String equivalent : 0 -> Easy, 1 -> Medium, etc...*/
   fun processDiffText(outdoorActivity: OutdoorActivity): String {
     return when (outdoorActivity.difficulty) {
       0 -> "Easy"
