@@ -42,14 +42,16 @@ fun FriendsRequestList(viewModel: SocialViewModel = hiltViewModel()) {
   Text(
       "Friend requests",
       style = MaterialTheme.typography.titleLarge,
-      modifier = Modifier.padding(8.dp))
+      modifier = Modifier.padding(8.dp).testTag("FriendRequestTitle"))
   val isConnected = viewModel.isConnected.collectAsState()
   when {
     isConnected.value == ConnectionState.OFFLINE -> {
       ConnectionMissing()
     }
     viewModel.friendsRequest.isEmpty() -> {
-      Text("You do not have any friends request yet", Modifier.padding(8.dp))
+      Text(
+          "You do not have any friends request yet",
+          Modifier.padding(8.dp).testTag("NoFriendRequest"))
     }
     else -> {
       LazyColumn {
@@ -96,12 +98,14 @@ fun FriendsRequestCard(
               Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
                 Text(friend.userName ?: "Unknown user")
                 Row {
-                  IconButton(onClick = { accept(friend) }) {
-                    Icon(Icons.Filled.Add, contentDescription = "Accept the friend request")
-                  }
-                  IconButton(onClick = { decline(friend) }) {
-                    Icon(Icons.Filled.Clear, contentDescription = "Decline the friend request")
-                  }
+                  IconButton(
+                      modifier = Modifier.testTag("AcceptButton"), onClick = { accept(friend) }) {
+                        Icon(Icons.Filled.Add, contentDescription = "Accept the friend request")
+                      }
+                  IconButton(
+                      modifier = Modifier.testTag("DeclineButton"), onClick = { decline(friend) }) {
+                        Icon(Icons.Filled.Clear, contentDescription = "Decline the friend request")
+                      }
                 }
               }
             }

@@ -90,7 +90,7 @@ constructor(
     viewModelScope.launch {
       // verify formatting of email
       friendRequestFeedback =
-          if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+          if (android.util.Patterns.EMAIL_ADDRESS != null && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             // get current user id from the flow
             val userId = preferences.userPreferencesFlow.first().uid
             // 2. send friend request
@@ -103,20 +103,14 @@ constructor(
   }
 
   fun acceptFriend(friend: UserModel) {
-    viewModelScope.launch {
-      val userId = preferences.userPreferencesFlow.first().uid
-      repository.acceptFriendRequest(userId, friend.userId)
-    }
+    repository.acceptFriendRequest(userId, friend.userId)
     // update the list of friends
     refreshFriendRequests()
   }
 
   // Decline a friend request
   fun declineFriend(friend: UserModel) {
-    viewModelScope.launch {
-      val userId = preferences.userPreferencesFlow.first().uid
-      repository.declineFriendRequest(userId, friend.userId)
-    }
+    repository.declineFriendRequest(userId, friend.userId)
     // update the list of friends
     refreshFriendRequests()
   }
@@ -133,4 +127,5 @@ constructor(
   fun refreshFriends() {
     viewModelScope.launch { friends = repository.getFriends(userId) }
   }
+
 }

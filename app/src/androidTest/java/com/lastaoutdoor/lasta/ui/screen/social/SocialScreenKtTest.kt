@@ -34,26 +34,50 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+// Class mocking the social repository
 class FakeSocialRepository : SocialRepository {
 
   var friends: ArrayList<UserModel> = ArrayList()
   var activities: ArrayList<ActivitiesDatabaseType> = ArrayList()
   var messages: ArrayList<String> = ArrayList()
 
-  override fun getFriends(): List<UserModel>? {
+  var sentRequest: ArrayList<String> = ArrayList()
+  var receivedRequest: ArrayList<String> = ArrayList()
+
+  // Change this to simulate the case were the function should return false
+  var shouldWork = true
+
+  override fun getFriends(userId: String): List<UserModel> {
     return friends
   }
 
-  override fun getLatestFriendActivities(days: Int): List<ActivitiesDatabaseType>? {
+  override fun getLatestFriendActivities(userId: String, days: Int): List<ActivitiesDatabaseType> {
     return activities
   }
 
-  override fun getMessages(): List<String>? {
+  override fun getMessages(userId: String): List<String> {
     return messages
   }
 
-  override fun sendFriendRequest(email: String): Boolean {
+  override fun sendFriendRequest(uid: String, email: String): Boolean {
+    if (shouldWork) {
+      sentRequest.add(email)
+      return true
+    }
     return false
+  }
+
+  override fun getFriendRequests(userId: String): List<UserModel> {
+    return receivedRequest.map { UserModel(it, "name", "email", "photo", HikingLevel.BEGINNER) }
+  }
+
+  override fun acceptFriendRequest(source: String, requester: String) {
+    friends.add(UserModel(requester, "name", "email", "photo", HikingLevel.BEGINNER))
+    receivedRequest.remove(requester)
+  }
+
+  override fun declineFriendRequest(source: String, requester: String) {
+    receivedRequest.remove(requester)
   }
 
   fun setMessages(messages: List<String>) {
@@ -69,6 +93,24 @@ class FakeSocialRepository : SocialRepository {
   fun setLatestFriendActivities(activities: List<ActivitiesDatabaseType>) {
     this.activities.clear()
     this.activities.addAll(activities)
+  }
+
+  fun setReceivedRequest(receivedRequest: List<String>) {
+    this.receivedRequest.clear()
+    this.receivedRequest.addAll(receivedRequest)
+  }
+
+  fun setSentRequest(sentRequest: List<String>) {
+    this.sentRequest.clear()
+    this.sentRequest.addAll(sentRequest)
+  }
+
+  fun clear() {
+    friends.clear()
+    activities.clear()
+    messages.clear()
+    sentRequest.clear()
+    receivedRequest.clear()
   }
 }
 
@@ -171,6 +213,13 @@ class SocialScreenKtTest {
     composeRule.onNodeWithText("Friends").assertIsNotSelected()
     composeRule.onNodeWithText("Message").assertIsNotSelected()
     composeRule.onNodeWithText("Feed").assertIsSelected()
+
+    // Test the button in the header -> go to friends tab
+    composeRule.onNodeWithText("Friends").performClick()
+    // change the call back in viewmodel
+    composeRule.onNodeWithTag("TopButton").assertIsDisplayed()
+    socialViewModel.topButtonOnClick = {}
+    composeRule.onNodeWithTag("TopButton").performClick()
   }
 
   @Test
