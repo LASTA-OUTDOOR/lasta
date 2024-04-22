@@ -34,7 +34,7 @@ class MoreInfoScreenTest {
   }
 
   @Test
-  fun startButton_isDisplayed() {
-    composeRule.onNodeWithTag("Start button").assertIsDisplayed()
+  fun topBar_isDisplayed() {
+    composeRule.onNodeWithTag("Top Bar").assertIsDisplayed()
   }
 }
