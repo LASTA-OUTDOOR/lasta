@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -53,40 +54,46 @@ import com.lastaoutdoor.lasta.ui.screen.discovery.components.RangeSearchComposab
 import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenType
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenViewModel
+import java.util.Locale
 
 @Composable
 fun DiscoveryScreen(
     navController: NavController,
     discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel()
 ) {
-  val screen by discoveryScreenViewModel.screen.collectAsState()
+    val screen by discoveryScreenViewModel.screen.collectAsState()
 
-  var isRangePopup by rememberSaveable { mutableStateOf(false) }
+    var isRangePopup by rememberSaveable { mutableStateOf(false) }
+    val locale = Locale("fr")
+    val config = LocalContext.current.resources.configuration
+    config.setLocale(locale)
 
-  RangeSearchComposable(
-      discoveryScreenViewModel = discoveryScreenViewModel,
-      isRangePopup = isRangePopup,
-      onDismissRequest = { isRangePopup = false })
 
-  if (screen == DiscoveryScreenType.LIST) {
-    LazyColumn(
-        modifier =
+
+    RangeSearchComposable(
+        discoveryScreenViewModel = discoveryScreenViewModel,
+        isRangePopup = isRangePopup,
+        onDismissRequest = { isRangePopup = false })
+
+    if (screen == DiscoveryScreenType.LIST) {
+        LazyColumn(
+            modifier =
             Modifier.testTag("discoveryScreen").background(MaterialTheme.colorScheme.background)) {
-          item { HeaderComposable(updatePopup = { isRangePopup = true }) }
+            item { HeaderComposable(updatePopup = { isRangePopup = true }) }
 
-          item {
-            SeparatorComponent() // Add a separator between the header and the activities
-            Spacer(modifier = Modifier.height(8.dp))
-            ActivitiesDisplay(navController)
-          }
+            item {
+                SeparatorComponent() // Add a separator between the header and the activities
+                Spacer(modifier = Modifier.height(8.dp))
+                ActivitiesDisplay(navController)
+            }
         }
-  } else if (screen == DiscoveryScreenType.MAP) {
-    MapScreen()
-    HeaderComposable(updatePopup = { isRangePopup = true })
-  }
+    } else if (screen == DiscoveryScreenType.MAP) {
+        MapScreen()
+        HeaderComposable(updatePopup = { isRangePopup = true })
+    }
 
-  // Add the modal upper sheet
-  ModalUpperSheet(isRangePopup = isRangePopup)
+    // Add the modal upper sheet
+    ModalUpperSheet(isRangePopup = isRangePopup)
 }
 
 @Composable
@@ -94,86 +101,86 @@ fun HeaderComposable(
     discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel(),
     updatePopup: () -> Unit
 ) {
-  val screen by discoveryScreenViewModel.screen.collectAsState()
-  val range by discoveryScreenViewModel.range.collectAsState()
-  val selectedLocality = discoveryScreenViewModel.selectedLocality.collectAsState().value
-  val iconSize = 48.dp // Adjust icon size as needed
+    val screen by discoveryScreenViewModel.screen.collectAsState()
+    val range by discoveryScreenViewModel.range.collectAsState()
+    val selectedLocality = discoveryScreenViewModel.selectedLocality.collectAsState().value
+    val iconSize = 48.dp // Adjust icon size as needed
 
-  Surface(
-      modifier = Modifier.fillMaxWidth().graphicsLayer { alpha = 0.9f },
-      color = MaterialTheme.colorScheme.background,
-      shadowElevation = 3.dp) {
+    Surface(
+        modifier = Modifier.fillMaxWidth().graphicsLayer { alpha = 0.9f },
+        color = MaterialTheme.colorScheme.background,
+        shadowElevation = 3.dp) {
         Column {
-          // Location bar
-          Row(
-              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-              verticalAlignment = Alignment.CenterVertically) {
+            // Location bar
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically) {
                 Column {
-                  Row {
-                    Text(text = selectedLocality.first, style = MaterialTheme.typography.bodyMedium)
+                    Row {
+                        Text(text = selectedLocality.first, style = MaterialTheme.typography.bodyMedium)
 
-                    IconButton(
-                        onClick = updatePopup,
-                        modifier = Modifier.size(24.dp).testTag("listSearchOptionsEnableButton")) {
-                          Icon(
-                              Icons.Outlined.KeyboardArrowDown,
-                              contentDescription = "Filter",
-                              modifier = Modifier.size(24.dp))
+                        IconButton(
+                            onClick = updatePopup,
+                            modifier = Modifier.size(24.dp).testTag("listSearchOptionsEnableButton")) {
+                            Icon(
+                                Icons.Outlined.KeyboardArrowDown,
+                                contentDescription = "Filter",
+                                modifier = Modifier.size(24.dp))
                         }
-                  }
+                    }
 
-                  Text(
-                      text = "Less than ${(range / 1000).toInt()} km around you",
-                      style = MaterialTheme.typography.bodySmall)
+                    Text(
+                        text = "${LocalContext.current.getString(R.string.less_than)} ${(range / 1000).toInt()} km ${LocalContext.current.getString(R.string.around_you)}",
+                        style = MaterialTheme.typography.bodySmall)
                 }
-              }
+            }
 
-          // Search bar with toggle buttons
-          Row(
-              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-              verticalAlignment = Alignment.CenterVertically) {
+            // Search bar with toggle buttons
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically) {
                 SearchBarComponent(Modifier.weight(1f), onSearch = { /*TODO*/})
                 Spacer(modifier = Modifier.width(8.dp))
                 IconButton(onClick = { /*TODO*/}, modifier = Modifier.size(iconSize)) {
-                  Icon(
-                      painter = painterResource(id = R.drawable.filter_icon),
-                      contentDescription = "Filter",
-                      modifier = Modifier.size(24.dp))
+                    Icon(
+                        painter = painterResource(id = R.drawable.filter_icon),
+                        contentDescription = "Filter",
+                        modifier = Modifier.size(24.dp))
                 }
-              }
-          Row(
-              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-              verticalAlignment = Alignment.CenterVertically,
-              horizontalArrangement = Arrangement.Center) {
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center) {
                 DisplaySelection(
                     DiscoveryScreenType.values().toList(),
                     screen,
                     discoveryScreenViewModel::setScreen,
                     DiscoveryScreenType::toString)
-              }
+            }
 
-          if (screen == DiscoveryScreenType.LIST) {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically) {
-                  Text("Filtering by:", style = MaterialTheme.typography.bodyMedium)
-                  Spacer(modifier = Modifier.width(8.dp))
-                  Text(
-                      text = "Relevance",
-                      style = MaterialTheme.typography.bodyMedium,
-                      color = MaterialTheme.colorScheme.primary)
+            if (screen == DiscoveryScreenType.LIST) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically) {
+                    Text(LocalContext.current.getString(R.string.filter_by), style = MaterialTheme.typography.bodyMedium)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Relevance",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.primary)
 
-                  IconButton(onClick = { /*TODO*/}, modifier = Modifier.size(24.dp)) {
-                    Icon(
-                        Icons.Outlined.KeyboardArrowDown,
-                        contentDescription = "Filter",
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(24.dp))
-                  }
+                    IconButton(onClick = { /*TODO*/}, modifier = Modifier.size(24.dp)) {
+                        Icon(
+                            Icons.Outlined.KeyboardArrowDown,
+                            contentDescription = "Filter",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(24.dp))
+                    }
                 }
-          }
+            }
         }
-      }
+    }
 }
 
 @Composable
@@ -181,68 +188,68 @@ fun ActivitiesDisplay(
     navController: NavController,
     discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel()
 ) {
-  val activities = discoveryScreenViewModel.climbingActivities
-  for (a in activities) {
-    Card(
-        modifier =
+    val activities = discoveryScreenViewModel.climbingActivities
+    for (a in activities) {
+        Card(
+            modifier =
             Modifier.fillMaxWidth()
                 .wrapContentHeight()
                 .padding(vertical = 8.dp, horizontal = 16.dp)
                 .clickable(onClick = { navController.navigate(LeafScreen.MoreInfo.route) }),
-        shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-    ) {
-      Column {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween) {
-              Box(
-                  modifier =
-                      Modifier.shadow(4.dp, RoundedCornerShape(30))
-                          .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
-                          .padding(PaddingValues(8.dp))) {
+            shape = RoundedCornerShape(8.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        ) {
+            Column {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween) {
+                    Box(
+                        modifier =
+                        Modifier.shadow(4.dp, RoundedCornerShape(30))
+                            .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
+                            .padding(PaddingValues(8.dp))) {
+                        Text(
+                            text = LocalContext.current.getString(R.string.Climbing),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onPrimary)
+                    }
+
+                    IconButton(
+                        onClick = { /*TODO*/ /* changed to this when favorite Icons.Filled.Favorite*/},
+                        modifier = Modifier.size(24.dp)) {
+                        Icon(
+                            Icons.Filled.FavoriteBorder,
+                            contentDescription = "Filter",
+                            modifier = Modifier.size(24.dp))
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(8.dp),
+                    verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = "Climbing",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onPrimary)
-                  }
-
-              IconButton(
-                  onClick = { /*TODO*/ /* changed to this when favorite Icons.Filled.Favorite*/},
-                  modifier = Modifier.size(24.dp)) {
+                        text = a.locationName ?: "Unnamed Activity",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold)
+                }
+                SeparatorComponent()
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(8.dp),
+                    verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        Icons.Filled.FavoriteBorder,
-                        contentDescription = "Filter",
-                        modifier = Modifier.size(24.dp))
-                  }
+                        imageVector = Icons.Default.Star,
+                        contentDescription = "Rating",
+                        tint = MaterialTheme.colorScheme.primary)
+                    Text(text = "? ${LocalContext.current.getString(R.string.popularity)}")
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(text = if (a.difficulty != 0) "${LocalContext.current.getString(R.string.difficulty)}: ${a.difficulty}" else "? ${LocalContext.current.getString(R.string.difficulty)}")
+                    Spacer(modifier = Modifier.width(16.dp))
+                    // Distance from the user's location, NOT THE LENGTH OF THE ACTIVITY!!!
+                    Text(text = "? km")
+                }
             }
-
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically) {
-              Text(
-                  text = a.locationName ?: "Unnamed Activity",
-                  style = MaterialTheme.typography.titleMedium,
-                  fontWeight = FontWeight.Bold)
-            }
-        SeparatorComponent()
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically) {
-              Icon(
-                  imageVector = Icons.Default.Star,
-                  contentDescription = "Rating",
-                  tint = MaterialTheme.colorScheme.primary)
-              Text(text = "? popularity")
-              Spacer(modifier = Modifier.width(8.dp))
-              Text(text = if (a.difficulty != 0) "Difficulty: ${a.difficulty}" else "? difficulty")
-              Spacer(modifier = Modifier.width(16.dp))
-              // Distance from the user's location, NOT THE LENGTH OF THE ACTIVITY!!!
-              Text(text = "? km")
-            }
-      }
+        }
     }
-  }
 }

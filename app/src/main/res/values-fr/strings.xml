@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Lasta</string>
+    <string name="tab_map">Carte</string>
+    <string name="tab_discover">Découvrir</string>
+    <string name="tab_profile">Profil</string>
+    <string name="relevance">Pertinance</string>
+    <string name="filter_by">Trier par :</string>
+    <string name="filter">Trier</string>
+    <string name="rating">Note</string>
+    <string name="difficulty">Difficulté</string>
+    <string name="setup_title">Paramètres</string>
+    <string name="more_info">Plus d\'Info</string>
+    <string name="sign_in_google">Connexion avec Google</string>
+    <string name="offline">Vous êtes hors ligne</string>
+    <string name="start">Commencer</string>
+    <string name="on_map">Voir sur la carte</string>
+    <string name="hiking_lvl">NIveau de randonnée</string>
+    <string name="preferences">Préférences</string>
+    <string name="sign_out">Déconnexion</string>
+    <string name="activity">Activité</string>
+    <string name="hikes">randonées</string>
+    <string name="calories">Calories</string>
+    <string name="pitches">Longueur</string>
+    <string name="time">Temps</string>
+    <string name="elevation">Elévation</string>
+    <string name="climbs">ascentions</string>
+    <string name="select_languague">Sélectionnez votre langue</string>
+    <string name="languague">Langue:</string>
+    <string name="select_fav_activity">Sélectionnez votre activité preférée</string>
+    <string name="save">Sauvegarder</string>
+    <string name="activity_type">Type d\'Activité</string>
+    <string name="not_specified">pas spécifié</string>
+    <string name="no_name">Pas de nom</string>
+    <string name="less_than">Moins de</string>
+    <string name="around_you">autour de vous</string>
+    <string name="Climbing">Grimpe</string>
+    <string name="popularity">popularité</string>
+</resources>

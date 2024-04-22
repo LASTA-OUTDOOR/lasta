@@ -22,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -37,6 +38,7 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.viewmodel.MapViewModel
 import kotlinx.coroutines.launch
 
@@ -67,7 +69,7 @@ fun InformationSheet(
             text = viewModel.state.selectedMarker?.name ?: "No name",
             style = MaterialTheme.typography.headlineLarge)
         Text(
-            "Activity Type: ${viewModel.state.selectedMarker?.description ?: "Not specified"}",
+            "${LocalContext.current.getString(R.string.activity_type)} ${viewModel.state.selectedMarker?.description ?: LocalContext.current.getString(R.string.activity_type)}",
             style = MaterialTheme.typography.bodyLarge)
       }
     }
