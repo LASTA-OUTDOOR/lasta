@@ -37,7 +37,10 @@ fun MenuNavGraph(
         composable(LeafScreen.Profile.route) {
           ProfileScreen(rootNavController = rootNavController)
         }
-        composable(LeafScreen.MoreInfo.route) { MoreInfoScreen(navController = navController, moreInfoScreenViewModel = moreInfoScreenViewModel) }
+        composable(LeafScreen.MoreInfo.route) {
+          MoreInfoScreen(
+              navController = navController, moreInfoScreenViewModel = moreInfoScreenViewModel)
+        }
         composable(LeafScreen.AddFriend.route) { AddFriendScreen(navController = navController) }
         composable(LeafScreen.NewMessage.route) { NewMessageScreen(navController = navController) }
         composable(LeafScreen.Notifications.route) {
