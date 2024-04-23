@@ -104,14 +104,14 @@ fun ProfileScreen(
 fun UserInfo(
     rootNavController: NavHostController,
     authViewModel: AuthViewModel = hiltViewModel(),
-    preferencesViewModel: PreferencesViewModel = hiltViewModel()
+    preferencesViewModel: PreferencesViewModel = hiltViewModel(),
+    profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(),
 ) {
-  // val isLoggedIn by preferencesViewModel.isLoggedIn.collectAsState(initial = false)
-  // val userId by preferencesViewModel.userId.collectAsState(initial = "")
-  val userName by preferencesViewModel.userName.collectAsState(initial = "")
-  // val email by preferencesViewModel.email.collectAsState(initial = "")
-  val profilePictureUrl by preferencesViewModel.profilePictureUrl.collectAsState(initial = "")
-  val hikingLevel by preferencesViewModel.hikingLevel.collectAsState(initial = HikingLevel.BEGINNER)
+
+  val user = profileScreenViewModel.user.collectAsState()
+  val userName = user.value.userName
+  val profilePictureUrl = user.value.profilePictureUrl
+  val hikingLevel = user.value.hikingLevel
 
   LaunchedEffect(key1 = authViewModel.signedOut) {
     if (authViewModel.signedOut) {
@@ -172,7 +172,7 @@ fun UserInfo(
     }
     Column(modifier = Modifier.padding(0.dp, 8.dp, 16.dp, 0.dp)) {
       Text(
-          text = userName,
+          text = userName ?: "Unkown User",
           color = MaterialTheme.colorScheme.primary,
           textAlign = TextAlign.Center,
           fontSize = 20.sp,

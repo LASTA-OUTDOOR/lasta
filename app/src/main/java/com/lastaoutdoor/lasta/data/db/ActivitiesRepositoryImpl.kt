@@ -7,6 +7,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
+import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.repository.ActivitiesRepository
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
@@ -32,11 +33,13 @@ constructor(private val database: FirebaseFirestore, private val context: Contex
 
   @Suppress("UNCHECKED_CAST")
   override suspend fun getUserActivities(
-      user: FirebaseUser,
+      user: UserModel,
       activityType: ActivitiesDatabaseType.Sports
   ): List<ActivitiesDatabaseType> {
     val userDocumentRef =
-        database.collection(context.getString(R.string.activities_database_name)).document(user.uid)
+        database
+            .collection(context.getString(R.string.activities_database_name))
+            .document(user.userId)
     val trailList: ArrayList<ActivitiesDatabaseType> = arrayListOf()
     val document = userDocumentRef.get().await()
 
