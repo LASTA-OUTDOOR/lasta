@@ -1,6 +1,9 @@
 package com.lastaoutdoor.lasta.ui.screen.social.components
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
@@ -12,11 +15,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TabMenu(viewModel: SocialViewModel = hiltViewModel()) {
+fun TabMenu(navController: NavController, viewModel: SocialViewModel = hiltViewModel()) {
 
   var state by remember { mutableIntStateOf(0) }
   val titles = listOf("Feed", "Friends", "Message")
@@ -39,11 +44,13 @@ fun TabMenu(viewModel: SocialViewModel = hiltViewModel()) {
       FriendsActivityList()
     }
     1 -> {
-      viewModel.showTopButton("Add Friend", onClick = { /*TODO*/})
+      viewModel.showTopButton(
+          Icons.Filled.Add, onClick = { navController.navigate(LeafScreen.AddFriend.route) })
       FriendsList()
     }
     2 -> {
-      viewModel.showTopButton("New Message", onClick = { /*TODO*/})
+      viewModel.showTopButton(
+          Icons.Filled.Email, onClick = { navController.navigate(LeafScreen.NewMessage.route) })
       MessageList()
     }
   }

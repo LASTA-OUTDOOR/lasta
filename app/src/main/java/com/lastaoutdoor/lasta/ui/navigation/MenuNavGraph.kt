@@ -11,6 +11,9 @@ import com.lastaoutdoor.lasta.ui.screen.activities.MoreInfoScreen
 import com.lastaoutdoor.lasta.ui.screen.discovery.DiscoveryScreen
 import com.lastaoutdoor.lasta.ui.screen.favorites.FavoritesScreen
 import com.lastaoutdoor.lasta.ui.screen.profile.ProfileScreen
+import com.lastaoutdoor.lasta.ui.screen.social.AddFriendScreen
+import com.lastaoutdoor.lasta.ui.screen.social.NewMessageScreen
+import com.lastaoutdoor.lasta.ui.screen.social.NotificationsScreen
 import com.lastaoutdoor.lasta.ui.screen.social.SocialScreen
 import com.lastaoutdoor.lasta.viewmodel.MoreInfoScreenViewModel
 
@@ -30,13 +33,15 @@ fun MenuNavGraph(
           DiscoveryScreen(navController, moreInfoScreenViewModel = moreInfoScreenViewModel)
         }
         composable(LeafScreen.Favorites.route) { FavoritesScreen(navController) }
-        composable(LeafScreen.Social.route) { SocialScreen() }
+        composable(LeafScreen.Social.route) { SocialScreen(navController) }
         composable(LeafScreen.Profile.route) {
           ProfileScreen(rootNavController = rootNavController)
         }
-        composable(LeafScreen.MoreInfo.route) {
-          MoreInfoScreen(
-              navController = navController, moreInfoScreenViewModel = moreInfoScreenViewModel)
+        composable(LeafScreen.MoreInfo.route) { MoreInfoScreen(navController = navController, moreInfoScreenViewModel = moreInfoScreenViewModel) }
+        composable(LeafScreen.AddFriend.route) { AddFriendScreen(navController = navController) }
+        composable(LeafScreen.NewMessage.route) { NewMessageScreen(navController = navController) }
+        composable(LeafScreen.Notifications.route) {
+          NotificationsScreen(navController = navController)
         }
       }
 }
