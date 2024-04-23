@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -42,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.db.DatabaseManager
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.data.model.profile.DaysInWeek
@@ -168,7 +170,8 @@ fun UserInfo(
           model = profilePictureUrl,
           contentDescription = "Profile picture",
           modifier = Modifier.size(70.dp).clip(CircleShape),
-          contentScale = ContentScale.Crop)
+          contentScale = ContentScale.Crop,
+          error = painterResource(id = R.drawable.default_profile_icon))
     }
     Column(modifier = Modifier.padding(0.dp, 8.dp, 16.dp, 0.dp)) {
       Text(
