@@ -53,11 +53,13 @@ import com.lastaoutdoor.lasta.ui.screen.discovery.components.RangeSearchComposab
 import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenType
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenViewModel
+import com.lastaoutdoor.lasta.viewmodel.MoreInfoScreenViewModel
 
 @Composable
 fun DiscoveryScreen(
     navController: NavController,
-    discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel()
+    discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel(),
+    moreInfoScreenViewModel: MoreInfoScreenViewModel
 ) {
   val screen by discoveryScreenViewModel.screen.collectAsState()
 
@@ -77,7 +79,7 @@ fun DiscoveryScreen(
           item {
             SeparatorComponent() // Add a separator between the header and the activities
             Spacer(modifier = Modifier.height(8.dp))
-            ActivitiesDisplay(navController)
+            ActivitiesDisplay(navController, moreInfoScreenViewModel = moreInfoScreenViewModel)
           }
         }
   } else if (screen == DiscoveryScreenType.MAP) {
@@ -179,7 +181,8 @@ fun HeaderComposable(
 @Composable
 fun ActivitiesDisplay(
     navController: NavController,
-    discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel()
+    discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel(),
+    moreInfoScreenViewModel: MoreInfoScreenViewModel
 ) {
   val activities = discoveryScreenViewModel.climbingActivities
   for (a in activities) {
@@ -188,7 +191,11 @@ fun ActivitiesDisplay(
             Modifier.fillMaxWidth()
                 .wrapContentHeight()
                 .padding(vertical = 8.dp, horizontal = 16.dp)
-                .clickable(onClick = { navController.navigate(LeafScreen.MoreInfo.route) }),
+                .clickable(
+                    onClick = {
+                      moreInfoScreenViewModel.changeActivityToDisplay(a)
+                      navController.navigate(LeafScreen.MoreInfo.route)
+                    }),
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
     ) {
