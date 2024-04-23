@@ -56,7 +56,7 @@ class PreferencesViewModel @Inject constructor(private val preferences: Preferen
      *
      * @param language the new value for the language preference
      */
-  fun updateLanguage(language: Any) {
+  fun updateLanguage(language: String) {
     viewModelScope.launch { preferences.updateLanguage(language) }
   }
 

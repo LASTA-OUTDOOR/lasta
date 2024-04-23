@@ -27,7 +27,7 @@ fun SettingsScreen(
     preferencesViewModel: PreferencesViewModel = hiltViewModel(),
     authViewModel: AuthViewModel = hiltViewModel()
 ) {
-    var selectedLanguage by remember { mutableStateOf(preferencesViewModel.language) }
+    val selectedLanguage by preferencesViewModel.language.collectAsState(initial = "")
     val database = DatabaseManager()
 
     //If prefViewmodel pref sport is hiking set a called "isHiking" to true
@@ -43,6 +43,8 @@ fun SettingsScreen(
     ) {
 
         TopBarLogo(logoPainterId = R.drawable.arrow_back) {
+            preferencesViewModel.updateLanguage(selectedLanguage)
+            database.updateFieldInUser(authViewModel.user!!.userId, "language", selectedLanguage)
             navController.navigateUp()
         }
 
@@ -71,9 +73,8 @@ fun SettingsScreen(
             DropDownMenuComponent(
                 items = listOf("English", "French", "German"),
                 selectedItem = selectedLanguage,
-                onItemSelected = { selectedLanguage = it as Flow<String>
-                                    preferencesViewModel.updateLanguage(it)
-                                    database.updateFieldInUser(authViewModel.user!!.userId, "language", it)
+                onItemSelected = { newLanguage ->
+                    preferencesViewModel.updateLanguage(newLanguage)
                                  },
                 fieldText = "Language"
             )
