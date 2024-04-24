@@ -28,9 +28,11 @@ fun TabMenu(navController: NavController, viewModel: SocialViewModel = hiltViewM
   var state by remember { mutableIntStateOf(0) }
   val titles =
       listOf(
+
           LocalContext.current.getString(R.string.feed),
-          LocalContext.current.getString(R.string.message),
-          LocalContext.current.getString(R.string.friends))
+
+          LocalContext.current.getString(R.string.friends),
+          LocalContext.current.getString(R.string.message))
 
   Column {
     PrimaryTabRow(selectedTabIndex = state) {
