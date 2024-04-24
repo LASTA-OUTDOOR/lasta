@@ -19,10 +19,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.lastaoutdoor.lasta.R
 
 data class MenuNavigationItem(
     val route: String,
@@ -36,22 +38,22 @@ fun MenuNavigation(navController: NavHostController) {
   val items =
       listOf(
           MenuNavigationItem(
-              route = LeafScreen.Discover.route,
+              route = LocalContext.current.getString(R.string.tab_discover),
               selectedIcon = Icons.Filled.Search,
               unselectedIcon = Icons.Outlined.Search,
               hasNews = false),
           MenuNavigationItem(
-              route = LeafScreen.Favorites.route,
+              route = LocalContext.current.getString(R.string.favs),
               selectedIcon = Icons.Filled.Favorite,
               unselectedIcon = Icons.Outlined.FavoriteBorder,
               hasNews = false),
           MenuNavigationItem(
-              route = LeafScreen.Social.route,
+              route = LocalContext.current.getString(R.string.socials),
               selectedIcon = Icons.Filled.Face,
               unselectedIcon = Icons.Outlined.Face,
               hasNews = true),
           MenuNavigationItem(
-              route = LeafScreen.Profile.route,
+              route = LocalContext.current.getString(R.string.tab_profile),
               selectedIcon = Icons.Filled.Person,
               unselectedIcon = Icons.Outlined.Person,
               hasNews = false))

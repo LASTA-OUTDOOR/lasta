@@ -40,7 +40,7 @@ import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 @Composable
 fun FriendsRequestList(viewModel: SocialViewModel = hiltViewModel()) {
   Text(
-      "Friend requests",
+      LocalContext.current.getString(R.string.friend_req),
       style = MaterialTheme.typography.titleLarge,
       modifier = Modifier.padding(8.dp).testTag("FriendRequestTitle"))
   val isConnected = viewModel.isConnected.collectAsState()
@@ -50,7 +50,7 @@ fun FriendsRequestList(viewModel: SocialViewModel = hiltViewModel()) {
     }
     viewModel.friendsRequest.isEmpty() -> {
       Text(
-          "You do not have any friends request yet",
+          LocalContext.current.getString(R.string.no_friend),
           Modifier.padding(8.dp).testTag("NoFriendRequest"))
     }
     else -> {

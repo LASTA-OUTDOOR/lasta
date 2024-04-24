@@ -16,11 +16,25 @@ sealed class LeafScreen(val route: String) {
 
   object Discover : LeafScreen("Discover")
 
+  object Discover2 : LeafScreen("Découvrir")
+
+  object Discover3 : LeafScreen("Entdecken")
+
   object Favorites : LeafScreen("Favorites")
+
+  object Favorites2 : LeafScreen("Favoriten")
+
+  object Favorites3 : LeafScreen("Favoris")
 
   object Social : LeafScreen("Socials")
 
+  object Social2 : LeafScreen("Amis")
+
+  object Social3 : LeafScreen("Freunde")
+
   object Profile : LeafScreen("Profile")
+
+  object Profile2 : LeafScreen("Profil")
 
   object SignIn : LeafScreen("SignIn")
 

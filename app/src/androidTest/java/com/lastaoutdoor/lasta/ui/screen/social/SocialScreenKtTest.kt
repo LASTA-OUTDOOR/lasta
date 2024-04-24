@@ -89,6 +89,10 @@ class FakeSocialRepository : SocialRepository {
     receivedRequest.remove(requester)
   }
 
+  override fun sendMessage(userId: String, friendUserId: String, message: String) {
+    TODO("Not yet implemented")
+  }
+
   fun setMessages(messages: List<ConversationModel>) {
     this.messages.clear()
     this.messages.addAll(messages)

@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -30,26 +31,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.model.activity.ActivityType
-import com.lastaoutdoor.lasta.data.model.activity.OutdoorActivity
 import com.lastaoutdoor.lasta.ui.theme.Black
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
 import com.lastaoutdoor.lasta.ui.theme.YellowDifficulty
+import com.lastaoutdoor.lasta.viewmodel.MoreInfoScreenViewModel
 
 @Composable
-fun MoreInfoScreen(
-    activity: OutdoorActivity =
-        OutdoorActivity(ActivityType.CLIMBING, 0, 1.5f, "3 hours", "Test Title"),
-    navController: NavController
-) {
+fun MoreInfoScreen(navController: NavController, moreInfoScreenViewModel: MoreInfoScreenViewModel) {
   LazyColumn(modifier = Modifier.padding(8.dp)) {
     item { Spacer(modifier = Modifier.height(15.dp)) }
     // contains the top icon buttons
     item { TopBar(navController) }
     // displays activity title and duration
-    item { ActivityTitleZone(activity = activity) }
+    item { ActivityTitleZone(moreInfoScreenViewModel) }
     // displays activity difficulty, ration and view on map button
-    item { MiddleZone(activity) }
+    item { MiddleZone(moreInfoScreenViewModel) }
     // filled with a spacer for the moment but will contain address + community
     item { Spacer(modifier = Modifier.height(350.dp)) }
     // Bottom start activity button
@@ -69,7 +65,7 @@ fun StartButton() {
             modifier = Modifier.width(305.dp).height(48.dp),
             colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
               Text(
-                  "Start",
+                  LocalContext.current.getString(R.string.start),
                   style =
                       TextStyle(
                           fontSize = 22.sp,
@@ -81,9 +77,9 @@ fun StartButton() {
 }
 
 @Composable
-fun MiddleZone(activity: OutdoorActivity) {
+fun MiddleZone(moreInfoScreenViewModel: MoreInfoScreenViewModel) {
   Row {
-    DiffAndRating(activity)
+    DiffAndRating(moreInfoScreenViewModel)
     Spacer(Modifier.width(170.dp))
     ViewOnMapButton()
   }
@@ -100,7 +96,7 @@ fun ViewOnMapButton() {
         modifier = Modifier.width(130.dp).height(40.dp),
         colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
           Text(
-              "View On Map",
+              LocalContext.current.getString(R.string.on_map),
               style =
                   TextStyle(
                       fontSize = 16.sp,
@@ -113,9 +109,13 @@ fun ViewOnMapButton() {
 }
 
 @Composable
-fun DiffAndRating(activity: OutdoorActivity) {
+fun DiffAndRating(moreInfoScreenViewModel: MoreInfoScreenViewModel) {
   Column(modifier = Modifier.padding(vertical = 5.dp)) {
-    ElevatedDifficultyDisplay(diff = fetchDiffText(activity))
+    ElevatedDifficultyDisplay(
+        diff =
+            moreInfoScreenViewModel.processDiffText(
+                moreInfoScreenViewModel.activityToDisplay.value))
+    /*Not implemented yet so a hard-coded value is returned*/
     RatingDisplay(4.3)
   }
 }
@@ -142,16 +142,6 @@ fun RatingDisplay(rating: Double) {
 }
 
 // intern helper function, WILL BE MOVED TO VIEWMODEL
-fun fetchDiffText(activity: OutdoorActivity): String {
-  return when (activity.difficulty) {
-    0 -> "Easy"
-    1 -> "Medium"
-    2 -> "Difficult"
-    else -> {
-      "No available difficulty"
-    }
-  }
-}
 
 @Composable
 fun ElevatedDifficultyDisplay(diff: String) {
@@ -176,7 +166,7 @@ fun ElevatedDifficultyDisplay(diff: String) {
 // Top Bar that displays the four clickable logos with distinct usages
 @Composable
 fun TopBar(navController: NavController) {
-  Row(modifier = Modifier.fillMaxWidth()) {
+  Row(modifier = Modifier.fillMaxWidth().testTag("Top Bar")) {
     TopBarLogo(R.drawable.arrow_back) { navController.navigateUp() }
     Spacer(modifier = Modifier.width(180.dp))
     TopBarLogo(R.drawable.download_button) {}
@@ -196,11 +186,11 @@ fun TopBarLogo(logoPainterId: Int, f: () -> Unit) {
 }
 
 @Composable
-fun ActivityTitleZone(activity: OutdoorActivity) {
-  Row { ElevatedActivityType(activity) }
+fun ActivityTitleZone(moreInfoScreenViewModel: MoreInfoScreenViewModel) {
+  Row { ElevatedActivityType(moreInfoScreenViewModel) }
   Row {
     ActivityPicture()
-    ActivityTitleText(activity)
+    ActivityTitleText(moreInfoScreenViewModel)
   }
 }
 
@@ -215,13 +205,13 @@ fun ActivityPicture() {
 }
 
 @Composable
-fun ActivityTitleText(activity: OutdoorActivity) {
+fun ActivityTitleText(moreInfoScreenViewModel: MoreInfoScreenViewModel) {
   Column(modifier = Modifier.padding(vertical = 25.dp, horizontal = 5.dp)) {
     Text(
-        text = activity.locationName ?: "No Title",
+        text = moreInfoScreenViewModel.activityToDisplay.value.locationName ?: "No Title",
         style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight(600)))
     Text(
-        text = activity.duration ?: "No Duration",
+        text = moreInfoScreenViewModel.activityToDisplay.value.duration ?: "No Duration",
         style =
             TextStyle(
                 fontSize = 14.sp,
@@ -234,14 +224,17 @@ fun ActivityTitleText(activity: OutdoorActivity) {
 }
 
 @Composable
-fun ElevatedActivityType(activity: OutdoorActivity) {
+fun ElevatedActivityType(moreInfoScreenViewModel: MoreInfoScreenViewModel) {
   ElevatedButton(
       onClick = {},
       contentPadding = PaddingValues(all = 3.dp),
       modifier = Modifier.padding(3.dp).width(64.dp).height(20.dp),
       colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
         Text(
-            activity.getActivityType().toString().replaceFirstChar { it.uppercase() },
+            moreInfoScreenViewModel.activityToDisplay.value
+                .getActivityType()
+                .toString()
+                .replaceFirstChar { it.uppercase() },
             style =
                 TextStyle(
                     fontSize = 11.sp,
