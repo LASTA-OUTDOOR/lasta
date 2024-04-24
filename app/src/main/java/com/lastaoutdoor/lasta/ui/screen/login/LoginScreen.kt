@@ -14,6 +14,7 @@ import androidx.navigation.NavHostController
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
+import com.lastaoutdoor.lasta.ui.navigation.RootScreen
 import com.lastaoutdoor.lasta.ui.screen.login.components.LoginContent
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
@@ -53,8 +54,18 @@ fun LoginScreen(
     authViewModel.user?.let {
       preferencesViewModel.updateIsLoggedIn(true)
       preferencesViewModel.updateUserInfo(it)
-      // navController.popBackStack()
-      navController.navigate(LeafScreen.Setup.route)
+      //navController.popBackStack()
+      if (authViewModel.isSignUp) {
+        println("Navigate to setup screen")
+        navController.navigate(LeafScreen.Setup.route) {
+          popUpTo(RootScreen.Login.route) { inclusive = true }
+        }
+      } else {
+        println("Navigate to home screen")
+        navController.navigate(RootScreen.Main.route) {
+          popUpTo(RootScreen.Main.route) { inclusive = true }
+        }
+      }
     }
   }
   Spacer(modifier = Modifier.testTag("loginScreenMain"))

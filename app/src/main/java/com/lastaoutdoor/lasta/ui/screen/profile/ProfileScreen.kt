@@ -115,10 +115,13 @@ fun UserInfo(
 
   LaunchedEffect(key1 = authViewModel.signedOut) {
     if (authViewModel.signedOut) {
+        println("Sign out in ProfileScreen")
       preferencesViewModel.clearPreferences()
       preferencesViewModel.updateIsLoggedIn(false)
       rootNavController.popBackStack()
-      rootNavController.navigate(RootScreen.Login.route)
+      rootNavController.navigate(RootScreen.Login.route) {
+        popUpTo(RootScreen.Login.route) { inclusive = true }
+      }
     }
   }
 
@@ -143,7 +146,7 @@ fun UserInfo(
                 authViewModel.signOut()
                 preferencesViewModel.clearPreferences()
                 preferencesViewModel.updateIsLoggedIn(false)
-                rootNavController.popBackStack()
+                //rootNavController.popBackStack()
                 rootNavController.navigate(RootScreen.Login.route)
               }) {
                 Text("Sign out")
