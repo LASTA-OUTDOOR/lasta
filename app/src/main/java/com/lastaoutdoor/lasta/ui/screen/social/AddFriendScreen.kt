@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
@@ -40,7 +41,7 @@ fun AddFriendScreen(navController: NavController, viewmodel: SocialViewModel = h
 
     // Form
     Text(
-        "Add a friend",
+        LocalContext.current.getString(R.string.add_fr),
         style = MaterialTheme.typography.titleLarge,
         modifier = Modifier.testTag("Header"))
     Column(
@@ -48,13 +49,13 @@ fun AddFriendScreen(navController: NavController, viewmodel: SocialViewModel = h
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)) {
           Text(
-              "Enter a friend's email address to send a friend request",
+              LocalContext.current.getString(R.string.fr_email_add),
               modifier = Modifier.testTag("SubHeader"))
           var text by remember { mutableStateOf("") }
           TextField(
               value = text,
               onValueChange = { text = it },
-              label = { Text("Email address") },
+              label = { Text(LocalContext.current.getString(R.string.email)) },
               modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("EmailTextField"),
               keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
               keyboardActions =
@@ -71,7 +72,7 @@ fun AddFriendScreen(navController: NavController, viewmodel: SocialViewModel = h
                 viewmodel.requestFriend(text)
               },
               modifier = Modifier.testTag("SubmitButton")) {
-                Text("Send friend request")
+                Text(LocalContext.current.getString(R.string.send_fr))
               }
 
           // Error message / Feedback

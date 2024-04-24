@@ -46,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -173,14 +174,20 @@ fun UserInfo(
     AlertDialog(
         modifier = Modifier.testTag("AlertDialog"),
         onDismissRequest = { showDialog = false },
-        title = { Text("Preferences") },
+        title = { Text(LocalContext.current.getString(R.string.preferences)) },
         text = {
           Column {
-            Text("Hiking Level")
+            Text(LocalContext.current.getString(R.string.hiking_lvl))
             HikingRow(selectedHikingLevel = hikingLevel)
           }
         },
-        confirmButton = { Row { Button(onClick = { showDialog = false }) { Text("Save") } } },
+        confirmButton = {
+          Row {
+            Button(onClick = { showDialog = false }) {
+              Text(LocalContext.current.getString(R.string.save))
+            }
+          }
+        },
         dismissButton = {
           Button(
               onClick = {
@@ -191,7 +198,7 @@ fun UserInfo(
                 rootNavController.popBackStack()
                 rootNavController.navigate(RootScreen.Login.route)
               }) {
-                Text("Sign out")
+                Text(LocalContext.current.getString(R.string.sign_out))
               }
         })
   }
@@ -368,12 +375,13 @@ fun SportSelection(
     // Observe LiveData and convert to Composable State
     // profileScreenVIewModel.addTrailToUserActivities()
     // Now trailListState is a normal List<Trail> that you can use in Compose
-
-    DropDownMenuComponent(
+    val con = LocalContext.current
+    DropDownMenuComponent<ActivitiesDatabaseType.Sports>(
         items = menuItems,
         selectedItem = sport,
         onItemSelected = { newSport -> onSelected(newSport) },
-        "Activity")
+        toStr = { it.toStringCon(con) },
+        LocalContext.current.getString(R.string.activity))
   }
 }
 
@@ -446,10 +454,12 @@ fun Chart(
 
         when (sport) {
           ActivitiesDatabaseType.Sports.HIKING -> {
-            Text("hikes")
+            Text(LocalContext.current.getString(R.string.hikes))
           }
           ActivitiesDatabaseType.Sports.CLIMBING -> {
-            Text("climbs", modifier = Modifier.testTag("TestClimb"))
+            Text(
+                LocalContext.current.getString(R.string.climbs),
+                modifier = Modifier.testTag("TestClimb"))
           }
         }
       }
@@ -461,7 +471,7 @@ fun Chart(
                 text = trailActivities.sumOf { it.caloriesBurned }.toString(),
                 fontWeight = FontWeight.Bold,
                 style = TextStyle(fontSize = 20.sp))
-            Text("Calories")
+            Text(LocalContext.current.getString(R.string.calories))
           }
         }
         ActivitiesDatabaseType.Sports.CLIMBING -> {
@@ -471,7 +481,7 @@ fun Chart(
                 text = trailActivities.sumOf { it.numberOfPitches }.toString(),
                 fontWeight = FontWeight.Bold,
                 style = TextStyle(fontSize = 20.sp))
-            Text("Pitches")
+            Text(LocalContext.current.getString(R.string.pitches))
           }
         }
       }
@@ -481,7 +491,7 @@ fun Chart(
             text = timeFromMillis(timeFromActivityInMillis(activities)),
             fontWeight = FontWeight.Bold,
             style = TextStyle(fontSize = 20.sp))
-        Text("Time")
+        Text(LocalContext.current.getString(R.string.time))
       }
     }
 
@@ -551,7 +561,7 @@ fun RecentActivities(
                                   "%.2f", metersToKilometers(climb.elevationGainedInMeters)),
                           fontWeight = FontWeight.Bold,
                           modifier = Modifier.testTag("TestAndrew1"))
-                      Text(text = "Elevation")
+                      Text(text = LocalContext.current.getString(R.string.elevation))
                     }
                   }
                 }
@@ -563,7 +573,7 @@ fun RecentActivities(
                       Text(
                           text = trail.elevationChangeInMeters.toString(),
                           fontWeight = FontWeight.Bold)
-                      Text(text = "Elevation")
+                      Text(text = LocalContext.current.getString(R.string.elevation))
                     }
                     ActivitiesDatabaseType.Sports.CLIMBING -> {
                       val climb = a as ActivitiesDatabaseType.Climb
@@ -571,7 +581,7 @@ fun RecentActivities(
                           text = String.format("%.2f", metersToKilometers(climb.numberOfPitches)),
                           fontWeight = FontWeight.Bold,
                           modifier = Modifier.testTag("TestAndrew2"))
-                      Text(text = "Pitches")
+                      Text(text = LocalContext.current.getString(R.string.pitches))
                     }
                   }
                 }
@@ -580,7 +590,7 @@ fun RecentActivities(
                   Text(
                       text = timeFromMillis(timeFromActivityInMillis(listOf(a))),
                       fontWeight = FontWeight.Bold)
-                  Text(text = "Time")
+                  Text(text = LocalContext.current.getString(R.string.time))
                 }
               }
         }

@@ -13,9 +13,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
@@ -24,7 +26,11 @@ import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 fun TabMenu(navController: NavController, viewModel: SocialViewModel = hiltViewModel()) {
 
   var state by remember { mutableIntStateOf(0) }
-  val titles = listOf("Feed", "Friends", "Message")
+  val titles =
+      listOf(
+          LocalContext.current.getString(R.string.feed),
+          LocalContext.current.getString(R.string.friends),
+          LocalContext.current.getString(R.string.message))
 
   Column {
     PrimaryTabRow(selectedTabIndex = state) {
