@@ -21,7 +21,7 @@ import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 
 @Composable
 fun LoginScreen(
-    // rootNavController: NavHostController,
+    rootNavController: NavHostController,
     navController: NavHostController,
     authViewModel: AuthViewModel = hiltViewModel(),
     preferencesViewModel: PreferencesViewModel = hiltViewModel(),
@@ -54,17 +54,13 @@ fun LoginScreen(
     authViewModel.user?.let {
       preferencesViewModel.updateIsLoggedIn(true)
       preferencesViewModel.updateUserInfo(it)
-      //navController.popBackStack()
       if (authViewModel.isSignUp) {
-        println("Navigate to setup screen")
         navController.navigate(LeafScreen.Setup.route) {
           popUpTo(RootScreen.Login.route) { inclusive = true }
         }
       } else {
-        println("Navigate to home screen")
-        navController.navigate(RootScreen.Main.route) {
-          popUpTo(RootScreen.Main.route) { inclusive = true }
-        }
+        rootNavController.popBackStack()
+        rootNavController.navigate(RootScreen.Main.route)
       }
     }
   }

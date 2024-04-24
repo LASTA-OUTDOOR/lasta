@@ -53,7 +53,6 @@ constructor(
       val user = userCredential.user
       if (user != null) {
         isSignUp.value = userCredential.additionalUserInfo?.isNewUser ?: false
-        println("isSignUp: ${isSignUp.value}")
         if (isSignUp.value) {
           // This is a sign-up, so create a new UserModel
           val userModel = UserModel(user, HikingLevel.BEGINNER)

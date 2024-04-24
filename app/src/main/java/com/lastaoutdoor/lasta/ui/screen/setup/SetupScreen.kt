@@ -14,9 +14,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.db.DatabaseManager
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
 import com.lastaoutdoor.lasta.ui.navigation.RootScreen
@@ -31,7 +33,7 @@ fun SetupScreen(
 
   Modifier.testTag("SetupScreen")
 
-  val languages = listOf("English", "French", "German")
+  val languages = listOf("English", "Français", "Deutsch")
 
   var selectedLanguage by remember { mutableStateOf(languages[0]) }
   val outdoorActivities = listOf("Hiking", "Climbing")
@@ -45,7 +47,8 @@ fun SetupScreen(
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
           Text(
               text = "Settings",
-              style = MaterialTheme.typography.headlineLarge,
+              fontWeight = FontWeight.Bold,
+              style = MaterialTheme.typography.displayLarge,
               color = MaterialTheme.colorScheme.onBackground)
         }
 
@@ -57,7 +60,7 @@ fun SetupScreen(
             horizontalArrangement = Arrangement.SpaceBetween) {
               Text(
                   text = "Select your language: ",
-                  style = MaterialTheme.typography.bodyLarge,
+                  style = MaterialTheme.typography.headlineMedium,
                   color = MaterialTheme.colorScheme.onBackground)
               DropDownMenuComponent(
                   items = languages,
@@ -73,7 +76,7 @@ fun SetupScreen(
             horizontalArrangement = Arrangement.SpaceBetween) {
               Text(
                   text = "Select your favorite outdoor activity: ",
-                  style = MaterialTheme.typography.bodyLarge,
+                  style = MaterialTheme.typography.headlineMedium,
                   color = MaterialTheme.colorScheme.onBackground)
             }
 

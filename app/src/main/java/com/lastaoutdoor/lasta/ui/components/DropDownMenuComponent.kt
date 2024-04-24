@@ -32,7 +32,7 @@ fun <T> DropDownMenuComponent(
 
   Column {
     Row {
-      Text(fieldText, color = MaterialTheme.colorScheme.onBackground)
+      Text(fieldText, style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.onBackground)
       Icon(
           imageVector = Icons.Outlined.KeyboardArrowDown,
           contentDescription = "Dropdown",
@@ -53,8 +53,8 @@ fun <T> DropDownMenuComponent(
     }
     Text(
         selectedItem.toString(),
-        fontWeight = FontWeight.Normal,
-        style = TextStyle(fontSize = 24.sp),
+        fontWeight = FontWeight.Bold,
+        style = MaterialTheme.typography.headlineMedium,
         color = MaterialTheme.colorScheme.onBackground)
   }
 }

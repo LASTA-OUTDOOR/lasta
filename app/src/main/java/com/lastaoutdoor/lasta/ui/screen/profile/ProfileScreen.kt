@@ -40,6 +40,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.lastaoutdoor.lasta.data.db.DatabaseManager
@@ -52,6 +53,7 @@ import com.lastaoutdoor.lasta.data.model.profile.Year
 import com.lastaoutdoor.lasta.data.model.user.HikingLevel
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
+import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
 import com.lastaoutdoor.lasta.ui.navigation.RootScreen
 import com.lastaoutdoor.lasta.ui.screen.profile.components.BarGraph
 import com.lastaoutdoor.lasta.ui.screen.profile.components.BarType
@@ -68,15 +70,15 @@ import java.util.Calendar
 @Composable
 fun ProfileScreen(
     profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(),
-    rootNavController: NavHostController
+    rootNavController: NavHostController,
+    navController: NavHostController
 ) {
-  // profileScreenVIewModel.addTrailToUserActivities()
   val activities by profileScreenViewModel.trails.collectAsState()
   val timeFrame by profileScreenViewModel.timeFrame.collectAsState()
   val sport by profileScreenViewModel.sport.collectAsState()
 
   LazyColumn(modifier = Modifier.padding(16.dp).testTag("ProfileScreen")) {
-    item { UserInfo(rootNavController) }
+    item { UserInfo(rootNavController, navController) }
     item {
       SportSelection(sport, profileScreenViewModel::setSport)
       Spacer(modifier = Modifier.height(16.dp))
@@ -103,6 +105,7 @@ fun ProfileScreen(
 @Composable
 fun UserInfo(
     rootNavController: NavHostController,
+    navController: NavHostController,
     authViewModel: AuthViewModel = hiltViewModel(),
     preferencesViewModel: PreferencesViewModel = hiltViewModel()
 ) {
@@ -115,48 +118,16 @@ fun UserInfo(
 
   LaunchedEffect(key1 = authViewModel.signedOut) {
     if (authViewModel.signedOut) {
-        println("Sign out in ProfileScreen")
       preferencesViewModel.clearPreferences()
       preferencesViewModel.updateIsLoggedIn(false)
       rootNavController.popBackStack()
-      rootNavController.navigate(RootScreen.Login.route) {
-        popUpTo(RootScreen.Login.route) { inclusive = true }
-      }
+      rootNavController.navigate(RootScreen.Login.route)
     }
-  }
-
-  var showDialog by remember { mutableStateOf(false) }
-
-  if (showDialog) {
-    AlertDialog(
-        modifier = Modifier.testTag("AlertDialog"),
-        onDismissRequest = { showDialog = false },
-        title = { Text("Preferences") },
-        text = {
-          Column {
-            Text("Hiking Level")
-            HikingRow(selectedHikingLevel = hikingLevel)
-          }
-        },
-        confirmButton = { Row { Button(onClick = { showDialog = false }) { Text("Save") } } },
-        dismissButton = {
-          Button(
-              onClick = {
-                showDialog = false
-                authViewModel.signOut()
-                preferencesViewModel.clearPreferences()
-                preferencesViewModel.updateIsLoggedIn(false)
-                //rootNavController.popBackStack()
-                rootNavController.navigate(RootScreen.Login.route)
-              }) {
-                Text("Sign out")
-              }
-        })
   }
 
   Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
     Column {
-      Button(onClick = { showDialog = true }, modifier = Modifier.testTag("showDialog")) {
+      Button(onClick = { navController.navigate(LeafScreen.Settings.route) }, modifier = Modifier.testTag("showSettings")) {
         Text("≡")
       }
     }
