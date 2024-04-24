@@ -66,6 +66,8 @@ fun SetupScreen(
                   items = languages,
                   selectedItem = selectedLanguage,
                   onItemSelected = { selectedLanguage = it },
+                  String::toString,
+
                   fieldText = LocalContext.current.getString(R.string.languague))
             }
         Spacer(modifier = Modifier.height(40.dp))

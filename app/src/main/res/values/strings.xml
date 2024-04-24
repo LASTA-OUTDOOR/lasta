@@ -22,6 +22,10 @@
     <string name = "around_you">around you</string>
     <string name = "Climbing">Climbing</string>
     <string name = "popularity">popularity</string>
+    <string name = "list">List</string>
+    <string name = "map">Map</string>
+
+
     <!--Favourites-->
     <string name = "more_info">More Info</string>
     <!--Login-->
@@ -32,6 +36,9 @@
     <string name = "start">Start</string>
     <string name = "on_map">View on Map</string>
     <!--Profile-->
+    <string name = "hiking">Hiking</string>
+    <string name = "climbing">Climbing</string>
+
     <string name = "hiking_lvl">Hiking Level</string>
     <string name = "preferences">Preferences</string>
     <string name = "sign_out">Sign out</string>

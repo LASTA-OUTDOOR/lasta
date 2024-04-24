@@ -152,11 +152,12 @@ fun HeaderComposable(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center) {
-                DisplaySelection(
+                val contex = LocalContext.current
+                DisplaySelection<DiscoveryScreenType>(
                     DiscoveryScreenType.values().toList(),
                     screen,
-                    discoveryScreenViewModel::setScreen,
-                    DiscoveryScreenType::toString)
+                    discoveryScreenViewModel::setScreen
+                ) { it.toStringCon(contex) }
             }
 
             if (screen == DiscoveryScreenType.LIST) {
@@ -166,7 +167,7 @@ fun HeaderComposable(
                     Text(LocalContext.current.getString(R.string.filter_by), style = MaterialTheme.typography.bodyMedium)
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Relevance",
+                        text = LocalContext.current.getString(R.string.relevance),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.primary)
 

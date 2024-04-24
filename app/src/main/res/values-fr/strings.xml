@@ -61,4 +61,8 @@
     <string name="add_fr">Ajouter un ami</string>
     <string name="fr_email_add">Entrez l\'adresse email d\'un ami pour envoyer une demande d\'ami</string>
     <string name="community">Communauté</string>
+    <string name="list">Liste</string>
+    <string name="map">Carte</string>
+    <string name="hiking">Randonnée</string>
+    <string name="climbing">Escalade</string>
 </resources>

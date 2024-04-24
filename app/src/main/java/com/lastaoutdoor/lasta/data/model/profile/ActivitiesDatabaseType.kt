@@ -1,6 +1,8 @@
 package com.lastaoutdoor.lasta.data.model.profile
 
+import android.content.Context
 import android.graphics.Bitmap
+import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.model.activity.ClimbingStyle
 import com.lastaoutdoor.lasta.data.model.activity.Difficulty
 import java.util.Date
@@ -21,6 +23,12 @@ sealed class ActivitiesDatabaseType(
 
     override fun toString(): String {
       return name.lowercase().replaceFirstChar { it.uppercase() }
+    }
+    fun toStringCon(con : Context) : String{
+        return when(this){
+            HIKING -> con.getString(R.string.hiking)
+            CLIMBING -> con.getString(R.string.climbing)
+        }
     }
   }
 

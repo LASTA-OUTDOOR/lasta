@@ -61,4 +61,8 @@
     <string name="add_fr">Einen Freund hinzufügen</string>
     <string name="fr_email_add">Geben Sie die E-Mail-Adresse eines Freundes ein, um eine Freundschaftsanfrage zu senden.</string>
     <string name="community">Gemeinschaft</string>
+    <string name="list">Liste</string>
+    <string name="map">Karte</string>
+    <string name="hiking">Wandern</string>
+    <string name="climbing">Klettern</string>
 </resources>
