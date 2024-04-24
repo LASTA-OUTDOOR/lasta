@@ -1,0 +1,61 @@
+package com.lastaoutdoor.lasta.data.model.api
+
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+
+data class Tags(
+    @SerializedName("name") val name: String,
+    @SerializedName("sport") val sport: String = "",
+    @SerializedName("route") val route: String = "",
+    @SerializedName("from") val from: String = "",
+    @SerializedName("to") val to: String = "",
+    @SerializedName("distance") val distance: String = ""
+) {
+  override fun toString(): String {
+    // TODO update
+    return "name: $name, sport: $sport"
+  }
+}
+
+data class Position(
+    @SerializedName("lat") @Expose val lat: Double,
+    @SerializedName("lon") @Expose val lon: Double
+)
+
+abstract class OSMData {
+  abstract fun getPosition(): Position
+}
+
+class NodeWay(
+    @SerializedName("type") @Expose val type: String,
+    @SerializedName("id") @Expose val id: Long,
+    @SerializedName("lat") @Expose val lat: Double?,
+    @SerializedName("lon") @Expose val lon: Double?,
+    @SerializedName("center") @Expose val center: Position?,
+    @SerializedName("tags") @Expose val tags: Tags,
+) : OSMData() {
+  override fun getPosition(): Position {
+    if (type == "node") return Position(lat!!, lon!!)
+    return center!!
+  }
+}
+
+// Used to store position within OSM Relations (i.e. list of Ways) without having to store all of
+// the informations of every Way
+class SimpleWay(@SerializedName("geometry") @Expose val nodes: List<Position>?) {
+  override fun toString(): String {
+    return "Simple Way : $nodes\n"
+  }
+}
+
+class Relation(
+    @SerializedName("type") @Expose val type: String,
+    @SerializedName("id") @Expose val id: Long,
+    @SerializedName("tags") @Expose val tags: Tags,
+    @SerializedName("members") @Expose val ways: List<SimpleWay>?,
+) : OSMData() {
+  override fun getPosition(): Position {
+    if (ways != null && ways[0].nodes != null) return ways[0].nodes!![0]
+    return Position(0.0, 0.0)
+  }
+}

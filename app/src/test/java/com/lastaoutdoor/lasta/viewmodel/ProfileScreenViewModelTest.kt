@@ -9,7 +9,7 @@ import com.lastaoutdoor.lasta.data.model.activity.Difficulty
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.data.model.profile.TimeFrame
 import com.lastaoutdoor.lasta.di.TimeProvider
-import com.lastaoutdoor.lasta.repository.ActivitiesRepository
+import com.lastaoutdoor.lasta.repository.UserActivitiesRepository
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -30,7 +30,7 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class ProfileScreenViewModelTest {
 
-  private lateinit var fakeActivitiesRepository: FakeActivitiesRepository
+  private lateinit var fakeActivitiesRepository: FakeUserActivitiesRepository
   private lateinit var profileScreenViewModel: ProfileScreenViewModel
   private lateinit var context: Context
   private lateinit var user: FirebaseUser
@@ -48,7 +48,7 @@ class ProfileScreenViewModelTest {
     every { FirebaseAuth.getInstance() } returns firebaseAuth
     every { firebaseAuth.currentUser } returns user
 
-    fakeActivitiesRepository = FakeActivitiesRepository()
+    fakeActivitiesRepository = FakeUserActivitiesRepository()
     mockTimeProvider = mockk<TimeProvider>()
     every { mockTimeProvider.currentDate() } returns
         LocalDate.of(2022, 4, 15) // For example, April 15, 2022 Friday
@@ -87,7 +87,7 @@ class ProfileScreenViewModelTest {
                 100),
             ActivitiesDatabaseType.Trail(
                 2,
-                Difficulty.MODERATE,
+                Difficulty.NORMAL,
                 null,
                 null,
                 Date(1649908800000),
@@ -98,7 +98,7 @@ class ProfileScreenViewModelTest {
                 200),
             ActivitiesDatabaseType.Trail(
                 3,
-                Difficulty.DIFFICULT,
+                Difficulty.HARD,
                 null,
                 null,
                 Date(1649995200000),
@@ -125,8 +125,8 @@ class ProfileScreenViewModelTest {
     assert(profileScreenViewModel.trails.value[1].activityId == 2L)
     assert(profileScreenViewModel.trails.value[2].activityId == 3L)
     assert(profileScreenViewModel.trails.value[0].difficulty == Difficulty.EASY)
-    assert(profileScreenViewModel.trails.value[1].difficulty == Difficulty.MODERATE)
-    assert(profileScreenViewModel.trails.value[2].difficulty == Difficulty.DIFFICULT)
+    assert(profileScreenViewModel.trails.value[1].difficulty == Difficulty.NORMAL)
+    assert(profileScreenViewModel.trails.value[2].difficulty == Difficulty.HARD)
     assert(
         (profileScreenViewModel.trails.value[0] as ActivitiesDatabaseType.Trail).timeStarted ==
             Date(1649822400000))
@@ -190,7 +190,7 @@ class ProfileScreenViewModelTest {
             ActivitiesDatabaseType.Trail(
                 1, Difficulty.EASY, null, null, Date(), Date(), 0.0, 0, 0, 0),
             ActivitiesDatabaseType.Trail(
-                2, Difficulty.MODERATE, null, null, Date(), Date(), 0.0, 0, 0, 0))
+                2, Difficulty.NORMAL, null, null, Date(), Date(), 0.0, 0, 0, 0))
 
     val method: Method =
         ProfileScreenViewModel::class
@@ -355,7 +355,7 @@ class ProfileScreenViewModelTest {
     collectJob.cancel() // Cancel the collection job
   }
 
-  private class FakeActivitiesRepository : ActivitiesRepository {
+  private class FakeUserActivitiesRepository : UserActivitiesRepository {
     private val userActivitiesMap: MutableMap<String, MutableList<ActivitiesDatabaseType>> =
         mutableMapOf()
 

@@ -32,14 +32,15 @@ import androidx.navigation.NavController
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.model.activity.Activity
 import com.lastaoutdoor.lasta.data.model.activity.ActivityType
+import com.lastaoutdoor.lasta.data.model.activity.Difficulty
 import com.lastaoutdoor.lasta.ui.theme.Black
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
 import com.lastaoutdoor.lasta.ui.theme.YellowDifficulty
 
 @Composable
 fun MoreInfoScreen(
-    activity: Activity = Activity(ActivityType.CLIMBING, 0, 1.5f, "3 hours", "Test Title"),
-    navController: NavController
+  activity: Activity = Activity(ActivityType.CLIMBING, Difficulty.EASY, 1.5f, "3 hours", "Test Title"),
+  navController: NavController
 ) {
   LazyColumn(modifier = Modifier.padding(8.dp)) {
     item { Spacer(modifier = Modifier.height(15.dp)) }
@@ -142,14 +143,7 @@ fun RatingDisplay(rating: Double) {
 
 // intern helper function, WILL BE MOVED TO VIEWMODEL
 fun fetchDiffText(activity: Activity): String {
-  return when (activity.difficulty) {
-    0 -> "Easy"
-    1 -> "Medium"
-    2 -> "Difficult"
-    else -> {
-      "No available difficulty"
-    }
-  }
+  return activity.difficulty.toString()
 }
 
 @Composable
@@ -240,7 +234,7 @@ fun ElevatedActivityType(activity: Activity) {
       modifier = Modifier.padding(3.dp).width(64.dp).height(20.dp),
       colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
         Text(
-            activity.getActivityType().toString().replaceFirstChar { it.uppercase() },
+            activity.activityType.toString().replaceFirstChar { it.uppercase() },
             style =
                 TextStyle(
                     fontSize = 11.sp,

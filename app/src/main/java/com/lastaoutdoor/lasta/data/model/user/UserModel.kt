@@ -17,15 +17,15 @@ data class UserModel(
     val userName: String?,
     val email: String?,
     val profilePictureUrl: String?,
-    val hikingLevel: HikingLevel
+    val userLevel: UserLevel
 ) {
   constructor(
       firebaseUser: FirebaseUser,
-      hikingLevel: HikingLevel
+      userLevel: UserLevel
   ) : this(
       firebaseUser.uid,
       firebaseUser.displayName,
       firebaseUser.email,
       firebaseUser.photoUrl?.toString(),
-      hikingLevel)
+      userLevel)
 }

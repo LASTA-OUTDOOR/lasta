@@ -2,7 +2,8 @@ package com.lastaoutdoor.lasta.viewmodel
 
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.data.model.activity.ActivityType
-import com.lastaoutdoor.lasta.data.model.api.Node
+import com.lastaoutdoor.lasta.data.model.api.NodeWay
+import com.lastaoutdoor.lasta.data.model.api.Position
 import com.lastaoutdoor.lasta.data.model.api.Tags
 import java.lang.reflect.Method
 import kotlinx.coroutines.runBlocking
@@ -21,18 +22,9 @@ class DiscoveryScreenViewModelTest {
     viewModel = DiscoveryScreenViewModel(repository)
   }
 
-  private fun dummyNode(type: ActivityType, name: String, position: LatLng): Node {
-    return Node(
-        type.toString(),
-        0,
-        position.latitude,
-        position.longitude,
-        Tags(name, type.toString()),
-        type,
-        0,
-        10.2f,
-        "1",
-        name)
+  private fun dummyNode(type: ActivityType, name: String, position: LatLng): NodeWay {
+    return NodeWay(type.toString(), 0, position.latitude,
+      position.longitude, Position(position.latitude, position.longitude), Tags(""))
   }
 
   @Test

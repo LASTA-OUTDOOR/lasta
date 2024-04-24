@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.data.model.activity.Difficulty
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
 import com.lastaoutdoor.lasta.ui.components.SearchBarComponent
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
@@ -237,7 +238,7 @@ fun ActivitiesDisplay(
                   tint = MaterialTheme.colorScheme.primary)
               Text(text = "? popularity")
               Spacer(modifier = Modifier.width(8.dp))
-              Text(text = if (a.difficulty != 0) "Difficulty: ${a.difficulty}" else "? difficulty")
+              Text(text = "Difficulty: ${a.difficulty.toString()}")
               Spacer(modifier = Modifier.width(16.dp))
               // Distance from the user's location, NOT THE LENGTH OF THE ACTIVITY!!!
               Text(text = "? km")

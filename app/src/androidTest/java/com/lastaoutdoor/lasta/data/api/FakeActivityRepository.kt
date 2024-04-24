@@ -2,15 +2,15 @@ package com.lastaoutdoor.lasta.data.api
 
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.SphericalUtil
-import com.lastaoutdoor.lasta.data.model.api.Node
+import com.lastaoutdoor.lasta.data.model.api.NodeWay
 import com.lastaoutdoor.lasta.data.model.api.Relation
-import com.lastaoutdoor.lasta.data.model.api.Way
-import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
+import com.lastaoutdoor.lasta.repository.ActivityRepository
+import com.lastaoutdoor.lasta.utils.Response
 
-class FakeOutdoorActivityRepository : OutdoorActivityRepository {
+class FakeActivityRepository : ActivityRepository {
 
   // 2 arraylists simulating the response from the API
-  private var climbingResponse: ArrayList<Node> = ArrayList()
+  /*private var climbingResponse: ArrayList<Node> = ArrayList()
   private var hikingResponse: ArrayList<Relation> = ArrayList()
 
   // add a climbing node to the tested list
@@ -33,11 +33,7 @@ class FakeOutdoorActivityRepository : OutdoorActivityRepository {
     hikingResponse.clear()
   }
 
-  override fun getClimbingActivitiesNode(
-      range: Int,
-      lat: Double,
-      lon: Double
-  ): OutdoorActivityResponse<Node> {
+  override fun getClimbingActivitiesNode(range: Int, lat: Double, lon: Double): APIResponse<Node> {
 
     val resp: ArrayList<Node> = ArrayList()
 
@@ -48,26 +44,18 @@ class FakeOutdoorActivityRepository : OutdoorActivityRepository {
         resp.add(node)
       }
     }
-    return OutdoorActivityResponse(1.0f, resp)
+    return APIResponse(1.0f, resp)
   }
 
   // We do not need it right know
-  override fun getClimbingActivitiesWay(
-      range: Int,
-      lat: Double,
-      lon: Double
-  ): OutdoorActivityResponse<Way> {
+  override fun getClimbingActivitiesWay(range: Int, lat: Double, lon: Double): APIResponse<Way> {
     // This is not used yet in the code
-    return OutdoorActivityResponse(1.0f, emptyList())
+    return APIResponse(1.0f, emptyList())
   }
 
   // We do not need it right know
-  override fun getHikingActivities(
-      range: Int,
-      lat: Double,
-      lon: Double
-  ): OutdoorActivityResponse<Relation> {
-    return OutdoorActivityResponse(1.0f, hikingResponse)
+  override fun getHikingActivities(range: Int, lat: Double, lon: Double): APIResponse<Relation> {
+    return APIResponse(1.0f, hikingResponse)
   }
 
   override fun getDataStringClimbing(range: Int, lat: Double, lon: Double, type: String): String {
@@ -78,5 +66,16 @@ class FakeOutdoorActivityRepository : OutdoorActivityRepository {
   override fun getDataStringHiking(range: Int, lat: Double, lon: Double): String {
     // don't need to implement this function here
     return ""
+  }*/
+  override suspend fun getClimbingPointsInfo(
+    range: Int,
+    lat: Double,
+    lon: Double
+  ): Response<List<NodeWay>> {
+    TODO("Not yet implemented")
+  }
+
+  override suspend fun getClimbingPointById(id: Long): Response<NodeWay> {
+    TODO("Not yet implemented")
   }
 }

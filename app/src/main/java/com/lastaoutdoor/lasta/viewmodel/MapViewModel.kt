@@ -4,22 +4,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.model.api.Node
+import com.lastaoutdoor.lasta.data.model.api.NodeWay
 import com.lastaoutdoor.lasta.data.model.api.Relation
 import com.lastaoutdoor.lasta.data.model.map.ClimbingMarker
 import com.lastaoutdoor.lasta.data.model.map.HikingMarker
 import com.lastaoutdoor.lasta.data.model.map.MapItinerary
 import com.lastaoutdoor.lasta.data.model.map.Marker
-import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
+import com.lastaoutdoor.lasta.repository.ActivityRepository
+import com.lastaoutdoor.lasta.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MapViewModel
-@Inject
-constructor(private val outdoorActivityRepository: OutdoorActivityRepository) : ViewModel() {
+class MapViewModel @Inject constructor(private val activityRepository: ActivityRepository) :
+    ViewModel() {
 
   // this is used to store the state of the map and modify it
   var state by mutableStateOf(MapState())
@@ -58,51 +60,38 @@ constructor(private val outdoorActivityRepository: OutdoorActivityRepository) : 
   private fun fetchClimbingActivities(
       rad: Double,
       centerLocation: LatLng,
-      repository: OutdoorActivityRepository
+      repository: ActivityRepository
   ) {
 
-    // list that will store the climbing activities nodes
-    var climbingNodes: List<Node> = emptyList()
+    viewModelScope.launch {
+      val response = repository.getClimbingPointsInfo(rad.toInt(), centerLocation.latitude, centerLocation.longitude)
+      val climbingPoints: List<NodeWay> = (response as Response.Success).data ?: emptyList()
 
-    // Since the API call is a network call, it needs to be done in a separate thread
-    val climbingThread = Thread {
-      climbingNodes =
-          repository
-              .getClimbingActivitiesNode(
-                  rad.toInt(), // in meters
-                  centerLocation.latitude,
-                  centerLocation.longitude)
-              .elements
-    }
+      val climbingMarkers = mutableListOf<ClimbingMarker>()
 
-    // start and join the thread, since we need the result before continuing
-    climbingThread.start()
-    climbingThread.join()
-
-    val climbingMarkers = mutableListOf<ClimbingMarker>()
-
-    // Converts the node data structure to our marker data structure
-    climbingNodes.forEach {
-      val marker =
+      // Converts the node data structure to our marker data structure
+      climbingPoints.forEach {
+        val marker =
           ClimbingMarker(
-              it.tags.name ?: "Climbing - Unnamed",
-              LatLng(it.lat, it.lon),
-              it.tags.sport ?: "climbing",
-              R.drawable.climbing_icon)
-      climbingMarkers.add(marker)
-    }
+            it.tags.name,
+            LatLng(it.lat ?: 46.55, it.lon ?: 6.549),
+            it.tags.sport ?: "climbing",
+            R.drawable.climbing_icon)
+        climbingMarkers.add(marker)
+      }
 
-    state.markerList = climbingMarkers.toList()
+      state.markerList = climbingMarkers.toList()
+    }
   }
 
   // Returns relations that represents hiking activities
-  private fun fetchHikingActivities(rad: Double, centerLocation: LatLng): List<Relation> {
+  /*private fun fetchHikingActivities(rad: Double, centerLocation: LatLng): List<Relation> {
 
     var hikingRelation: List<Relation> = emptyList()
 
     val hikingThread = Thread {
       hikingRelation =
-          outdoorActivityRepository
+          activityRepository
               .getHikingActivities(rad.toInt(), centerLocation.latitude, centerLocation.longitude)
               .elements
     }
@@ -162,19 +151,19 @@ constructor(private val outdoorActivityRepository: OutdoorActivityRepository) : 
               relId to
                   MapItinerary(relId, relation.tags.name ?: "No given name", points = pointsList))
     }
-  }
+  }*/
 
   // Update the markers on the map with a new center location and radius
   fun updateMarkers(centerLocation: LatLng, rad: Double) {
 
     // get all the climbing activities in the radius
-    fetchClimbingActivities(rad, centerLocation, outdoorActivityRepository)
+    fetchClimbingActivities(rad, centerLocation, activityRepository)
 
     // get all the hiking activities in the radius (only displays first point of the itinerary)
-    val hikingRelations = fetchHikingActivities(rad, centerLocation)
-    getMarkersFromRelations(hikingRelations)
+    //val hikingRelations = fetchHikingActivities(rad, centerLocation)
+    //getMarkersFromRelations(hikingRelations)
 
     // Add the itineraries to a map -> can access them by relation id
-    getItineraryFromRelations(hikingRelations)
+    //getItineraryFromRelations(hikingRelations)
   }
 }

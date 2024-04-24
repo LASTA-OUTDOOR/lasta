@@ -7,7 +7,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.data.model.profile.TimeFrame
 import com.lastaoutdoor.lasta.di.TimeProvider
-import com.lastaoutdoor.lasta.repository.ActivitiesRepository
+import com.lastaoutdoor.lasta.repository.UserActivitiesRepository
 import com.lastaoutdoor.lasta.utils.calculateTimeRangeUntilNow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -18,8 +18,10 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class ProfileScreenViewModel
 @Inject
-constructor(private val repository: ActivitiesRepository, private val timeProvider: TimeProvider) :
-    ViewModel() {
+constructor(
+    private val repository: UserActivitiesRepository,
+    private val timeProvider: TimeProvider
+) : ViewModel() {
 
   // TODO : MAKE IT WITH UserModel
   private val user = FirebaseAuth.getInstance().currentUser

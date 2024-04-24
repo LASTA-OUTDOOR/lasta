@@ -10,18 +10,18 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.data.api.ActivityRepositoryImpl
 import com.lastaoutdoor.lasta.data.api.ApiService
-import com.lastaoutdoor.lasta.data.api.OutdoorActivityRepositoryImpl
 import com.lastaoutdoor.lasta.data.auth.AuthRepositoryImpl
 import com.lastaoutdoor.lasta.data.connectivity.ConnectivityRepositoryImpl
-import com.lastaoutdoor.lasta.data.db.ActivitiesRepositoryImpl
+import com.lastaoutdoor.lasta.data.db.UserActivitiesRepositoryImpl
 import com.lastaoutdoor.lasta.data.preferences.PreferencesRepositoryImpl
-import com.lastaoutdoor.lasta.repository.ActivitiesRepository
+import com.lastaoutdoor.lasta.repository.ActivityRepository
 import com.lastaoutdoor.lasta.repository.AuthRepository
 import com.lastaoutdoor.lasta.repository.ConnectivityRepository
-import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
 import com.lastaoutdoor.lasta.repository.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.SocialRepository
+import com.lastaoutdoor.lasta.repository.UserActivitiesRepository
 import com.lastaoutdoor.lasta.ui.screen.social.FakeSocialRepository
 import dagger.Module
 import dagger.Provides
@@ -82,7 +82,7 @@ object TestAppModule {
           .build()
           .create(ApiService::class.java)
 
-  /** Provides the [OutdoorActivityRepository] class */
+  /** Provides the [ActivityRepository] class */
   @Singleton
   @Provides
   fun provideAuthRepository(
@@ -99,15 +99,15 @@ object TestAppModule {
 
   @Singleton
   @Provides
-  fun provideOutdoorActivitiesRepository(apiService: ApiService): OutdoorActivityRepository =
-      OutdoorActivityRepositoryImpl(apiService)
+  fun provideOutdoorActivitiesRepository(apiService: ApiService): ActivityRepository =
+      ActivityRepositoryImpl(apiService)
 
   @Singleton
   @Provides
   fun provideActivitiesRepository(
       @ApplicationContext context: Context,
       database: FirebaseFirestore
-  ): ActivitiesRepository = ActivitiesRepositoryImpl(database, context)
+  ): UserActivitiesRepository = UserActivitiesRepositoryImpl(database, context)
 
   @Singleton
   @Provides

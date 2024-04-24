@@ -5,7 +5,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
-import com.lastaoutdoor.lasta.data.model.user.HikingLevel
+import com.lastaoutdoor.lasta.data.model.user.UserLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.data.model.user.UserPreferences
 import kotlinx.coroutines.tasks.await
@@ -35,7 +35,7 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
             "email" to user.email,
             "displayName" to user.userName,
             "profilePictureUrl" to user.profilePictureUrl,
-            "hikingLevel" to user.hikingLevel.toString())
+            "hikingLevel" to user.userLevel.toString())
     userDocumentRef.set(userData, SetOptions.merge())
   }
 
@@ -48,9 +48,9 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
       val profilePictureUrl = document.getString("profilePictureUrl") ?: ""
       var hikingLevel = document.getString("hikingLevel") ?: ""
       if (hikingLevel == "null" || hikingLevel == "") hikingLevel = "BEGINNER"
-      return UserModel(uid, displayName, email, profilePictureUrl, HikingLevel.valueOf(hikingLevel))
+      return UserModel(uid, displayName, email, profilePictureUrl, UserLevel.valueOf(hikingLevel))
     }
-    return UserModel("", "", "", "", HikingLevel.BEGINNER)
+    return UserModel("", "", "", "", UserLevel.BEGINNER)
   }
 
   /**
@@ -98,7 +98,7 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
             "email" to user.email,
             "displayName" to user.userName,
             "profilePictureUrl" to user.profilePictureUrl,
-            "hikingLevel" to user.hikingLevel.toString())
+            "hikingLevel" to user.userLevel.toString())
     userDocumentRef.set(userData, SetOptions.merge())
   }
 
@@ -241,7 +241,7 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
             "userName" to preferences.userName,
             "email" to preferences.email,
             "profilePictureUrl" to preferences.profilePictureUrl,
-            "hikingLevel" to preferences.hikingLevel)
+            "hikingLevel" to preferences.userLevel)
 
     // Merge the preferences into the user's document
     val data = hashMapOf("prefSettings" to prefSettings)
@@ -272,11 +272,11 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
               userName = prefSettings["userName"] as String,
               email = prefSettings["email"] as String,
               profilePictureUrl = prefSettings["profilePictureUrl"] as String,
-              hikingLevel = prefSettings["hikingLevel"] as HikingLevel)
+              userLevel = prefSettings["hikingLevel"] as UserLevel)
         }
       }
       // Return default preferences if not found
-      return UserPreferences(false, "", "", "", "", HikingLevel.BEGINNER)
+      return UserPreferences(false, "", "", "", "", UserLevel.BEGINNER)
     }
   }
 }

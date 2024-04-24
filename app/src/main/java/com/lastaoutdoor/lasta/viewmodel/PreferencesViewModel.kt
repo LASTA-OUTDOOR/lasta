@@ -2,7 +2,7 @@ package com.lastaoutdoor.lasta.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lastaoutdoor.lasta.data.model.user.HikingLevel
+import com.lastaoutdoor.lasta.data.model.user.UserLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.repository.PreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +25,7 @@ class PreferencesViewModel @Inject constructor(private val preferences: Preferen
   val userName = preferences.userPreferencesFlow.map { it.userName }
   val email = preferences.userPreferencesFlow.map { it.email }
   val profilePictureUrl = preferences.userPreferencesFlow.map { it.profilePictureUrl }
-  val hikingLevel = preferences.userPreferencesFlow.map { it.hikingLevel }
+  val hikingLevel = preferences.userPreferencesFlow.map { it.userLevel }
 
   /**
    * Updates the isLoggedIn preference
@@ -43,10 +43,10 @@ class PreferencesViewModel @Inject constructor(private val preferences: Preferen
   /**
    * Updates the hiking level preference
    *
-   * @param hikingLevel the new value for the hikingLevel preference
+   * @param userLevel the new value for the hikingLevel preference
    */
-  fun updateHikingLevel(hikingLevel: HikingLevel) {
-    viewModelScope.launch { preferences.updateHikingLevel(hikingLevel) }
+  fun updateHikingLevel(userLevel: UserLevel) {
+    viewModelScope.launch { preferences.updateHikingLevel(userLevel) }
   }
 
   fun clearPreferences() {

@@ -13,7 +13,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
-import com.lastaoutdoor.lasta.data.model.user.HikingLevel
+import com.lastaoutdoor.lasta.data.model.user.UserLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.repository.SocialRepository
@@ -23,7 +23,6 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import java.util.Date
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -184,7 +183,7 @@ class SocialScreenKtTest {
   fun testFilledFriends() {
 
     // Fake data
-    val friend = UserModel("1", "name", "email", "photo", HikingLevel.BEGINNER)
+    val friend = UserModel("1", "name", "email", "photo", UserLevel.BEGINNER)
     val friends = listOf(friend, friend, friend)
 
     // Set the content to the social screen

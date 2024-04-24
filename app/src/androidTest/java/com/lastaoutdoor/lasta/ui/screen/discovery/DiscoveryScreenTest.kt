@@ -8,7 +8,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.navigation.compose.rememberNavController
 import androidx.test.espresso.action.ViewActions
-import com.lastaoutdoor.lasta.data.api.FakeOutdoorActivityRepository
+import com.lastaoutdoor.lasta.data.api.FakeActivityRepository
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.ui.MainActivity
 import com.lastaoutdoor.lasta.ui.screen.discovery.components.RangeSearchComposable
@@ -35,7 +35,7 @@ class DiscoveryScreenTest {
   // Bind the fake view model to the test
   @BindValue
   val discoveryScreenViewModel: DiscoveryScreenViewModel =
-      DiscoveryScreenViewModel(FakeOutdoorActivityRepository())
+      DiscoveryScreenViewModel(FakeActivityRepository())
 
   // Set up the test
   @Before

@@ -1,15 +1,19 @@
 package com.lastaoutdoor.lasta.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.data.model.activity.Activity
 import com.lastaoutdoor.lasta.data.model.activity.ActivityType
-import com.lastaoutdoor.lasta.data.model.api.Node
-import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
+import com.lastaoutdoor.lasta.data.model.activity.Difficulty
+import com.lastaoutdoor.lasta.data.model.api.NodeWay
+import com.lastaoutdoor.lasta.repository.ActivityRepository
+import com.lastaoutdoor.lasta.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 enum class DiscoveryScreenType {
   LIST,
@@ -21,9 +25,8 @@ enum class DiscoveryScreenType {
 }
 
 @HiltViewModel
-class DiscoveryScreenViewModel
-@Inject
-constructor(private val repository: OutdoorActivityRepository) : ViewModel() {
+class DiscoveryScreenViewModel @Inject constructor(private val repository: ActivityRepository) :
+    ViewModel() {
 
   var climbingActivities: MutableList<Activity> = mutableListOf()
 
@@ -52,30 +55,14 @@ constructor(private val repository: OutdoorActivityRepository) : ViewModel() {
       rad: Double = 10000.0,
       centerLocation: LatLng = LatLng(46.519962, 6.633597)
   ) {
-    var climbingNodes: List<Node> = emptyList()
-    // Since the API call is a network call, it needs to be done in a separate thread
-    val climbingThread = Thread {
-      climbingNodes =
-          repository
-              .getClimbingActivitiesNode(
-                  rad.toInt(), // in meters
-                  centerLocation.latitude,
-                  centerLocation.longitude)
-              .elements
-    }
-
-    // start and join the thread, since we need the result before continuing
-    climbingThread.start()
-    climbingThread.join()
-    climbingActivities.clear()
-    climbingNodes.forEach { node ->
-      climbingActivities.add(
-          Activity(
-              ActivityType.CLIMBING,
-              node.difficulty,
-              node.length,
-              "",
-              node.tags.name ?: "Unnamed Climbing Activity"))
+    viewModelScope.launch {
+      val response = repository.getClimbingPointsInfo(rad.toInt(), centerLocation.latitude, centerLocation.longitude)
+      val climbingPoints = (response as Response.Success).data ?: emptyList()
+      println(climbingPoints)
+      climbingActivities.clear()
+      climbingPoints.forEach { point ->
+        climbingActivities.add(Activity(ActivityType.CLIMBING, Difficulty.EASY, 0f, "", point.tags.name))
+      }
     }
   }
 

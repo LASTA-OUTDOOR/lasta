@@ -49,7 +49,7 @@ import com.lastaoutdoor.lasta.data.model.profile.MonthsInYear
 import com.lastaoutdoor.lasta.data.model.profile.TimeFrame
 import com.lastaoutdoor.lasta.data.model.profile.WeeksInMonth
 import com.lastaoutdoor.lasta.data.model.profile.Year
-import com.lastaoutdoor.lasta.data.model.user.HikingLevel
+import com.lastaoutdoor.lasta.data.model.user.UserLevel
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
 import com.lastaoutdoor.lasta.ui.navigation.RootScreen
@@ -111,7 +111,7 @@ fun UserInfo(
   val userName by preferencesViewModel.userName.collectAsState(initial = "")
   // val email by preferencesViewModel.email.collectAsState(initial = "")
   val profilePictureUrl by preferencesViewModel.profilePictureUrl.collectAsState(initial = "")
-  val hikingLevel by preferencesViewModel.hikingLevel.collectAsState(initial = HikingLevel.BEGINNER)
+  val userLevel by preferencesViewModel.hikingLevel.collectAsState(initial = UserLevel.BEGINNER)
 
   LaunchedEffect(key1 = authViewModel.signedOut) {
     if (authViewModel.signedOut) {
@@ -132,7 +132,7 @@ fun UserInfo(
         text = {
           Column {
             Text("Hiking Level")
-            HikingRow(selectedHikingLevel = hikingLevel)
+            HikingRow(selectedUserLevel = userLevel)
           }
         },
         confirmButton = { Row { Button(onClick = { showDialog = false }) { Text("Save") } } },
@@ -189,7 +189,7 @@ fun UserInfo(
 
 @Composable
 fun HikingRow(
-    selectedHikingLevel: HikingLevel,
+    selectedUserLevel: UserLevel,
     preferences: PreferencesViewModel = hiltViewModel(),
 ) {
   val userId by preferences.userId.collectAsState(initial = "")
@@ -197,11 +197,11 @@ fun HikingRow(
       modifier = Modifier.fillMaxWidth(.7f),
       horizontalArrangement = Arrangement.SpaceEvenly,
       verticalAlignment = Alignment.CenterVertically) {
-        HikingLevel.values().forEachIndexed { index, hikingLevel ->
-          Text(text = hikingLevel.level.toString(), maxLines = 1, overflow = TextOverflow.Ellipsis)
+        UserLevel.values().forEachIndexed { index, hikingLevel ->
+          Text(text = hikingLevel.toString(), maxLines = 1, overflow = TextOverflow.Ellipsis)
           RadioButton(
               modifier = Modifier.testTag("HikingLevelItem$index"),
-              selected = hikingLevel == selectedHikingLevel,
+              selected = hikingLevel == selectedUserLevel,
               onClick = {
                 preferences.updateHikingLevel(hikingLevel)
                 DatabaseManager().updateFieldInUser(userId, "hikingLevel", hikingLevel.toString())
