@@ -125,9 +125,10 @@ fun HeaderComposable(
                         }
                   }
 
-                    Text(
-                        text = "${LocalContext.current.getString(R.string.less_than)} ${(range / 1000).toInt()} km ${LocalContext.current.getString(R.string.around_you)}",
-                        style = MaterialTheme.typography.bodySmall)
+                  Text(
+                      text =
+                          "${LocalContext.current.getString(R.string.less_than)} ${(range / 1000).toInt()} km ${LocalContext.current.getString(R.string.around_you)}",
+                      style = MaterialTheme.typography.bodySmall)
                 }
               }
 
@@ -143,29 +144,32 @@ fun HeaderComposable(
                       contentDescription = "Filter",
                       modifier = Modifier.size(24.dp))
                 }
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center) {
+              }
+          Row(
+              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+              verticalAlignment = Alignment.CenterVertically,
+              horizontalArrangement = Arrangement.Center) {
                 val contex = LocalContext.current
                 DisplaySelection<DiscoveryScreenType>(
                     DiscoveryScreenType.values().toList(),
                     screen,
-                    discoveryScreenViewModel::setScreen
-                ) { it.toStringCon(contex) }
-            }
+                    discoveryScreenViewModel::setScreen) {
+                      it.toStringCon(contex)
+                    }
+              }
 
-            if (screen == DiscoveryScreenType.LIST) {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically) {
-                    Text(LocalContext.current.getString(R.string.filter_by), style = MaterialTheme.typography.bodyMedium)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = LocalContext.current.getString(R.string.relevance),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.primary)
+          if (screen == DiscoveryScreenType.LIST) {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically) {
+                  Text(
+                      LocalContext.current.getString(R.string.filter_by),
+                      style = MaterialTheme.typography.bodyMedium)
+                  Spacer(modifier = Modifier.width(8.dp))
+                  Text(
+                      text = LocalContext.current.getString(R.string.relevance),
+                      style = MaterialTheme.typography.bodyMedium,
+                      color = MaterialTheme.colorScheme.primary)
 
                   IconButton(onClick = { /*TODO*/}, modifier = Modifier.size(24.dp)) {
                     Icon(
@@ -183,7 +187,8 @@ fun HeaderComposable(
 @Composable
 fun ActivitiesDisplay(
     navController: NavController,
-    discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel()
+    discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel(),
+    moreInfoScreenViewModel: MoreInfoScreenViewModel
 ) {
   val activities = discoveryScreenViewModel.climbingActivities
   for (a in activities) {
@@ -197,24 +202,24 @@ fun ActivitiesDisplay(
                       moreInfoScreenViewModel.changeActivityToDisplay(a)
                       navController.navigate(LeafScreen.MoreInfo.route)
                     }),
-            shape = RoundedCornerShape(8.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-        ) {
-            Column {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween) {
-                    Box(
-                        modifier =
-                        Modifier.shadow(4.dp, RoundedCornerShape(30))
-                            .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
-                            .padding(PaddingValues(8.dp))) {
-                        Text(
-                            text = LocalContext.current.getString(R.string.Climbing),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onPrimary)
-                    }
+        shape = RoundedCornerShape(8.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+    ) {
+      Column {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween) {
+              Box(
+                  modifier =
+                      Modifier.shadow(4.dp, RoundedCornerShape(30))
+                          .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
+                          .padding(PaddingValues(8.dp))) {
+                    Text(
+                        text = LocalContext.current.getString(R.string.Climbing),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onPrimary)
+                  }
 
               IconButton(
                   onClick = { /*TODO*/ /* changed to this when favorite Icons.Filled.Favorite*/},
@@ -226,31 +231,35 @@ fun ActivitiesDisplay(
                   }
             }
 
-                Spacer(modifier = Modifier.height(16.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(8.dp),
-                    verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = a.locationName ?: "Unnamed Activity",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold)
-                }
-                SeparatorComponent()
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(8.dp),
-                    verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Default.Star,
-                        contentDescription = "Rating",
-                        tint = MaterialTheme.colorScheme.primary)
-                    Text(text = "? ${LocalContext.current.getString(R.string.popularity)}")
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = if (a.difficulty != 0) "${LocalContext.current.getString(R.string.difficulty)}: ${a.difficulty}" else "? ${LocalContext.current.getString(R.string.difficulty)}")
-                    Spacer(modifier = Modifier.width(16.dp))
-                    // Distance from the user's location, NOT THE LENGTH OF THE ACTIVITY!!!
-                    Text(text = "? km")
-                }
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically) {
+              Text(
+                  text = a.locationName ?: "Unnamed Activity",
+                  style = MaterialTheme.typography.titleMedium,
+                  fontWeight = FontWeight.Bold)
             }
-        }
+        SeparatorComponent()
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically) {
+              Icon(
+                  imageVector = Icons.Default.Star,
+                  contentDescription = "Rating",
+                  tint = MaterialTheme.colorScheme.primary)
+              Text(text = "? ${LocalContext.current.getString(R.string.popularity)}")
+              Spacer(modifier = Modifier.width(8.dp))
+              Text(
+                  text =
+                      if (a.difficulty != 0)
+                          "${LocalContext.current.getString(R.string.difficulty)}: ${a.difficulty}"
+                      else "? ${LocalContext.current.getString(R.string.difficulty)}")
+              Spacer(modifier = Modifier.width(16.dp))
+              // Distance from the user's location, NOT THE LENGTH OF THE ACTIVITY!!!
+              Text(text = "? km")
+            }
+      }
     }
+  }
 }

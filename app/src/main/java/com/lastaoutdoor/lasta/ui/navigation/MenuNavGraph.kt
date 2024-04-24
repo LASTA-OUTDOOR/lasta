@@ -26,10 +26,10 @@ fun MenuNavGraph(
     modifier: Modifier,
     moreInfoScreenViewModel: MoreInfoScreenViewModel = hiltViewModel()
 ) {
-    val disc = LocalContext.current.getString(R.string.tab_discover)
-    val prof = LocalContext.current.getString(R.string.tab_profile)
-    val soc = LocalContext.current.getString(R.string.socials)
-    val fav = LocalContext.current.getString(R.string.favs)
+  val disc = LocalContext.current.getString(R.string.tab_discover)
+  val prof = LocalContext.current.getString(R.string.tab_profile)
+  val soc = LocalContext.current.getString(R.string.socials)
+  val fav = LocalContext.current.getString(R.string.favs)
   NavHost(
       navController = navController,
       route = RootScreen.Main.route,
@@ -40,9 +40,7 @@ fun MenuNavGraph(
         }
         composable(fav) { FavoritesScreen(navController) }
         composable(soc) { SocialScreen(navController) }
-        composable(prof) {
-          ProfileScreen(rootNavController = rootNavController)
-        }
+        composable(prof) { ProfileScreen(rootNavController = rootNavController) }
         composable(LeafScreen.MoreInfo.route) {
           MoreInfoScreen(
               navController = navController, moreInfoScreenViewModel = moreInfoScreenViewModel)

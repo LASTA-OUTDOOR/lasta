@@ -18,11 +18,11 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.db.DatabaseManager
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
 import com.lastaoutdoor.lasta.ui.navigation.RootScreen
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
-import com.lastaoutdoor.lasta.R
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
@@ -36,7 +36,10 @@ fun SetupScreen(
   val languages = listOf("English", "Français", "Deutsch")
 
   var selectedLanguage by remember { mutableStateOf(languages[0]) }
-  val outdoorActivities = listOf("Hiking", "Climbing")
+  val outdoorActivities =
+      listOf(
+          LocalContext.current.getString(R.string.hiking),
+          LocalContext.current.getString(R.string.climbing))
   var isHikingSelected by remember { mutableStateOf(true) }
   var expanded by remember { mutableStateOf(false) }
 
@@ -67,7 +70,6 @@ fun SetupScreen(
                   selectedItem = selectedLanguage,
                   onItemSelected = { selectedLanguage = it },
                   String::toString,
-
                   fieldText = LocalContext.current.getString(R.string.languague))
             }
         Spacer(modifier = Modifier.height(40.dp))

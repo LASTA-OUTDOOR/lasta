@@ -77,9 +77,7 @@ fun ProfileScreen(
   val timeFrame by profileScreenViewModel.timeFrame.collectAsState()
   val sport by profileScreenViewModel.sport.collectAsState()
 
-  LazyColumn(modifier = Modifier
-      .padding(16.dp)
-      .testTag("ProfileScreen")) {
+  LazyColumn(modifier = Modifier.padding(16.dp).testTag("ProfileScreen")) {
     item { UserInfo(rootNavController) }
     item {
       SportSelection(sport, profileScreenViewModel::setSport)
@@ -139,7 +137,13 @@ fun UserInfo(
             HikingRow(selectedHikingLevel = hikingLevel)
           }
         },
-        confirmButton = { Row { Button(onClick = { showDialog = false }) { Text(LocalContext.current.getString(R.string.save)) } } },
+        confirmButton = {
+          Row {
+            Button(onClick = { showDialog = false }) {
+              Text(LocalContext.current.getString(R.string.save))
+            }
+          }
+        },
         dismissButton = {
           Button(
               onClick = {
@@ -171,9 +175,7 @@ fun UserInfo(
       AsyncImage(
           model = profilePictureUrl,
           contentDescription = "Profile picture",
-          modifier = Modifier
-              .size(70.dp)
-              .clip(CircleShape),
+          modifier = Modifier.size(70.dp).clip(CircleShape),
           contentScale = ContentScale.Crop)
     }
     Column(modifier = Modifier.padding(0.dp, 8.dp, 16.dp, 0.dp)) {
@@ -309,7 +311,9 @@ fun Chart(
             Text(LocalContext.current.getString(R.string.hikes))
           }
           ActivitiesDatabaseType.Sports.CLIMBING -> {
-            Text(LocalContext.current.getString(R.string.climbs), modifier = Modifier.testTag("TestClimb"))
+            Text(
+                LocalContext.current.getString(R.string.climbs),
+                modifier = Modifier.testTag("TestClimb"))
           }
         }
       }
@@ -367,19 +371,14 @@ fun RecentActivities(
   for (a in activities.reversed()) {
     val sport = a.sport
     Card(
-        modifier = Modifier
-            .padding(12.dp)
-            .fillMaxWidth()
-            .testTag("RecentActivitiesItem"),
+        modifier = Modifier.padding(12.dp).fillMaxWidth().testTag("RecentActivitiesItem"),
         elevation = CardDefaults.cardElevation(4.dp),
         shape = RoundedCornerShape(8.dp)) {
           Row(
               modifier = Modifier.padding(8.dp, 0.dp),
               verticalAlignment = Alignment.CenterVertically) {
                 // Image on the left
-                Box(modifier = Modifier
-                    .size(100.dp)
-                    .padding(8.dp)) {
+                Box(modifier = Modifier.size(100.dp).padding(8.dp)) {
                   /*
                   Image(
                       bitmap = imageBitmap,
@@ -399,9 +398,7 @@ fun RecentActivities(
           // Text information on the right
 
           Row(
-              modifier = Modifier
-                  .fillMaxWidth()
-                  .padding(16.dp),
+              modifier = Modifier.fillMaxWidth().padding(16.dp),
               horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
                   when (sport) {

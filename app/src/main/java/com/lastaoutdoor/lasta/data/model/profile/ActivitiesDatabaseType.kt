@@ -24,11 +24,12 @@ sealed class ActivitiesDatabaseType(
     override fun toString(): String {
       return name.lowercase().replaceFirstChar { it.uppercase() }
     }
-    fun toStringCon(con : Context) : String{
-        return when(this){
-            HIKING -> con.getString(R.string.hiking)
-            CLIMBING -> con.getString(R.string.climbing)
-        }
+
+    fun toStringCon(con: Context): String {
+      return when (this) {
+        HIKING -> con.getString(R.string.hiking)
+        CLIMBING -> con.getString(R.string.climbing)
+      }
     }
   }
 

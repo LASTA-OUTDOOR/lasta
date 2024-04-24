@@ -20,14 +20,16 @@ enum class DiscoveryScreenType {
   override fun toString(): String {
     return name.lowercase().replaceFirstChar { it.uppercase() }
   }
-  fun toStringCon(con : Context): String{
-     return when(this){
-         LIST ->  con.getString(R.string.list)
-         MAP ->  con.getString(R.string.map)
-     }
+
+  fun toStringCon(con: Context): String {
+    return when (this) {
+      LIST -> con.getString(R.string.list)
+      MAP -> con.getString(R.string.map)
+    }
   }
-  fun toStringConDisp(con: Context): (DiscoveryScreenType) -> String{
-      return {it -> it.toStringCon(con)}
+
+  fun toStringConDisp(con: Context): (DiscoveryScreenType) -> String {
+    return { it -> it.toStringCon(con) }
   }
 }
 

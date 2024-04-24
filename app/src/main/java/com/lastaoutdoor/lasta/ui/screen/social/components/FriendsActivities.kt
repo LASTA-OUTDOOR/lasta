@@ -67,7 +67,9 @@ fun FriendsActivityCard(activity: ActivitiesDatabaseType) {
                 text = LocalContext.current.getString(R.string.activity_title),
                 style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-              Text(text = LocalContext.current.getString(R.string.friend), modifier = Modifier.align(Alignment.CenterVertically))
+              Text(
+                  text = LocalContext.current.getString(R.string.friend),
+                  modifier = Modifier.align(Alignment.CenterVertically))
               Icon(
                   Icons.Filled.AccountCircle,
                   contentDescription = "Profile picture",

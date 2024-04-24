@@ -26,9 +26,11 @@ import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 fun TabMenu(navController: NavController, viewModel: SocialViewModel = hiltViewModel()) {
 
   var state by remember { mutableIntStateOf(0) }
-  val titles = listOf(LocalContext.current.getString(R.string.feed),
-    LocalContext.current.getString(R.string.message),
-    LocalContext.current.getString(R.string.friends))
+  val titles =
+      listOf(
+          LocalContext.current.getString(R.string.feed),
+          LocalContext.current.getString(R.string.message),
+          LocalContext.current.getString(R.string.friends))
 
   Column {
     PrimaryTabRow(selectedTabIndex = state) {

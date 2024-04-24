@@ -66,6 +66,8 @@ fun MessageMissing() {
                 TextStyle(
                     fontWeight = FontWeight.Normal, fontSize = 20.sp, textAlign = TextAlign.Center),
             modifier = Modifier.padding(15.dp))
-        Button(onClick = { /*TODO*/}) { Text(text = LocalContext.current.getString(R.string.start_conv)) }
+        Button(onClick = { /*TODO*/}) {
+          Text(text = LocalContext.current.getString(R.string.start_conv))
+        }
       }
 }
