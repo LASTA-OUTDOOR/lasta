@@ -1,5 +1,6 @@
 package com.lastaoutdoor.lasta.data.db
 
+import androidx.compose.ui.text.toUpperCase
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -46,8 +47,7 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
       val email = document.getString("email") ?: ""
       val displayName = document.getString("displayName") ?: ""
       val profilePictureUrl = document.getString("profilePictureUrl") ?: ""
-      var hikingLevel = document.getString("hikingLevel") ?: ""
-      if (hikingLevel == "null" || hikingLevel == "") hikingLevel = "BEGINNER"
+      val hikingLevel = document.getString("hikingLevel")?.uppercase() ?: ""
       return UserModel(uid, displayName, email, profilePictureUrl, UserLevel.valueOf(hikingLevel))
     }
     return UserModel("", "", "", "", UserLevel.BEGINNER)

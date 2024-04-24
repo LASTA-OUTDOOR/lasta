@@ -64,7 +64,7 @@ class ActivityRepositoryImpl @Inject constructor(private val apiService: ApiServ
         }
     }
 
-    fun climbingInfoQuery(range: Int, lat: Double, lon: Double): String {
+    private fun climbingInfoQuery(range: Int, lat: Double, lon: Double): String {
         return "[out:json][timeout:25];\n" +
             "(\n" +
             "  node(around: $range, $lat, $lon)[sport=climbing][name];\n" +
@@ -73,7 +73,7 @@ class ActivityRepositoryImpl @Inject constructor(private val apiService: ApiServ
             "out tags;\n"
     }
 
-    fun climbingPointQuery(id: Long): String {
+    private fun climbingPointQuery(id: Long): String {
         return "[out:json][timeout:25];\n" +
             "(\n" +
             "  nw($id);\n" +

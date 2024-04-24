@@ -182,14 +182,16 @@ fun ActivitiesDisplay(
     navController: NavController,
     discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel()
 ) {
-  val activities = discoveryScreenViewModel.climbingActivities
+  val activities = discoveryScreenViewModel.climbingActivities.value
   for (a in activities) {
     Card(
         modifier =
             Modifier.fillMaxWidth()
                 .wrapContentHeight()
                 .padding(vertical = 8.dp, horizontal = 16.dp)
-                .clickable(onClick = { navController.navigate(LeafScreen.MoreInfo.route) }),
+                .clickable(onClick = {
+                  navController.navigate(LeafScreen.MoreInfo.route)
+                }),
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
     ) {

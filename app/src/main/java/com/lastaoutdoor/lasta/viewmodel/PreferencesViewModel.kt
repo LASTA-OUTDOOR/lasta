@@ -1,6 +1,7 @@
 package com.lastaoutdoor.lasta.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.lastaoutdoor.lasta.data.model.user.UserLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
@@ -10,17 +11,11 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-/**
- * ViewModel class for the Preferences data store
- *
- * @return [HiltViewModel] instance
- * @property preferences the [PreferencesDataStore] instance
- */
 @HiltViewModel
 class PreferencesViewModel @Inject constructor(private val preferences: PreferencesRepository) :
     ViewModel() {
   // Decompose UserPreferences into individual properties available as Flows
-  val isLoggedIn = preferences.userPreferencesFlow.map { it.isLoggedIn }
+  val isLoggedIn = preferences.userPreferencesFlow.map { it.isLoggedIn }.asLiveData()
   val userId = preferences.userPreferencesFlow.map { it.uid }
   val userName = preferences.userPreferencesFlow.map { it.userName }
   val email = preferences.userPreferencesFlow.map { it.email }

@@ -8,6 +8,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -23,20 +27,21 @@ fun LoadingScreen(
     navController: NavHostController,
     preferencesViewModel: PreferencesViewModel = hiltViewModel()
 ) {
-  val isLoggedIn by preferencesViewModel.isLoggedIn.collectAsState(initial = false)
-  LaunchedEffect(key1 = preferencesViewModel.isLoggedIn) {
-    delay(400)
-    navController.popBackStack()
-    if (isLoggedIn) {
-      navController.navigate(RootScreen.Main.route)
-    } else {
-      navController.navigate(RootScreen.Login.route)
+  val isLoggedIn by preferencesViewModel.isLoggedIn.observeAsState()
+  LaunchedEffect(key1 = isLoggedIn) {
+    if (isLoggedIn != null) {
+      navController.popBackStack()
+      if (isLoggedIn == true) {
+        navController.navigate(RootScreen.Main.route)
+      } else {
+        navController.navigate(RootScreen.Login.route)
+      }
     }
   }
 
   Box(
-      modifier = Modifier.fillMaxSize().testTag("LoadingScreen"),
-      contentAlignment = Alignment.Center) {
-        CircularProgressIndicator(modifier = Modifier.width(100.dp))
-      }
+    modifier = Modifier.fillMaxSize().testTag("LoadingScreen"),
+    contentAlignment = Alignment.Center) {
+    CircularProgressIndicator(modifier = Modifier.width(100.dp))
+  }
 }

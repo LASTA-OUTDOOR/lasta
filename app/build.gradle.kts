@@ -212,6 +212,8 @@ dependencies {
 
     //DataStore dependency
     implementation(libs.androidx.datastore.preferences)
+    // LiveData
+    implementation(libs.androidx.runtime.livedata)
     //Hilt Dependency for compose
     implementation(libs.androidx.hilt.navigation.compose)
     //Add Other Hilt dependencies according to document

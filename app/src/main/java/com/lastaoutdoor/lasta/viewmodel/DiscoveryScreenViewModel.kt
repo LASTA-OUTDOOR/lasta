@@ -1,12 +1,12 @@
 package com.lastaoutdoor.lasta.viewmodel
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.data.model.activity.Activity
 import com.lastaoutdoor.lasta.data.model.activity.ActivityType
 import com.lastaoutdoor.lasta.data.model.activity.Difficulty
-import com.lastaoutdoor.lasta.data.model.api.NodeWay
 import com.lastaoutdoor.lasta.repository.ActivityRepository
 import com.lastaoutdoor.lasta.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,7 +28,7 @@ enum class DiscoveryScreenType {
 class DiscoveryScreenViewModel @Inject constructor(private val repository: ActivityRepository) :
     ViewModel() {
 
-  var climbingActivities: MutableList<Activity> = mutableListOf()
+  val climbingActivities = mutableStateOf<ArrayList<Activity>>(ArrayList())
 
   private val _screen = MutableStateFlow(DiscoveryScreenType.LIST)
   val screen: StateFlow<DiscoveryScreenType> = _screen
@@ -58,10 +58,9 @@ class DiscoveryScreenViewModel @Inject constructor(private val repository: Activ
     viewModelScope.launch {
       val response = repository.getClimbingPointsInfo(rad.toInt(), centerLocation.latitude, centerLocation.longitude)
       val climbingPoints = (response as Response.Success).data ?: emptyList()
-      println(climbingPoints)
-      climbingActivities.clear()
+      climbingActivities.value = ArrayList()
       climbingPoints.forEach { point ->
-        climbingActivities.add(Activity(ActivityType.CLIMBING, Difficulty.EASY, 0f, "", point.tags.name))
+        climbingActivities.value.add(Activity(ActivityType.CLIMBING, Difficulty.EASY, 0f, "", point.tags.name))
       }
     }
   }
