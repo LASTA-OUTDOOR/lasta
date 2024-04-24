@@ -26,25 +26,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
-// Dialog to select a friend to send a message to
 @Composable
-fun AddFriendDialog(viewModel: SocialViewModel = hiltViewModel()) {
-
-  // Reset the feedback message
-  viewModel.clearFriendRequestFeedback()
-
+fun SendMessageDialog(hideDialog: () -> Unit, send: (String) -> Unit) {
   Dialog(
-      onDismissRequest = { viewModel.hideAddFriendDialog() },
+      onDismissRequest = { hideDialog() },
       properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)) {
         Card(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
             shape = RoundedCornerShape(16.dp),
         ) {
           Text(
-              text = "Add a friend",
+              text = "Type your message",
               style = MaterialTheme.typography.titleLarge,
               textAlign = TextAlign.Center,
               modifier = Modifier.fillMaxWidth().padding(16.dp))
@@ -52,18 +45,14 @@ fun AddFriendDialog(viewModel: SocialViewModel = hiltViewModel()) {
               modifier = Modifier.padding(16.dp).fillMaxWidth(),
               horizontalAlignment = Alignment.CenterHorizontally,
               verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(
-                    "Enter a friend's email address to send a friend request",
-                    modifier = Modifier.testTag("SubHeader"),
-                    textAlign = TextAlign.Center)
-                AddFriendForm()
+                SendMessageForm(send, hideDialog)
               }
         }
       }
 }
 
 @Composable
-private fun AddFriendForm(viewModel: SocialViewModel = hiltViewModel()) {
+private fun SendMessageForm(send: (String) -> Unit, hideDialog: () -> Unit) {
 
   // to hide the keyboard
   val focusManager = LocalFocusManager.current
@@ -73,26 +62,25 @@ private fun AddFriendForm(viewModel: SocialViewModel = hiltViewModel()) {
   TextField(
       value = text,
       onValueChange = { text = it },
-      label = { Text("Email address") },
-      modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("EmailTextField"),
+      label = { Text("Your message") },
+      modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("MessageTextField"),
       keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
       keyboardActions =
           KeyboardActions(
               onDone = {
                 focusManager.clearFocus()
-                viewModel.requestFriend(text)
+                send.invoke(text)
+                hideDialog()
               }))
-
-  // Error message / Feedback
-  Text(viewModel.friendRequestFeedback, style = MaterialTheme.typography.bodyLarge)
 
   // Submit Button
   Button(
       onClick = {
         focusManager.clearFocus()
-        viewModel.requestFriend(text)
+        send.invoke(text)
+        hideDialog()
       },
-      modifier = Modifier.testTag("SubmitButton")) {
+      modifier = Modifier.testTag("SendButton")) {
         Text("Send")
       }
 }

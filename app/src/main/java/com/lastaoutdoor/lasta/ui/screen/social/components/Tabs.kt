@@ -16,7 +16,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,8 +43,7 @@ fun TabMenu(navController: NavController, viewModel: SocialViewModel = hiltViewM
       FriendsActivityList()
     }
     1 -> {
-      viewModel.showTopButton(
-          Icons.Filled.Add, onClick = { viewModel.displayAddFriendDialog() })
+      viewModel.showTopButton(Icons.Filled.Add, onClick = { viewModel.displayAddFriendDialog() })
       FriendsList()
     }
     2 -> {

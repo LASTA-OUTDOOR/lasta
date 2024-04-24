@@ -10,11 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -51,15 +48,13 @@ fun FriendsList(viewModel: SocialViewModel = hiltViewModel()) {
       ConnectionMissing()
     }
     viewModel.friends.isEmpty() -> {
-        //add friend dialog when you click on the add friend button
-      if(viewModel.displayAddFriendDialog)
-        AddFriendDialog()
+      // add friend dialog when you click on the add friend button
+      if (viewModel.displayAddFriendDialog) AddFriendDialog()
       FriendsMissing()
     }
     else -> {
-      //add friend dialog when you click on the add friend button
-      if(viewModel.displayAddFriendDialog)
-        AddFriendDialog()
+      // add friend dialog when you click on the add friend button
+      if (viewModel.displayAddFriendDialog) AddFriendDialog()
       LazyColumn { items(viewModel.friends.size) { FriendsCard(viewModel.friends[it]) } }
     }
   }
@@ -72,32 +67,28 @@ private fun FriendsCard(friend: UserModel) {
           CardDefaults.cardColors(
               containerColor = MaterialTheme.colorScheme.surfaceVariant,
           ),
-      modifier = Modifier
-          .height(height = 100.dp)
-          .fillMaxWidth()
-          .padding(8.dp)
-          .testTag("Friend")) {
-
+      modifier = Modifier.height(height = 100.dp).fillMaxWidth().padding(8.dp).testTag("Friend")) {
         Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
 
-            //Profile picture
-            AsyncImage(
-                model =
-                ImageRequest.Builder(LocalContext.current)
-                    .data(friend.profilePictureUrl)
-                    .crossfade(true)
-                    .memoryCachePolicy(CachePolicy.ENABLED)
-                    .build(),
-                placeholder = painterResource(R.drawable.default_profile_icon),
-                contentDescription = "Profile Picture",
-                contentScale = ContentScale.Crop,
-                error = painterResource(R.drawable.default_profile_icon),
-                modifier = Modifier.clip(RoundedCornerShape(100.dp)).size(60.dp).fillMaxHeight())
+          // Profile picture
+          AsyncImage(
+              model =
+                  ImageRequest.Builder(LocalContext.current)
+                      .data(friend.profilePictureUrl)
+                      .crossfade(true)
+                      .memoryCachePolicy(CachePolicy.ENABLED)
+                      .build(),
+              placeholder = painterResource(R.drawable.default_profile_icon),
+              contentDescription = "Profile Picture",
+              contentScale = ContentScale.Crop,
+              error = painterResource(R.drawable.default_profile_icon),
+              modifier = Modifier.clip(RoundedCornerShape(100.dp)).size(60.dp).fillMaxHeight())
 
-            //Text information
+          // Text information
           Column(modifier = Modifier.padding(8.dp)) {
             Text(text = friend.userName ?: "Name error", fontWeight = FontWeight.Bold)
-            Text(text = "Bio no yet implemented, but will be here", overflow = TextOverflow.Ellipsis)
+            Text(
+                text = "Bio no yet implemented, but will be here", overflow = TextOverflow.Ellipsis)
           }
         }
       }

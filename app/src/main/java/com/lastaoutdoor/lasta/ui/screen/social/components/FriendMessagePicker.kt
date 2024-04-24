@@ -73,7 +73,7 @@ private fun FriendLazyColumn(
           modifier =
               Modifier.fillMaxWidth().padding(8.dp).clickable {
                 viewModel.hideFriendPicker()
-                navController.navigate(LeafScreen.Conversation.route)
+                navController.navigate(LeafScreen.Conversation.route + "/${friend.userId}")
               },
           colors =
               CardColors(

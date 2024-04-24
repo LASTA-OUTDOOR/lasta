@@ -9,7 +9,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.ui.MainActivity
-import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
+import com.lastaoutdoor.lasta.viewmodel.ConversationViewModel
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -26,7 +26,7 @@ class ConversationScreenKtTest {
   @get:Rule(order = 1) val composeRule = createAndroidComposeRule<MainActivity>()
 
   // Viewmodel and repository
-  private lateinit var socialViewModel: SocialViewModel
+  private lateinit var convViewModel: ConversationViewModel
 
   // Navigation controller
   private lateinit var navController: NavController
@@ -44,9 +44,11 @@ class ConversationScreenKtTest {
   fun initialState() {
     // Set the content to the social screen
     composeRule.activity.setContent {
-      socialViewModel = hiltViewModel()
-      (socialViewModel.connectionRepo as FakeConnectivityRepository).setConnectionStateToFalse()
-      ConversationScreen(navController)
+      convViewModel = hiltViewModel()
+      ConversationScreen(
+          navController,
+          conversationModel = convViewModel.conversation,
+          refresh = { convViewModel.updateConversation() })
     }
 
     // Header (title)

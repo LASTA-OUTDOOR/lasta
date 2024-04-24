@@ -55,11 +55,11 @@ constructor(
   // Display the dialog to add a friend
   var displayAddFriendDialog by mutableStateOf(false)
 
-  // returns all the messages of the user
-  var messages = repository.getMessages(userId)
-
   // returns all the friends of the users
   var friends = repository.getFriends(userId)
+
+  // returns all the existing conversations
+  var messages = repository.getAllConversations(userId, friends)
 
   // returns all the activities done by friends in the last 7 days
   val latestFriendActivities = repository.getLatestFriendActivities(userId, numberOfDays)
@@ -152,9 +152,9 @@ constructor(
 
   // Hide the dialog to add a friend
   fun hideAddFriendDialog() {
-      displayAddFriendDialog = false
+    displayAddFriendDialog = false
   }
-  
+
   // Clear the feedback message for the friend request
   fun clearFriendRequestFeedback() {
     friendRequestFeedback = ""

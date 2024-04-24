@@ -24,7 +24,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.lastaoutdoor.lasta.data.model.social.MessageModel
+import com.lastaoutdoor.lasta.data.model.social.ConversationModel
 import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
@@ -54,7 +54,7 @@ fun MessageList(navController: NavController, viewModel: SocialViewModel = hiltV
 }
 
 @Composable
-fun MessageCard(message: MessageModel) {
+fun MessageCard(message: ConversationModel) {
   Card(
       colors =
           CardDefaults.cardColors(
@@ -68,11 +68,12 @@ fun MessageCard(message: MessageModel) {
                 contentDescription = "Profile picture",
                 modifier = Modifier.size(30.dp).align(Alignment.CenterVertically))
             Text(
-                text = "John Doe",
+                text = message.lastMessage?.content ?: "",
                 modifier = Modifier.align(Alignment.CenterVertically),
                 fontWeight = FontWeight.Bold)
           }
-          Text(text = message.content, overflow = TextOverflow.Ellipsis)
+
+          Text(text = message.lastMessage?.content ?: "", overflow = TextOverflow.Ellipsis)
         }
       }
 }
