@@ -8,7 +8,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,7 +34,7 @@ fun SettingsScreen(
 
   // If prefViewmodel pref sport is hiking set a called "isHiking" to true
   val isHiking = preferencesViewModel.prefSport.collectAsState(initial = "").value == "Hiking"
-    var selectedSport = isHiking
+  var selectedSport = isHiking
 
   TopBarLogo(logoPainterId = R.drawable.arrow_back) {
     // preferencesViewModel.updateLanguage(selectedLanguage)
@@ -44,9 +43,7 @@ fun SettingsScreen(
   }
 
   Column(
-      modifier = Modifier
-          .fillMaxSize()
-          .padding(horizontal = 20.dp, vertical = 120.dp),
+      modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp, vertical = 120.dp),
       verticalArrangement = Arrangement.SpaceBetween) {
 
         // Title "Settings"
@@ -73,7 +70,7 @@ fun SettingsScreen(
                   items = listOf("English", "French", "German"),
                   selectedItem = selectedLanguage,
                   onItemSelected = { newLanguage: String ->
-                      selectedLanguage = newLanguage
+                    selectedLanguage = newLanguage
                     preferencesViewModel.updateLanguage(newLanguage)
                   },
                   fieldText = "Language")
@@ -88,9 +85,7 @@ fun SettingsScreen(
             color = MaterialTheme.colorScheme.onBackground)
 
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp),
+            modifier = Modifier.fillMaxWidth().padding(20.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly) {
               Button(
