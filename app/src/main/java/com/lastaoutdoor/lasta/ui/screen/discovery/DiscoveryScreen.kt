@@ -206,7 +206,7 @@ fun ActivitiesDisplay(
                           .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
                           .padding(PaddingValues(8.dp))) {
                     Text(
-                        text = "Climbing",
+                        text = a.activityType.toString(),
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onPrimary)
                   }

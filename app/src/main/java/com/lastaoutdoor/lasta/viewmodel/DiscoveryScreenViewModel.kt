@@ -48,7 +48,7 @@ class DiscoveryScreenViewModel @Inject constructor(private val repository: Activ
   val selectedLocality: StateFlow<Pair<String, LatLng>> = _selectedLocality
 
   init {
-    fetchClimbingActivities()
+    fetchBikingActivities()
   }
 
   fun fetchClimbingActivities(
@@ -64,6 +64,35 @@ class DiscoveryScreenViewModel @Inject constructor(private val repository: Activ
       }
     }
   }
+
+  fun fetchHikingActivities(
+      rad: Double = 10000.0,
+      centerLocation: LatLng = LatLng(46.519962, 6.633597)
+  ) {
+    viewModelScope.launch {
+      val response = repository.getHikingRoutesInfo(rad.toInt(), centerLocation.latitude, centerLocation.longitude)
+      val hikingPoints = (response as Response.Success).data ?: emptyList()
+      climbingActivities.value = ArrayList()
+      hikingPoints.forEach { point ->
+        climbingActivities.value.add(Activity(ActivityType.HIKING, Difficulty.EASY, 0f, "", point.tags.name))
+      }
+    }
+  }
+
+  fun fetchBikingActivities(
+    rad: Double = 10000.0,
+    centerLocation: LatLng = LatLng(46.519962, 6.633597)
+  ) {
+    viewModelScope.launch {
+      val response = repository.getBikingRoutesInfo(rad.toInt(), centerLocation.latitude, centerLocation.longitude)
+      val hikingPoints = (response as Response.Success).data ?: emptyList()
+      climbingActivities.value = ArrayList()
+      hikingPoints.forEach { point ->
+        climbingActivities.value.add(Activity(ActivityType.BIKING, Difficulty.EASY, 0f, "", point.tags.name))
+      }
+    }
+  }
+
 
   fun setScreen(screen: DiscoveryScreenType) {
     _screen.value = screen

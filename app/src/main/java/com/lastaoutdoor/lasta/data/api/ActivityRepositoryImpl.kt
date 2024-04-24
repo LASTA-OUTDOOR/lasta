@@ -2,6 +2,7 @@ package com.lastaoutdoor.lasta.data.api
 
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.model.api.NodeWay
+import com.lastaoutdoor.lasta.data.model.api.Relation
 import com.lastaoutdoor.lasta.repository.ActivityRepository
 import com.lastaoutdoor.lasta.utils.Response
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -64,6 +65,90 @@ class ActivityRepositoryImpl @Inject constructor(private val apiService: ApiServ
         }
     }
 
+    override suspend fun getHikingRoutesInfo(range: Int, lat: Double, lon: Double): Response<List<Relation>> {
+        return suspendCancellableCoroutine { continuation ->
+            apiService.getHikingRoutesInfo(hikingInfoQuery(range, lat, lon)).enqueue(object : Callback<APIResponse<Relation>> {
+                override fun onResponse(
+                    call: Call<APIResponse<Relation>>,
+                    response: retrofit2.Response<APIResponse<Relation>>
+                ) {
+                    if (response.isSuccessful) {
+                        continuation.resume(Response.Success(response.body()!!.elements), onCancellation = null)
+                    } else {
+                        continuation.resume(Response.Failure(Exception("Error fetching the hiking routes info")), onCancellation = null)
+                    }
+                }
+
+                override fun onFailure(call: Call<APIResponse<Relation>>, t: Throwable) {
+                    continuation.resume(Response.Failure(t), onCancellation = null)
+                }
+            })
+        }
+    }
+
+    override suspend fun getHikingRouteById(id: Long): Response<Relation> {
+        return suspendCancellableCoroutine { continuation ->
+            apiService.getHikingRouteById(hikingRouteQuery(id)).enqueue(object : Callback<APIResponse<Relation>> {
+                override fun onResponse(
+                    call: Call<APIResponse<Relation>>,
+                    response: retrofit2.Response<APIResponse<Relation>>
+                ) {
+                    if (response.isSuccessful) {
+                        continuation.resume(Response.Success(response.body()!!.elements[0]), onCancellation = null)
+                    } else {
+                        continuation.resume(Response.Failure(Exception("Error fetching the hiking route info")), onCancellation = null)
+                    }
+                }
+
+                override fun onFailure(call: Call<APIResponse<Relation>>, t: Throwable) {
+                    continuation.resume(Response.Failure(t), onCancellation = null)
+                }
+            })
+        }
+    }
+
+    override suspend fun getBikingRoutesInfo(range: Int, lat: Double, lon: Double): Response<List<Relation>> {
+        return suspendCancellableCoroutine { continuation ->
+            apiService.getBikingRoutesInfo(bikingInfoQuery(range, lat, lon)).enqueue(object : Callback<APIResponse<Relation>> {
+                override fun onResponse(
+                    call: Call<APIResponse<Relation>>,
+                    response: retrofit2.Response<APIResponse<Relation>>
+                ) {
+                    if (response.isSuccessful) {
+                        continuation.resume(Response.Success(response.body()!!.elements), onCancellation = null)
+                    } else {
+                        continuation.resume(Response.Failure(Exception("Error fetching the biking routes info")), onCancellation = null)
+                    }
+                }
+
+                override fun onFailure(call: Call<APIResponse<Relation>>, t: Throwable) {
+                    continuation.resume(Response.Failure(t), onCancellation = null)
+                }
+            })
+        }
+    }
+
+    override suspend fun getBikingRouteById(id: Long): Response<Relation> {
+        return suspendCancellableCoroutine { continuation ->
+            apiService.getBikingRouteById(bikingRouteQuery(id)).enqueue(object : Callback<APIResponse<Relation>> {
+                override fun onResponse(
+                    call: Call<APIResponse<Relation>>,
+                    response: retrofit2.Response<APIResponse<Relation>>
+                ) {
+                    if (response.isSuccessful) {
+                        continuation.resume(Response.Success(response.body()!!.elements[0]), onCancellation = null)
+                    } else {
+                        continuation.resume(Response.Failure(Exception("Error fetching the biking route info")), onCancellation = null)
+                    }
+                }
+
+                override fun onFailure(call: Call<APIResponse<Relation>>, t: Throwable) {
+                    continuation.resume(Response.Failure(t), onCancellation = null)
+                }
+            })
+        }
+    }
+
     private fun climbingInfoQuery(range: Int, lat: Double, lon: Double): String {
         return "[out:json][timeout:25];\n" +
             "(\n" +
@@ -81,72 +166,35 @@ class ActivityRepositoryImpl @Inject constructor(private val apiService: ApiServ
             "out center;\n"
     }
 
-  // Gets Nodes of type climbing
-  /*override fun getClimbingActivitiesNode(
-      range: Int,
-      lat: Double,
-      lon: Double
-  ): OutdoorActivityResponse<Node> {
-    return try {
-      val call = apiService.getNode(getDataStringClimbing(range, lat, lon, "node"))
-      val response = call.execute()
-      OutdoorActivityResponse(
-          response.body()!!.version,
-          (response.body()!!.elements).map {
-            it.activityType = ActivityType.CLIMBING
-            it
-          })
-    } catch (e: Exception) {
-      e.printStackTrace()
-      OutdoorActivityResponse(0F, emptyList())
+    private fun hikingInfoQuery(range: Int, lat: Double, lon: Double): String {
+        return "[out:json][timeout:25];\n" +
+            "(\n" +
+            "\trel(around: $range, $lat, $lon)[route=hiking][name][from][to];\n" +
+            ");\n" +
+            "out tags;\n"
     }
-  }
 
-  override fun getClimbingActivitiesWay(
-      range: Int,
-      lat: Double,
-      lon: Double
-  ): OutdoorActivityResponse<Way> {
-    return try {
-      val call = apiService.getWay(getDataStringClimbing(range, lat, lon, "way"))
-      val response = call.execute()
-      OutdoorActivityResponse(
-          response.body()!!.version,
-          (response.body()!!.elements).map {
-            it.activityType = ActivityType.CLIMBING
-            it
-          })
-    } catch (e: Exception) {
-      e.printStackTrace()
-      OutdoorActivityResponse(0F, emptyList())
+    private fun hikingRouteQuery(id: Long): String {
+        return "[out:json][timeout:25];\n" +
+            "(\n" +
+            "  rel($id);\n" +
+            ");\n" +
+            "out geom;\n"
     }
-  }
 
-  override fun getHikingActivities(
-      range: Int,
-      lat: Double,
-      lon: Double
-  ): OutdoorActivityResponse<Relation> {
-    return try {
-      val call = apiService.getRelation(getDataStringHiking(range, lat, lon))
-      val pr = call.execute()
-      OutdoorActivityResponse(
-          pr.body()!!.version,
-          (pr.body()!!.elements).map {
-            it.activityType = ActivityType.HIKING
-            it
-          })
-    } catch (e: Exception) {
-      e.printStackTrace()
-      OutdoorActivityResponse(0F, emptyList())
+    private fun bikingInfoQuery(range: Int, lat: Double, lon: Double): String {
+        return "[out:json][timeout:25];\n" +
+            "(\n" +
+            "  rel(around: $range, $lat, $lon)[route=bicycle][from][to][distance];\n" +
+            ");\n" +
+            "out tags;\n"
     }
-  }
 
-  override fun getDataStringClimbing(range: Int, lat: Double, lon: Double, type: String): String {
-    return "[out:json];$type(around:$range,$lat,$lon)[sport=climbing];out geom;"
-  }
-
-  override fun getDataStringHiking(range: Int, lat: Double, lon: Double): String {
-    return "[out:json];relation(around:$range,$lat,$lon)[route][route=\"hiking\"];out geom;"
-  }*/
+    private fun bikingRouteQuery(id: Long): String {
+        return "[out:json][timeout:25];\n" +
+            "(\n" +
+            "  rel($id);\n" +
+            ");\n" +
+            "out geom;\n"
+    }
 }
