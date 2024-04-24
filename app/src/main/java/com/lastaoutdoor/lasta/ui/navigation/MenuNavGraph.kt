@@ -31,6 +31,8 @@ fun MenuNavGraph(
           ProfileScreen(rootNavController = rootNavController, navController = navController)
         }
         composable(LeafScreen.MoreInfo.route) { MoreInfoScreen(navController = navController) }
-        composable(LeafScreen.Settings.route) { SettingsScreen(rootNavController = rootNavController, navController = navController) }
+        composable(LeafScreen.Settings.route) {
+          SettingsScreen(rootNavController = rootNavController, navController = navController)
+        }
       }
 }

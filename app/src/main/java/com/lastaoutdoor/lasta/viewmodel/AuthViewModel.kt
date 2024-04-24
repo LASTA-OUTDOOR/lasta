@@ -28,9 +28,7 @@ constructor(private val authRepo: AuthRepository, val oneTapClient: SignInClient
 
   init {
     viewModelScope.launch {
-      authRepo.observeIsSignUp().collect { isSignUpValue ->
-        isSignUp = isSignUpValue
-      }
+      authRepo.observeIsSignUp().collect { isSignUpValue -> isSignUp = isSignUpValue }
     }
   }
 

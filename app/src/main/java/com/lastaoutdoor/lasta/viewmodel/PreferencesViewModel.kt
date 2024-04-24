@@ -51,27 +51,21 @@ class PreferencesViewModel @Inject constructor(private val preferences: Preferen
     viewModelScope.launch { preferences.updateHikingLevel(hikingLevel) }
   }
 
-    /**
-     * Updates the language preference
-     *
-     * @param language the new value for the language preference
-     */
+  /**
+   * Updates the language preference
+   *
+   * @param language the new value for the language preference
+   */
   fun updateLanguage(language: String) {
     viewModelScope.launch { preferences.updateLanguage(language) }
   }
 
-  /**
-   * Updates the prefSport preference
-   */
-
+  /** Updates the prefSport preference */
   fun updatePrefSport(prefSport: String) {
     viewModelScope.launch { preferences.updatePrefSport(prefSport) }
   }
 
-  /**
-     * Clears all preferences
-     */
-
+  /** Clears all preferences */
   fun clearPreferences() {
     viewModelScope.launch { preferences.clearPreferences() }
   }

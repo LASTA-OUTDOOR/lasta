@@ -20,7 +20,6 @@ import com.lastaoutdoor.lasta.ui.navigation.RootScreen
 import com.lastaoutdoor.lasta.ui.screen.activities.TopBarLogo
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
-import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun SettingsScreen(
@@ -29,26 +28,23 @@ fun SettingsScreen(
     preferencesViewModel: PreferencesViewModel = hiltViewModel(),
     authViewModel: AuthViewModel = hiltViewModel()
 ) {
-    val selectedLanguage by preferencesViewModel.language.collectAsState(initial = "")
-    val database = DatabaseManager()
+  val selectedLanguage by preferencesViewModel.language.collectAsState(initial = "")
+  val database = DatabaseManager()
 
-    //If prefViewmodel pref sport is hiking set a called "isHiking" to true
-    val isHiking = preferencesViewModel.prefSport.collectAsState(initial = "").value == "Hiking"
+  // If prefViewmodel pref sport is hiking set a called "isHiking" to true
+  val isHiking = preferencesViewModel.prefSport.collectAsState(initial = "").value == "Hiking"
 
-    var isHikingSelected by remember { mutableStateOf(isHiking) }
+  var isHikingSelected by remember { mutableStateOf(isHiking) }
 
-    TopBarLogo(logoPainterId = R.drawable.arrow_back) {
-        //preferencesViewModel.updateLanguage(selectedLanguage)
-        //database.updateFieldInUser(authViewModel.user!!.userId, "language", selectedLanguage)
-        navController.navigateUp()
-    }
+  TopBarLogo(logoPainterId = R.drawable.arrow_back) {
+    // preferencesViewModel.updateLanguage(selectedLanguage)
+    // database.updateFieldInUser(authViewModel.user!!.userId, "language", selectedLanguage)
+    navController.navigateUp()
+  }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 20.dp, vertical = 120.dp),
-        verticalArrangement = Arrangement.SpaceBetween
-    ) {
+  Column(
+      modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp, vertical = 120.dp),
+      verticalArrangement = Arrangement.SpaceBetween) {
 
         // Title "Settings"
         Text(
@@ -57,8 +53,7 @@ fun SettingsScreen(
             style = MaterialTheme.typography.displayLarge,
             color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
-        )
+            textAlign = TextAlign.Center)
 
         Spacer(modifier = Modifier.height(40.dp))
 
@@ -66,22 +61,19 @@ fun SettingsScreen(
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "Select your language: ",
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            DropDownMenuComponent(
-                items = listOf("English", "French", "German"),
-                selectedItem = selectedLanguage,
-                onItemSelected = { newLanguage ->
+            horizontalArrangement = Arrangement.SpaceBetween) {
+              Text(
+                  text = "Select your language: ",
+                  style = MaterialTheme.typography.headlineMedium,
+                  color = MaterialTheme.colorScheme.onBackground)
+              DropDownMenuComponent(
+                  items = listOf("English", "French", "German"),
+                  selectedItem = selectedLanguage,
+                  onItemSelected = { newLanguage ->
                     preferencesViewModel.updateLanguage(newLanguage)
-                                 },
-                fieldText = "Language"
-            )
-        }
+                  },
+                  fieldText = "Language")
+            }
 
         Spacer(modifier = Modifier.height(40.dp))
 
@@ -89,92 +81,82 @@ fun SettingsScreen(
         Text(
             text = "Select your favorite outdoor activity: ",
             style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onBackground
-        )
+            color = MaterialTheme.colorScheme.onBackground)
 
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp),
+            modifier = Modifier.fillMaxWidth().padding(20.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            Button(
-                onClick = { isHikingSelected = true
-                          preferencesViewModel.updatePrefSport("Hiking")
-                          //database.updateFieldInUser(authViewModel.user!!.userId, "prefSport", "Hiking")
-                     },
-                modifier = Modifier.padding(16.dp),
-                colors =
-                if (isHikingSelected) {
-                    ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary
-                    )
-                } else {
-                    ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onSecondary
-                    )
-                }
-            ) {
-                Text(text = "Hiking")
+            horizontalArrangement = Arrangement.SpaceEvenly) {
+              Button(
+                  onClick = {
+                    isHikingSelected = true
+                    preferencesViewModel.updatePrefSport("Hiking")
+                    // database.updateFieldInUser(authViewModel.user!!.userId, "prefSport",
+                    // "Hiking")
+                  },
+                  modifier = Modifier.padding(16.dp),
+                  colors =
+                      if (isHikingSelected) {
+                        ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary)
+                      } else {
+                        ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onSecondary)
+                      }) {
+                    Text(text = "Hiking")
+                  }
+              Button(
+                  onClick = {
+                    isHikingSelected = false
+                    preferencesViewModel.updatePrefSport("Climbing")
+                    // database.updateFieldInUser(authViewModel.user!!.userId, "prefSport",
+                    // "Climbing")
+                  },
+                  modifier = Modifier.padding(16.dp),
+                  colors =
+                      if (!isHikingSelected) {
+                        ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary)
+                      } else {
+                        ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onSecondary)
+                      }) {
+                    Text(text = "Climbing")
+                  }
             }
-            Button(
-                onClick = { isHikingSelected = false
-                          preferencesViewModel.updatePrefSport("Climbing")
-                          //database.updateFieldInUser(authViewModel.user!!.userId, "prefSport", "Climbing")
-                    },
-                modifier = Modifier.padding(16.dp),
-                colors =
-                if (!isHikingSelected) {
-                    ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary
-                    )
-                } else {
-                    ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onSecondary
-                    )
-                }
-            ) {
-                Text(text = "Climbing")
-            }
-        }
 
         Spacer(modifier = Modifier.height(40.dp))
 
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                Button(
-                    onClick = {
-                        authViewModel.signOut()
-                        rootNavController.popBackStack()
-                        rootNavController.navigate(RootScreen.Login.route)
-                    }
-                ) {
-                    Text(text = "Sign Out")
+          Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+            Button(
+                onClick = {
+                  authViewModel.signOut()
+                  rootNavController.popBackStack()
+                  rootNavController.navigate(RootScreen.Login.route)
+                }) {
+                  Text(text = "Sign Out")
                 }
 
-                Button(
-                    onClick = {
-                        preferencesViewModel.clearPreferences()
-                        preferencesViewModel.updateIsLoggedIn(false)
-                        authViewModel.signOut()
-                        rootNavController.popBackStack()
-                        rootNavController.navigate(RootScreen.Login.route)
-                    },
-                    colors = ButtonDefaults.buttonColors(
+            Button(
+                onClick = {
+                  preferencesViewModel.clearPreferences()
+                  preferencesViewModel.updateIsLoggedIn(false)
+                  authViewModel.signOut()
+                  rootNavController.popBackStack()
+                  rootNavController.navigate(RootScreen.Login.route)
+                },
+                colors =
+                    ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.error,
-                        contentColor = MaterialTheme.colorScheme.onError
-                    )
-                ) {
-                    Text(text = "Delete Account")
+                        contentColor = MaterialTheme.colorScheme.onError)) {
+                  Text(text = "Delete Account")
                 }
-            }
-
+          }
         }
-    }
+      }
 }

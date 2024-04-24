@@ -17,9 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
 
 @Composable
 fun <T> DropDownMenuComponent(
@@ -32,7 +30,10 @@ fun <T> DropDownMenuComponent(
 
   Column {
     Row {
-      Text(fieldText, style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.onBackground)
+      Text(
+          fieldText,
+          style = MaterialTheme.typography.headlineMedium,
+          color = MaterialTheme.colorScheme.onBackground)
       Icon(
           imageVector = Icons.Outlined.KeyboardArrowDown,
           contentDescription = "Dropdown",

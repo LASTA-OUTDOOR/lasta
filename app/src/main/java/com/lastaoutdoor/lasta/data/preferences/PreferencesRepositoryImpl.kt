@@ -107,8 +107,9 @@ class PreferencesRepositoryImpl(private val context: Context) : PreferencesRepos
   override suspend fun updateLanguage(language: String) {
     dataStore.edit { preferences -> preferences[LANGUAGE_KEY] = language }
   }
+
   override suspend fun updatePrefSport(prefSport: String) {
-      dataStore.edit { preferences -> preferences[PREF_SPORT_KEY] = prefSport }
+    dataStore.edit { preferences -> preferences[PREF_SPORT_KEY] = prefSport }
   }
 
   override suspend fun clearPreferences() {

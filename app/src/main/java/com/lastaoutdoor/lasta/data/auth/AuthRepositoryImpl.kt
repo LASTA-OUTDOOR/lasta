@@ -29,7 +29,9 @@ constructor(
 ) : AuthRepository {
 
   private val isSignUp: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
   override fun observeIsSignUp(): Flow<Boolean> = isSignUp
+
   override suspend fun startGoogleSignIn(): Flow<Response<BeginSignInResult>> = flow {
     try {
       val signInResult = oneTapClient.beginSignIn(signInRequest).await()

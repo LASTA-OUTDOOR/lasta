@@ -7,7 +7,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.lastaoutdoor.lasta.ui.screen.login.LoginScreen
-import com.lastaoutdoor.lasta.ui.screen.main.MainScreen
 import com.lastaoutdoor.lasta.ui.screen.setup.SetupScreen
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 
@@ -22,11 +21,14 @@ fun LoginNavGraph(
       navController = navController,
       route = RootScreen.Login.route,
       startDestination = LeafScreen.SignIn.route) {
-      composable(LeafScreen.SignIn.route) {
-          LoginScreen(rootNavController = rootNavController, navController = navController, authViewModel = authViewModel)
-      }
-      composable(LeafScreen.Setup.route) {
+        composable(LeafScreen.SignIn.route) {
+          LoginScreen(
+              rootNavController = rootNavController,
+              navController = navController,
+              authViewModel = authViewModel)
+        }
+        composable(LeafScreen.Setup.route) {
           SetupScreen(rootNavController = rootNavController, authViewModel = authViewModel)
+        }
       }
-  }
 }
