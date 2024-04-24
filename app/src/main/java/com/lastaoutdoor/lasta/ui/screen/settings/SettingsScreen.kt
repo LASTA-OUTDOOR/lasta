@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -28,13 +29,13 @@ fun SettingsScreen(
     preferencesViewModel: PreferencesViewModel = hiltViewModel(),
     authViewModel: AuthViewModel = hiltViewModel()
 ) {
-  val selectedLanguage by preferencesViewModel.language.collectAsState(initial = "")
+  val initialLanguage by preferencesViewModel.language.collectAsState(initial = "")
+  var selectedLanguage = initialLanguage
   val database = DatabaseManager()
 
   // If prefViewmodel pref sport is hiking set a called "isHiking" to true
   val isHiking = preferencesViewModel.prefSport.collectAsState(initial = "").value == "Hiking"
-
-  var isHikingSelected by remember { mutableStateOf(isHiking) }
+    var selectedSport = isHiking
 
   TopBarLogo(logoPainterId = R.drawable.arrow_back) {
     // preferencesViewModel.updateLanguage(selectedLanguage)
@@ -43,7 +44,9 @@ fun SettingsScreen(
   }
 
   Column(
-      modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp, vertical = 120.dp),
+      modifier = Modifier
+          .fillMaxSize()
+          .padding(horizontal = 20.dp, vertical = 120.dp),
       verticalArrangement = Arrangement.SpaceBetween) {
 
         // Title "Settings"
@@ -69,7 +72,8 @@ fun SettingsScreen(
               DropDownMenuComponent(
                   items = listOf("English", "French", "German"),
                   selectedItem = selectedLanguage,
-                  onItemSelected = { newLanguage ->
+                  onItemSelected = { newLanguage: String ->
+                      selectedLanguage = newLanguage
                     preferencesViewModel.updateLanguage(newLanguage)
                   },
                   fieldText = "Language")
@@ -84,19 +88,21 @@ fun SettingsScreen(
             color = MaterialTheme.colorScheme.onBackground)
 
         Row(
-            modifier = Modifier.fillMaxWidth().padding(20.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly) {
               Button(
                   onClick = {
-                    isHikingSelected = true
+                    selectedSport = true
                     preferencesViewModel.updatePrefSport("Hiking")
                     // database.updateFieldInUser(authViewModel.user!!.userId, "prefSport",
                     // "Hiking")
                   },
                   modifier = Modifier.padding(16.dp),
                   colors =
-                      if (isHikingSelected) {
+                      if (selectedSport) {
                         ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
                             contentColor = MaterialTheme.colorScheme.onPrimary)
@@ -109,14 +115,14 @@ fun SettingsScreen(
                   }
               Button(
                   onClick = {
-                    isHikingSelected = false
+                    selectedSport = false
                     preferencesViewModel.updatePrefSport("Climbing")
                     // database.updateFieldInUser(authViewModel.user!!.userId, "prefSport",
                     // "Climbing")
                   },
                   modifier = Modifier.padding(16.dp),
                   colors =
-                      if (!isHikingSelected) {
+                      if (!selectedSport) {
                         ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
                             contentColor = MaterialTheme.colorScheme.onPrimary)
