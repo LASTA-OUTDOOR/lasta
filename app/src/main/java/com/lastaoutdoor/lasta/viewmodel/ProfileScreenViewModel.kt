@@ -27,7 +27,7 @@ constructor(
     private val preferences: PreferencesRepository,
 ) : ViewModel() {
 
-  private val _user = MutableStateFlow(UserModel("", "", "", "", HikingLevel.BEGINNER))
+  private val _user = MutableStateFlow(UserModel("", "", "", "", "", HikingLevel.BEGINNER))
   val user = _user
 
   // Cache for storing fetched trails

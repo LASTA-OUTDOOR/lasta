@@ -10,32 +10,49 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Create
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -77,7 +94,9 @@ fun ProfileScreen(
   val timeFrame by profileScreenViewModel.timeFrame.collectAsState()
   val sport by profileScreenViewModel.sport.collectAsState()
 
-  LazyColumn(modifier = Modifier.padding(16.dp).testTag("ProfileScreen")) {
+  LazyColumn(modifier = Modifier
+      .padding(16.dp)
+      .testTag("ProfileScreen")) {
     item { UserInfo(rootNavController) }
     item {
       SportSelection(sport, profileScreenViewModel::setSport)
@@ -114,6 +133,15 @@ fun UserInfo(
   val userName = user.value.userName
   val profilePictureUrl = user.value.profilePictureUrl
   val hikingLevel = user.value.hikingLevel
+    val bio = user.value.bio
+  var isEditBio by rememberSaveable { mutableStateOf(false) }
+  ChangeBio(
+      isEditBio,
+      onDismissRequest = { isEditBio = false },
+      bioText = bio ?: "",
+      onBioChange = { newBio -> preferencesViewModel.updateBio(newBio)
+          DatabaseManager().updateFieldInUser(user.value.userId, "bio", newBio)
+          isEditBio = false})
 
   LaunchedEffect(key1 = authViewModel.signedOut) {
     if (authViewModel.signedOut) {
@@ -169,7 +197,9 @@ fun UserInfo(
       AsyncImage(
           model = profilePictureUrl,
           contentDescription = "Profile picture",
-          modifier = Modifier.size(70.dp).clip(CircleShape),
+          modifier = Modifier
+              .size(70.dp)
+              .clip(CircleShape),
           contentScale = ContentScale.Crop,
           error = painterResource(id = R.drawable.default_profile_icon))
     }
@@ -180,6 +210,33 @@ fun UserInfo(
           textAlign = TextAlign.Center,
           fontSize = 20.sp,
           fontWeight = FontWeight.Bold)
+
+      // Bio
+      Surface(
+          modifier = Modifier.fillMaxWidth(),
+          shadowElevation = 4.dp,
+          shape = MaterialTheme.shapes.small // Use a medium shape for rounded corners
+          ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+              Column {
+                Text(
+                    text = "Bio",
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(16.dp, 8.dp, 0.dp, 8.dp))
+                Text(
+                    text = bio ?: "",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(16.dp, 0.dp, 0.dp, 8.dp))
+              }
+              IconButton(onClick = { isEditBio = true }, modifier = Modifier.size(24.dp)) {
+                Icon(
+                    Icons.Filled.Create,
+                    contentDescription = "Edit bio",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(24.dp))
+              }
+            }
+          }
     }
   }
   Spacer(modifier = Modifier.height(16.dp))
@@ -188,6 +245,70 @@ fun UserInfo(
       thickness = 1.dp, // Specify the thickness of the divider
   )
   Spacer(modifier = Modifier.height(16.dp))
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ChangeBio(
+    isEditBio: Boolean,
+    onDismissRequest: () -> Unit,
+    bioText: String,
+    onBioChange: (String) -> Unit
+) {
+
+  if (isEditBio) {
+      val maxCharCount = 120
+      var text by remember { mutableStateOf(bioText)}
+
+
+    ModalBottomSheet(onDismissRequest = { onDismissRequest() }, modifier = Modifier
+        .fillMaxWidth()
+        .wrapContentHeight()
+        .testTag("")) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)) {
+              Text("Bio")
+              TextField(
+                  value = text,
+                  onValueChange = {
+                    if (it.length <= maxCharCount) {
+                      text = it
+                    }
+                  },
+                  textStyle = LocalTextStyle.current.copy(fontSize = 16.sp),
+                  placeholder = { Text("Enter your bio...") },
+                  singleLine = false,
+                  maxLines = 4,
+                  keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+
+                  trailingIcon = {
+                    if (text.isNotEmpty()) {
+                      Text(
+                          "${text.length}/$maxCharCount",
+                          style = MaterialTheme.typography.bodySmall,
+                          color = if (text.length == maxCharCount) Color.Red else Color.Gray)
+                    }
+                  })
+
+                // The rest of your UI content goes here.
+                // If you have none, you can put an empty Box or similar to fulfill the composable requirement.
+                Box(contentAlignment = Alignment.Center) {
+                    Row(horizontalArrangement = Arrangement.SpaceEvenly) {
+                        Button(onClick = onDismissRequest) {
+                            Text("Cancel")
+                        }
+                        Button(onClick = { onBioChange(text)
+                        }) {
+                            Text("Save")
+                        }
+                    }
+                }
+            }
+    }
+  }
 }
 
 @Composable
@@ -363,22 +484,25 @@ fun RecentActivities(
   for (a in activities.reversed()) {
     val sport = a.sport
     Card(
-        modifier = Modifier.padding(12.dp).fillMaxWidth().testTag("RecentActivitiesItem"),
+        modifier = Modifier
+            .padding(12.dp)
+            .fillMaxWidth()
+            .testTag("RecentActivitiesItem"),
         elevation = CardDefaults.cardElevation(4.dp),
         shape = RoundedCornerShape(8.dp)) {
           Row(
               modifier = Modifier.padding(8.dp, 0.dp),
               verticalAlignment = Alignment.CenterVertically) {
                 // Image on the left
-                Box(modifier = Modifier.size(100.dp).padding(8.dp)) {
+                Box(modifier = Modifier
+                    .size(100.dp)
+                    .padding(8.dp)) {
                   /*
                   Image(
                       bitmap = imageBitmap,
                       contentDescription = "Trail Image",
                       contentScale = ContentScale.Crop,
-                      modifier = Modifier.fillMaxSize()
                   )
-
                    */
                 }
 
@@ -390,7 +514,9 @@ fun RecentActivities(
           // Text information on the right
 
           Row(
-              modifier = Modifier.fillMaxWidth().padding(16.dp),
+              modifier = Modifier
+                  .fillMaxWidth()
+                  .padding(16.dp),
               horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
                   when (sport) {

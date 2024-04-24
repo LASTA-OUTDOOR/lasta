@@ -50,10 +50,11 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
       val displayName = document.getString("displayName") ?: ""
       val profilePictureUrl = document.getString("profilePictureUrl") ?: ""
       var hikingLevel = document.getString("hikingLevel") ?: ""
+      val bio = document.getString("bio") ?: ""
       if (hikingLevel == "null" || hikingLevel == "") hikingLevel = "BEGINNER"
-      return UserModel(uid, displayName, email, profilePictureUrl, HikingLevel.valueOf(hikingLevel))
+      return UserModel(uid, displayName, email, profilePictureUrl, bio, HikingLevel.valueOf(hikingLevel))
     }
-    return UserModel("", "", "", "", HikingLevel.BEGINNER)
+    return UserModel("", "", "", "","", HikingLevel.BEGINNER)
   }
 
   suspend fun getUserFromEmail(mail: String): UserModel? {
@@ -64,10 +65,11 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
       val email = document.getString("email") ?: ""
       val displayName = document.getString("displayName") ?: ""
       val profilePictureUrl = document.getString("profilePictureUrl") ?: ""
+      val bio = document.getString("bio") ?: ""
       var hikingLevel = document.getString("hikingLevel") ?: ""
       if (hikingLevel == "null" || hikingLevel == "") hikingLevel = "BEGINNER"
       return UserModel(
-          document.id, displayName, email, profilePictureUrl, HikingLevel.valueOf(hikingLevel))
+          document.id, displayName, email, profilePictureUrl, bio, HikingLevel.valueOf(hikingLevel))
     } else {
       return null
     }
@@ -400,11 +402,12 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
               userName = prefSettings["userName"] as String,
               email = prefSettings["email"] as String,
               profilePictureUrl = prefSettings["profilePictureUrl"] as String,
+              bio = prefSettings["bio"] as String,
               hikingLevel = prefSettings["hikingLevel"] as HikingLevel)
         }
       }
       // Return default preferences if not found
-      return UserPreferences(false, "", "", "", "", HikingLevel.BEGINNER)
+      return UserPreferences(false, "", "", "", "", "", HikingLevel.BEGINNER)
     }
   }
 }

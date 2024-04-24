@@ -44,6 +44,7 @@ class PreferencesRepositoryImpl(private val context: Context) : PreferencesRepos
     val USER_NAME_KEY = stringPreferencesKey("userName")
     val EMAIL_KEY = stringPreferencesKey("email")
     val PROFILE_PICTURE_URL_KEY = stringPreferencesKey("profilePictureUrl")
+      val BIO_KEY = stringPreferencesKey("bio")
     val HIKING_LEVEL_KEY = stringPreferencesKey("hikingLevel")
   }
 
@@ -69,6 +70,7 @@ class PreferencesRepositoryImpl(private val context: Context) : PreferencesRepos
                 userName = preferences[USER_NAME_KEY] ?: "",
                 email = preferences[EMAIL_KEY] ?: "",
                 profilePictureUrl = preferences[PROFILE_PICTURE_URL_KEY] ?: "",
+                bio = preferences[BIO_KEY] ?: "",
                 hikingLevel =
                     HikingLevel.valueOf(preferences[HIKING_LEVEL_KEY] ?: HikingLevel.BEGINNER.name))
           }
@@ -88,6 +90,7 @@ class PreferencesRepositoryImpl(private val context: Context) : PreferencesRepos
       preferences[USER_NAME_KEY] = user?.userName ?: ""
       preferences[EMAIL_KEY] = user?.email ?: ""
       preferences[PROFILE_PICTURE_URL_KEY] = user?.profilePictureUrl ?: ""
+        preferences[BIO_KEY] = user?.bio ?: ""
     }
   }
 
@@ -99,6 +102,10 @@ class PreferencesRepositoryImpl(private val context: Context) : PreferencesRepos
   override suspend fun updateHikingLevel(hikingLevel: HikingLevel) {
     dataStore.edit { preferences -> preferences[HIKING_LEVEL_KEY] = hikingLevel.name }
   }
+
+    override suspend fun updateBio(bio: String) {
+        dataStore.edit { preferences -> preferences[BIO_KEY] = bio }
+    }
 
   override suspend fun clearPreferences() {
     dataStore.edit { preferences -> preferences.clear() }
