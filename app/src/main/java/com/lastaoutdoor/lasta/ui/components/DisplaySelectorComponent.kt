@@ -27,7 +27,8 @@ fun <T> DisplaySelection(
 ) {
   val shape = RoundedCornerShape(20.dp)
   val borderModifier =
-      Modifier.padding(4.dp).border(width = 1.dp, color = Color.Black, shape = shape)
+      Modifier.padding(4.dp)
+          .border(width = 1.dp, color = MaterialTheme.colorScheme.onBackground, shape = shape)
 
   Row(
       modifier =
@@ -39,7 +40,9 @@ fun <T> DisplaySelection(
           // Determine background and text color based on selection
           val backgroundColor =
               if (selectedItem == item) MaterialTheme.colorScheme.primary else Color.Transparent
-          val textColor = if (selectedItem == item) Color.White else Color.Black
+          val textColor =
+              if (selectedItem == item) MaterialTheme.colorScheme.onPrimary
+              else MaterialTheme.colorScheme.onBackground
 
           Button(
               onClick = { onSelected(item) }, // Use the passed lambda for selection

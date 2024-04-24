@@ -1,5 +1,7 @@
 package com.lastaoutdoor.lasta.ui.screen.profile
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,19 +16,17 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.RadioButton
@@ -44,10 +44,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -87,37 +85,51 @@ import java.util.Calendar
 @Composable
 fun ProfileScreen(
     profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(),
-    rootNavController: NavHostController
+    rootNavController: NavHostController,
 ) {
   // profileScreenVIewModel.addTrailToUserActivities()
   val activities by profileScreenViewModel.trails.collectAsState()
   val timeFrame by profileScreenViewModel.timeFrame.collectAsState()
   val sport by profileScreenViewModel.sport.collectAsState()
+  val isCurrentUser by profileScreenViewModel.isCurrentUser.collectAsState()
 
-  LazyColumn(modifier = Modifier
-      .padding(16.dp)
-      .testTag("ProfileScreen")) {
-    item { UserInfo(rootNavController) }
+  LazyColumn(modifier = Modifier.testTag("ProfileScreen")) {
     item {
-      SportSelection(sport, profileScreenViewModel::setSport)
-      Spacer(modifier = Modifier.height(16.dp))
+      Box(
+          modifier =
+              Modifier.fillMaxWidth()
+                  .clip(RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp))
+                  .background(MaterialTheme.colorScheme.primary)
+                  .padding(16.dp)
+                  .height(150.dp)) {
+            UserInfo(rootNavController, isCurrentUser = isCurrentUser)
+          }
     }
-
     item {
-      Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-        DisplaySelection(
-            TimeFrame.values().toList(),
-            timeFrame,
-            profileScreenViewModel::setTimeFrame,
-            TimeFrame::toString)
+      Box(modifier = Modifier.padding(16.dp)) {
+        SportSelection(sport, profileScreenViewModel::setSport)
       }
       Spacer(modifier = Modifier.height(16.dp))
     }
+
     item {
-      Chart(activities, timeFrame, sport)
+      Box(modifier = Modifier.padding(16.dp)) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+          DisplaySelection(
+              TimeFrame.values().toList(),
+              timeFrame,
+              profileScreenViewModel::setTimeFrame,
+              TimeFrame::toString)
+        }
+      }
+
       Spacer(modifier = Modifier.height(16.dp))
     }
-    item { RecentActivities(activities = activities) }
+    item {
+      Box(modifier = Modifier.padding(16.dp)) { Chart(activities, timeFrame, sport) }
+      Spacer(modifier = Modifier.height(16.dp))
+    }
+    item { Box(modifier = Modifier.padding(16.dp)) { RecentActivities(activities = activities) } }
   }
 }
 
@@ -127,21 +139,24 @@ fun UserInfo(
     authViewModel: AuthViewModel = hiltViewModel(),
     preferencesViewModel: PreferencesViewModel = hiltViewModel(),
     profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(),
+    isCurrentUser: Boolean
 ) {
 
   val user = profileScreenViewModel.user.collectAsState()
   val userName = user.value.userName
   val profilePictureUrl = user.value.profilePictureUrl
   val hikingLevel = user.value.hikingLevel
-    val bio = user.value.bio
+  val bio = user.value.bio
   var isEditBio by rememberSaveable { mutableStateOf(false) }
   ChangeBio(
       isEditBio,
       onDismissRequest = { isEditBio = false },
       bioText = bio ?: "",
-      onBioChange = { newBio -> preferencesViewModel.updateBio(newBio)
-          DatabaseManager().updateFieldInUser(user.value.userId, "bio", newBio)
-          isEditBio = false})
+      onBioChange = { newBio ->
+        preferencesViewModel.updateBio(newBio)
+        DatabaseManager().updateFieldInUser(user.value.userId, "bio", newBio)
+        isEditBio = false
+      })
 
   LaunchedEffect(key1 = authViewModel.signedOut) {
     if (authViewModel.signedOut) {
@@ -181,70 +196,85 @@ fun UserInfo(
         })
   }
 
-  Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-    Column {
-      Button(onClick = { showDialog = true }, modifier = Modifier.testTag("showDialog")) {
-        Text("≡")
-      }
-    }
-  }
-  Spacer(modifier = Modifier.height(8.dp))
-  Row(
-      modifier = Modifier.fillMaxWidth(),
-      horizontalArrangement = Arrangement.SpaceBetween,
-  ) {
+  Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
     Column {
       AsyncImage(
           model = profilePictureUrl,
           contentDescription = "Profile picture",
-          modifier = Modifier
-              .size(70.dp)
-              .clip(CircleShape),
+          modifier =
+              Modifier.size(100.dp)
+                  .clip(CircleShape)
+                  .border(2.dp, MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(100.dp)),
           contentScale = ContentScale.Crop,
           error = painterResource(id = R.drawable.default_profile_icon))
     }
-    Column(modifier = Modifier.padding(0.dp, 8.dp, 16.dp, 0.dp)) {
-      Text(
-          text = userName ?: "Unkown User",
-          color = MaterialTheme.colorScheme.primary,
-          textAlign = TextAlign.Center,
-          fontSize = 20.sp,
-          fontWeight = FontWeight.Bold)
 
-      // Bio
-      Surface(
+    Spacer(modifier = Modifier.width(16.dp))
+
+    Column {
+      Row(
           modifier = Modifier.fillMaxWidth(),
-          shadowElevation = 4.dp,
-          shape = MaterialTheme.shapes.small // Use a medium shape for rounded corners
-          ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-              Column {
-                Text(
-                    text = "Bio",
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(16.dp, 8.dp, 0.dp, 8.dp))
-                Text(
-                    text = bio ?: "",
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(16.dp, 0.dp, 0.dp, 8.dp))
-              }
-              IconButton(onClick = { isEditBio = true }, modifier = Modifier.size(24.dp)) {
-                Icon(
-                    Icons.Filled.Create,
-                    contentDescription = "Edit bio",
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(24.dp))
-              }
+          horizontalArrangement = Arrangement.SpaceBetween,
+          verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = userName ?: "",
+                color = MaterialTheme.colorScheme.onPrimary,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold)
+
+            Spacer(modifier = Modifier.width(8.dp))
+            if (isCurrentUser) {
+              IconButton(
+                  onClick = { showDialog = true }, modifier = Modifier.testTag("showDialog")) {
+                    Icon(
+                        Icons.Filled.Menu,
+                        contentDescription = "Edit bio",
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(24.dp))
+                  }
             }
           }
+      Spacer(modifier = Modifier.height(8.dp))
+      // Bio
+      Surface(
+          modifier = Modifier.fillMaxWidth().height(80.dp),
+          shadowElevation = 4.dp,
+          shape = MaterialTheme.shapes.small,
+          color = MaterialTheme.colorScheme.primary,
+      ) {
+        Column {
+          Row(
+              modifier = Modifier.fillMaxWidth(),
+              verticalAlignment = Alignment.CenterVertically,
+              horizontalArrangement = Arrangement.SpaceBetween) {
+                Text(
+                    text = "Bio" /* TODO : make this a xml string */,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(8.dp, 8.dp, 0.dp, 8.dp))
+                if (isCurrentUser) {
+                  IconButton(
+                      onClick = { isEditBio = true },
+                      modifier = Modifier.size(24.dp).align(Alignment.Top)) {
+                        Icon(
+                            Icons.Filled.Create,
+                            contentDescription = "Edit bio",
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.size(24.dp))
+                      }
+                }
+              }
+          Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = bio ?: "",
+                style = MaterialTheme.typography.bodyMedium,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(8.dp, 0.dp, 8.dp, 8.dp))
+          }
+        }
+      }
     }
   }
-  Spacer(modifier = Modifier.height(16.dp))
-  HorizontalDivider(
-      color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
-      thickness = 1.dp, // Specify the thickness of the divider
-  )
-  Spacer(modifier = Modifier.height(16.dp))
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -257,57 +287,50 @@ fun ChangeBio(
 ) {
 
   if (isEditBio) {
-      val maxCharCount = 120
-      var text by remember { mutableStateOf(bioText)}
+    val maxCharCount = 70
+    var text by remember { mutableStateOf(bioText) }
 
+    ModalBottomSheet(
+        onDismissRequest = { onDismissRequest() },
+        modifier = Modifier.fillMaxWidth().wrapContentHeight().testTag("")) {
+          Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+            Text("Bio" /* TODO : make this a xml string */)
+            Spacer(modifier = Modifier.height(8.dp))
+            TextField(
+                value = text,
+                onValueChange = {
+                  if (it.length <= maxCharCount) {
+                    text = it
+                  }
+                },
+                placeholder = { Text("Enter your bio...") /* TODO : make this a xml string */ },
+                singleLine = false,
+                maxLines = 2,
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                trailingIcon = {
+                  if (text.isNotEmpty()) {
+                    Text(
+                        "${text.length}/$maxCharCount",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = if (text.length == maxCharCount) Color.Red else Color.Gray)
+                  }
+                },
+                modifier = Modifier.fillMaxWidth())
 
-    ModalBottomSheet(onDismissRequest = { onDismissRequest() }, modifier = Modifier
-        .fillMaxWidth()
-        .wrapContentHeight()
-        .testTag("")) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)) {
-              Text("Bio")
-              TextField(
-                  value = text,
-                  onValueChange = {
-                    if (it.length <= maxCharCount) {
-                      text = it
-                    }
-                  },
-                  textStyle = LocalTextStyle.current.copy(fontSize = 16.sp),
-                  placeholder = { Text("Enter your bio...") },
-                  singleLine = false,
-                  maxLines = 4,
-                  keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-
-                  trailingIcon = {
-                    if (text.isNotEmpty()) {
-                      Text(
-                          "${text.length}/$maxCharCount",
-                          style = MaterialTheme.typography.bodySmall,
-                          color = if (text.length == maxCharCount) Color.Red else Color.Gray)
-                    }
-                  })
-
-                // The rest of your UI content goes here.
-                // If you have none, you can put an empty Box or similar to fulfill the composable requirement.
-                Box(contentAlignment = Alignment.Center) {
-                    Row(horizontalArrangement = Arrangement.SpaceEvenly) {
-                        Button(onClick = onDismissRequest) {
-                            Text("Cancel")
-                        }
-                        Button(onClick = { onBioChange(text)
-                        }) {
-                            Text("Save")
-                        }
-                    }
+            Spacer(modifier = Modifier.height(16.dp))
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
+              Row {
+                Button(onClick = onDismissRequest) {
+                  Text("Cancel" /* TODO : make this a xml string */)
                 }
+                Spacer(modifier = Modifier.width(16.dp))
+                Button(onClick = { onBioChange(text) }) {
+                  Text("Save" /* TODO : make this a xml string */)
+                }
+              }
             }
-    }
+          }
+        }
   }
 }
 
@@ -484,19 +507,14 @@ fun RecentActivities(
   for (a in activities.reversed()) {
     val sport = a.sport
     Card(
-        modifier = Modifier
-            .padding(12.dp)
-            .fillMaxWidth()
-            .testTag("RecentActivitiesItem"),
+        modifier = Modifier.padding(12.dp).fillMaxWidth().testTag("RecentActivitiesItem"),
         elevation = CardDefaults.cardElevation(4.dp),
         shape = RoundedCornerShape(8.dp)) {
           Row(
               modifier = Modifier.padding(8.dp, 0.dp),
               verticalAlignment = Alignment.CenterVertically) {
                 // Image on the left
-                Box(modifier = Modifier
-                    .size(100.dp)
-                    .padding(8.dp)) {
+                Box(modifier = Modifier.size(100.dp).padding(8.dp)) {
                   /*
                   Image(
                       bitmap = imageBitmap,
@@ -514,9 +532,7 @@ fun RecentActivities(
           // Text information on the right
 
           Row(
-              modifier = Modifier
-                  .fillMaxWidth()
-                  .padding(16.dp),
+              modifier = Modifier.fillMaxWidth().padding(16.dp),
               horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
                   when (sport) {

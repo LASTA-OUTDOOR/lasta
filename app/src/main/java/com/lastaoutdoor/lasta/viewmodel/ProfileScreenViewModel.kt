@@ -16,6 +16,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -29,6 +30,9 @@ constructor(
 
   private val _user = MutableStateFlow(UserModel("", "", "", "", "", HikingLevel.BEGINNER))
   val user = _user
+
+  private val _isCurrentUser = MutableStateFlow(true)
+  val isCurrentUser = _isCurrentUser
 
   // Cache for storing fetched trails
   private val _allTrailsCache = MutableStateFlow<List<ActivitiesDatabaseType>>(emptyList())
@@ -99,7 +103,12 @@ constructor(
   }
 
   fun updateUser(user: UserModel) {
-    _user.value = user
-    fetchUserActivities()
+    if (user != _user.value) {
+      _user.value = user
+      fetchUserActivities()
+      viewModelScope.launch {
+        _isCurrentUser.value = user.userId == preferences.userPreferencesFlow.first().uid
+      }
+    }
   }
 }

@@ -49,7 +49,7 @@ class PreferencesViewModel @Inject constructor(private val preferences: Preferen
     viewModelScope.launch { preferences.updateHikingLevel(hikingLevel) }
   }
 
-  fun updateBio(bio: String){
+  fun updateBio(bio: String) {
     viewModelScope.launch { preferences.updateBio(bio) }
   }
 

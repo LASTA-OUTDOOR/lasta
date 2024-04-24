@@ -52,9 +52,10 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
       var hikingLevel = document.getString("hikingLevel") ?: ""
       val bio = document.getString("bio") ?: ""
       if (hikingLevel == "null" || hikingLevel == "") hikingLevel = "BEGINNER"
-      return UserModel(uid, displayName, email, profilePictureUrl, bio, HikingLevel.valueOf(hikingLevel))
+      return UserModel(
+          uid, displayName, email, profilePictureUrl, bio, HikingLevel.valueOf(hikingLevel))
     }
-    return UserModel("", "", "", "","", HikingLevel.BEGINNER)
+    return UserModel("", "", "", "", "", HikingLevel.BEGINNER)
   }
 
   suspend fun getUserFromEmail(mail: String): UserModel? {
