@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -125,7 +126,8 @@ fun HeaderComposable(
                   }
 
                   Text(
-                      text = "Less than ${(range / 1000).toInt()} km around you",
+                      text =
+                          "${LocalContext.current.getString(R.string.less_than)} ${(range / 1000).toInt()} km ${LocalContext.current.getString(R.string.around_you)}",
                       style = MaterialTheme.typography.bodySmall)
                 }
               }
@@ -147,21 +149,25 @@ fun HeaderComposable(
               modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
               verticalAlignment = Alignment.CenterVertically,
               horizontalArrangement = Arrangement.Center) {
-                DisplaySelection(
+                val contex = LocalContext.current
+                DisplaySelection<DiscoveryScreenType>(
                     DiscoveryScreenType.values().toList(),
                     screen,
-                    discoveryScreenViewModel::setScreen,
-                    DiscoveryScreenType::toString)
+                    discoveryScreenViewModel::setScreen) {
+                      it.toStringCon(contex)
+                    }
               }
 
           if (screen == DiscoveryScreenType.LIST) {
             Row(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically) {
-                  Text("Filtering by:", style = MaterialTheme.typography.bodyMedium)
+                  Text(
+                      LocalContext.current.getString(R.string.filter_by),
+                      style = MaterialTheme.typography.bodyMedium)
                   Spacer(modifier = Modifier.width(8.dp))
                   Text(
-                      text = "Relevance",
+                      text = LocalContext.current.getString(R.string.relevance),
                       style = MaterialTheme.typography.bodyMedium,
                       color = MaterialTheme.colorScheme.primary)
 
@@ -210,7 +216,7 @@ fun ActivitiesDisplay(
                           .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
                           .padding(PaddingValues(8.dp))) {
                     Text(
-                        text = "Climbing",
+                        text = LocalContext.current.getString(R.string.Climbing),
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onPrimary)
                   }
@@ -242,9 +248,13 @@ fun ActivitiesDisplay(
                   imageVector = Icons.Default.Star,
                   contentDescription = "Rating",
                   tint = MaterialTheme.colorScheme.primary)
-              Text(text = "? popularity")
+              Text(text = "? ${LocalContext.current.getString(R.string.popularity)}")
               Spacer(modifier = Modifier.width(8.dp))
-              Text(text = if (a.difficulty != 0) "Difficulty: ${a.difficulty}" else "? difficulty")
+              Text(
+                  text =
+                      if (a.difficulty != 0)
+                          "${LocalContext.current.getString(R.string.difficulty)}: ${a.difficulty}"
+                      else "? ${LocalContext.current.getString(R.string.difficulty)}")
               Spacer(modifier = Modifier.width(16.dp))
               // Distance from the user's location, NOT THE LENGTH OF THE ACTIVITY!!!
               Text(text = "? km")

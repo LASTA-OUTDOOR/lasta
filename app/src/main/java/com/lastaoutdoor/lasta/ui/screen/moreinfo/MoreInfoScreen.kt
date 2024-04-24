@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -64,7 +65,7 @@ fun StartButton() {
             modifier = Modifier.width(305.dp).height(48.dp),
             colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
               Text(
-                  "Start",
+                  LocalContext.current.getString(R.string.start),
                   style =
                       TextStyle(
                           fontSize = 22.sp,
@@ -95,7 +96,7 @@ fun ViewOnMapButton() {
         modifier = Modifier.width(130.dp).height(40.dp),
         colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
           Text(
-              "View On Map",
+              LocalContext.current.getString(R.string.on_map),
               style =
                   TextStyle(
                       fontSize = 16.sp,

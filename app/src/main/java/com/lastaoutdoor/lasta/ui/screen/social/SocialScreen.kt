@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
 import com.lastaoutdoor.lasta.ui.screen.social.components.TabMenu
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
@@ -41,7 +43,7 @@ fun Header(navController: NavController, viewModel: SocialViewModel = hiltViewMo
       modifier = Modifier.fillMaxWidth().testTag("Header"),
       horizontalArrangement = Arrangement.SpaceBetween) {
         Text(
-            text = "Community",
+            text = LocalContext.current.getString(R.string.community),
             style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 24.sp),
             modifier = Modifier.align(Alignment.CenterVertically),
         )
