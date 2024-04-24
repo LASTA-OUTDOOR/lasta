@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -16,12 +17,14 @@ import com.lastaoutdoor.lasta.ui.screen.social.AddFriendScreen
 import com.lastaoutdoor.lasta.ui.screen.social.NewMessageScreen
 import com.lastaoutdoor.lasta.ui.screen.social.NotificationsScreen
 import com.lastaoutdoor.lasta.ui.screen.social.SocialScreen
+import com.lastaoutdoor.lasta.viewmodel.MoreInfoScreenViewModel
 
 @Composable
 fun MenuNavGraph(
     rootNavController: NavHostController,
     navController: NavHostController,
-    modifier: Modifier
+    modifier: Modifier,
+    moreInfoScreenViewModel: MoreInfoScreenViewModel = hiltViewModel()
 ) {
     val disc = LocalContext.current.getString(R.string.tab_discover)
     val prof = LocalContext.current.getString(R.string.tab_profile)
@@ -32,13 +35,18 @@ fun MenuNavGraph(
       route = RootScreen.Main.route,
       modifier = modifier.testTag("MenuNavGraph"),
       startDestination = disc) {
-        composable(disc) { DiscoveryScreen(navController) }
+        composable(disc) {
+          DiscoveryScreen(navController, moreInfoScreenViewModel = moreInfoScreenViewModel)
+        }
         composable(fav) { FavoritesScreen(navController) }
         composable(soc) { SocialScreen(navController) }
         composable(prof) {
           ProfileScreen(rootNavController = rootNavController)
         }
-        composable(LeafScreen.MoreInfo.route) { MoreInfoScreen(navController = navController) }
+        composable(LeafScreen.MoreInfo.route) {
+          MoreInfoScreen(
+              navController = navController, moreInfoScreenViewModel = moreInfoScreenViewModel)
+        }
         composable(LeafScreen.AddFriend.route) { AddFriendScreen(navController = navController) }
         composable(LeafScreen.NewMessage.route) { NewMessageScreen(navController = navController) }
         composable(LeafScreen.Notifications.route) {

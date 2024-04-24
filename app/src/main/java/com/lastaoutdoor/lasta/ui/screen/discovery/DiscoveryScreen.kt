@@ -54,46 +54,42 @@ import com.lastaoutdoor.lasta.ui.screen.discovery.components.RangeSearchComposab
 import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenType
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenViewModel
-import java.util.Locale
+import com.lastaoutdoor.lasta.viewmodel.MoreInfoScreenViewModel
 
 @Composable
 fun DiscoveryScreen(
     navController: NavController,
-    discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel()
+    discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel(),
+    moreInfoScreenViewModel: MoreInfoScreenViewModel
 ) {
-    val screen by discoveryScreenViewModel.screen.collectAsState()
+  val screen by discoveryScreenViewModel.screen.collectAsState()
 
-    var isRangePopup by rememberSaveable { mutableStateOf(false) }
-    val locale = Locale("fr")
-    val config = LocalContext.current.resources.configuration
-    config.setLocale(locale)
+  var isRangePopup by rememberSaveable { mutableStateOf(false) }
 
+  RangeSearchComposable(
+      discoveryScreenViewModel = discoveryScreenViewModel,
+      isRangePopup = isRangePopup,
+      onDismissRequest = { isRangePopup = false })
 
-
-    RangeSearchComposable(
-        discoveryScreenViewModel = discoveryScreenViewModel,
-        isRangePopup = isRangePopup,
-        onDismissRequest = { isRangePopup = false })
-
-    if (screen == DiscoveryScreenType.LIST) {
-        LazyColumn(
-            modifier =
+  if (screen == DiscoveryScreenType.LIST) {
+    LazyColumn(
+        modifier =
             Modifier.testTag("discoveryScreen").background(MaterialTheme.colorScheme.background)) {
-            item { HeaderComposable(updatePopup = { isRangePopup = true }) }
+          item { HeaderComposable(updatePopup = { isRangePopup = true }) }
 
-            item {
-                SeparatorComponent() // Add a separator between the header and the activities
-                Spacer(modifier = Modifier.height(8.dp))
-                ActivitiesDisplay(navController)
-            }
+          item {
+            SeparatorComponent() // Add a separator between the header and the activities
+            Spacer(modifier = Modifier.height(8.dp))
+            ActivitiesDisplay(navController, moreInfoScreenViewModel = moreInfoScreenViewModel)
+          }
         }
-    } else if (screen == DiscoveryScreenType.MAP) {
-        MapScreen()
-        HeaderComposable(updatePopup = { isRangePopup = true })
-    }
+  } else if (screen == DiscoveryScreenType.MAP) {
+    MapScreen()
+    HeaderComposable(updatePopup = { isRangePopup = true })
+  }
 
-    // Add the modal upper sheet
-    ModalUpperSheet(isRangePopup = isRangePopup)
+  // Add the modal upper sheet
+  ModalUpperSheet(isRangePopup = isRangePopup)
 }
 
 @Composable
@@ -101,51 +97,51 @@ fun HeaderComposable(
     discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel(),
     updatePopup: () -> Unit
 ) {
-    val screen by discoveryScreenViewModel.screen.collectAsState()
-    val range by discoveryScreenViewModel.range.collectAsState()
-    val selectedLocality = discoveryScreenViewModel.selectedLocality.collectAsState().value
-    val iconSize = 48.dp // Adjust icon size as needed
+  val screen by discoveryScreenViewModel.screen.collectAsState()
+  val range by discoveryScreenViewModel.range.collectAsState()
+  val selectedLocality = discoveryScreenViewModel.selectedLocality.collectAsState().value
+  val iconSize = 48.dp // Adjust icon size as needed
 
-    Surface(
-        modifier = Modifier.fillMaxWidth().graphicsLayer { alpha = 0.9f },
-        color = MaterialTheme.colorScheme.background,
-        shadowElevation = 3.dp) {
+  Surface(
+      modifier = Modifier.fillMaxWidth().graphicsLayer { alpha = 0.9f },
+      color = MaterialTheme.colorScheme.background,
+      shadowElevation = 3.dp) {
         Column {
-            // Location bar
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically) {
+          // Location bar
+          Row(
+              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+              verticalAlignment = Alignment.CenterVertically) {
                 Column {
-                    Row {
-                        Text(text = selectedLocality.first, style = MaterialTheme.typography.bodyMedium)
+                  Row {
+                    Text(text = selectedLocality.first, style = MaterialTheme.typography.bodyMedium)
 
-                        IconButton(
-                            onClick = updatePopup,
-                            modifier = Modifier.size(24.dp).testTag("listSearchOptionsEnableButton")) {
-                            Icon(
-                                Icons.Outlined.KeyboardArrowDown,
-                                contentDescription = "Filter",
-                                modifier = Modifier.size(24.dp))
+                    IconButton(
+                        onClick = updatePopup,
+                        modifier = Modifier.size(24.dp).testTag("listSearchOptionsEnableButton")) {
+                          Icon(
+                              Icons.Outlined.KeyboardArrowDown,
+                              contentDescription = "Filter",
+                              modifier = Modifier.size(24.dp))
                         }
-                    }
+                  }
 
                     Text(
                         text = "${LocalContext.current.getString(R.string.less_than)} ${(range / 1000).toInt()} km ${LocalContext.current.getString(R.string.around_you)}",
                         style = MaterialTheme.typography.bodySmall)
                 }
-            }
+              }
 
-            // Search bar with toggle buttons
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically) {
+          // Search bar with toggle buttons
+          Row(
+              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+              verticalAlignment = Alignment.CenterVertically) {
                 SearchBarComponent(Modifier.weight(1f), onSearch = { /*TODO*/})
                 Spacer(modifier = Modifier.width(8.dp))
                 IconButton(onClick = { /*TODO*/}, modifier = Modifier.size(iconSize)) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.filter_icon),
-                        contentDescription = "Filter",
-                        modifier = Modifier.size(24.dp))
+                  Icon(
+                      painter = painterResource(id = R.drawable.filter_icon),
+                      contentDescription = "Filter",
+                      modifier = Modifier.size(24.dp))
                 }
             }
             Row(
@@ -171,17 +167,17 @@ fun HeaderComposable(
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.primary)
 
-                    IconButton(onClick = { /*TODO*/}, modifier = Modifier.size(24.dp)) {
-                        Icon(
-                            Icons.Outlined.KeyboardArrowDown,
-                            contentDescription = "Filter",
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(24.dp))
-                    }
+                  IconButton(onClick = { /*TODO*/}, modifier = Modifier.size(24.dp)) {
+                    Icon(
+                        Icons.Outlined.KeyboardArrowDown,
+                        contentDescription = "Filter",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(24.dp))
+                  }
                 }
-            }
+          }
         }
-    }
+      }
 }
 
 @Composable
@@ -189,14 +185,18 @@ fun ActivitiesDisplay(
     navController: NavController,
     discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel()
 ) {
-    val activities = discoveryScreenViewModel.climbingActivities
-    for (a in activities) {
-        Card(
-            modifier =
+  val activities = discoveryScreenViewModel.climbingActivities
+  for (a in activities) {
+    Card(
+        modifier =
             Modifier.fillMaxWidth()
                 .wrapContentHeight()
                 .padding(vertical = 8.dp, horizontal = 16.dp)
-                .clickable(onClick = { navController.navigate(LeafScreen.MoreInfo.route) }),
+                .clickable(
+                    onClick = {
+                      moreInfoScreenViewModel.changeActivityToDisplay(a)
+                      navController.navigate(LeafScreen.MoreInfo.route)
+                    }),
             shape = RoundedCornerShape(8.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         ) {
@@ -216,15 +216,15 @@ fun ActivitiesDisplay(
                             color = MaterialTheme.colorScheme.onPrimary)
                     }
 
-                    IconButton(
-                        onClick = { /*TODO*/ /* changed to this when favorite Icons.Filled.Favorite*/},
-                        modifier = Modifier.size(24.dp)) {
-                        Icon(
-                            Icons.Filled.FavoriteBorder,
-                            contentDescription = "Filter",
-                            modifier = Modifier.size(24.dp))
-                    }
-                }
+              IconButton(
+                  onClick = { /*TODO*/ /* changed to this when favorite Icons.Filled.Favorite*/},
+                  modifier = Modifier.size(24.dp)) {
+                    Icon(
+                        Icons.Filled.FavoriteBorder,
+                        contentDescription = "Filter",
+                        modifier = Modifier.size(24.dp))
+                  }
+            }
 
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
