@@ -77,7 +77,7 @@ jobs:
           KEYSTORE: ${{ secrets.KEYSTORE }}
           KEYSTORE_PROPERTIES: ${{ secrets.KEYSTORE_PROPERTIES }}
         run: |
-          echo "MAPS_API_KEY=$MAPS_API_KEY\nWEATHER_API_KEY=$WEATHER_API_KEY" > ./local.properties
+          echo "MAPS_API_KEY=$MAPS_API_KEY\nWEATHER_API_KEY=\"$WEATHER_API_KEY\"" > ./local.properties
           echo $GOOGLE_SERVICES_JSON | base64 -di > ./app/google-services.json
           echo $KEYSTORE | base64 -di > ./keystore.jks
           echo $KEYSTORE_PROPERTIES | base64 -di > ./keystore.properties
