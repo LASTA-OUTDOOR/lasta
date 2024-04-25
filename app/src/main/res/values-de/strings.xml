@@ -71,4 +71,10 @@
     <string name = "temperature">Temperatur</string>
     <string name = "descr_w">Beschreibung</string>
     <string name = "wind_speed">Windgeschwindigkeit</string>
+    <string name="no_friend_activities">Keine aktuellen Aktivitäten… Füge Freunde hinzu, um mehr zu sehen!</string>
+    <string name="add_friend_title">Freunde hinzufügen</string>
+    <string name="select_friend">Wähle einen Freund</string>
+    <string name="type_message">Schreibe deine Nachricht hier</string>
+    <string name="your_message">"Deine Nachricht "</string>
+    <string name="send_message">Senden</string>
 </resources>
