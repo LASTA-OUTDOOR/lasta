@@ -1,11 +1,7 @@
 package com.lastaoutdoor.lasta.data.api
 
 import androidx.test.core.app.ApplicationProvider
-import com.lastaoutdoor.lasta.data.model.activity.ActivityType
 import com.lastaoutdoor.lasta.data.model.api.NodeWay
-import com.lastaoutdoor.lasta.data.model.api.Relation
-import com.lastaoutdoor.lasta.data.model.api.SimpleWay
-import com.lastaoutdoor.lasta.data.model.api.Tags
 import com.lastaoutdoor.lasta.di.AppModule
 import org.junit.Test
 import org.junit.runner.RunWith

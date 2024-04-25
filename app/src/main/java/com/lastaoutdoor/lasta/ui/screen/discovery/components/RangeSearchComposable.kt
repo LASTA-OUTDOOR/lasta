@@ -90,7 +90,7 @@ fun RangeSearchComposable(
                 // Button to apply the range
                 ElevatedButton(
                     onClick = {
-                      discoveryScreenViewModel.fetchHikingActivities(
+                      discoveryScreenViewModel.fetchBikingActivities(
                           range, discoveryScreenViewModel.selectedLocality.value.second)
                       onDismissRequest()
                     },

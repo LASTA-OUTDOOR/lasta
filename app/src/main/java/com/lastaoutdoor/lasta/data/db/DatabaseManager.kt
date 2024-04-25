@@ -1,6 +1,5 @@
 package com.lastaoutdoor.lasta.data.db
 
-import androidx.compose.ui.text.toUpperCase
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions

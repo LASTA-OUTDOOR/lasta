@@ -3,5 +3,8 @@ package com.lastaoutdoor.lasta.data.api
 import com.google.gson.annotations.SerializedName
 import com.lastaoutdoor.lasta.data.model.api.OSMData
 
-// class used by gson to convert api responses to KotlinClasses
+/**
+ * This is a generic class to parse the response from the OSM API. It contains a list of elements of
+ * type [T]. It uses GSON annotations to parse the JSON response.
+ */
 data class APIResponse<T : OSMData>(@SerializedName("elements") val elements: List<T>)

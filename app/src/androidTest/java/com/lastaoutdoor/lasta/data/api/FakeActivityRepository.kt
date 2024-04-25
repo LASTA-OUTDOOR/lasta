@@ -1,9 +1,6 @@
 package com.lastaoutdoor.lasta.data.api
 
-import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.SphericalUtil
 import com.lastaoutdoor.lasta.data.model.api.NodeWay
-import com.lastaoutdoor.lasta.data.model.api.Relation
 import com.lastaoutdoor.lasta.repository.ActivityRepository
 import com.lastaoutdoor.lasta.utils.Response
 
@@ -68,9 +65,9 @@ class FakeActivityRepository : ActivityRepository {
     return ""
   }*/
   override suspend fun getClimbingPointsInfo(
-    range: Int,
-    lat: Double,
-    lon: Double
+      range: Int,
+      lat: Double,
+      lon: Double
   ): Response<List<NodeWay>> {
     TODO("Not yet implemented")
   }

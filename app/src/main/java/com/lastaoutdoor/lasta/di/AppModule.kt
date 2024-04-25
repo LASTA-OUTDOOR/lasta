@@ -11,7 +11,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.ActivityRepositoryImpl
-import com.lastaoutdoor.lasta.data.api.ApiService
+import com.lastaoutdoor.lasta.data.api.OSMApiService
 import com.lastaoutdoor.lasta.data.auth.AuthRepositoryImpl
 import com.lastaoutdoor.lasta.data.connectivity.ConnectivityRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.UserActivitiesRepositoryImpl
@@ -75,12 +75,12 @@ object AppModule {
 
   @Singleton
   @Provides
-  fun provideAPIService(@ApplicationContext context: Context): ApiService =
+  fun provideAPIService(@ApplicationContext context: Context): OSMApiService =
       Retrofit.Builder()
           .baseUrl(context.getString(R.string.osm_base_url))
           .addConverterFactory(GsonConverterFactory.create())
           .build()
-          .create(ApiService::class.java)
+          .create(OSMApiService::class.java)
 
   /** Provides the [ActivityRepository] class */
   @Singleton
@@ -100,8 +100,8 @@ object AppModule {
   /** Provides the [GoogleAuth] class */
   @Singleton
   @Provides
-  fun provideOutdoorActivitiesRepository(apiService: ApiService): ActivityRepository =
-      ActivityRepositoryImpl(apiService)
+  fun provideOutdoorActivitiesRepository(OSMApiService: OSMApiService): ActivityRepository =
+      ActivityRepositoryImpl(OSMApiService)
 
   @Singleton
   @Provides

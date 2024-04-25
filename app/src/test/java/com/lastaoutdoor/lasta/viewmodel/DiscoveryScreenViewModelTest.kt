@@ -23,8 +23,13 @@ class DiscoveryScreenViewModelTest {
   }
 
   private fun dummyNode(type: ActivityType, name: String, position: LatLng): NodeWay {
-    return NodeWay(type.toString(), 0, position.latitude,
-      position.longitude, Position(position.latitude, position.longitude), Tags(""))
+    return NodeWay(
+        type.toString(),
+        0,
+        position.latitude,
+        position.longitude,
+        Position(position.latitude, position.longitude),
+        Tags(""))
   }
 
   @Test

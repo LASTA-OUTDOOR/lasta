@@ -8,16 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.model.api.NodeWay
-import com.lastaoutdoor.lasta.data.model.api.Relation
 import com.lastaoutdoor.lasta.data.model.map.ClimbingMarker
-import com.lastaoutdoor.lasta.data.model.map.HikingMarker
-import com.lastaoutdoor.lasta.data.model.map.MapItinerary
 import com.lastaoutdoor.lasta.data.model.map.Marker
 import com.lastaoutdoor.lasta.repository.ActivityRepository
 import com.lastaoutdoor.lasta.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class MapViewModel @Inject constructor(private val activityRepository: ActivityRepository) :
@@ -64,7 +61,9 @@ class MapViewModel @Inject constructor(private val activityRepository: ActivityR
   ) {
 
     viewModelScope.launch {
-      val response = repository.getClimbingPointsInfo(rad.toInt(), centerLocation.latitude, centerLocation.longitude)
+      val response =
+          repository.getClimbingPointsInfo(
+              rad.toInt(), centerLocation.latitude, centerLocation.longitude)
       val climbingPoints: List<NodeWay> = (response as Response.Success).data ?: emptyList()
 
       val climbingMarkers = mutableListOf<ClimbingMarker>()
@@ -72,11 +71,11 @@ class MapViewModel @Inject constructor(private val activityRepository: ActivityR
       // Converts the node data structure to our marker data structure
       climbingPoints.forEach {
         val marker =
-          ClimbingMarker(
-            it.tags.name,
-            LatLng(it.lat ?: 46.55, it.lon ?: 6.549),
-            it.tags.sport ?: "climbing",
-            R.drawable.climbing_icon)
+            ClimbingMarker(
+                it.tags.name,
+                LatLng(it.lat ?: 46.55, it.lon ?: 6.549),
+                it.tags.sport ?: "climbing",
+                R.drawable.climbing_icon)
         climbingMarkers.add(marker)
       }
 
@@ -160,10 +159,10 @@ class MapViewModel @Inject constructor(private val activityRepository: ActivityR
     fetchClimbingActivities(rad, centerLocation, activityRepository)
 
     // get all the hiking activities in the radius (only displays first point of the itinerary)
-    //val hikingRelations = fetchHikingActivities(rad, centerLocation)
-    //getMarkersFromRelations(hikingRelations)
+    // val hikingRelations = fetchHikingActivities(rad, centerLocation)
+    // getMarkersFromRelations(hikingRelations)
 
     // Add the itineraries to a map -> can access them by relation id
-    //getItineraryFromRelations(hikingRelations)
+    // getItineraryFromRelations(hikingRelations)
   }
 }

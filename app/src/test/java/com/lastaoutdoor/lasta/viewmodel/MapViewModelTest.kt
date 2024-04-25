@@ -7,11 +7,7 @@ import com.lastaoutdoor.lasta.data.model.activity.ActivityType
 import com.lastaoutdoor.lasta.data.model.api.NodeWay
 import com.lastaoutdoor.lasta.data.model.api.Position
 import com.lastaoutdoor.lasta.data.model.api.Relation
-import com.lastaoutdoor.lasta.data.model.api.SimpleWay
 import com.lastaoutdoor.lasta.data.model.api.Tags
-import com.lastaoutdoor.lasta.data.model.map.ClimbingMarker
-import com.lastaoutdoor.lasta.data.model.map.MapItinerary
-import com.lastaoutdoor.lasta.data.model.map.Marker
 import com.lastaoutdoor.lasta.repository.ActivityRepository
 import com.lastaoutdoor.lasta.utils.Response
 import org.junit.Assert.*
@@ -79,9 +75,9 @@ class MockRepository : ActivityRepository {
     return ""
   }*/
   override suspend fun getClimbingPointsInfo(
-    range: Int,
-    lat: Double,
-    lon: Double
+      range: Int,
+      lat: Double,
+      lon: Double
   ): Response<List<NodeWay>> {
     TODO("Not yet implemented")
   }
@@ -99,13 +95,18 @@ class MapViewModelTest {
   private val lausanne: LatLng = LatLng(46.519962, 6.633597)
 
   private fun clear() {
-    //repository.clearClimbingNodes()
-    //repository.clearHikingRelations()
+    // repository.clearClimbingNodes()
+    // repository.clearHikingRelations()
   }
 
   private fun dummyNode(type: ActivityType, name: String, position: LatLng): NodeWay {
-    return NodeWay(type.toString(), 0, position.latitude,
-      position.longitude, Position(position.latitude, position.longitude), Tags(""))
+    return NodeWay(
+        type.toString(),
+        0,
+        position.latitude,
+        position.longitude,
+        Position(position.latitude, position.longitude),
+        Tags(""))
   }
 
   @Before

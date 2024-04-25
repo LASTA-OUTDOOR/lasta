@@ -6,11 +6,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,7 +17,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.lastaoutdoor.lasta.ui.navigation.RootScreen
 import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
-import kotlinx.coroutines.delay
 
 @Composable
 fun LoadingScreen(
@@ -40,8 +36,8 @@ fun LoadingScreen(
   }
 
   Box(
-    modifier = Modifier.fillMaxSize().testTag("LoadingScreen"),
-    contentAlignment = Alignment.Center) {
-    CircularProgressIndicator(modifier = Modifier.width(100.dp))
-  }
+      modifier = Modifier.fillMaxSize().testTag("LoadingScreen"),
+      contentAlignment = Alignment.Center) {
+        CircularProgressIndicator(modifier = Modifier.width(100.dp))
+      }
 }

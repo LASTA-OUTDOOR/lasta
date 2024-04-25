@@ -44,7 +44,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.model.activity.Difficulty
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
 import com.lastaoutdoor.lasta.ui.components.SearchBarComponent
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
@@ -189,9 +188,7 @@ fun ActivitiesDisplay(
             Modifier.fillMaxWidth()
                 .wrapContentHeight()
                 .padding(vertical = 8.dp, horizontal = 16.dp)
-                .clickable(onClick = {
-                  navController.navigate(LeafScreen.MoreInfo.route)
-                }),
+                .clickable(onClick = { navController.navigate(LeafScreen.MoreInfo.route) }),
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
     ) {

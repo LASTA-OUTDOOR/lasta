@@ -39,8 +39,9 @@ import com.lastaoutdoor.lasta.ui.theme.YellowDifficulty
 
 @Composable
 fun MoreInfoScreen(
-  activity: Activity = Activity(ActivityType.CLIMBING, Difficulty.EASY, 1.5f, "3 hours", "Test Title"),
-  navController: NavController
+    activity: Activity =
+        Activity(ActivityType.CLIMBING, Difficulty.EASY, 1.5f, "3 hours", "Test Title"),
+    navController: NavController
 ) {
   LazyColumn(modifier = Modifier.padding(8.dp)) {
     item { Spacer(modifier = Modifier.height(15.dp)) }
