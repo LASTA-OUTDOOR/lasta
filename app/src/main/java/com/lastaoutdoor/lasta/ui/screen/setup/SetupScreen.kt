@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -41,7 +42,6 @@ fun SetupScreen(
           LocalContext.current.getString(R.string.hiking),
           LocalContext.current.getString(R.string.climbing))
   var isHikingSelected by remember { mutableStateOf(true) }
-  var expanded by remember { mutableStateOf(false) }
 
   Column(
       modifier = Modifier.fillMaxSize().padding(horizontal = 30.dp, vertical = 190.dp),
@@ -51,7 +51,8 @@ fun SetupScreen(
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
           Text(
               text = LocalContext.current.getString(R.string.setup_title),
-              style = MaterialTheme.typography.headlineLarge,
+              fontWeight = FontWeight.Bold,
+              style = MaterialTheme.typography.displayLarge,
               color = MaterialTheme.colorScheme.onBackground)
         }
 
@@ -63,7 +64,7 @@ fun SetupScreen(
             horizontalArrangement = Arrangement.SpaceBetween) {
               Text(
                   text = LocalContext.current.getString(R.string.select_languague),
-                  style = MaterialTheme.typography.bodyLarge,
+                  style = MaterialTheme.typography.headlineMedium,
                   color = MaterialTheme.colorScheme.onBackground)
               DropDownMenuComponent(
                   items = languages,
@@ -80,12 +81,12 @@ fun SetupScreen(
             horizontalArrangement = Arrangement.SpaceBetween) {
               Text(
                   text = LocalContext.current.getString(R.string.select_fav_activity),
-                  style = MaterialTheme.typography.bodyLarge,
+                  style = MaterialTheme.typography.headlineMedium,
                   color = MaterialTheme.colorScheme.onBackground)
             }
 
         Row(
-            modifier = Modifier.fillMaxWidth().padding(20.dp),
+            modifier = Modifier.fillMaxWidth().padding(12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly) {
               Button(

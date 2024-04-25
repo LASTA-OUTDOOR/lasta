@@ -5,7 +5,7 @@
     <string name="tab_discover">Découvrir</string>
     <string name="tab_profile">Profil</string>
     <string name="relevance">Pertinence</string>
-    <string name="filter_by">Trier par :</string>
+    <string name="filter_by">Présenter par :</string>
     <string name="filter">Trier</string>
     <string name="rating">Note</string>
     <string name="difficulty">Difficulté</string>
@@ -65,4 +65,19 @@
     <string name="map">Carte</string>
     <string name="hiking">Randonnée</string>
     <string name="climbing">Escalade</string>
+    <string name="show_completed_activities">Afficher vos activités terminées</string>
+    <string name="filter_options">Filtres</string>
+    <string name="filter_activity_type">Filtrer par type d\'activité :</string>
+    <string name="filter_difficulty_level">Filtrer par niveau de difficulté :</string>
+    <string name="from">de</string>
+    <string name="to">à</string>
+    <string name="filter_distance_range">Filtrer par distance d\'activité :</string>
+    <string name="no_friend_activities">Pas d\'acitivités récentes...  Ajoute des amis pour en voir plus !</string>
+    <string name="add_friend_title">Ajouter un ami</string>
+    <string name="select_friend">Choisis un ami</string>
+    <string name="type_message">Ecris ton message ici</string>
+    <string name="your_message">Ton message</string>
+    <string name="send_message">Envoyer</string>
+    <string name="Account_settings">Paramètres du compte</string>
+    <string name="delete_account">Supprimer compte</string>
 </resources>

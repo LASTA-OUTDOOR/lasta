@@ -49,11 +49,17 @@ constructor(
   // is the top button visible
   var topButton by mutableStateOf(false)
 
-  // returns all the messages of the user
-  var messages = repository.getMessages(userId)
+  // Display the list of friends that can be messaged
+  var displayFriendPicker by mutableStateOf(false)
+
+  // Display the dialog to add a friend
+  var displayAddFriendDialog by mutableStateOf(false)
 
   // returns all the friends of the users
   var friends = repository.getFriends(userId)
+
+  // returns all the existing conversations
+  var messages by mutableStateOf(repository.getAllConversations(userId, friends))
 
   // returns all the activities done by friends in the last 7 days
   val latestFriendActivities = repository.getLatestFriendActivities(userId, numberOfDays)
@@ -127,5 +133,35 @@ constructor(
   // Refresh the list of friends
   fun refreshFriends() {
     viewModelScope.launch { friends = repository.getFriends(userId) }
+  }
+
+  // Refresh the list of friends
+  fun refreshMessages() {
+    viewModelScope.launch { messages = repository.getAllConversations(userId, friends) }
+  }
+
+  // This displays the friend picker (in order to send a message)
+  fun displayFriendPicker() {
+    displayFriendPicker = true
+  }
+
+  // Hide the friend picker (dismiss request)
+  fun hideFriendPicker() {
+    displayFriendPicker = false
+  }
+
+  // Display the dialog to add a friend
+  fun displayAddFriendDialog() {
+    displayAddFriendDialog = true
+  }
+
+  // Hide the dialog to add a friend
+  fun hideAddFriendDialog() {
+    displayAddFriendDialog = false
+  }
+
+  // Clear the feedback message for the friend request
+  fun clearFriendRequestFeedback() {
+    friendRequestFeedback = ""
   }
 }

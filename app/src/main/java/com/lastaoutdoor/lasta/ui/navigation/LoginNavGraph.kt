@@ -22,7 +22,10 @@ fun LoginNavGraph(
       route = RootScreen.Login.route,
       startDestination = LeafScreen.SignIn.route) {
         composable(LeafScreen.SignIn.route) {
-          LoginScreen(navController = navController, authViewModel = authViewModel)
+          LoginScreen(
+              rootNavController = rootNavController,
+              navController = navController,
+              authViewModel = authViewModel)
         }
         composable(LeafScreen.Setup.route) {
           SetupScreen(rootNavController = rootNavController, authViewModel = authViewModel)

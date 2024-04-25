@@ -14,7 +14,10 @@ import androidx.compose.ui.test.performClick
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.google.firebase.Timestamp
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
+import com.lastaoutdoor.lasta.data.model.social.ConversationModel
+import com.lastaoutdoor.lasta.data.model.social.MessageModel
 import com.lastaoutdoor.lasta.data.model.user.HikingLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.di.AppModule
@@ -29,7 +32,6 @@ import dagger.hilt.android.testing.UninstallModules
 import java.util.Date
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -39,7 +41,7 @@ class FakeSocialRepository : SocialRepository {
 
   var friends: ArrayList<UserModel> = ArrayList()
   var activities: ArrayList<ActivitiesDatabaseType> = ArrayList()
-  var messages: ArrayList<String> = ArrayList()
+  var messages: ArrayList<ConversationModel> = ArrayList()
 
   var sentRequest: ArrayList<String> = ArrayList()
   var receivedRequest: ArrayList<String> = ArrayList()
@@ -55,8 +57,15 @@ class FakeSocialRepository : SocialRepository {
     return activities
   }
 
-  override fun getMessages(userId: String): List<String> {
+  override fun getAllConversations(
+      userId: String,
+      friends: List<UserModel>
+  ): List<ConversationModel> {
     return messages
+  }
+
+  override fun getConversation(userId: String, friendId: String): ConversationModel {
+    TODO("Not yet implemented")
   }
 
   override fun sendFriendRequest(uid: String, email: String): Boolean {
@@ -68,11 +77,13 @@ class FakeSocialRepository : SocialRepository {
   }
 
   override fun getFriendRequests(userId: String): List<UserModel> {
-    return receivedRequest.map { UserModel(it, "name", "email", "photo", HikingLevel.BEGINNER) }
+    return receivedRequest.map {
+      UserModel(it, "name", "email", "photo", "bio", HikingLevel.BEGINNER)
+    }
   }
 
   override fun acceptFriendRequest(source: String, requester: String) {
-    friends.add(UserModel(requester, "name", "email", "photo", HikingLevel.BEGINNER))
+    friends.add(UserModel(requester, "name", "email", "photo", "bio", HikingLevel.BEGINNER))
     receivedRequest.remove(requester)
   }
 
@@ -80,7 +91,11 @@ class FakeSocialRepository : SocialRepository {
     receivedRequest.remove(requester)
   }
 
-  fun setMessages(messages: List<String>) {
+  override fun sendMessage(userId: String, friendUserId: String, message: String) {
+    TODO("Not yet implemented")
+  }
+
+  fun setMessages(messages: List<ConversationModel>) {
     this.messages.clear()
     this.messages.addAll(messages)
   }
@@ -270,7 +285,7 @@ class SocialScreenKtTest {
   fun testFilledFriends() {
 
     // Fake data
-    val friend = UserModel("1", "name", "email", "photo", HikingLevel.BEGINNER)
+    val friend = UserModel("1", "name", "email", "photo", "bio", HikingLevel.BEGINNER)
     val friends = listOf(friend, friend, friend)
 
     // Set the content to the social screen
@@ -293,7 +308,14 @@ class SocialScreenKtTest {
   fun testFilledMessages() {
 
     // Fake data
-    val message = "message"
+    val message =
+        ConversationModel(
+            listOf(
+                UserModel("1", "name", "email", "photo", "bio", HikingLevel.BEGINNER),
+                UserModel("2", "name", "email", "photo", "bio", HikingLevel.BEGINNER)),
+            listOf(MessageModel("1", "1", Timestamp.now())),
+            MessageModel("2", "2", Timestamp.now()))
+
     val messages = listOf(message, message, message, message, message)
 
     // Set the content to the social screen
