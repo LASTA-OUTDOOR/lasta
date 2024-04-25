@@ -65,6 +65,12 @@
     <string name="map">Karte</string>
     <string name="hiking">Wandern</string>
     <string name="climbing">Klettern</string>
+    <string name = "weather_report">Wetterbericht</string>
+    <string name = "current_weather">Aktuelles Wetter</string>
+    <string name = "city_w">Stadt</string>
+    <string name = "temperature">Temperatur</string>
+    <string name = "descr_w">Beschreibung</string>
+    <string name = "wind_speed">Windgeschwindigkeit</string>
     <string name="show_completed_activities">Abgeschlossene Aktivitäten anzeigen</string>
     <string name="filter_options">" Filteroptionen"</string>
     <string name="filter_activity_type">Filtern Sie nach Aktivitätstyp :</string>

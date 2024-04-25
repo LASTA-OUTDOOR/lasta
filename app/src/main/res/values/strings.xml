@@ -3,6 +3,7 @@
     <!--data/DB strings-->
     <string name="web_client_id" translatable="false">720666228102-mtt8qsp3fuljeatb9128qss6c2qf91t2.apps.googleusercontent.com</string>
     <string name="osm_base_url" translatable="false">https://overpass-api.de/api/</string>
+    <string name="weather_api_url" translatable="false">https://api.openweathermap.org/data/2.5/</string>
     <string name="activities_database_name" translatable="false">activities_database</string>
 
     <!--Nav-->
@@ -97,6 +98,14 @@
     <string name = "add_fr">Add a friend</string>
     <string name = "fr_email_add">Enter a friend\'s email address to send a friend request</string>
     <string name = "community">Community</string>
+    <!--Weather Report-->
+    <string name = "weather_report">Weather Report</string>
+    <string name = "current_weather">Current Weather</string>
+    <string name = "city_w">City</string>
+    <string name = "temperature">Temperature</string>
+    <string name = "descr_w">Description</string>
+    <string name = "wind_speed">Wind speed</string>
+
     <string name="add_friend_title">Add a friend</string>
     <string name="select_friend">Select a friend</string>
     <string name="type_message">Type your message</string>
@@ -105,29 +114,4 @@
     <!--Settings-->
     <string name = "Account_settings">Settings</string>
     <string name= "delete_account">Delete Account</string>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </resources>

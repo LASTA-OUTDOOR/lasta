@@ -12,6 +12,8 @@ import com.google.firebase.ktx.Firebase
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.ApiService
 import com.lastaoutdoor.lasta.data.api.OutdoorActivityRepositoryImpl
+import com.lastaoutdoor.lasta.data.api.WeatherApiService
+import com.lastaoutdoor.lasta.data.api.WeatherRepositoryImpl
 import com.lastaoutdoor.lasta.data.auth.AuthRepositoryImpl
 import com.lastaoutdoor.lasta.data.connectivity.ConnectivityRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.ActivitiesRepositoryImpl
@@ -23,6 +25,7 @@ import com.lastaoutdoor.lasta.repository.ConnectivityRepository
 import com.lastaoutdoor.lasta.repository.OutdoorActivityRepository
 import com.lastaoutdoor.lasta.repository.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.SocialRepository
+import com.lastaoutdoor.lasta.repository.WeatherRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -75,12 +78,21 @@ object AppModule {
 
   @Singleton
   @Provides
-  fun provideAPIService(@ApplicationContext context: Context): ApiService =
+  fun provideOSMAPIService(@ApplicationContext context: Context): ApiService =
       Retrofit.Builder()
           .baseUrl(context.getString(R.string.osm_base_url))
           .addConverterFactory(GsonConverterFactory.create())
           .build()
           .create(ApiService::class.java)
+
+  @Singleton
+  @Provides
+  fun provideWeatherAPIService(@ApplicationContext context: Context): WeatherApiService =
+      Retrofit.Builder()
+          .baseUrl(context.getString(R.string.weather_api_url))
+          .addConverterFactory(GsonConverterFactory.create())
+          .build()
+          .create(WeatherApiService::class.java)
 
   /** Provides the [OutdoorActivityRepository] class */
   @Singleton
@@ -124,4 +136,9 @@ object AppModule {
   fun provideSocialRepository(): SocialRepository {
     return SocialRepositoryImpl()
   }
+
+  @Singleton
+  @Provides
+  fun provideWeatherRepository(weatherApiService: WeatherApiService): WeatherRepository =
+      WeatherRepositoryImpl(weatherApiService)
 }

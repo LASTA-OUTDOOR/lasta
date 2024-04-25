@@ -32,6 +32,15 @@ android {
         properties.load(project.rootProject.file("./local.properties").inputStream())
         // Set API keys in BuildConfig
         resValue("string", "MAPS_API_KEY", "\"${properties.getProperty("MAPS_API_KEY")}\"")
+
+        //return empty key in case something goes wrong
+        val apiKey = properties.getProperty("WEATHER_API_KEY") ?: ""
+
+        buildConfigField(
+            type = "String",
+            name = "WEATHER_API_KEY",
+            value = apiKey
+        )
     }
 
     val keystorePropertiesFile = project.rootProject.file("./keystore.properties")
@@ -154,6 +163,9 @@ dependencies {
     testImplementation("io.mockk:mockk:1.13.10")
     testImplementation("io.mockk:mockk-agent-jvm:1.13.10")
     testImplementation("app.cash.turbine:turbine:0.5.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
+    implementation("androidx.compose.runtime:runtime-livedata:1.0.5")
+
 
     globalTestImplementation(libs.androidx.junit)
     globalTestImplementation(libs.androidx.espresso.core)
