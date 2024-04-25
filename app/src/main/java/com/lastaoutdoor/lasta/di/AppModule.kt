@@ -73,6 +73,9 @@ object AppModule {
                   .build())
           .build()
 
+  /**
+   * Provides the [OSMApiService] class
+   */
   @Singleton
   @Provides
   fun provideAPIService(@ApplicationContext context: Context): OSMApiService =
