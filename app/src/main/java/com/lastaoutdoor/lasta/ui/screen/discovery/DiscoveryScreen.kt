@@ -75,7 +75,9 @@ fun DiscoveryScreen(
     LazyColumn(
         modifier =
             Modifier.testTag("discoveryScreen").background(MaterialTheme.colorScheme.background)) {
-          item { HeaderComposable(navController = navController, updatePopup = { isRangePopup = true }) }
+          item {
+            HeaderComposable(navController = navController, updatePopup = { isRangePopup = true })
+          }
 
           item {
             SeparatorComponent() // Add a separator between the header and the activities
@@ -139,12 +141,14 @@ fun HeaderComposable(
               verticalAlignment = Alignment.CenterVertically) {
                 SearchBarComponent(Modifier.weight(1f), onSearch = { /*TODO*/})
                 Spacer(modifier = Modifier.width(8.dp))
-                IconButton(onClick = { navController.navigate(LeafScreen.Filter.route) }, modifier = Modifier.size(iconSize)) {
-                  Icon(
-                      painter = painterResource(id = R.drawable.filter_icon),
-                      contentDescription = "Filter",
-                      modifier = Modifier.size(24.dp))
-                }
+                IconButton(
+                    onClick = { navController.navigate(LeafScreen.Filter.route) },
+                    modifier = Modifier.size(iconSize)) {
+                      Icon(
+                          painter = painterResource(id = R.drawable.filter_icon),
+                          contentDescription = "Filter",
+                          modifier = Modifier.size(24.dp))
+                    }
               }
           Row(
               modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),

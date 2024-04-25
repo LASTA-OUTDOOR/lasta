@@ -31,7 +31,7 @@ fun MenuNavGraph(
   val prof = LocalContext.current.getString(R.string.tab_profile)
   val soc = LocalContext.current.getString(R.string.socials)
   val fav = LocalContext.current.getString(R.string.favs)
-    val fil = "Filter"
+  val fil = "Filter"
   NavHost(
       navController = navController,
       route = RootScreen.Main.route,
@@ -40,9 +40,9 @@ fun MenuNavGraph(
         composable(disc) {
           DiscoveryScreen(navController, moreInfoScreenViewModel = moreInfoScreenViewModel)
         }
-      composable(fil) { FilterScreen(navController = navController) }
+        composable(fil) { FilterScreen(navController = navController) }
 
-      composable(fav) { FavoritesScreen(navController) }
+        composable(fav) { FavoritesScreen(navController) }
         composable(soc) { SocialScreen(navController) }
         composable(prof) { ProfileScreen(rootNavController = rootNavController) }
         composable(LeafScreen.MoreInfo.route) {
