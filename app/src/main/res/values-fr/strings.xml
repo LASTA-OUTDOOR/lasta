@@ -71,13 +71,9 @@
     <string name = "temperature">Température</string>
     <string name = "descr_w">Description</string>
     <string name = "wind_speed">Vitesse du vent</string>
-<<<<<<< HEAD
-
-=======
     <string name="no_friend_activities">Pas d\'acitivités récentes...  Ajoutes des amis pour en voir plus !</string>
     <string name="add_friend_title">Ajouter un amis</string>
     <string name="select_friend">Choisis un amis</string>
->>>>>>> 27622b3394cd65e53b1f3b41caa83c8236a8a0f6
     <string name="show_completed_activities">Afficher vos activités terminées</string>
     <string name="filter_options">Filtres</string>
     <string name="filter_activity_type">Filtrer par type d\'activité :</string>
@@ -85,9 +81,6 @@
     <string name="from">de</string>
     <string name="to">à</string>
     <string name="filter_distance_range">Filtrer par distance d\'activité :</string>
-    <string name="no_friend_activities">Pas d\'acitivités récentes...  Ajoute des amis pour en voir plus !</string>
-    <string name="add_friend_title">Ajouter un ami</string>
-    <string name="select_friend">Choisis un ami</string>
     <string name="type_message">Ecris ton message ici</string>
     <string name="your_message">Ton message</string>
     <string name="send_message">Envoyer</string>
