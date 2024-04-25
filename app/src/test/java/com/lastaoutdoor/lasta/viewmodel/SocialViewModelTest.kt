@@ -148,6 +148,10 @@ class FakePreferencesRepository(override val userPreferencesFlow: Flow<UserPrefe
 
   override suspend fun updateHikingLevel(hikingLevel: HikingLevel) {}
 
+  override suspend fun updateLanguage(language: String) {}
+
+  override suspend fun updatePrefSport(prefSport: String) {}
+
   override suspend fun clearPreferences() {}
 }
 
@@ -158,7 +162,9 @@ class SocialViewModelTest {
 
   // Mock the user preferences flow
   private val userPreferencesFlow =
-      MutableStateFlow(UserPreferences(true, "email", "name", "photo", "", HikingLevel.BEGINNER))
+      MutableStateFlow(
+          UserPreferences(
+              true, "email", "name", "photo", "", HikingLevel.BEGINNER, "English", "Hiking"))
 
   @Before
   fun setUp() {
