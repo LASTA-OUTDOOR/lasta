@@ -10,21 +10,21 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class WeatherViewModel : ViewModel() {
-    private val _weather = MutableLiveData<WeatherResponse>()
-    val weather: LiveData<WeatherResponse> = _weather
+  private val _weather = MutableLiveData<WeatherResponse>()
+  val weather: LiveData<WeatherResponse> = _weather
 
-    init {
-        fetchWeather()
-    }
+  init {
+    fetchWeather()
+  }
 
-    private fun fetchWeather() {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val weather = WeatherApi.getCurrentWeather("Lausanne")
-                _weather.postValue(weather)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
+  private fun fetchWeather() {
+    CoroutineScope(Dispatchers.IO).launch {
+      try {
+        val weather = WeatherApi.getCurrentWeather("Lausanne")
+        _weather.postValue(weather)
+      } catch (e: Exception) {
+        e.printStackTrace()
+      }
     }
+  }
 }

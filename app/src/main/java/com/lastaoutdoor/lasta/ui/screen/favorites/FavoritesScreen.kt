@@ -21,14 +21,10 @@ import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
 fun FavoritesScreen(
     navController: NavHostController,
 ) {
-    val displayWeather = remember {
-        mutableStateOf(false)
-    }
-    if(displayWeather.value){
-        Dialog({displayWeather.value=false}){
-            WeatherReport()
-        }
-    }
+  val displayWeather = remember { mutableStateOf(false) }
+  if (displayWeather.value) {
+    Dialog({ displayWeather.value = false }) { WeatherReport() }
+  }
 
   Column(
       modifier = Modifier.fillMaxSize(),
@@ -37,9 +33,8 @@ fun FavoritesScreen(
         Button(onClick = { navController.navigate(LeafScreen.MoreInfo.route) }) {
           Text(text = LocalContext.current.getString(R.string.more_info))
         }
-          Button(onClick = { displayWeather.value=true }) {
-              Text(text = LocalContext.current.getString(R.string.weather_report))
-          }
+        Button(onClick = { displayWeather.value = true }) {
+          Text(text = LocalContext.current.getString(R.string.weather_report))
+        }
       }
-
 }
