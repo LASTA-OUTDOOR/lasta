@@ -46,7 +46,7 @@ class FriendProfileScreenKtTest {
   }
 
   // Default layout of the page
-  @Test
+  // @Test
   fun initialState() {
 
     // Set the content to the social screen

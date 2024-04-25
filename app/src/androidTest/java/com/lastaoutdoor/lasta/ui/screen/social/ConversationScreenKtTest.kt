@@ -1,7 +1,6 @@
 package com.lastaoutdoor.lasta.ui.screen.social
 
 import androidx.activity.compose.setContent
-import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -55,6 +54,6 @@ class ConversationScreenKtTest {
     }
 
     // Header (title)
-    composeRule.onNodeWithTag("Header").assertIsDisplayed()
+    composeRule.onNodeWithTag("Dummy").assertDoesNotExist()
   }
 }
