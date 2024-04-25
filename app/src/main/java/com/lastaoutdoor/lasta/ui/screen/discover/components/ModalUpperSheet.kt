@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.ui.screen.discovery.components
+package com.lastaoutdoor.lasta.ui.screen.discover.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
