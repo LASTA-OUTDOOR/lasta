@@ -66,7 +66,7 @@ fun LoginContent(onLoginClick: () -> Unit) {
                   contentDescription = "Google Logo",
                   modifier = Modifier.size(24.dp))
               Text(
-                  text = "Sign in with Google",
+                  text = LocalContext.current.getString(R.string.sign_in_google),
                   modifier = Modifier.padding(6.dp),
                   color = Color.Black,
                   fontSize = 14.sp)

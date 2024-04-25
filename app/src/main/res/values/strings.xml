@@ -1,11 +1,117 @@
 <resources>
-    <string name="app_name">Lasta</string>
-    <string name="app_name_uppercase">LASTA</string>
-    <string name="web_client_id">720666228102-mtt8qsp3fuljeatb9128qss6c2qf91t2.apps.googleusercontent.com</string>
-    <string name="osm_base_url">https://overpass.osm.ch/api/</string>
+
+    <!--data/DB strings-->
+    <string name="web_client_id" translatable="false">720666228102-mtt8qsp3fuljeatb9128qss6c2qf91t2.apps.googleusercontent.com</string>
+    <string name="osm_base_url" translatable="false">https://overpass.osm.ch/api/</string>
+    <string name="activities_database_name" translatable="false">activities_database</string>
+
+    <!--Nav-->
+    <string name="app_name" translatable="false">Lasta</string>
+    <string name="app_name_uppercase" translatable="false">LASTA</string>
     <string name="tab_map">Map</string>
     <string name="tab_discover">Discover</string>
     <string name="tab_profile">Profile</string>
+
+    <!--Discovery-->
+    <string name = "relevance">Relevance</string>
+    <string name = "filter_by">Filtering by :</string>
+    <string name = "filter">Filter</string>
+    <string name = "rating">Rating</string>
+    <string name = "difficulty">Difficulty</string>
+    <string name = "less_than">Less than</string>
+    <string name = "around_you">around you</string>
+    <string name = "Climbing">Climbing</string>
+    <string name = "popularity">popularity</string>
+    <string name = "list">List</string>
+    <string name = "map">Map</string>
+
+
+    <!--Favourites-->
+    <string name = "more_info">More Info</string>
+    <!--Login-->
+    <string name = "sign_in_google">Sign in with Google</string>
+    <!--Main-->
+    <string name = "offline">You are offline</string>
+    <!--More Info-->
+    <string name = "start">Start</string>
+    <string name = "on_map">View on Map</string>
+    <!--Profile-->
+    <string name = "hiking">Hiking</string>
+    <string name = "climbing">Climbing</string>
+
+    <string name = "hiking_lvl">Hiking Level</string>
+    <string name = "preferences">Preferences</string>
+    <string name = "sign_out">Sign out</string>
+    <string name = "activity">Activity</string>
+    <string name = "hikes">hikes</string>
+    <string name = "climbs">climbs</string>
+    <string name = "calories">Calories</string>
+    <string name = "pitches">Pitches</string>
+    <string name = "time">Time</string>
+    <string name = "elevation">Elevation</string>
+    <!--Setup-->
+    <string name = "select_languague">Select your language: </string>
+    <string name = "languague">Language: </string>
+    <string name = "select_fav_activity">Select your favorite outdoor activity:</string>
+    <string name = "save">Save</string>
     <string name="setup_title">Settings</string>
-    <string name="activities_database_name">activities_database</string>
+    <!--Map-->
+    <string name="activity_type">Activity Type</string>
+    <string name="not_specified">not specified</string>
+    <string name="no_name">No name</string>
+    <!--NavBar-->
+    <string name="favs">Favorites</string>
+    <string name="socials">Socials</string>
+    <!--UpperSheet-->
+    <string name = "modify_search">Modify your search settings</string>
+    <!--Range search-->
+    <string name = "locality">Locality :</string>
+    <string name = "dist_radius">Search radius :</string>
+    <string name = "search">Search :</string>
+    <string name = "select_dist_radius">Select the search radius :</string>
+    <string name = "use_curr_loc">Use my current location</string>
+    <string name = "apply">Apply</string>
+    <!--Friends-->
+    <string name = "activity_title">Activity Title</string>
+    <string name = "friend">Friend</string>
+    <string name = "no_friend">You do not have any friends request yet</string>
+    <string name = "friend_req">Friend requests</string>
+    <string name = "req_internet">This content requires an internet connection.</string>
+    <string name = "no_friends_yet">It appears you don\'t have any friends yet…Start by adding some!</string>
+    <string name = "no_msg">You don\'t have any messages yet....</string>
+    <string name = "start_conv">Start a conversation!</string>
+    <string name = "friends">Friends</string>
+    <string name = "message">Message</string>
+    <string name = "feed">Feed</string>
+    <string name = "email">Email address</string>
+    <string name = "send_fr">Send friend request</string>
+    <string name = "add_fr">Add a friend</string>
+    <string name = "fr_email_add">Enter a friend\'s email address to send a friend request</string>
+    <string name = "community">Community</string>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </resources>

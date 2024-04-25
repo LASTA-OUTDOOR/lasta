@@ -8,7 +8,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
 
 @Composable
@@ -21,7 +23,7 @@ fun FavoritesScreen(
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally) {
         Button(onClick = { navController.navigate(LeafScreen.MoreInfo.route) }) {
-          Text(text = "More Info")
+          Text(text = LocalContext.current.getString(R.string.more_info))
         }
       }
 }

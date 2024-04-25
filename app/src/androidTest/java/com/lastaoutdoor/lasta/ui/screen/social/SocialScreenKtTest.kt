@@ -12,52 +12,119 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.data.model.user.UserLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.di.AppModule
+import com.lastaoutdoor.lasta.repository.ConnectivityRepository
 import com.lastaoutdoor.lasta.repository.SocialRepository
 import com.lastaoutdoor.lasta.ui.MainActivity
+import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import java.util.Date
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+// Class mocking the social repository
 class FakeSocialRepository : SocialRepository {
 
   var friends: ArrayList<UserModel> = ArrayList()
   var activities: ArrayList<ActivitiesDatabaseType> = ArrayList()
   var messages: ArrayList<String> = ArrayList()
 
-  override fun getFriends(): List<UserModel>? {
+  var sentRequest: ArrayList<String> = ArrayList()
+  var receivedRequest: ArrayList<String> = ArrayList()
+
+  // Change this to simulate the case were the function should return false
+  var shouldWork = true
+
+  override fun getFriends(userId: String): List<UserModel> {
     return friends
   }
 
-  override fun getLatestFriendActivities(days: Int): List<ActivitiesDatabaseType>? {
+  override fun getLatestFriendActivities(userId: String, days: Int): List<ActivitiesDatabaseType> {
     return activities
   }
 
-  override fun getMessages(): List<String>? {
+  override fun getMessages(userId: String): List<String> {
     return messages
   }
 
-  override fun setMessages(messages: List<String>) {
+  override fun sendFriendRequest(uid: String, email: String): Boolean {
+    if (shouldWork) {
+      sentRequest.add(email)
+      return true
+    }
+    return false
+  }
+
+  override fun getFriendRequests(userId: String): List<UserModel> {
+    return receivedRequest.map { UserModel(it, "name", "email", "photo", UserLevel.BEGINNER) }
+  }
+
+  override fun acceptFriendRequest(source: String, requester: String) {
+    friends.add(UserModel(requester, "name", "email", "photo", UserLevel.BEGINNER))
+    receivedRequest.remove(requester)
+  }
+
+  override fun declineFriendRequest(source: String, requester: String) {
+    receivedRequest.remove(requester)
+  }
+
+  fun setMessages(messages: List<String>) {
     this.messages.clear()
     this.messages.addAll(messages)
   }
 
-  override fun setFriends(friend: List<UserModel>) {
+  fun setFriends(friend: List<UserModel>) {
     this.friends.clear()
     this.friends.addAll(friend)
   }
 
-  override fun setLatestFriendActivities(activities: List<ActivitiesDatabaseType>) {
+  fun setLatestFriendActivities(activities: List<ActivitiesDatabaseType>) {
     this.activities.clear()
     this.activities.addAll(activities)
+  }
+
+  fun setReceivedRequest(receivedRequest: List<String>) {
+    this.receivedRequest.clear()
+    this.receivedRequest.addAll(receivedRequest)
+  }
+
+  fun setSentRequest(sentRequest: List<String>) {
+    this.sentRequest.clear()
+    this.sentRequest.addAll(sentRequest)
+  }
+
+  fun clear() {
+    friends.clear()
+    activities.clear()
+    messages.clear()
+    sentRequest.clear()
+    receivedRequest.clear()
+  }
+}
+
+class FakeConnectivityRepository : ConnectivityRepository {
+
+  private val _connectionState = MutableStateFlow<ConnectionState>(ConnectionState.CONNECTED)
+  override val connectionState: StateFlow<ConnectionState> = _connectionState
+
+  fun setConnectionStateToTrue() {
+    _connectionState.value = ConnectionState.CONNECTED
+  }
+
+  fun setConnectionStateToFalse() {
+    _connectionState.value = ConnectionState.OFFLINE
   }
 }
 
@@ -73,17 +140,26 @@ class SocialScreenKtTest {
   // Viewmodel and repository
   private lateinit var socialViewModel: SocialViewModel
 
+  // Navigation controller
+  private lateinit var navController: NavController
+
   // Set up the test
   @Before
   fun setUp() {
     hiltRule.inject()
+    // set up the navigation controller
+    navController = NavHostController(composeRule.activity)
   }
 
   @Test
   fun initialState() {
 
     // Set the content to the social screen
-    composeRule.activity.setContent { SocialScreen() }
+    composeRule.activity.setContent {
+      socialViewModel = hiltViewModel()
+      (socialViewModel.connectionRepo as FakeConnectivityRepository).setConnectionStateToFalse()
+      SocialScreen(navController)
+    }
 
     // Header (title)
     composeRule.onNodeWithTag("Header").assertIsDisplayed()
@@ -103,7 +179,11 @@ class SocialScreenKtTest {
   @Test
   fun testTabSelection() {
     // Set the content to the social screen
-    composeRule.activity.setContent { SocialScreen() }
+    composeRule.activity.setContent {
+      socialViewModel = hiltViewModel()
+      (socialViewModel.connectionRepo as FakeConnectivityRepository).setConnectionStateToFalse()
+      SocialScreen(navController)
+    }
 
     // initial tab selection
     composeRule.onNodeWithText("Feed").assertIsSelected()
@@ -133,6 +213,13 @@ class SocialScreenKtTest {
     composeRule.onNodeWithText("Friends").assertIsNotSelected()
     composeRule.onNodeWithText("Message").assertIsNotSelected()
     composeRule.onNodeWithText("Feed").assertIsSelected()
+
+    // Test the button in the header -> go to friends tab
+    composeRule.onNodeWithText("Friends").performClick()
+    // change the call back in viewmodel
+    composeRule.onNodeWithTag("TopButton").assertIsDisplayed()
+    socialViewModel.topButtonOnClick = {}
+    composeRule.onNodeWithTag("TopButton").performClick()
   }
 
   @Test
@@ -140,8 +227,8 @@ class SocialScreenKtTest {
     // Test that the list
     composeRule.activity.setContent {
       socialViewModel = hiltViewModel()
-      socialViewModel.isConnected = true
-      SocialScreen()
+      (socialViewModel.connectionRepo as FakeConnectivityRepository).setConnectionStateToTrue()
+      SocialScreen(navController)
     }
 
     // Feed
@@ -169,9 +256,9 @@ class SocialScreenKtTest {
     // Set the content to the social screen
     composeRule.activity.setContent {
       socialViewModel = hiltViewModel()
-      socialViewModel.isConnected = true
-      socialViewModel.repository.setLatestFriendActivities(activities)
-      SocialScreen()
+      (socialViewModel.connectionRepo as FakeConnectivityRepository).setConnectionStateToTrue()
+      (socialViewModel.repository as FakeSocialRepository).setLatestFriendActivities(activities)
+      SocialScreen(navController)
     }
 
     // Check that the add friend is not displayed
@@ -189,9 +276,9 @@ class SocialScreenKtTest {
     // Set the content to the social screen
     composeRule.activity.setContent {
       socialViewModel = hiltViewModel()
-      socialViewModel.isConnected = true
-      socialViewModel.repository.setFriends(friends)
-      SocialScreen()
+      (socialViewModel.connectionRepo as FakeConnectivityRepository).setConnectionStateToTrue()
+      (socialViewModel.repository as FakeSocialRepository).setFriends(friends)
+      SocialScreen(navController)
     }
 
     // go to the friends tab
@@ -212,9 +299,9 @@ class SocialScreenKtTest {
     // Set the content to the social screen
     composeRule.activity.setContent {
       socialViewModel = hiltViewModel()
-      socialViewModel.isConnected = true
-      socialViewModel.repository.setMessages(messages)
-      SocialScreen()
+      (socialViewModel.connectionRepo as FakeConnectivityRepository).setConnectionStateToTrue()
+      (socialViewModel.repository as FakeSocialRepository).setMessages(messages)
+      SocialScreen(navController)
     }
 
     // go to the friends tab

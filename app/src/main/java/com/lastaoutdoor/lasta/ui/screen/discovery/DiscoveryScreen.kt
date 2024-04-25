@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -53,11 +54,13 @@ import com.lastaoutdoor.lasta.ui.screen.discovery.components.RangeSearchComposab
 import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenType
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenViewModel
+import com.lastaoutdoor.lasta.viewmodel.MoreInfoScreenViewModel
 
 @Composable
 fun DiscoveryScreen(
     navController: NavController,
-    discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel()
+    discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel(),
+    moreInfoScreenViewModel: MoreInfoScreenViewModel
 ) {
   val screen by discoveryScreenViewModel.screen.collectAsState()
 
@@ -77,7 +80,7 @@ fun DiscoveryScreen(
           item {
             SeparatorComponent() // Add a separator between the header and the activities
             Spacer(modifier = Modifier.height(8.dp))
-            ActivitiesDisplay(navController)
+            ActivitiesDisplay(navController, moreInfoScreenViewModel = moreInfoScreenViewModel)
           }
         }
   } else if (screen == DiscoveryScreenType.MAP) {
@@ -123,7 +126,8 @@ fun HeaderComposable(
                   }
 
                   Text(
-                      text = "Less than ${(range / 1000).toInt()} km around you",
+                      text =
+                          "${LocalContext.current.getString(R.string.less_than)} ${(range / 1000).toInt()} km ${LocalContext.current.getString(R.string.around_you)}",
                       style = MaterialTheme.typography.bodySmall)
                 }
               }
@@ -145,21 +149,25 @@ fun HeaderComposable(
               modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
               verticalAlignment = Alignment.CenterVertically,
               horizontalArrangement = Arrangement.Center) {
-                DisplaySelection(
+                val contex = LocalContext.current
+                DisplaySelection<DiscoveryScreenType>(
                     DiscoveryScreenType.values().toList(),
                     screen,
-                    discoveryScreenViewModel::setScreen,
-                    DiscoveryScreenType::toString)
+                    discoveryScreenViewModel::setScreen) {
+                      it.toStringCon(contex)
+                    }
               }
 
           if (screen == DiscoveryScreenType.LIST) {
             Row(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically) {
-                  Text("Filtering by:", style = MaterialTheme.typography.bodyMedium)
+                  Text(
+                      LocalContext.current.getString(R.string.filter_by),
+                      style = MaterialTheme.typography.bodyMedium)
                   Spacer(modifier = Modifier.width(8.dp))
                   Text(
-                      text = "Relevance",
+                      text = LocalContext.current.getString(R.string.relevance),
                       style = MaterialTheme.typography.bodyMedium,
                       color = MaterialTheme.colorScheme.primary)
 
@@ -179,7 +187,8 @@ fun HeaderComposable(
 @Composable
 fun ActivitiesDisplay(
     navController: NavController,
-    discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel()
+    discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel(),
+    moreInfoScreenViewModel: MoreInfoScreenViewModel
 ) {
   val activities = discoveryScreenViewModel.climbingActivities.value
   for (a in activities) {
@@ -188,7 +197,11 @@ fun ActivitiesDisplay(
             Modifier.fillMaxWidth()
                 .wrapContentHeight()
                 .padding(vertical = 8.dp, horizontal = 16.dp)
-                .clickable(onClick = { navController.navigate(LeafScreen.MoreInfo.route) }),
+                .clickable(
+                    onClick = {
+                      moreInfoScreenViewModel.changeActivityToDisplay(a)
+                      navController.navigate(LeafScreen.MoreInfo.route)
+                    }),
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
     ) {
@@ -203,7 +216,7 @@ fun ActivitiesDisplay(
                           .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
                           .padding(PaddingValues(8.dp))) {
                     Text(
-                        text = a.activityType.toString(),
+                        text = LocalContext.current.getString(R.string.Climbing),
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onPrimary)
                   }
@@ -235,9 +248,9 @@ fun ActivitiesDisplay(
                   imageVector = Icons.Default.Star,
                   contentDescription = "Rating",
                   tint = MaterialTheme.colorScheme.primary)
-              Text(text = "? popularity")
+              Text(text = "? ${LocalContext.current.getString(R.string.popularity)}")
               Spacer(modifier = Modifier.width(8.dp))
-              Text(text = "Difficulty: ${a.difficulty.toString()}")
+              Text(text = "Difficulty: ${LocalContext.current.getString(R.string.difficulty)}")
               Spacer(modifier = Modifier.width(16.dp))
               // Distance from the user's location, NOT THE LENGTH OF THE ACTIVITY!!!
               Text(text = "? km")

@@ -6,6 +6,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import androidx.test.espresso.action.ViewActions
 import com.lastaoutdoor.lasta.data.api.FakeActivityRepository
@@ -48,7 +49,7 @@ class DiscoveryScreenTest {
   fun discoveryScreen_isDisplayed() {
     composeRule.activity.setContent {
       val navController = rememberNavController()
-      DiscoveryScreen(navController)
+      DiscoveryScreen(navController, moreInfoScreenViewModel = hiltViewModel())
     }
     composeRule.onNodeWithTag("discoveryScreen").assertIsDisplayed()
   }
@@ -98,7 +99,10 @@ class DiscoveryScreenTest {
   @Test
   fun localityDropdown_isDisplayed() {
     composeRule.activity.setContent {
-      DiscoveryScreen(navController = rememberNavController(), discoveryScreenViewModel)
+      DiscoveryScreen(
+          navController = rememberNavController(),
+          discoveryScreenViewModel,
+          moreInfoScreenViewModel = hiltViewModel())
     }
     composeRule.onNodeWithTag("listSearchOptionsEnableButton").performClick()
     composeRule.onNodeWithTag("localitySelectionDropdown").assertIsDisplayed()
@@ -110,7 +114,10 @@ class DiscoveryScreenTest {
   @Test
   fun modalUpperSheet_isDisplayed() {
     composeRule.activity.setContent {
-      DiscoveryScreen(navController = rememberNavController(), discoveryScreenViewModel)
+      DiscoveryScreen(
+          navController = rememberNavController(),
+          discoveryScreenViewModel,
+          moreInfoScreenViewModel = hiltViewModel())
     }
     composeRule.onNodeWithTag("listSearchOptionsEnableButton").performClick()
     composeRule.onNodeWithTag("modalUpperSheet").assertIsDisplayed()

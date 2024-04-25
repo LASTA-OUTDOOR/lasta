@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -30,7 +31,7 @@ fun ConnectionMissing() {
             contentDescription = "Internet Icon")
 
         Text(
-            text = "This content requires an internet connection.",
+            text = LocalContext.current.getString(R.string.req_internet),
             style =
                 TextStyle(
                     fontWeight = FontWeight.Normal, fontSize = 20.sp, textAlign = TextAlign.Center),
@@ -45,12 +46,11 @@ fun FriendsMissing() {
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
-            text = "We didn't find any activities performed by your friends lately...",
+            text = LocalContext.current.getString(R.string.no_friends_yet),
             style =
                 TextStyle(
                     fontWeight = FontWeight.Normal, fontSize = 20.sp, textAlign = TextAlign.Center),
             modifier = Modifier.padding(15.dp))
-        Button(onClick = { /*TODO*/}) { Text(text = "Try adding more friends!") }
       }
 }
 
@@ -61,11 +61,13 @@ fun MessageMissing() {
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
-            text = "You don't have any messages yet...",
+            text = LocalContext.current.getString(R.string.no_msg),
             style =
                 TextStyle(
                     fontWeight = FontWeight.Normal, fontSize = 20.sp, textAlign = TextAlign.Center),
             modifier = Modifier.padding(15.dp))
-        Button(onClick = { /*TODO*/}) { Text(text = "Start a conversation!") }
+        Button(onClick = { /*TODO*/}) {
+          Text(text = LocalContext.current.getString(R.string.start_conv))
+        }
       }
 }

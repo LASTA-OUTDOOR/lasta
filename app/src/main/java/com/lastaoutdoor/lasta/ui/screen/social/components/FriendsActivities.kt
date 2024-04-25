@@ -16,9 +16,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -26,19 +28,26 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
+import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
 @Composable
 fun FriendsActivityList(viewModel: SocialViewModel = hiltViewModel()) {
-  if (!viewModel.isConnected) {
-    ConnectionMissing()
-  } else if (viewModel.latestFriendActivities.isNullOrEmpty()) {
-    FriendsMissing()
-  } else {
-    LazyColumn {
-      items(viewModel.latestFriendActivities.size) {
-        FriendsActivityCard(viewModel.latestFriendActivities[it])
+  val isConnected = viewModel.isConnected.collectAsState()
+  when {
+    isConnected.value == ConnectionState.OFFLINE -> {
+      ConnectionMissing()
+    }
+    viewModel.latestFriendActivities.isEmpty() -> {
+      FriendsMissing()
+    }
+    else -> {
+      LazyColumn {
+        items(viewModel.latestFriendActivities.size) {
+          FriendsActivityCard(viewModel.latestFriendActivities[it])
+        }
       }
     }
   }
@@ -55,10 +64,12 @@ fun FriendsActivityCard(activity: ActivitiesDatabaseType) {
         Column(modifier = Modifier.padding(8.dp)) {
           Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = "Activity title",
+                text = LocalContext.current.getString(R.string.activity_title),
                 style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-              Text(text = "Friend", modifier = Modifier.align(Alignment.CenterVertically))
+              Text(
+                  text = LocalContext.current.getString(R.string.friend),
+                  modifier = Modifier.align(Alignment.CenterVertically))
               Icon(
                   Icons.Filled.AccountCircle,
                   contentDescription = "Profile picture",

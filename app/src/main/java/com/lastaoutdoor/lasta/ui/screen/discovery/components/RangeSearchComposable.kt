@@ -23,12 +23,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenType
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenViewModel
@@ -56,7 +58,7 @@ fun RangeSearchComposable(
               modifier = Modifier.fillMaxWidth().padding(16.dp)) {
                 // Select the City
                 Text(
-                    text = "Locality :",
+                    text = LocalContext.current.getString(R.string.locality),
                     style =
                         TextStyle(
                             fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
@@ -65,7 +67,7 @@ fun RangeSearchComposable(
                 LocalitySelectionDropdown(discoveryScreenViewModel)
                 // Select the distance radius
                 Text(
-                    text = "Distance radius :",
+                    text = LocalContext.current.getString(R.string.dist_radius),
                     style =
                         TextStyle(
                             fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
@@ -100,7 +102,7 @@ fun RangeSearchComposable(
                             .testTag("listSearchOptionsApplyButton"),
                     colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
                       Text(
-                          "Search",
+                          LocalContext.current.getString(R.string.search),
                           style =
                               TextStyle(
                                   fontSize = 22.sp,
@@ -121,7 +123,7 @@ fun RangeSearchComposable(
               horizontalAlignment = Alignment.CenterHorizontally,
               modifier = Modifier.fillMaxWidth().padding(16.dp)) {
                 Text(
-                    text = "Select the distance radius",
+                    text = LocalContext.current.getString(R.string.select_dist_radius),
                     style =
                         TextStyle(
                             fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
@@ -145,7 +147,7 @@ fun RangeSearchComposable(
                 // Search bar to search by locality
                 Row {
                   Text(
-                      text = "Locality : ",
+                      text = LocalContext.current.getString(R.string.locality),
                       style =
                           TextStyle(
                               fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
@@ -164,7 +166,7 @@ fun RangeSearchComposable(
                           contentDescription = "Settings",
                           tint = MaterialTheme.colorScheme.primary)
                       Text(
-                          text = "Use my current location",
+                          text = LocalContext.current.getString(R.string.use_curr_loc),
                           style =
                               TextStyle(
                                   fontSize = 16.sp,
@@ -186,7 +188,7 @@ fun RangeSearchComposable(
                         Modifier.width(305.dp).height(48.dp).testTag("mapRangeSearchApplyButton"),
                     colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
                       Text(
-                          "Apply",
+                          LocalContext.current.getString(R.string.apply),
                           style =
                               TextStyle(
                                   fontSize = 22.sp,
