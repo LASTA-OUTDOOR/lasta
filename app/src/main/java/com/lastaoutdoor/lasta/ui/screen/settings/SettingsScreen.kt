@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -48,7 +49,7 @@ fun SettingsScreen(
 
         // Title "Settings"
         Text(
-            text = "Account settings",
+            text = LocalContext.current.getString(R.string.Account_settings),
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.displayLarge,
             color = MaterialTheme.colorScheme.onBackground,
@@ -63,24 +64,25 @@ fun SettingsScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
               Text(
-                  text = "Select your language: ",
+                  text = LocalContext.current.getString(R.string.select_languague),
                   style = MaterialTheme.typography.headlineMedium,
                   color = MaterialTheme.colorScheme.onBackground)
               DropDownMenuComponent(
-                  items = listOf("English", "French", "German"),
+                  items = listOf("English", "Français", "Deutsch"),
                   selectedItem = selectedLanguage,
                   onItemSelected = { newLanguage: String ->
                     selectedLanguage = newLanguage
                     preferencesViewModel.updateLanguage(newLanguage)
                   },
-                  fieldText = "Language")
+                  toStr = { it },
+                  fieldText = LocalContext.current.getString(R.string.languague))
             }
 
         Spacer(modifier = Modifier.height(40.dp))
 
         // Outdoor activity selection
         Text(
-            text = "Select your favorite outdoor activity: ",
+            text = LocalContext.current.getString(R.string.select_fav_activity),
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onBackground)
 
@@ -106,7 +108,7 @@ fun SettingsScreen(
                             containerColor = MaterialTheme.colorScheme.secondaryContainer,
                             contentColor = MaterialTheme.colorScheme.onSecondary)
                       }) {
-                    Text(text = "Hiking")
+                    Text(text = LocalContext.current.getString(R.string.hiking))
                   }
               Button(
                   onClick = {
@@ -126,7 +128,7 @@ fun SettingsScreen(
                             containerColor = MaterialTheme.colorScheme.secondaryContainer,
                             contentColor = MaterialTheme.colorScheme.onSecondary)
                       }) {
-                    Text(text = "Climbing")
+                    Text(text = LocalContext.current.getString(R.string.climbing))
                   }
             }
 
@@ -140,7 +142,7 @@ fun SettingsScreen(
                   rootNavController.popBackStack()
                   rootNavController.navigate(RootScreen.Login.route)
                 }) {
-                  Text(text = "Sign Out")
+                  Text(text = LocalContext.current.getString(R.string.sign_out))
                 }
 
             Button(
@@ -155,7 +157,7 @@ fun SettingsScreen(
                     ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.error,
                         contentColor = MaterialTheme.colorScheme.onError)) {
-                  Text(text = "Delete Account")
+                  Text(text = LocalContext.current.getString(R.string.delete_account))
                 }
           }
         }

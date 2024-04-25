@@ -13,11 +13,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.db.DatabaseManager
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
 import com.lastaoutdoor.lasta.ui.navigation.RootScreen
@@ -35,7 +37,10 @@ fun SetupScreen(
   val languages = listOf("English", "Français", "Deutsch")
 
   var selectedLanguage by remember { mutableStateOf(languages[0]) }
-  val outdoorActivities = listOf("Hiking", "Climbing")
+  val outdoorActivities =
+      listOf(
+          LocalContext.current.getString(R.string.hiking),
+          LocalContext.current.getString(R.string.climbing))
   var isHikingSelected by remember { mutableStateOf(true) }
 
   Column(
@@ -45,7 +50,7 @@ fun SetupScreen(
         // Title "Settings"
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
           Text(
-              text = "Settings",
+              text = LocalContext.current.getString(R.string.setup_title),
               fontWeight = FontWeight.Bold,
               style = MaterialTheme.typography.displayLarge,
               color = MaterialTheme.colorScheme.onBackground)
@@ -58,14 +63,15 @@ fun SetupScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
               Text(
-                  text = "Select your language: ",
+                  text = LocalContext.current.getString(R.string.select_languague),
                   style = MaterialTheme.typography.headlineMedium,
                   color = MaterialTheme.colorScheme.onBackground)
               DropDownMenuComponent(
                   items = languages,
                   selectedItem = selectedLanguage,
                   onItemSelected = { selectedLanguage = it },
-                  fieldText = "Language")
+                  String::toString,
+                  fieldText = LocalContext.current.getString(R.string.languague))
             }
         Spacer(modifier = Modifier.height(40.dp))
 
@@ -74,7 +80,7 @@ fun SetupScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
               Text(
-                  text = "Select your favorite outdoor activity: ",
+                  text = LocalContext.current.getString(R.string.select_fav_activity),
                   style = MaterialTheme.typography.headlineMedium,
                   color = MaterialTheme.colorScheme.onBackground)
             }
@@ -130,7 +136,7 @@ fun SetupScreen(
                 rootNavController.navigate(RootScreen.Main.route)
               },
           ) {
-            Text(text = "Save")
+            Text(text = LocalContext.current.getString(R.string.save))
           }
         }
       }

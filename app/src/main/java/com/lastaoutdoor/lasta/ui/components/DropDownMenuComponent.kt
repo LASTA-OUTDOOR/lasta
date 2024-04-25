@@ -24,6 +24,7 @@ fun <T> DropDownMenuComponent(
     items: List<T>, // Items to display in the dropdown
     selectedItem: T, // The currently selected item from the ViewModel
     onItemSelected: (T) -> Unit, // Callback to invoke when an item is selected
+    toStr: (T) -> String,
     fieldText: String
 ) {
   var expanded by remember { mutableStateOf(false) }
@@ -53,7 +54,7 @@ fun <T> DropDownMenuComponent(
       }
     }
     Text(
-        selectedItem.toString(),
+        toStr(selectedItem),
         fontWeight = FontWeight.Bold,
         style = MaterialTheme.typography.headlineMedium,
         color = MaterialTheme.colorScheme.onBackground)
