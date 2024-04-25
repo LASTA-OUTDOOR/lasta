@@ -4,7 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Email
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
-import com.lastaoutdoor.lasta.data.model.user.HikingLevel
+import com.lastaoutdoor.lasta.data.model.user.UserLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.data.model.user.UserPreferences
 import com.lastaoutdoor.lasta.repository.ConnectivityRepository
@@ -79,11 +79,11 @@ class FakeSocialRepository : SocialRepository {
   }
 
   override fun getFriendRequests(userId: String): List<UserModel> {
-    return receivedRequest.map { UserModel(it, "name", "email", "photo", HikingLevel.BEGINNER) }
+    return receivedRequest.map { UserModel(it, "name", "email", "photo", UserLevel.BEGINNER) }
   }
 
   override fun acceptFriendRequest(source: String, requester: String) {
-    friends.add(UserModel(requester, "name", "email", "photo", HikingLevel.BEGINNER))
+    friends.add(UserModel(requester, "name", "email", "photo", UserLevel.BEGINNER))
     receivedRequest.remove(requester)
   }
 
@@ -146,7 +146,7 @@ class FakePreferencesRepository(override val userPreferencesFlow: Flow<UserPrefe
 
   override suspend fun updateUserInfo(user: UserModel?) {}
 
-  override suspend fun updateHikingLevel(hikingLevel: HikingLevel) {}
+  override suspend fun updateHikingLevel(hikingLevel: UserLevel) {}
 
   override suspend fun clearPreferences() {}
 }
@@ -158,7 +158,7 @@ class SocialViewModelTest {
 
   // Mock the user preferences flow
   private val userPreferencesFlow =
-      MutableStateFlow(UserPreferences(true, "email", "name", "photo", "", HikingLevel.BEGINNER))
+      MutableStateFlow(UserPreferences(true, "email", "name", "photo", "", UserLevel.BEGINNER))
 
   @Before
   fun setUp() {

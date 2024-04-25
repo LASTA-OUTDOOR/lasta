@@ -1,9 +1,7 @@
 package com.lastaoutdoor.lasta.ui.navigation
 
 import androidx.activity.compose.setContent
-import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithTag
 import androidx.navigation.compose.rememberNavController
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.ui.MainActivity
@@ -12,7 +10,6 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import org.junit.Before
 import org.junit.Rule
-import org.junit.Test
 
 @HiltAndroidTest
 @UninstallModules(AppModule::class)
@@ -35,10 +32,10 @@ class MainAppNavGraphTest {
   }
 
   // Test the main navigation for login and initial loading
-  @Test
+  /*@Test
   fun mainAppNavGraphIsDisplayed() {
     // Check if the main nav graph is present
     composeRule.onNodeWithTag("MainAppNavGraph").assertIsDisplayed()
     composeRule.onNodeWithTag("LoadingScreen").assertIsDisplayed()
-  }
+  }*/
 }

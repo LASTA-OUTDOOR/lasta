@@ -85,6 +85,30 @@ class MockRepository : ActivityRepository {
   override suspend fun getClimbingPointById(id: Long): Response<NodeWay> {
     TODO("Not yet implemented")
   }
+
+  override suspend fun getHikingRoutesInfo(
+      range: Int,
+      lat: Double,
+      lon: Double
+  ): Response<List<Relation>> {
+    TODO("Not yet implemented")
+  }
+
+  override suspend fun getHikingRouteById(id: Long): Response<Relation> {
+    TODO("Not yet implemented")
+  }
+
+  override suspend fun getBikingRoutesInfo(
+      range: Int,
+      lat: Double,
+      lon: Double
+  ): Response<List<Relation>> {
+    TODO("Not yet implemented")
+  }
+
+  override suspend fun getBikingRouteById(id: Long): Response<Relation> {
+    TODO("Not yet implemented")
+  }
 }
 
 @RunWith(AndroidJUnit4::class)
