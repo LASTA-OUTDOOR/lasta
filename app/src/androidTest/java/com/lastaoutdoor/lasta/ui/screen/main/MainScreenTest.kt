@@ -43,7 +43,9 @@ class MainScreenTest {
           route = RootScreen.Root.route,
           startDestination = RootScreen.Main.route) {
             composable(RootScreen.Loading.route) { LoadingScreen(navController = navController) }
-            composable(RootScreen.Login.route) { LoginScreen(navController = navController) }
+            composable(RootScreen.Login.route) {
+              LoginScreen(navController = navController, rootNavController = navController)
+            }
             composable(RootScreen.Main.route) { MainScreen(rootNavController = navController) }
           }
     }

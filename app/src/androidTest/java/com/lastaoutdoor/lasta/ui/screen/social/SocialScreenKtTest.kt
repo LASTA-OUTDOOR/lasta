@@ -77,11 +77,13 @@ class FakeSocialRepository : SocialRepository {
   }
 
   override fun getFriendRequests(userId: String): List<UserModel> {
-    return receivedRequest.map { UserModel(it, "name", "email", "photo", HikingLevel.BEGINNER) }
+    return receivedRequest.map {
+      UserModel(it, "name", "email", "photo", "bio", HikingLevel.BEGINNER)
+    }
   }
 
   override fun acceptFriendRequest(source: String, requester: String) {
-    friends.add(UserModel(requester, "name", "email", "photo", HikingLevel.BEGINNER))
+    friends.add(UserModel(requester, "name", "email", "photo", "bio", HikingLevel.BEGINNER))
     receivedRequest.remove(requester)
   }
 
@@ -283,7 +285,7 @@ class SocialScreenKtTest {
   fun testFilledFriends() {
 
     // Fake data
-    val friend = UserModel("1", "name", "email", "photo", HikingLevel.BEGINNER)
+    val friend = UserModel("1", "name", "email", "photo", "bio", HikingLevel.BEGINNER)
     val friends = listOf(friend, friend, friend)
 
     // Set the content to the social screen
@@ -309,8 +311,8 @@ class SocialScreenKtTest {
     val message =
         ConversationModel(
             listOf(
-                UserModel("1", "name", "email", "photo", HikingLevel.BEGINNER),
-                UserModel("2", "name", "email", "photo", HikingLevel.BEGINNER)),
+                UserModel("1", "name", "email", "photo", "bio", HikingLevel.BEGINNER),
+                UserModel("2", "name", "email", "photo", "bio", HikingLevel.BEGINNER)),
             listOf(MessageModel("1", "1", Timestamp.now())),
             MessageModel("2", "2", Timestamp.now()))
 

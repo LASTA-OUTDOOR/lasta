@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.ui.screen.discovery
+package com.lastaoutdoor.lasta.ui.screen.discover
 
 import androidx.activity.compose.setContent
 import androidx.compose.ui.test.assertIsDisplayed
@@ -12,7 +12,7 @@ import androidx.test.espresso.action.ViewActions
 import com.lastaoutdoor.lasta.data.api.FakeOutdoorActivityRepository
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.ui.MainActivity
-import com.lastaoutdoor.lasta.ui.screen.discovery.components.RangeSearchComposable
+import com.lastaoutdoor.lasta.ui.screen.discover.components.RangeSearchComposable
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenType
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenViewModel
 import dagger.hilt.android.testing.BindValue
