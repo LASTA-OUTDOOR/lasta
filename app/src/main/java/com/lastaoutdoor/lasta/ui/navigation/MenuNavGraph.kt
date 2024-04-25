@@ -18,6 +18,7 @@ import com.lastaoutdoor.lasta.data.model.user.HikingLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.ui.screen.activities.MoreInfoScreen
 import com.lastaoutdoor.lasta.ui.screen.discovery.DiscoveryScreen
+import com.lastaoutdoor.lasta.ui.screen.discovery.FilterScreen
 import com.lastaoutdoor.lasta.ui.screen.favorites.FavoritesScreen
 import com.lastaoutdoor.lasta.ui.screen.profile.ProfileScreen
 import com.lastaoutdoor.lasta.ui.screen.settings.SettingsScreen
@@ -43,6 +44,7 @@ fun MenuNavGraph(
   val prof = LocalContext.current.getString(R.string.tab_profile)
   val soc = LocalContext.current.getString(R.string.socials)
   val fav = LocalContext.current.getString(R.string.favs)
+  val fil = "Filter"
 
   NavHost(
       navController = navController,
@@ -52,6 +54,8 @@ fun MenuNavGraph(
         composable(disc) {
           DiscoveryScreen(navController, moreInfoScreenViewModel = moreInfoScreenViewModel)
         }
+        composable(fil) { FilterScreen(navController = navController) }
+
         composable(fav) { FavoritesScreen(navController) }
         composable(soc) { SocialScreen(navController) }
         composable(prof) {

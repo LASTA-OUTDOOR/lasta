@@ -4,17 +4,17 @@ enum class ActivityType {
   NULL,
   CLIMBING {
     override fun toString(): String {
-      return "climbing"
+      return "Climbing"
     }
   },
   HIKING {
     override fun toString(): String {
-      return "hiking"
+      return "Hiking"
     }
   },
   BIKING {
     override fun toString(): String {
-      return "biking"
+      return "Biking"
     }
   }
 }
