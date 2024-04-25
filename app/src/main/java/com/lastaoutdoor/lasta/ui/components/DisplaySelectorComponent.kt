@@ -18,6 +18,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 
+/**
+ * A composable function that displays a selection of items. The selected item is highlighted.
+ *
+ * @param T The type of the items.
+ * @param items The list of items to display.
+ * @param selectedItem The currently selected item.
+ * @param onSelected A lambda function that handles the selection of an item.
+ * @param itemDisplayName A lambda function that returns the display name of an item.
+ */
 @Composable
 fun <T> DisplaySelection(
     items: List<T>, // Pass a list of items
@@ -27,7 +36,8 @@ fun <T> DisplaySelection(
 ) {
   val shape = RoundedCornerShape(20.dp)
   val borderModifier =
-      Modifier.padding(4.dp).border(width = 1.dp, color = Color.Black, shape = shape)
+      Modifier.padding(4.dp)
+          .border(width = 1.dp, color = MaterialTheme.colorScheme.onBackground, shape = shape)
 
   Row(
       modifier =
@@ -39,7 +49,9 @@ fun <T> DisplaySelection(
           // Determine background and text color based on selection
           val backgroundColor =
               if (selectedItem == item) MaterialTheme.colorScheme.primary else Color.Transparent
-          val textColor = if (selectedItem == item) Color.White else Color.Black
+          val textColor =
+              if (selectedItem == item) MaterialTheme.colorScheme.onPrimary
+              else MaterialTheme.colorScheme.onBackground
 
           Button(
               onClick = { onSelected(item) }, // Use the passed lambda for selection

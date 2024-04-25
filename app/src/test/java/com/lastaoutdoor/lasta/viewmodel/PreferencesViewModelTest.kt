@@ -53,6 +53,7 @@ class PreferencesViewModelTest {
             "John Doe",
             "testemail@gmail.com",
             "https://www.example.com/profile.jpg",
+            "I'm a cool guy",
             HikingLevel.BEGINNER)
 
     val expectedUserId = "123"
@@ -78,6 +79,7 @@ class PreferencesViewModelTest {
             "John Doe",
             "testemail@gmail.com",
             "https://www.example.com/profile.jpg",
+            "I'm a cool guy",
             HikingLevel.INTERMEDIATE)
 
     val expectedUserName = "John Doe"
@@ -103,6 +105,7 @@ class PreferencesViewModelTest {
             "John Doe",
             "testemail@gmail.com",
             "https://www.example.com/profile.jpg",
+            "I'm a cool guy",
             HikingLevel.ADVANCED)
 
     val expectedEmail = "testemail@gmail.com"
@@ -128,6 +131,7 @@ class PreferencesViewModelTest {
             "John Doe",
             "testemail@gmail.com",
             "https://www.example.com/profile.jpg",
+            "I'm a cool guy",
             HikingLevel.BEGINNER)
 
     val expectedProfilePictureUrl = "https://www.example.com/profile.jpg"
@@ -153,6 +157,7 @@ class PreferencesViewModelTest {
             "John Doe",
             "testemail@gmail.com",
             "https://www.example.com/profile.jpg",
+            "I'm a cool guy",
             HikingLevel.BEGINNER)
 
     val expectedHikingLevel = HikingLevel.BEGINNER
@@ -195,6 +200,7 @@ class PreferencesViewModelTest {
             "John Doe",
             "testemail@gmail.com",
             "https://www.example.com/profile.jpg",
+            "I'm a cool guy",
             HikingLevel.ADVANCED)
     fakePreferencesRepo.updateUserInfo(user)
 
@@ -217,7 +223,8 @@ class PreferencesViewModelTest {
 
   private class FakePreferencesRepository : PreferencesRepository {
     private val userPreferencesStateFlow =
-        MutableStateFlow(UserPreferences(false, "", "", "", "", HikingLevel.BEGINNER))
+        MutableStateFlow(
+            UserPreferences(false, "", "", "", "", "", HikingLevel.BEGINNER, "English", "Hiking"))
     override val userPreferencesFlow: Flow<UserPreferences> = userPreferencesStateFlow
 
     fun setUserPreferences(userPreferences: UserPreferences) {
@@ -242,8 +249,21 @@ class PreferencesViewModelTest {
           userPreferencesStateFlow.value.copy(hikingLevel = hikingLevel)
     }
 
+    override suspend fun updateBio(bio: String) {
+      TODO("Not yet implemented")
+    }
+
+    override suspend fun updateLanguage(language: String) {
+      userPreferencesStateFlow.value = userPreferencesStateFlow.value.copy(language = language)
+    }
+
+    override suspend fun updatePrefSport(prefSport: String) {
+      userPreferencesStateFlow.value = userPreferencesStateFlow.value.copy(prefSport = prefSport)
+    }
+
     override suspend fun clearPreferences() {
-      userPreferencesStateFlow.value = UserPreferences(false, "", "", "", "", HikingLevel.BEGINNER)
+      userPreferencesStateFlow.value =
+          UserPreferences(false, "", "", "", "", "", HikingLevel.BEGINNER, "English", "Hiking")
     }
   }
 }
