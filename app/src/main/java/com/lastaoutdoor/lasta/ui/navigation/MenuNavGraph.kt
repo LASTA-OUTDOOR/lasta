@@ -17,7 +17,7 @@ import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.model.user.HikingLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.ui.screen.activities.MoreInfoScreen
-import com.lastaoutdoor.lasta.ui.screen.discovery.DiscoveryScreen
+import com.lastaoutdoor.lasta.ui.screen.discover.DiscoveryScreen
 import com.lastaoutdoor.lasta.ui.screen.discovery.FilterScreen
 import com.lastaoutdoor.lasta.ui.screen.favorites.FavoritesScreen
 import com.lastaoutdoor.lasta.ui.screen.profile.ProfileScreen
