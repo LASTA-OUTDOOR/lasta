@@ -58,24 +58,31 @@ fun FriendsList(navController: NavController, viewModel: SocialViewModel = hiltV
     else -> {
       // add friend dialog when you click on the add friend button
       if (viewModel.displayAddFriendDialog) AddFriendDialog()
-      LazyColumn { items(viewModel.friends.size) { FriendsCard(viewModel.friends[it]) {
-          navController.navigate(
-              LeafScreen.FriendProfile.route + "/${viewModel.friends[it].userId}"
-          )
+      LazyColumn {
+        items(viewModel.friends.size) {
+          FriendsCard(viewModel.friends[it]) {
+            navController.navigate(
+                LeafScreen.FriendProfile.route + "/${viewModel.friends[it].userId}")
+          }
+        }
       }
-      } }
     }
   }
 }
 
 @Composable
-private fun FriendsCard(friend: UserModel, navToFriend: () -> Unit){
+private fun FriendsCard(friend: UserModel, navToFriend: () -> Unit) {
   Card(
       colors =
           CardDefaults.cardColors(
               containerColor = MaterialTheme.colorScheme.surfaceVariant,
           ),
-      modifier = Modifier.height(height = 100.dp).fillMaxWidth().padding(8.dp).testTag("Friend").clickable { navToFriend() }) {
+      modifier =
+          Modifier.height(height = 100.dp)
+              .fillMaxWidth()
+              .padding(8.dp)
+              .testTag("Friend")
+              .clickable { navToFriend() }) {
         Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
 
           // Profile picture

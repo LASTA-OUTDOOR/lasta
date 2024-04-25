@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
@@ -26,6 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.lastaoutdoor.lasta.R
 
 @Composable
 fun SendMessageDialog(hideDialog: () -> Unit, send: (String) -> Unit) {
@@ -37,7 +39,7 @@ fun SendMessageDialog(hideDialog: () -> Unit, send: (String) -> Unit) {
             shape = RoundedCornerShape(16.dp),
         ) {
           Text(
-              text = "Type your message",
+              text = LocalContext.current.getString(R.string.type_message),
               style = MaterialTheme.typography.titleLarge,
               textAlign = TextAlign.Center,
               modifier = Modifier.fillMaxWidth().padding(16.dp))
@@ -62,7 +64,7 @@ private fun SendMessageForm(send: (String) -> Unit, hideDialog: () -> Unit) {
   TextField(
       value = text,
       onValueChange = { text = it },
-      label = { Text("Your message") },
+      label = { Text(LocalContext.current.getString(R.string.your_message)) },
       modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("MessageTextField"),
       keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
       keyboardActions =
@@ -81,6 +83,6 @@ private fun SendMessageForm(send: (String) -> Unit, hideDialog: () -> Unit) {
         hideDialog()
       },
       modifier = Modifier.testTag("SendButton")) {
-        Text("Send")
+        Text(LocalContext.current.getString(R.string.send_message))
       }
 }

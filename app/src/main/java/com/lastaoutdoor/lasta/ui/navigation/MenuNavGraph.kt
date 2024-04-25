@@ -13,7 +13,6 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.firebase.ui.auth.data.model.User
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.model.user.HikingLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
@@ -38,7 +37,7 @@ fun MenuNavGraph(
     moreInfoScreenViewModel: MoreInfoScreenViewModel = hiltViewModel()
 ) {
 
-  //allows traducted roots
+  // allows traducted roots
   val disc = LocalContext.current.getString(R.string.tab_discover)
   val prof = LocalContext.current.getString(R.string.tab_profile)
   val soc = LocalContext.current.getString(R.string.socials)
@@ -55,10 +54,10 @@ fun MenuNavGraph(
         composable(fav) { FavoritesScreen(navController) }
         composable(soc) { SocialScreen(navController) }
         composable(prof) { ProfileScreen(rootNavController = rootNavController) }
-          composable(LeafScreen.MoreInfo.route) {
-              MoreInfoScreen(
-                  navController = navController, moreInfoScreenViewModel = moreInfoScreenViewModel)
-          }
+        composable(LeafScreen.MoreInfo.route) {
+          MoreInfoScreen(
+              navController = navController, moreInfoScreenViewModel = moreInfoScreenViewModel)
+        }
         composable(
             LeafScreen.Conversation.route + "/{userId}",
             arguments = listOf(navArgument("userId") { type = NavType.StringType })) {
@@ -78,34 +77,41 @@ fun MenuNavGraph(
                   showSendDialog = { conversationViewModel.showSendMessageDialog() })
 
               // Send Message Dialog
-              if(conversationViewModel.showSendMessageDialog){
-                  SendMessageDialog(
-                      hideDialog = { conversationViewModel.hideSendMessageDialog() }, send = conversationViewModel::send)
+              if (conversationViewModel.showSendMessageDialog) {
+                SendMessageDialog(
+                    hideDialog = { conversationViewModel.hideSendMessageDialog() },
+                    send = conversationViewModel::send)
               }
             }
-        //The friend profile screen
+        // The friend profile screen
         composable(
-            LeafScreen.FriendProfile.route + "/{friendId}", arguments = listOf(navArgument("friendId") { type = NavType.StringType })
-        ) {
+            LeafScreen.FriendProfile.route + "/{friendId}",
+            arguments = listOf(navArgument("friendId") { type = NavType.StringType })) {
 
-            //get the friend userModel
-            val socialVM : SocialViewModel = hiltViewModel()
-            socialVM.refreshFriends()
+              // get the friend userModel
+              val socialVM: SocialViewModel = hiltViewModel()
+              socialVM.refreshFriends()
 
-            val defaultUserModel : UserModel = UserModel(it.arguments?.getString("friendId") ?: "", null, null, null, HikingLevel.BEGINNER)
+              val defaultUserModel: UserModel =
+                  UserModel(
+                      it.arguments?.getString("friendId") ?: "",
+                      null,
+                      null,
+                      null,
+                      HikingLevel.BEGINNER)
 
-            // Create a state for the UserModel with a default value
-            val friendUserModel = remember { mutableStateOf(defaultUserModel) }
+              // Create a state for the UserModel with a default value
+              val friendUserModel = remember { mutableStateOf(defaultUserModel) }
 
-            // Update the state when the list is updated
-            LaunchedEffect(socialVM.friends) {
+              // Update the state when the list is updated
+              LaunchedEffect(socialVM.friends) {
                 val friendId = it.arguments?.getString("friendId") ?: ""
-                friendUserModel.value = socialVM.friends.firstOrNull { it.userId == friendId } ?: defaultUserModel
+                friendUserModel.value =
+                    socialVM.friends.firstOrNull { it.userId == friendId } ?: defaultUserModel
+              }
+
+              FriendProfileScreen(friend = friendUserModel.value, navController::popBackStack)
             }
-
-            FriendProfileScreen(friend = friendUserModel.value, navController::popBackStack)
-        }
-
 
         composable(LeafScreen.Notifications.route) {
           NotificationsScreen(navController = navController)

@@ -59,7 +59,7 @@ constructor(
   var friends = repository.getFriends(userId)
 
   // returns all the existing conversations
-  var messages by mutableStateOf( repository.getAllConversations(userId, friends))
+  var messages by mutableStateOf(repository.getAllConversations(userId, friends))
 
   // returns all the activities done by friends in the last 7 days
   val latestFriendActivities = repository.getLatestFriendActivities(userId, numberOfDays)

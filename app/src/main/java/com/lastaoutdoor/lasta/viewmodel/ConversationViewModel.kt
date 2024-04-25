@@ -56,11 +56,11 @@ constructor(
   }
 
   // send a message
-    fun send(message: String) {
-        println("VM : sending the message")
-        if (message.isEmpty()) return
-        println("VM : notNUll")
-        repository.sendMessage(userId, friendUserId, message)
-        updateConversation()
-    }
+  fun send(message: String) {
+    println("VM : sending the message")
+    if (message.isEmpty()) return
+    println("VM : notNUll")
+    repository.sendMessage(userId, friendUserId, message)
+    updateConversation()
+  }
 }

@@ -57,18 +57,18 @@ fun FriendsMissing() {
 }
 
 @Composable
-fun ActivitiesMissing(){
-    Column(
-        modifier = Modifier.fillMaxSize().testTag("FriendMissing"),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally) {
+fun ActivitiesMissing() {
+  Column(
+      modifier = Modifier.fillMaxSize().testTag("FriendMissing"),
+      verticalArrangement = Arrangement.Center,
+      horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = LocalContext.current.getString(R.string.no_friend_activities),
             style =
-            TextStyle(
-                fontWeight = FontWeight.Normal, fontSize = 20.sp, textAlign = TextAlign.Center),
+                TextStyle(
+                    fontWeight = FontWeight.Normal, fontSize = 20.sp, textAlign = TextAlign.Center),
             modifier = Modifier.padding(15.dp))
-    }
+      }
 }
 
 @Composable

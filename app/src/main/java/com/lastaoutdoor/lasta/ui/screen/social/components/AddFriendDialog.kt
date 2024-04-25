@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
 // Dialog to select a friend to send a message to
@@ -44,7 +46,7 @@ fun AddFriendDialog(viewModel: SocialViewModel = hiltViewModel()) {
             shape = RoundedCornerShape(16.dp),
         ) {
           Text(
-              text = "Add a friend",
+              text = LocalContext.current.getString(R.string.add_fr),
               style = MaterialTheme.typography.titleLarge,
               textAlign = TextAlign.Center,
               modifier = Modifier.fillMaxWidth().padding(16.dp))
@@ -53,7 +55,7 @@ fun AddFriendDialog(viewModel: SocialViewModel = hiltViewModel()) {
               horizontalAlignment = Alignment.CenterHorizontally,
               verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
-                    "Enter a friend's email address to send a friend request",
+                    LocalContext.current.getString(R.string.fr_email_add),
                     modifier = Modifier.testTag("SubHeader"),
                     textAlign = TextAlign.Center)
                 AddFriendForm()
@@ -73,7 +75,7 @@ private fun AddFriendForm(viewModel: SocialViewModel = hiltViewModel()) {
   TextField(
       value = text,
       onValueChange = { text = it },
-      label = { Text("Email address") },
+      label = { Text(LocalContext.current.getString(R.string.email)) },
       modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("EmailTextField"),
       keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
       keyboardActions =
@@ -93,6 +95,6 @@ private fun AddFriendForm(viewModel: SocialViewModel = hiltViewModel()) {
         viewModel.requestFriend(text)
       },
       modifier = Modifier.testTag("SubmitButton")) {
-        Text("Send")
+        Text(LocalContext.current.getString(R.string.send_fr))
       }
 }

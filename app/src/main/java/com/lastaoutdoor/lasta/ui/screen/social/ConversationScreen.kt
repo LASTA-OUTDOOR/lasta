@@ -20,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.lastaoutdoor.lasta.R
@@ -43,14 +42,11 @@ fun ConversationScreen(
   Column {
     if (conversationModel == null || conversationModel.users.isEmpty()) {
       refresh.invoke()
-      Text("Loading conversation...", modifier = Modifier.testTag("Loading"))
       return
     }
 
     val friend: UserModel? = conversationModel.users.firstOrNull { it.userId == friendId }
     if (friend == null) {
-      Text("Please don't talk to yourself", modifier = Modifier.testTag("NoFriendFound"))
-      Text(conversationModel.users.toString())
       return
     }
 

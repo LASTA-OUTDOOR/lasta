@@ -14,7 +14,6 @@ import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.data.model.user.UserPreferences
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
-import java.sql.Time
 
 private const val USERS_COLLECTION = "users"
 private const val ACTIVITIES_COLLECTION = "activities_database"
@@ -472,15 +471,15 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
     return conversations
   }
 
-    /**
-     * Function to send a message from a user to a friend
-     *
-     * @param userId The unique identifier of the user
-     * @param friendUserId The unique identifier of the friend
-     * @param message The message to send
-     */
+  /**
+   * Function to send a message from a user to a friend
+   *
+   * @param userId The unique identifier of the user
+   * @param friendUserId The unique identifier of the friend
+   * @param message The message to send
+   */
   fun sendMessage(userId: String, friendUserId: String, message: String) {
-    //parameters check
+    // parameters check
     if (message.isEmpty() || userId.isEmpty() || friendUserId.isEmpty()) return
 
     println("Sending")
@@ -490,17 +489,16 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
 
     val conversationDocumentRef = database.collection(CONVERSATION_COLLECTION).document(id)
 
-    //check if the conversation exists
+    // check if the conversation exists
     val document = runBlocking { conversationDocumentRef.get().await() }
     if (!document.exists()) return
 
     println("Conversation exists")
 
     // Create a map containing the message
-    val messageData : (Timestamp) -> HashMap<String, Any> = {
+    val messageData: (Timestamp) -> HashMap<String, Any> = {
       hashMapOf("from" to userId, "content" to message, "timestamp" to it)
     }
-
 
     // Add the message to the conversation
     conversationDocumentRef.update("messages", FieldValue.arrayUnion(messageData(Timestamp.now())))
@@ -509,7 +507,6 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
     conversationDocumentRef.update("lastMessage", messageData(Timestamp.now()))
 
     println("Message sent")
-
   }
 
   /**

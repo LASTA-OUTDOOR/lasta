@@ -49,7 +49,7 @@ fun FriendPicker(navController: NavController, viewModel: SocialViewModel = hilt
             shape = RoundedCornerShape(16.dp),
         ) {
           Text(
-              text = "Select a friend",
+              text = LocalContext.current.getString(R.string.select_friend),
               style = MaterialTheme.typography.titleLarge,
               textAlign = TextAlign.Center,
               modifier = Modifier.fillMaxWidth().padding(16.dp))

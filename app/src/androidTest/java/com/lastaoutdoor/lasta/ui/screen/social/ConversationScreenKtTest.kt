@@ -49,7 +49,9 @@ class ConversationScreenKtTest {
           navController,
           conversationModel = convViewModel.conversation,
           refresh = { convViewModel.updateConversation() },
-        "", "", { convViewModel.showSendMessageDialog() })
+          "",
+          "",
+          { convViewModel.showSendMessageDialog() })
     }
 
     // Header (title)

@@ -18,7 +18,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -11,11 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -65,33 +62,48 @@ fun MessageList(navController: NavController, viewModel: SocialViewModel = hiltV
       viewModel.refreshMessages()
 
       // list of messages
-      LazyColumn { items(viewModel.messages.size) { MessageCard(viewModel.messages[it], navController) }  } }
+      LazyColumn {
+        items(viewModel.messages.size) { MessageCard(viewModel.messages[it], navController) }
+      }
     }
+  }
 }
 
-
 @Composable
-fun MessageCard(message: ConversationModel, navController: NavController, viewModel: SocialViewModel = hiltViewModel()) {
+fun MessageCard(
+    message: ConversationModel,
+    navController: NavController,
+    viewModel: SocialViewModel = hiltViewModel()
+) {
 
-  val friend : UserModel? = message.users.firstOrNull { it.userId != viewModel.userId }
-    if (friend == null) {
-        return
-    }
+  val friend: UserModel? = message.users.firstOrNull { it.userId != viewModel.userId }
+  if (friend == null) {
+    return
+  }
 
   Card(
       colors =
           CardDefaults.cardColors(
               containerColor = MaterialTheme.colorScheme.surfaceVariant,
           ),
-      modifier = Modifier.height(height = 100.dp).fillMaxWidth().padding(8.dp).testTag("Message").clickable { navController.navigate(LeafScreen.Conversation.route + "/${friend.userId}") }) {
+      modifier =
+          Modifier.height(height = 100.dp)
+              .fillMaxWidth()
+              .padding(8.dp)
+              .testTag("Message")
+              .clickable {
+                navController.navigate(LeafScreen.Conversation.route + "/${friend.userId}")
+              }) {
         Column(modifier = Modifier.padding(8.dp)) {
-          Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            ProfilePicture(friend.profilePictureUrl ?: "")
-            Text(
-                text = friend.userName ?: "Name error",
-                modifier = Modifier.align(Alignment.CenterVertically),
-                fontWeight = FontWeight.Bold)
-          }
+          Row(
+              modifier = Modifier.fillMaxWidth(),
+              horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                ProfilePicture(friend.profilePictureUrl ?: "")
+                Text(
+                    text = friend.userName ?: "Name error",
+                    modifier = Modifier.align(Alignment.CenterVertically),
+                    fontWeight = FontWeight.Bold)
+              }
 
           Text(text = message.lastMessage?.content ?: "", overflow = TextOverflow.Ellipsis)
         }
@@ -99,17 +111,17 @@ fun MessageCard(message: ConversationModel, navController: NavController, viewMo
 }
 
 @Composable
-private fun ProfilePicture(url : String){
-    AsyncImage(
-        model =
-        ImageRequest.Builder(LocalContext.current)
-            .data(url)
-            .crossfade(true)
-            .memoryCachePolicy(CachePolicy.ENABLED)
-            .build(),
-        placeholder = painterResource(R.drawable.default_profile_icon),
-        contentDescription = "Profile Picture",
-        contentScale = ContentScale.Crop,
-        error = painterResource(R.drawable.default_profile_icon),
-        modifier = Modifier.clip(RoundedCornerShape(100.dp)).size(30.dp).fillMaxHeight())
+private fun ProfilePicture(url: String) {
+  AsyncImage(
+      model =
+          ImageRequest.Builder(LocalContext.current)
+              .data(url)
+              .crossfade(true)
+              .memoryCachePolicy(CachePolicy.ENABLED)
+              .build(),
+      placeholder = painterResource(R.drawable.default_profile_icon),
+      contentDescription = "Profile Picture",
+      contentScale = ContentScale.Crop,
+      error = painterResource(R.drawable.default_profile_icon),
+      modifier = Modifier.clip(RoundedCornerShape(100.dp)).size(30.dp).fillMaxHeight())
 }

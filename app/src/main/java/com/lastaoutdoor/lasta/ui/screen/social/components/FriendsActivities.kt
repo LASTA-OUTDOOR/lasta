@@ -78,7 +78,7 @@ fun FriendsActivityCard(activity: ActivitiesDatabaseType) {
           }
           Text(
               text =
-                  "Morning run from Lausanne to Yverdon, nothing fancy but I'm really good and fast",
+                  "[To be changed] Morning run from Lausanne to Yverdon, nothing fancy but I'm really good and fast",
               modifier = Modifier.padding(8.dp),
               overflow = TextOverflow.Ellipsis)
           HorizontalDivider(thickness = 1.dp, color = Color.Gray)
