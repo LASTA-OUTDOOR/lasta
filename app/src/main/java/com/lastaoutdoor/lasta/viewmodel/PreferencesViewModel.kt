@@ -66,6 +66,10 @@ class PreferencesViewModel @Inject constructor(private val preferences: Preferen
   }
 
   /** Clears all preferences */
+  fun updateBio(bio: String) {
+    viewModelScope.launch { preferences.updateBio(bio) }
+  }
+
   fun clearPreferences() {
     viewModelScope.launch { preferences.clearPreferences() }
   }

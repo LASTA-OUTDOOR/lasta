@@ -19,6 +19,13 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.lastaoutdoor.lasta.R
 
+/**
+ * A search bar component that allows users to search for items.
+ *
+ * @param modifier Modifier to apply to the search bar.
+ * @param onSearch Callback to be invoked when the user searches for an item.
+ * @sample SearchBarComponent(modifier = Modifier, onSearch = { searchText -> println(searchText) })
+ */
 @Composable
 fun SearchBarComponent(modifier: Modifier, onSearch: (String) -> Unit) {
   var searchText by remember { mutableStateOf(TextFieldValue("")) }

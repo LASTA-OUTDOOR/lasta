@@ -53,14 +53,15 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
       val email = document.getString("email") ?: ""
       val displayName = document.getString("displayName") ?: ""
       val profilePictureUrl = document.getString("profilePictureUrl") ?: ""
+      val bio = document.getString("bio") ?: ""
       val hikingLevel = document.getString("hikingLevel")?.uppercase() ?: ""
       return try {
-        UserModel(uid, displayName, email, profilePictureUrl, HikingLevel.valueOf(hikingLevel))
+        UserModel(uid, displayName, email, profilePictureUrl, bio, HikingLevel.valueOf(hikingLevel))
       } catch (e: Exception) {
-        UserModel(uid, displayName, email, profilePictureUrl, HikingLevel.BEGINNER)
+        UserModel(uid, displayName, email, profilePictureUrl, bio, HikingLevel.BEGINNER)
       }
     }
-    return UserModel("", "", "", "", HikingLevel.BEGINNER)
+    return UserModel("", "", "", "", "", HikingLevel.BEGINNER)
   }
 
   suspend fun getUserFromEmail(mail: String): UserModel? {
@@ -71,10 +72,11 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
       val email = document.getString("email") ?: ""
       val displayName = document.getString("displayName") ?: ""
       val profilePictureUrl = document.getString("profilePictureUrl") ?: ""
+      val bio = document.getString("bio") ?: ""
       var hikingLevel = document.getString("hikingLevel") ?: ""
       if (hikingLevel == "null" || hikingLevel == "") hikingLevel = "BEGINNER"
       return UserModel(
-          document.id, displayName, email, profilePictureUrl, HikingLevel.valueOf(hikingLevel))
+          document.id, displayName, email, profilePictureUrl, bio, HikingLevel.valueOf(hikingLevel))
     } else {
       return null
     }
@@ -533,6 +535,7 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
               userName = prefSettings["userName"] as String,
               email = prefSettings["email"] as String,
               profilePictureUrl = prefSettings["profilePictureUrl"] as String,
+              bio = prefSettings["bio"] as String,
               hikingLevel = prefSettings["hikingLevel"] as HikingLevel,
               language = prefSettings["language"] as String,
               prefSport = prefSettings["prefSport"] as String)
@@ -540,7 +543,7 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
       }
 
       // Return default preferences if not found
-      return UserPreferences(false, "", "", "", "", HikingLevel.BEGINNER, "English", "Hiking")
+      return UserPreferences(false, "", "", "", "", "", HikingLevel.BEGINNER, "English", "Hiking")
     }
   }
 }

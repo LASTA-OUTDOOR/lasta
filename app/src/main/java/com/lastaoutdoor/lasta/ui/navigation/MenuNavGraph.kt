@@ -104,6 +104,7 @@ fun MenuNavGraph(
                       null,
                       null,
                       null,
+                      null,
                       HikingLevel.BEGINNER)
 
               // Create a state for the UserModel with a default value
