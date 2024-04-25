@@ -79,11 +79,13 @@ class FakeSocialRepository : SocialRepository {
   }
 
   override fun getFriendRequests(userId: String): List<UserModel> {
-    return receivedRequest.map { UserModel(it, "name", "email", "photo", HikingLevel.BEGINNER) }
+    return receivedRequest.map {
+      UserModel(it, "name", "email", "photo", "bio", HikingLevel.BEGINNER)
+    }
   }
 
   override fun acceptFriendRequest(source: String, requester: String) {
-    friends.add(UserModel(requester, "name", "email", "photo", HikingLevel.BEGINNER))
+    friends.add(UserModel(requester, "name", "email", "photo", "bio", HikingLevel.BEGINNER))
     receivedRequest.remove(requester)
   }
 
@@ -149,6 +151,8 @@ class FakePreferencesRepository(override val userPreferencesFlow: Flow<UserPrefe
   override suspend fun updateHikingLevel(hikingLevel: HikingLevel) {}
 
   override suspend fun clearPreferences() {}
+
+  override suspend fun updateBio(bio: String) {}
 }
 
 class SocialViewModelTest {
@@ -158,7 +162,8 @@ class SocialViewModelTest {
 
   // Mock the user preferences flow
   private val userPreferencesFlow =
-      MutableStateFlow(UserPreferences(true, "email", "name", "photo", "", HikingLevel.BEGINNER))
+      MutableStateFlow(
+          UserPreferences(true, "email", "name", "photo", "", "bio", HikingLevel.BEGINNER))
 
   @Before
   fun setUp() {

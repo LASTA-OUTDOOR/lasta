@@ -21,6 +21,16 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
+/**
+ * A composable function that displays a dropdown menu component.
+ *
+ * @param T The type of the items.
+ * @param items The list of items to display in the dropdown.
+ * @param selectedItem The currently selected item.
+ * @param onItemSelected A lambda function that handles the selection of an item.
+ * @param toStr A lambda function that returns the string representation of an item.
+ * @param fieldText The text to display in the field.
+ */
 @Composable
 fun <T> DropDownMenuComponent(
     items: List<T>, // Items to display in the dropdown

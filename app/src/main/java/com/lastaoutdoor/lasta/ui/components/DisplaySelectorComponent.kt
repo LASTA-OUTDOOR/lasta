@@ -18,6 +18,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 
+/**
+ * A composable function that displays a selection of items. The selected item is highlighted.
+ *
+ * @param T The type of the items.
+ * @param items The list of items to display.
+ * @param selectedItem The currently selected item.
+ * @param onSelected A lambda function that handles the selection of an item.
+ * @param itemDisplayName A lambda function that returns the display name of an item.
+ */
 @Composable
 fun <T> DisplaySelection(
     items: List<T>, // Pass a list of items

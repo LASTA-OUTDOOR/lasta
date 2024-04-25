@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+/** A simple composable that draws a horizontal divider with a padding. */
 @Composable
 fun SeparatorComponent() {
   HorizontalDivider(

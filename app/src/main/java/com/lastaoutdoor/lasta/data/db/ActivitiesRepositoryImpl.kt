@@ -15,12 +15,24 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
+/**
+ * Implementation of the ActivitiesRepository interface. This class provides methods to interact
+ * with the Firebase Firestore database.
+ *
+ * @property database The Firebase Firestore database instance.
+ * @property context The application context.
+ */
 class ActivitiesRepositoryImpl
 @Inject
 constructor(private val database: FirebaseFirestore, private val context: Context) :
     ActivitiesRepository {
   private val activityConverter = ActivityConverter()
 
+  /**
+   * Adds a new user to the activities database.
+   *
+   * @param user The FirebaseUser to add to the database.
+   */
   private fun addUserToActivitiesDatabase(user: FirebaseUser) {
     try {
       val userDocumentRef =
@@ -38,6 +50,13 @@ constructor(private val database: FirebaseFirestore, private val context: Contex
     }
   }
 
+  /**
+   * Fetches the activities of a user from the database.
+   *
+   * @param user The UserModel whose activities are to be fetched.
+   * @param activityType The type of activities to fetch.
+   * @return A list of activities of the specified type.
+   */
   @Suppress("UNCHECKED_CAST")
   override suspend fun getUserActivities(
       user: UserModel,
@@ -73,6 +92,12 @@ constructor(private val database: FirebaseFirestore, private val context: Contex
     }
   }
 
+  /**
+   * Adds an activity to a user's activities in the database.
+   *
+   * @param user The FirebaseUser to whom the activity is to be added.
+   * @param activity The activity to add to the user's activities.
+   */
   override fun addActivityToUserActivities(user: FirebaseUser, activity: ActivitiesDatabaseType) {
     try {
       val userDocumentRef =

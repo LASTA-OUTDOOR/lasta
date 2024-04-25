@@ -83,13 +83,20 @@ import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 import com.lastaoutdoor.lasta.viewmodel.ProfileScreenViewModel
 import java.util.Calendar
 
+/**
+ * Composable function for the ProfileScreen. It displays the user's profile information and
+ * activities.
+ *
+ * @param profileScreenViewModel The ViewModel that holds the state for this screen.
+ * @param rootNavController The NavController used for navigation.
+ */
 @Composable
 fun ProfileScreen(
     profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(),
     rootNavController: NavHostController,
 ) {
   // profileScreenVIewModel.addTrailToUserActivities()
-  val activities by profileScreenViewModel.trails.collectAsState()
+  val activities by profileScreenViewModel.filteredActivities.collectAsState()
   val timeFrame by profileScreenViewModel.timeFrame.collectAsState()
   val sport by profileScreenViewModel.sport.collectAsState()
   val isCurrentUser by profileScreenViewModel.isCurrentUser.collectAsState()
@@ -134,6 +141,16 @@ fun ProfileScreen(
   }
 }
 
+/**
+ * Composable function for displaying user information. It displays the user's profile picture,
+ * name, and bio.
+ *
+ * @param rootNavController The NavController used for navigation.
+ * @param authViewModel The ViewModel that holds the authentication state.
+ * @param preferencesViewModel The ViewModel that holds the user preferences.
+ * @param profileScreenViewModel The ViewModel that holds the state for the ProfileScreen.
+ * @param isCurrentUser A boolean indicating if the displayed user is the current user.
+ */
 @Composable
 fun UserInfo(
     rootNavController: NavHostController,
@@ -179,6 +196,12 @@ fun UserInfo(
           Column {
             Text(LocalContext.current.getString(R.string.hiking_lvl))
             HikingRow(selectedHikingLevel = hikingLevel)
+
+            /* Button added to test the changing of user, can be deleted!!! */
+            Button(
+                onClick = { profileScreenViewModel.updateUser("7buKEm8BTWWVYouR1YvAzhvXAdS2") }) {
+                  Text("Change User")
+                }
           }
         },
         confirmButton = {
