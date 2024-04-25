@@ -119,6 +119,7 @@ fun FilterScreen(navController: NavController) {
         HorizontalDivider(thickness = 2.dp, color = PrimaryBlue)
         Spacer(modifier = Modifier.height(12.dp))
 
+        // Filter by distance range
         Text(
             text = stringResource(id = R.string.filter_distance_range),
             style = TextStyle(fontSize = 20.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
@@ -126,6 +127,7 @@ fun FilterScreen(navController: NavController) {
         Row(verticalAlignment = Alignment.CenterVertically) {
           Text(text = stringResource(id = R.string.from))
           Spacer(modifier = Modifier.width(12.dp))
+          // input field for the user to input the distance range lo
           TextField(
               value = fromDistance.toString(),
               onValueChange = { fromDistance = it.toIntOrNull() ?: 0 },
@@ -133,6 +135,7 @@ fun FilterScreen(navController: NavController) {
           Spacer(modifier = Modifier.width(12.dp))
           Text(text = stringResource(id = R.string.to))
           Spacer(modifier = Modifier.width(12.dp))
+          // input field for the user to input the distance range hi
           TextField(
               value = toDistance.toString(),
               onValueChange = { toDistance = it.toIntOrNull() ?: 0 },
@@ -144,6 +147,7 @@ fun FilterScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
         HorizontalDivider(thickness = 2.dp, color = PrimaryBlue)
         Spacer(modifier = Modifier.height(12.dp))
+        // Apply the filter options
         ElevatedButton(
             onClick = {
               // todo: save the filter options to be applied to the discovery screen
