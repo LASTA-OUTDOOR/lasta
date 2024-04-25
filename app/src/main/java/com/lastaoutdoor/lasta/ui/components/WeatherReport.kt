@@ -18,7 +18,7 @@ import java.math.RoundingMode
 private const val KELVIN_CONST = 273.15
 
 @Composable
-fun WeatherReport(weatherViewModel : WeatherViewModel= hiltViewModel()) {
+fun WeatherReport(weatherViewModel: WeatherViewModel = hiltViewModel()) {
   val weather = weatherViewModel.weather.observeAsState()
   Surface {
     Column(modifier = Modifier.padding(16.dp)) {

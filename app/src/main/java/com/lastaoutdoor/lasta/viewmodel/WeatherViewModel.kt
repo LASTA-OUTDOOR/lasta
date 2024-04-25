@@ -7,11 +7,12 @@ import androidx.lifecycle.viewModelScope
 import com.lastaoutdoor.lasta.data.api.WeatherResponse
 import com.lastaoutdoor.lasta.repository.WeatherRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @HiltViewModel
-class WeatherViewModel @Inject constructor(private val weatherRepository: WeatherRepository) : ViewModel() {
+class WeatherViewModel @Inject constructor(private val weatherRepository: WeatherRepository) :
+    ViewModel() {
   private val _weather = MutableLiveData<WeatherResponse>()
   val weather: LiveData<WeatherResponse> = _weather
 

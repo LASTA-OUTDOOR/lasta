@@ -1,8 +1,5 @@
 package com.lastaoutdoor.lasta.data.api
 
-import com.lastaoutdoor.lasta.BuildConfig
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -13,4 +10,3 @@ interface WeatherApiService {
       @Query("appid") apiKey: String
   ): WeatherResponse
 }
-
