@@ -14,18 +14,3 @@ interface WeatherApiService {
   ): WeatherResponse
 }
 
-object WeatherApi {
-  private const val BASE_URL = "https://api.openweathermap.org/data/2.5/"
-
-  private val retrofit =
-      Retrofit.Builder()
-          .baseUrl(BASE_URL)
-          .addConverterFactory(GsonConverterFactory.create())
-          .build()
-
-  private val service = retrofit.create(WeatherApiService::class.java)
-
-  suspend fun getCurrentWeather(city: String): WeatherResponse {
-    return service.getCurrentWeather(city, BuildConfig.WEATHER_API_KEY)
-  }
-}

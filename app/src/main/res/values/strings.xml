@@ -3,6 +3,7 @@
     <!--data/DB strings-->
     <string name="web_client_id" translatable="false">720666228102-mtt8qsp3fuljeatb9128qss6c2qf91t2.apps.googleusercontent.com</string>
     <string name="osm_base_url" translatable="false">https://overpass-api.de/api/</string>
+    <string name="weather_api_url" translatable="false">https://api.openweathermap.org/data/2.5/</string>
     <string name="activities_database_name" translatable="false">activities_database</string>
 
     <!--Nav-->
