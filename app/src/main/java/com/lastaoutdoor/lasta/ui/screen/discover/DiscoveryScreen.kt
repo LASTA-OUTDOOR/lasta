@@ -74,9 +74,7 @@ fun DiscoveryScreen(
   if (screen == DiscoveryScreenType.LIST) {
     LazyColumn(
         modifier =
-        Modifier
-            .testTag("discoveryScreen")
-            .background(MaterialTheme.colorScheme.background)) {
+            Modifier.testTag("discoveryScreen").background(MaterialTheme.colorScheme.background)) {
           item { HeaderComposable(updatePopup = { isRangePopup = true }) }
 
           item {
@@ -85,10 +83,10 @@ fun DiscoveryScreen(
           }
         }
   } else if (screen == DiscoveryScreenType.MAP) {
-      Column {
-          HeaderComposable(updatePopup = { isRangePopup = true })
-          Box(modifier = Modifier.fillMaxHeight()) { MapScreen() }
-      }
+    Column {
+      HeaderComposable(updatePopup = { isRangePopup = true })
+      Box(modifier = Modifier.fillMaxHeight()) { MapScreen() }
+    }
   }
 
   // Add the modal upper sheet
@@ -112,9 +110,7 @@ fun HeaderComposable(
         Column {
           // Location bar
           Row(
-              modifier = Modifier
-                  .fillMaxWidth()
-                  .padding(horizontal = 16.dp, vertical = 8.dp),
+              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
               verticalAlignment = Alignment.CenterVertically) {
                 Column {
                   Row {
@@ -122,9 +118,7 @@ fun HeaderComposable(
 
                     IconButton(
                         onClick = updatePopup,
-                        modifier = Modifier
-                            .size(24.dp)
-                            .testTag("listSearchOptionsEnableButton")) {
+                        modifier = Modifier.size(24.dp).testTag("listSearchOptionsEnableButton")) {
                           Icon(
                               Icons.Outlined.KeyboardArrowDown,
                               contentDescription = "Filter",
@@ -141,9 +135,7 @@ fun HeaderComposable(
 
           // Search bar with toggle buttons
           Row(
-              modifier = Modifier
-                  .fillMaxWidth()
-                  .padding(horizontal = 16.dp, vertical = 8.dp),
+              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
               verticalAlignment = Alignment.CenterVertically) {
                 SearchBarComponent(Modifier.weight(1f), onSearch = { /*TODO*/})
                 Spacer(modifier = Modifier.width(8.dp))
@@ -155,9 +147,7 @@ fun HeaderComposable(
                 }
               }
           Row(
-              modifier = Modifier
-                  .fillMaxWidth()
-                  .padding(horizontal = 16.dp, vertical = 8.dp),
+              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
               verticalAlignment = Alignment.CenterVertically,
               horizontalArrangement = Arrangement.Center) {
                 val contex = LocalContext.current
@@ -171,9 +161,7 @@ fun HeaderComposable(
 
           if (screen == DiscoveryScreenType.LIST) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically) {
                   Text(
                       LocalContext.current.getString(R.string.filter_by),
@@ -207,31 +195,27 @@ fun ActivitiesDisplay(
   for (a in activities) {
     Card(
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(vertical = 8.dp, horizontal = 16.dp)
-            .clickable(
-                onClick = {
-                    moreInfoScreenViewModel.changeActivityToDisplay(a)
-                    navController.navigate(LeafScreen.MoreInfo.route)
-                }),
+            Modifier.fillMaxWidth()
+                .wrapContentHeight()
+                .padding(vertical = 8.dp, horizontal = 16.dp)
+                .clickable(
+                    onClick = {
+                      moreInfoScreenViewModel.changeActivityToDisplay(a)
+                      navController.navigate(LeafScreen.MoreInfo.route)
+                    }),
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
     ) {
       Column {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
               Box(
                   modifier =
-                  Modifier
-                      .shadow(4.dp, RoundedCornerShape(30))
-                      .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
-                      .padding(PaddingValues(8.dp))) {
+                      Modifier.shadow(4.dp, RoundedCornerShape(30))
+                          .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
+                          .padding(PaddingValues(8.dp))) {
                     Text(
                         text = LocalContext.current.getString(R.string.Climbing),
                         style = MaterialTheme.typography.labelMedium,
@@ -250,9 +234,7 @@ fun ActivitiesDisplay(
 
         Spacer(modifier = Modifier.height(16.dp))
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
             verticalAlignment = Alignment.CenterVertically) {
               Text(
                   text = a.locationName ?: "Unnamed Activity",
@@ -261,9 +243,7 @@ fun ActivitiesDisplay(
             }
         SeparatorComponent()
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
             verticalAlignment = Alignment.CenterVertically) {
               Icon(
                   imageVector = Icons.Default.Star,
