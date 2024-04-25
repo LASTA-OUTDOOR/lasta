@@ -25,6 +25,14 @@
     <string name = "list">List</string>
     <string name = "map">Map</string>
 
+    <!--Filter-->
+    <string name = "show_completed_activities">Show completed activities</string>
+    <string name = "filter_options">Filter Options</string>
+    <string name = "filter_activity_type">Filter by activity type :</string>
+    <string name = "filter_difficulty_level">Filter by difficulty level :</string>
+    <string name = "filter_distance_range">Filter by distance length :</string>
+    <string name = "from">from</string>
+    <string name = "to">to</string>
 
     <!--Favourites-->
     <string name = "more_info">More Info</string>

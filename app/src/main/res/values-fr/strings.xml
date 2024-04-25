@@ -65,4 +65,11 @@
     <string name="map">Carte</string>
     <string name="hiking">Randonnée</string>
     <string name="climbing">Escalade</string>
+    <string name="show_completed_activities">Afficher vos activités terminées</string>
+    <string name="filter_options">Filtres</string>
+    <string name="filter_activity_type">Filtrer par type d\'Activité :</string>
+    <string name="filter_difficulty_level">Filtrer par niveau de difficulté :</string>
+    <string name="from">de</string>
+    <string name="to">à</string>
+    <string name="filter_distance_range">Filtrer par distance d\'activité :</string>
 </resources>
