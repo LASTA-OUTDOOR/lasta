@@ -45,4 +45,6 @@ sealed class LeafScreen(val route: String) {
   object Conversation : LeafScreen("Conversation")
 
   object Notifications : LeafScreen("Notifications")
+
+object FriendProfile : LeafScreen("FriendProfile")
 }

@@ -41,7 +41,7 @@ fun FriendsActivityList(viewModel: SocialViewModel = hiltViewModel()) {
       ConnectionMissing()
     }
     viewModel.latestFriendActivities.isEmpty() -> {
-      FriendsMissing()
+      ActivitiesMissing()
     }
     else -> {
       LazyColumn {

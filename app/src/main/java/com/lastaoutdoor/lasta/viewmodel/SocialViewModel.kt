@@ -59,7 +59,7 @@ constructor(
   var friends = repository.getFriends(userId)
 
   // returns all the existing conversations
-  var messages = repository.getAllConversations(userId, friends)
+  var messages by mutableStateOf( repository.getAllConversations(userId, friends))
 
   // returns all the activities done by friends in the last 7 days
   val latestFriendActivities = repository.getLatestFriendActivities(userId, numberOfDays)
@@ -133,6 +133,11 @@ constructor(
   // Refresh the list of friends
   fun refreshFriends() {
     viewModelScope.launch { friends = repository.getFriends(userId) }
+  }
+
+  // Refresh the list of friends
+  fun refreshMessages() {
+    viewModelScope.launch { messages = repository.getAllConversations(userId, friends) }
   }
 
   // This displays the friend picker (in order to send a message)

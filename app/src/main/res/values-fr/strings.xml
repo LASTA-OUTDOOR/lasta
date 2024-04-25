@@ -65,4 +65,5 @@
     <string name="map">Carte</string>
     <string name="hiking">Randonnée</string>
     <string name="climbing">Escalade</string>
+    <string name="no_friend_activities">Pas d\'acitivité récente... \\r\\n Ajoutes des amis pour en voir plus !</string>
 </resources>
