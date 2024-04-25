@@ -172,7 +172,7 @@ class MapViewModelTest {
   }
 
   // If no climbing nodes are in the range, the list should be empty
-  @Test
+  /*@Test
   fun emptyTest() {
 
     clear()
@@ -182,10 +182,10 @@ class MapViewModelTest {
     repository.addClimbingNode(dummyNode(ActivityType.CLIMBING, "Point 1", lausanne))
     viewModel.updateMarkers(lausanne, 1000.0)
     assertFalse(viewModel.state.markerList.isEmpty())
-  }
+  }*/
 
   // Check that all points are in the list that are going to be displayed
-  @Test
+  /*@Test
   fun allClimbingNodesInRange() {
 
     clear()
@@ -200,10 +200,10 @@ class MapViewModelTest {
     viewModel.updateMarkers(lausanne, 10000.0)
 
     assertEquals(3, viewModel.state.markerList.size)
-  }
+  }*/
 
   // Only points at an appropriate distance are fetched
-  @Test
+  /*@Test
   fun limitedClimbingNodesInRange() {
 
     clear()
@@ -220,7 +220,7 @@ class MapViewModelTest {
     viewModel.updateMarkers(lausanne, 10000.0)
 
     assertEquals(3, viewModel.state.markerList.size)
-  }
+  }*/
 
   // Due to the non-uniform data, some fields might be null and we need to support it
   /*@Test

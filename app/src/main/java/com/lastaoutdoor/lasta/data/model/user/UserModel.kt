@@ -10,7 +10,6 @@ import com.google.firebase.auth.FirebaseUser
  * @property email the email of the user
  * @property profilePictureUrl the URL of the user's profile picture
  * @property bio the bio of the user
- * @property prefSettings the user's preferences
  *
  * TODO: Make all model files match with database so that updating and writing will be easier
  */

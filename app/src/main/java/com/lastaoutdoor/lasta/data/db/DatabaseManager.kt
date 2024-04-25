@@ -536,14 +536,14 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
               email = prefSettings["email"] as String,
               profilePictureUrl = prefSettings["profilePictureUrl"] as String,
               bio = prefSettings["bio"] as String,
-              userLevel = prefSettings["hikingLevel"] as HikingLevel,
+              userLevel = prefSettings["hikingLevel"] as UserLevel,
               language = prefSettings["language"] as String,
               prefSport = prefSettings["prefSport"] as String)
         }
       }
 
       // Return default preferences if not found
-      return UserPreferences(false, "", "", "", "", "", HikingLevel.BEGINNER, "English", "Hiking")
+      return UserPreferences(false, "", "", "", "", "", UserLevel.BEGINNER, "English", "Hiking")
     }
   }
 }

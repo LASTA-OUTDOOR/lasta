@@ -14,11 +14,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.data.model.user.UserLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
-import com.lastaoutdoor.lasta.ui.screen.moreinfo.MoreInfoScreen
 import com.lastaoutdoor.lasta.ui.screen.discover.DiscoveryScreen
 import com.lastaoutdoor.lasta.ui.screen.discovery.FilterScreen
 import com.lastaoutdoor.lasta.ui.screen.favorites.FavoritesScreen
+import com.lastaoutdoor.lasta.ui.screen.moreinfo.MoreInfoScreen
 import com.lastaoutdoor.lasta.ui.screen.profile.ProfileScreen
 import com.lastaoutdoor.lasta.ui.screen.settings.SettingsScreen
 import com.lastaoutdoor.lasta.ui.screen.social.ConversationScreen
@@ -29,7 +30,6 @@ import com.lastaoutdoor.lasta.ui.screen.social.components.SendMessageDialog
 import com.lastaoutdoor.lasta.viewmodel.ConversationViewModel
 import com.lastaoutdoor.lasta.viewmodel.MoreInfoScreenViewModel
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
-import com.lastaoutdoor.lasta.data.model.user.UserLevel
 
 @Composable
 fun MenuNavGraph(

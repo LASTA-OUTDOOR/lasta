@@ -18,7 +18,7 @@ import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.db.DatabaseManager
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
 import com.lastaoutdoor.lasta.ui.navigation.RootScreen
-import com.lastaoutdoor.lasta.ui.screen.activities.TopBarLogo
+import com.lastaoutdoor.lasta.ui.screen.moreinfo.TopBarLogo
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 

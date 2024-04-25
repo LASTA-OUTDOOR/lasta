@@ -12,8 +12,8 @@ import com.lastaoutdoor.lasta.data.model.user.UserLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.data.model.user.UserPreferences
 import com.lastaoutdoor.lasta.di.TimeProvider
-import com.lastaoutdoor.lasta.repository.UserActivitiesRepository
 import com.lastaoutdoor.lasta.repository.PreferencesRepository
+import com.lastaoutdoor.lasta.repository.UserActivitiesRepository
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -36,7 +36,7 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class ProfileScreenViewModelTest {
 
-  private lateinit var fakeActivitiesRepository: FakeUserActivitiesRepository
+  private lateinit var fakeActivitiesRepository: FakeActivitiesRepository
   private lateinit var profileScreenViewModel: ProfileScreenViewModel
   private lateinit var context: Context
   private lateinit var user: FirebaseUser
@@ -370,7 +370,7 @@ class ProfileScreenViewModelTest {
 
   class FakePreferencesRepository : PreferencesRepository {
     private val _preferences =
-        MutableStateFlow(UserPreferences(true, "1", "", "", "", "", HikingLevel.BEGINNER, "", ""))
+        MutableStateFlow(UserPreferences(true, "1", "", "", "", "", UserLevel.BEGINNER, "", ""))
 
     val preferences: Flow<UserPreferences> = _preferences
     override val userPreferencesFlow: Flow<UserPreferences> = _preferences
@@ -383,7 +383,7 @@ class ProfileScreenViewModelTest {
       TODO("Not yet implemented")
     }
 
-    override suspend fun updateHikingLevel(hikingLevel: HikingLevel) {
+    override suspend fun updateHikingLevel(hikingLevel: UserLevel) {
       TODO("Not yet implemented")
     }
 

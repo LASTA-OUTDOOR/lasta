@@ -10,7 +10,7 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class ApiDataClassesTest {
   private val con = ApplicationProvider.getApplicationContext<android.content.Context>()
-  private val rep = ActivityRepositoryImpl(AppModule.provideAPIService(con))
+  private val rep = ActivityRepositoryImpl(AppModule.provideOSMAPIService(con))
 
   @Test
   fun outdoorActivityResponse() {

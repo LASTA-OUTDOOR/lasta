@@ -73,8 +73,8 @@ class PreferencesRepositoryImpl(private val context: Context) : PreferencesRepos
                 email = preferences[EMAIL_KEY] ?: "",
                 profilePictureUrl = preferences[PROFILE_PICTURE_URL_KEY] ?: "",
                 bio = preferences[BIO_KEY] ?: "",
-                userlevel =
-                    UserLevel.valueOf(preferences[HIKING_LEVEL_KEY] ?: HikingLevel.BEGINNER.name),
+                userLevel =
+                    UserLevel.valueOf(preferences[HIKING_LEVEL_KEY] ?: UserLevel.BEGINNER.name),
                 language = preferences[LANGUAGE_KEY] ?: "",
                 prefSport = preferences[PREF_SPORT_KEY] ?: "")
           }

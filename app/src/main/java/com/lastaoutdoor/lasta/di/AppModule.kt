@@ -12,6 +12,8 @@ import com.google.firebase.ktx.Firebase
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.ActivityRepositoryImpl
 import com.lastaoutdoor.lasta.data.api.OSMApiService
+import com.lastaoutdoor.lasta.data.api.WeatherApiService
+import com.lastaoutdoor.lasta.data.api.WeatherRepositoryImpl
 import com.lastaoutdoor.lasta.data.auth.AuthRepositoryImpl
 import com.lastaoutdoor.lasta.data.connectivity.ConnectivityRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.UserActivitiesRepositoryImpl
@@ -22,8 +24,8 @@ import com.lastaoutdoor.lasta.repository.AuthRepository
 import com.lastaoutdoor.lasta.repository.ConnectivityRepository
 import com.lastaoutdoor.lasta.repository.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.SocialRepository
-import com.lastaoutdoor.lasta.repository.WeatherRepository
 import com.lastaoutdoor.lasta.repository.UserActivitiesRepository
+import com.lastaoutdoor.lasta.repository.WeatherRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -84,7 +86,6 @@ object AppModule {
           .build()
           .create(OSMApiService::class.java)
 
-  /** Provides the [ActivityRepository] class */
   @Singleton
   @Provides
   fun provideWeatherAPIService(@ApplicationContext context: Context): WeatherApiService =
@@ -94,7 +95,6 @@ object AppModule {
           .build()
           .create(WeatherApiService::class.java)
 
-  /** Provides the [OutdoorActivityRepository] class */
   @Singleton
   @Provides
   fun provideAuthRepository(
@@ -109,11 +109,10 @@ object AppModule {
   fun providePreferencesRepository(@ApplicationContext context: Context): PreferencesRepository =
       PreferencesRepositoryImpl(context)
 
-  /** Provides the [GoogleAuth] class */
   @Singleton
   @Provides
-  fun provideOutdoorActivitiesRepository(OSMApiService: OSMApiService): ActivityRepository =
-      ActivityRepositoryImpl(OSMApiService)
+  fun provideOutdoorActivitiesRepository(osmApiService: OSMApiService): ActivityRepository =
+      ActivityRepositoryImpl(osmApiService)
 
   @Singleton
   @Provides

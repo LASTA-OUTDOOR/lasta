@@ -68,7 +68,7 @@ import com.lastaoutdoor.lasta.data.model.profile.Year
 import com.lastaoutdoor.lasta.data.model.user.UserLevel
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
-import com.lastaoutdoor.lasta.ui.navigation.RootScreen
+import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
 import com.lastaoutdoor.lasta.ui.screen.profile.components.BarGraph
 import com.lastaoutdoor.lasta.ui.screen.profile.components.BarType
 import com.lastaoutdoor.lasta.utils.chartDisplayValues
@@ -162,7 +162,7 @@ fun UserInfo(
   val user = profileScreenViewModel.user.collectAsState()
   val userName = user.value.userName
   val profilePictureUrl = user.value.profilePictureUrl
-  val hikingLevel = user.value.hikingLevel
+  val hikingLevel = user.value.userLevel
   val bio = user.value.bio
   var isEditBio by rememberSaveable { mutableStateOf(false) }
 

@@ -10,8 +10,8 @@ import com.lastaoutdoor.lasta.data.model.user.UserLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.data.model.user.toUserModel
 import com.lastaoutdoor.lasta.di.TimeProvider
-import com.lastaoutdoor.lasta.repository.UserActivitiesRepository
 import com.lastaoutdoor.lasta.repository.PreferencesRepository
+import com.lastaoutdoor.lasta.repository.UserActivitiesRepository
 import com.lastaoutdoor.lasta.utils.calculateTimeRangeUntilNow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -37,7 +37,7 @@ constructor(
 ) : ViewModel() {
 
   /** The current user. */
-  private val _user = MutableStateFlow(UserModel("", "", "", "", "", HikingLevel.BEGINNER))
+  private val _user = MutableStateFlow(UserModel("", "", "", "", "", UserLevel.BEGINNER))
   val user = _user
 
   /** Flag to check if the current user is the logged in user. */

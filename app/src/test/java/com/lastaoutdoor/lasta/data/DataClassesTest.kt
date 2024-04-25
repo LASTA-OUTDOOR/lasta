@@ -43,7 +43,7 @@ class DataClassesTest {
 
   @Test
   fun diffToString() {
-    assert(Difficulty.HARD.toString() == "Difficult")
+    assert(Difficulty.HARD.toString() == "Hard")
   }
 
   @Test

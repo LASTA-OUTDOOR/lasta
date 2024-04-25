@@ -4,8 +4,6 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import com.lastaoutdoor.lasta.data.api.FakeActivityRepository
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.ui.MainActivity
-import com.lastaoutdoor.lasta.ui.screen.discover.components.RangeSearchComposable
-import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenType
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenViewModel
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule

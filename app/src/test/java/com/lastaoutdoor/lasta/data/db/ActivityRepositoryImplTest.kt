@@ -17,7 +17,6 @@ import java.lang.reflect.Method
 import java.util.concurrent.Executor
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.assertEquals
 import kotlinx.coroutines.tasks.await
 import org.junit.Before
 import org.junit.Test

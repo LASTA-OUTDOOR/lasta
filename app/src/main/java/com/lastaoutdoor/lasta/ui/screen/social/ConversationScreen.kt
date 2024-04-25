@@ -28,7 +28,7 @@ import com.lastaoutdoor.lasta.data.model.social.ConversationModel
 import com.lastaoutdoor.lasta.data.model.social.MessageModel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
-import com.lastaoutdoor.lasta.ui.screen.activities.TopBarLogo
+import com.lastaoutdoor.lasta.ui.screen.moreinfo.TopBarLogo
 
 @Composable
 fun ConversationScreen(
