@@ -3,7 +3,15 @@ package com.lastaoutdoor.lasta.data.db
 import com.google.firebase.Timestamp
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
 
+/** A converter class for converting between database and model representations of activities. */
 class ActivityConverter {
+
+  /**
+   * Converts a Trail activity to a HashMap representation for database storage.
+   *
+   * @param trail The Trail activity to convert.
+   * @return A HashMap representing the Trail activity.
+   */
   private fun trailToDatabase(trail: ActivitiesDatabaseType.Trail): HashMap<String, Any> {
     return hashMapOf(
         "activityId" to trail.activityId,
@@ -16,6 +24,12 @@ class ActivityConverter {
     )
   }
 
+  /**
+   * Converts a HashMap representation of a Trail activity from the database to a Trail model.
+   *
+   * @param data The HashMap representing the Trail activity.
+   * @return A Trail model.
+   */
   private fun databaseToTrail(data: HashMap<String, Any>): ActivitiesDatabaseType.Trail {
     return ActivitiesDatabaseType.Trail(
         activityId = data["activityId"] as Long,
@@ -27,6 +41,12 @@ class ActivityConverter {
         timeFinished = (data["timeFinished"] as Timestamp).toDate())
   }
 
+  /**
+   * Converts a Climb activity to a HashMap representation for database storage.
+   *
+   * @param climb The Climb activity to convert.
+   * @return A HashMap representing the Climb activity.
+   */
   private fun climbToDatabase(climb: ActivitiesDatabaseType.Climb): HashMap<String, Any> {
     return hashMapOf(
         "climbId" to climb.activityId, // Unique identifier for the climb activity
@@ -37,6 +57,12 @@ class ActivityConverter {
     )
   }
 
+  /**
+   * Converts a HashMap representation of a Climb activity from the database to a Climb model.
+   *
+   * @param data The HashMap representing the Climb activity.
+   * @return A Climb model.
+   */
   private fun databaseToClimb(data: HashMap<String, Any>): ActivitiesDatabaseType.Climb {
     return ActivitiesDatabaseType.Climb(
         activityId = data["climbId"] as Long,
@@ -46,6 +72,12 @@ class ActivityConverter {
         timeFinished = (data["timeFinished"] as Timestamp).toDate())
   }
 
+  /**
+   * Converts an Activity to a HashMap representation for database storage.
+   *
+   * @param activity The Activity to convert.
+   * @return A HashMap representing the Activity.
+   */
   fun activityToDatabase(activity: ActivitiesDatabaseType): HashMap<String, Any> {
     return when (activity.sport) {
       ActivitiesDatabaseType.Sports.HIKING ->
@@ -55,6 +87,13 @@ class ActivityConverter {
     }
   }
 
+  /**
+   * Converts a HashMap representation of an Activity from the database to an Activity model.
+   *
+   * @param data The HashMap representing the Activity.
+   * @param activityType The type of the Activity (Hiking or Climbing).
+   * @return An Activity model.
+   */
   fun databaseToActivity(
       data: HashMap<String, Any>,
       activityType: ActivitiesDatabaseType.Sports

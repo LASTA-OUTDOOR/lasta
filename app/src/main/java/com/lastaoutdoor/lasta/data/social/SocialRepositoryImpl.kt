@@ -2,6 +2,7 @@ package com.lastaoutdoor.lasta.data.social
 
 import com.lastaoutdoor.lasta.data.db.DatabaseManager
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
+import com.lastaoutdoor.lasta.data.model.social.ConversationModel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.repository.SocialRepository
 import javax.inject.Inject
@@ -20,8 +21,15 @@ class SocialRepositoryImpl @Inject constructor() : SocialRepository {
     return emptyList()
   }
 
-  override fun getMessages(userId: String): List<String> {
-    return emptyList()
+  override fun getAllConversations(
+      userId: String,
+      friends: List<UserModel>
+  ): List<ConversationModel> {
+    return manager.getAllConversation(userId, friends)
+  }
+
+  override fun getConversation(userId: String, friendId: String): ConversationModel {
+    return manager.getConversation(userId, friendId)
   }
 
   // send a friend request to the user with the given email
@@ -54,5 +62,9 @@ class SocialRepositoryImpl @Inject constructor() : SocialRepository {
   // decline a friend request
   override fun declineFriendRequest(source: String, requester: String) {
     manager.declineFriendRequest(source, requester)
+  }
+
+  override fun sendMessage(userId: String, friendUserId: String, message: String) {
+    manager.sendMessage(userId, friendUserId, message)
   }
 }

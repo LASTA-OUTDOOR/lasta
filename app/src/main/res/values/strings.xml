@@ -3,6 +3,7 @@
     <!--data/DB strings-->
     <string name="web_client_id" translatable="false">720666228102-mtt8qsp3fuljeatb9128qss6c2qf91t2.apps.googleusercontent.com</string>
     <string name="osm_base_url" translatable="false">https://overpass.osm.ch/api/</string>
+    <string name="weather_api_url" translatable="false">https://api.openweathermap.org/data/2.5/</string>
     <string name="activities_database_name" translatable="false">activities_database</string>
 
     <!--Nav-->
@@ -25,6 +26,14 @@
     <string name = "list">List</string>
     <string name = "map">Map</string>
 
+    <!--Filter-->
+    <string name = "show_completed_activities">Show completed activities</string>
+    <string name = "filter_options">Filter Options</string>
+    <string name = "filter_activity_type">Filter by activity type :</string>
+    <string name = "filter_difficulty_level">Filter by difficulty level :</string>
+    <string name = "filter_distance_range">Filter by distance length :</string>
+    <string name = "from">from</string>
+    <string name = "to">to</string>
 
     <!--Favourites-->
     <string name = "more_info">More Info</string>
@@ -78,6 +87,7 @@
     <string name = "friend_req">Friend requests</string>
     <string name = "req_internet">This content requires an internet connection.</string>
     <string name = "no_friends_yet">It appears you don\'t have any friends yet…Start by adding some!</string>
+    <string name = "no_friend_activities">There\'s not much going on right know... Add some friends to see more</string>
     <string name = "no_msg">You don\'t have any messages yet....</string>
     <string name = "start_conv">Start a conversation!</string>
     <string name = "friends">Friends</string>
@@ -88,30 +98,20 @@
     <string name = "add_fr">Add a friend</string>
     <string name = "fr_email_add">Enter a friend\'s email address to send a friend request</string>
     <string name = "community">Community</string>
+    <!--Weather Report-->
+    <string name = "weather_report">Weather Report</string>
+    <string name = "current_weather">Current Weather</string>
+    <string name = "city_w">City</string>
+    <string name = "temperature">Temperature</string>
+    <string name = "descr_w">Description</string>
+    <string name = "wind_speed">Wind speed</string>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <string name="add_friend_title">Add a friend</string>
+    <string name="select_friend">Select a friend</string>
+    <string name="type_message">Type your message</string>
+    <string name="your_message">Your message</string>
+    <string name="send_message">Send</string>
+    <!--Settings-->
+    <string name = "Account_settings">Settings</string>
+    <string name= "delete_account">Delete Account</string>
 </resources>

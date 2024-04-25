@@ -22,6 +22,7 @@ import com.lastaoutdoor.lasta.repository.AuthRepository
 import com.lastaoutdoor.lasta.repository.ConnectivityRepository
 import com.lastaoutdoor.lasta.repository.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.SocialRepository
+import com.lastaoutdoor.lasta.repository.WeatherRepository
 import com.lastaoutdoor.lasta.repository.UserActivitiesRepository
 import dagger.Module
 import dagger.Provides
@@ -76,7 +77,7 @@ object AppModule {
   /** Provides the [OSMApiService] class */
   @Singleton
   @Provides
-  fun provideAPIService(@ApplicationContext context: Context): OSMApiService =
+  fun provideOSMAPIService(@ApplicationContext context: Context): OSMApiService =
       Retrofit.Builder()
           .baseUrl(context.getString(R.string.osm_base_url))
           .addConverterFactory(GsonConverterFactory.create())
@@ -84,6 +85,16 @@ object AppModule {
           .create(OSMApiService::class.java)
 
   /** Provides the [ActivityRepository] class */
+  @Singleton
+  @Provides
+  fun provideWeatherAPIService(@ApplicationContext context: Context): WeatherApiService =
+      Retrofit.Builder()
+          .baseUrl(context.getString(R.string.weather_api_url))
+          .addConverterFactory(GsonConverterFactory.create())
+          .build()
+          .create(WeatherApiService::class.java)
+
+  /** Provides the [OutdoorActivityRepository] class */
   @Singleton
   @Provides
   fun provideAuthRepository(
@@ -125,4 +136,9 @@ object AppModule {
   fun provideSocialRepository(): SocialRepository {
     return SocialRepositoryImpl()
   }
+
+  @Singleton
+  @Provides
+  fun provideWeatherRepository(weatherApiService: WeatherApiService): WeatherRepository =
+      WeatherRepositoryImpl(weatherApiService)
 }

@@ -61,7 +61,9 @@ fun MenuNavigation(navController: NavHostController) {
   val navBackStackEntry by navController.currentBackStackEntryAsState()
   val currentDestination = navBackStackEntry?.destination
 
-  if (currentDestination?.route != LeafScreen.MoreInfo.route) {
+  if (currentDestination?.route != LeafScreen.MoreInfo.route &&
+      !(currentDestination?.route ?: "").contains(LeafScreen.Conversation.route) &&
+      currentDestination?.route != LeafScreen.Settings.route) {
     NavigationBar(modifier = Modifier.testTag("MenuNavigation")) {
       items.forEach { item ->
         val selected = currentDestination?.route == item.route

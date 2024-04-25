@@ -37,7 +37,7 @@ class PreferencesViewModelTest {
     // When
     preferencesViewModel.updateIsLoggedIn(isLoggedIn)
 
-    // val collectJob = launch { preferencesViewModel.isLoggedIn.value { assertTrue(it) } }
+    val collectJob = launch { preferencesViewModel.isLoggedIn.collect { assertTrue(it) } }
 
     // delay(1000) // Wait for 1 second
     // collectJob.cancel()
@@ -52,6 +52,7 @@ class PreferencesViewModelTest {
             "John Doe",
             "testemail@gmail.com",
             "https://www.example.com/profile.jpg",
+            "I'm a cool guy",
             UserLevel.BEGINNER)
 
     val expectedUserId = "123"
@@ -77,6 +78,7 @@ class PreferencesViewModelTest {
             "John Doe",
             "testemail@gmail.com",
             "https://www.example.com/profile.jpg",
+            "I'm a cool guy",
             UserLevel.INTERMEDIATE)
 
     val expectedUserName = "John Doe"
@@ -102,6 +104,7 @@ class PreferencesViewModelTest {
             "John Doe",
             "testemail@gmail.com",
             "https://www.example.com/profile.jpg",
+            "I'm a cool guy",
             UserLevel.ADVANCED)
 
     val expectedEmail = "testemail@gmail.com"
@@ -127,6 +130,7 @@ class PreferencesViewModelTest {
             "John Doe",
             "testemail@gmail.com",
             "https://www.example.com/profile.jpg",
+            "I'm a cool guy",
             UserLevel.BEGINNER)
 
     val expectedProfilePictureUrl = "https://www.example.com/profile.jpg"
@@ -152,7 +156,8 @@ class PreferencesViewModelTest {
             "John Doe",
             "testemail@gmail.com",
             "https://www.example.com/profile.jpg",
-            UserLevel.BEGINNER)
+          "I'm a cool guy",
+          UserLevel.BEGINNER)
 
     val expectedUserLevel = UserLevel.BEGINNER
 
@@ -194,6 +199,7 @@ class PreferencesViewModelTest {
             "John Doe",
             "testemail@gmail.com",
             "https://www.example.com/profile.jpg",
+            "I'm a cool guy",
             UserLevel.ADVANCED)
     fakePreferencesRepo.updateUserInfo(user)
 
@@ -216,7 +222,8 @@ class PreferencesViewModelTest {
 
   private class FakePreferencesRepository : PreferencesRepository {
     private val userPreferencesStateFlow =
-        MutableStateFlow(UserPreferences(false, "", "", "", "", UserLevel.BEGINNER))
+        MutableStateFlow(
+            UserPreferences(false, "", "", "", "", "", HikingLevel.BEGINNER, "English", "Hiking"))
     override val userPreferencesFlow: Flow<UserPreferences> = userPreferencesStateFlow
 
     fun setUserPreferences(userPreferences: UserPreferences) {
@@ -240,8 +247,21 @@ class PreferencesViewModelTest {
       userPreferencesStateFlow.value = userPreferencesStateFlow.value.copy(userLevel = userLevel)
     }
 
+    override suspend fun updateBio(bio: String) {
+      TODO("Not yet implemented")
+    }
+
+    override suspend fun updateLanguage(language: String) {
+      userPreferencesStateFlow.value = userPreferencesStateFlow.value.copy(language = language)
+    }
+
+    override suspend fun updatePrefSport(prefSport: String) {
+      userPreferencesStateFlow.value = userPreferencesStateFlow.value.copy(prefSport = prefSport)
+    }
+
     override suspend fun clearPreferences() {
-      userPreferencesStateFlow.value = UserPreferences(false, "", "", "", "", UserLevel.BEGINNER)
+      userPreferencesStateFlow.value =
+          UserPreferences(false, "", "", "", "", "", HikingLevel.BEGINNER, "English", "Hiking")
     }
   }
 }

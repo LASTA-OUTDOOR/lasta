@@ -8,6 +8,7 @@ import com.google.firebase.firestore.SetOptions
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.repository.UserActivitiesRepository
+import com.lastaoutdoor.lasta.data.model.user.UserModel
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,56 +21,96 @@ constructor(private val database: FirebaseFirestore, private val context: Contex
     UserActivitiesRepository {
   private val activityConverter = ActivityConverter()
 
+  /**
+   * Adds a new user to the activities database.
+   *
+   * @param user The FirebaseUser to add to the database.
+   */
   private fun addUserToActivitiesDatabase(user: FirebaseUser) {
-    val userDocumentRef =
-        database.collection(context.getString(R.string.activities_database_name)).document(user.uid)
-    val userData =
-        hashMapOf(
-            "Hiking" to arrayListOf<ActivitiesDatabaseType.Trail>(),
-            "Climbing" to arrayListOf<ActivitiesDatabaseType.Climb>())
-    userDocumentRef.set(userData, SetOptions.merge())
+    try {
+      val userDocumentRef =
+          database
+              .collection(context.getString(R.string.activities_database_name))
+              .document(user.uid)
+      val userData =
+          hashMapOf(
+              "Hiking" to arrayListOf<ActivitiesDatabaseType.Trail>(),
+              "Climbing" to arrayListOf<ActivitiesDatabaseType.Climb>())
+      userDocumentRef.set(userData, SetOptions.merge())
+    } catch (e: Exception) {
+      /* TODO: cache the information so that we can add activities when we have internet again */
+      e.printStackTrace()
+    }
   }
 
+  /**
+   * Fetches the activities of a user from the database.
+   *
+   * @param user The UserModel whose activities are to be fetched.
+   * @param activityType The type of activities to fetch.
+   * @return A list of activities of the specified type.
+   */
   @Suppress("UNCHECKED_CAST")
   override suspend fun getUserActivities(
-      user: FirebaseUser,
+      user: UserModel,
       activityType: ActivitiesDatabaseType.Sports
   ): List<ActivitiesDatabaseType> {
-    val userDocumentRef =
-        database.collection(context.getString(R.string.activities_database_name)).document(user.uid)
-    val trailList: ArrayList<ActivitiesDatabaseType> = arrayListOf()
-    val document = userDocumentRef.get().await()
+    try {
+      val userDocumentRef =
+          database
+              .collection(context.getString(R.string.activities_database_name))
+              .document(user.userId)
+      val trailList: ArrayList<ActivitiesDatabaseType> = arrayListOf()
+      val document = userDocumentRef.get().await()
 
-    if (document != null) {
-      val activityArray = document.get(activityType.toString()) as? List<*>
-      if (activityArray != null) {
-        for (item in activityArray) {
-          trailList.add(
-              activityConverter.databaseToActivity(item as HashMap<String, Any>, activityType))
+      if (document != null) {
+        val activityArray = document.get(activityType.toString()) as? List<*>
+        if (activityArray != null) {
+          for (item in activityArray) {
+            trailList.add(
+                activityConverter.databaseToActivity(item as HashMap<String, Any>, activityType))
+          }
+        } else {
+          return listOf()
         }
       } else {
         return listOf()
       }
-    } else {
+
+      return trailList.toList()
+    } catch (e: Exception) {
+      e.printStackTrace()
+      /* TODO: cache the information so that we can add activities when we have internet again */
       return listOf()
     }
-
-    return trailList.toList()
   }
 
+  /**
+   * Adds an activity to a user's activities in the database.
+   *
+   * @param user The FirebaseUser to whom the activity is to be added.
+   * @param activity The activity to add to the user's activities.
+   */
   override fun addActivityToUserActivities(user: FirebaseUser, activity: ActivitiesDatabaseType) {
-    val userDocumentRef =
-        database.collection(context.getString(R.string.activities_database_name)).document(user.uid)
+    try {
+      val userDocumentRef =
+          database
+              .collection(context.getString(R.string.activities_database_name))
+              .document(user.uid)
 
-    CoroutineScope(Dispatchers.IO).launch {
-      val documentSnapshot = userDocumentRef.get().await()
+      CoroutineScope(Dispatchers.IO).launch {
+        val documentSnapshot = userDocumentRef.get().await()
 
-      val activityType: String = activity.sport.toString()
-      if (!documentSnapshot.exists() || !documentSnapshot.contains(activityType))
-          addUserToActivitiesDatabase(user)
+        val activityType: String = activity.sport.toString()
+        if (!documentSnapshot.exists() || !documentSnapshot.contains(activityType))
+            addUserToActivitiesDatabase(user)
 
-      userDocumentRef.update(
-          activityType, FieldValue.arrayUnion(activityConverter.activityToDatabase(activity)))
+        userDocumentRef.update(
+            activityType, FieldValue.arrayUnion(activityConverter.activityToDatabase(activity)))
+      }
+    } catch (e: Exception) {
+      e.printStackTrace()
+      /* TODO: handle offline mode explicitly */
     }
   }
 }

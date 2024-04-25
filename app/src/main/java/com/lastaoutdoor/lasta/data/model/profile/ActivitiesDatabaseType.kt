@@ -7,6 +7,17 @@ import com.lastaoutdoor.lasta.data.model.activity.ClimbingStyle
 import com.lastaoutdoor.lasta.data.model.activity.Difficulty
 import java.util.Date
 
+/**
+ * Sealed class representing different types of activities.
+ *
+ * @property sport The type of sport the activity is.
+ * @property activityId The unique identifier of the activity.
+ * @property timeStarted The start time of the activity.
+ * @property timeFinished The end time of the activity.
+ * @property popularity The popularity of the activity.
+ * @property difficulty The difficulty level of the activity.
+ * @property img The image associated with the activity.
+ */
 sealed class ActivitiesDatabaseType(
     val sport: Sports,
     open val activityId: Long = 0L,
@@ -17,6 +28,7 @@ sealed class ActivitiesDatabaseType(
     open val img: Bitmap? = null
 ) {
 
+  /** Enum class representing different types of sports. */
   enum class Sports {
     HIKING,
     CLIMBING;
@@ -33,6 +45,20 @@ sealed class ActivitiesDatabaseType(
     }
   }
 
+  /**
+   * Data class representing a Trail activity.
+   *
+   * @property activityId The unique identifier of the activity.
+   * @property difficulty The difficulty level of the activity.
+   * @property img The image associated with the activity.
+   * @property popularity The popularity of the activity.
+   * @property timeStarted The start time of the activity.
+   * @property timeFinished The end time of the activity.
+   * @property avgSpeedInKMH The average speed of the activity in km/h.
+   * @property caloriesBurned The number of calories burned during the activity.
+   * @property distanceInMeters The distance covered during the activity in meters.
+   * @property elevationChangeInMeters The elevation change during the activity in meters.
+   */
   data class Trail(
       override val activityId: Long = 0L,
       override val difficulty: Difficulty? = null,
@@ -46,6 +72,19 @@ sealed class ActivitiesDatabaseType(
       val elevationChangeInMeters: Long = 0,
   ) : ActivitiesDatabaseType(Sports.HIKING)
 
+  /**
+   * Data class representing a Climb activity.
+   *
+   * @property activityId The unique identifier of the activity.
+   * @property img The image associated with the activity.
+   * @property popularity The popularity of the activity.
+   * @property timeStarted The start time of the activity.
+   * @property timeFinished The end time of the activity.
+   * @property routeDifficulty The difficulty level of the route.
+   * @property elevationGainedInMeters The elevation gained during the activity in meters.
+   * @property numberOfPitches The number of pitches in the climb.
+   * @property climbingStyle The style of climbing.
+   */
   data class Climb(
       override val activityId: Long = 0L,
       override val img: Bitmap? = null,

@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.ui.screen.discovery
+package com.lastaoutdoor.lasta.ui.screen.discover
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -36,7 +37,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -49,8 +49,8 @@ import com.lastaoutdoor.lasta.ui.components.DisplaySelection
 import com.lastaoutdoor.lasta.ui.components.SearchBarComponent
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
 import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
-import com.lastaoutdoor.lasta.ui.screen.discovery.components.ModalUpperSheet
-import com.lastaoutdoor.lasta.ui.screen.discovery.components.RangeSearchComposable
+import com.lastaoutdoor.lasta.ui.screen.discover.components.ModalUpperSheet
+import com.lastaoutdoor.lasta.ui.screen.discover.components.RangeSearchComposable
 import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenType
 import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenViewModel
@@ -75,17 +75,20 @@ fun DiscoveryScreen(
     LazyColumn(
         modifier =
             Modifier.testTag("discoveryScreen").background(MaterialTheme.colorScheme.background)) {
-          item { HeaderComposable(updatePopup = { isRangePopup = true }) }
+          item {
+            HeaderComposable(navController = navController, updatePopup = { isRangePopup = true })
+          }
 
           item {
-            SeparatorComponent() // Add a separator between the header and the activities
             Spacer(modifier = Modifier.height(8.dp))
             ActivitiesDisplay(navController, moreInfoScreenViewModel = moreInfoScreenViewModel)
           }
         }
   } else if (screen == DiscoveryScreenType.MAP) {
-    MapScreen()
-    HeaderComposable(updatePopup = { isRangePopup = true })
+    Column {
+      HeaderComposable(navController = navController, updatePopup = { isRangePopup = true })
+      Box(modifier = Modifier.fillMaxHeight()) { MapScreen() }
+    }
   }
 
   // Add the modal upper sheet
@@ -94,6 +97,7 @@ fun DiscoveryScreen(
 
 @Composable
 fun HeaderComposable(
+    navController: NavController,
     discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel(),
     updatePopup: () -> Unit
 ) {
@@ -103,7 +107,7 @@ fun HeaderComposable(
   val iconSize = 48.dp // Adjust icon size as needed
 
   Surface(
-      modifier = Modifier.fillMaxWidth().graphicsLayer { alpha = 0.9f },
+      modifier = Modifier.fillMaxWidth(),
       color = MaterialTheme.colorScheme.background,
       shadowElevation = 3.dp) {
         Column {
@@ -138,12 +142,14 @@ fun HeaderComposable(
               verticalAlignment = Alignment.CenterVertically) {
                 SearchBarComponent(Modifier.weight(1f), onSearch = { /*TODO*/})
                 Spacer(modifier = Modifier.width(8.dp))
-                IconButton(onClick = { /*TODO*/}, modifier = Modifier.size(iconSize)) {
-                  Icon(
-                      painter = painterResource(id = R.drawable.filter_icon),
-                      contentDescription = "Filter",
-                      modifier = Modifier.size(24.dp))
-                }
+                IconButton(
+                    onClick = { navController.navigate(LeafScreen.Filter.route) },
+                    modifier = Modifier.size(iconSize)) {
+                      Icon(
+                          painter = painterResource(id = R.drawable.filter_icon),
+                          contentDescription = "Filter",
+                          modifier = Modifier.size(24.dp))
+                    }
               }
           Row(
               modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),

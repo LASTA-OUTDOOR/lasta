@@ -21,6 +21,8 @@ class PreferencesViewModel @Inject constructor(private val preferences: Preferen
   val email = preferences.userPreferencesFlow.map { it.email }
   val profilePictureUrl = preferences.userPreferencesFlow.map { it.profilePictureUrl }
   val hikingLevel = preferences.userPreferencesFlow.map { it.userLevel }
+  val language = preferences.userPreferencesFlow.map { it.language }
+  val prefSport = preferences.userPreferencesFlow.map { it.prefSport }
 
   /**
    * Updates the isLoggedIn preference
@@ -42,6 +44,25 @@ class PreferencesViewModel @Inject constructor(private val preferences: Preferen
    */
   fun updateHikingLevel(userLevel: UserLevel) {
     viewModelScope.launch { preferences.updateHikingLevel(userLevel) }
+  }
+
+  /**
+   * Updates the language preference
+   *
+   * @param language the new value for the language preference
+   */
+  fun updateLanguage(language: String) {
+    viewModelScope.launch { preferences.updateLanguage(language) }
+  }
+
+  /** Updates the prefSport preference */
+  fun updatePrefSport(prefSport: String) {
+    viewModelScope.launch { preferences.updatePrefSport(prefSport) }
+  }
+
+  /** Clears all preferences */
+  fun updateBio(bio: String) {
+    viewModelScope.launch { preferences.updateBio(bio) }
   }
 
   fun clearPreferences() {

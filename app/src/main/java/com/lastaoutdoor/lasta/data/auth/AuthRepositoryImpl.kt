@@ -14,6 +14,7 @@ import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
@@ -26,6 +27,10 @@ constructor(
     @Named("signInRequest") private var signInRequest: BeginSignInRequest,
     @Named("signUpRequest") private var signUpRequest: BeginSignInRequest
 ) : AuthRepository {
+
+  private val isSignUp: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
+  override fun observeIsSignUp(): Flow<Boolean> = isSignUp
 
   override suspend fun startGoogleSignIn(): Flow<Response<BeginSignInResult>> = flow {
     try {
@@ -49,10 +54,10 @@ constructor(
       val userCredential = auth.signInWithCredential(googleCredential).await()
       val user = userCredential.user
       if (user != null) {
-        val isSignUp = userCredential.additionalUserInfo?.isNewUser ?: false
-        if (isSignUp) {
+        isSignUp.value = userCredential.additionalUserInfo?.isNewUser ?: false
+        if (isSignUp.value) {
           // This is a sign-up, so create a new UserModel
-          val userModel = UserModel(user, UserLevel.BEGINNER)
+          val userModel = UserModel(user, bio = "", UserLevel.BEGINNER)
 
           // Add the user to the Firestore database
           DatabaseManager().addUserToDatabase(userModel)
@@ -69,8 +74,10 @@ constructor(
                     user.displayName ?: "",
                     user.email ?: "",
                     user.photoUrl?.toString() ?: "",
+                    userModel.bio,
                     userModel.userLevel)
             DatabaseManager().updateUserInfo(newUserModel)
+            isSignUp.value = false
             emit(Response.Success(newUserModel))
           } else {
             emit(Response.Failure(Exception("User data not found")))
