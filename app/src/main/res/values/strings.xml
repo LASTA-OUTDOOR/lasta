@@ -88,6 +88,13 @@
     <string name = "add_fr">Add a friend</string>
     <string name = "fr_email_add">Enter a friend\'s email address to send a friend request</string>
     <string name = "community">Community</string>
+    <!--Weather Report-->
+    <string name = "weather_report">Weather Report</string>
+    <string name = "current_weather">Current Weather</string>
+    <string name = "city_w">City</string>
+    <string name = "temperature">Temperature</string>
+    <string name = "descr_w">Description</string>
+    <string name = "wind_speed">Wind speed</string>
 
 
 

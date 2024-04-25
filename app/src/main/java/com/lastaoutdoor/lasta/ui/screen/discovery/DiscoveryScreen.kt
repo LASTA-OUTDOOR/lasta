@@ -48,6 +48,7 @@ import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
 import com.lastaoutdoor.lasta.ui.components.SearchBarComponent
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
+import com.lastaoutdoor.lasta.ui.components.WeatherReport
 import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
 import com.lastaoutdoor.lasta.ui.screen.discovery.components.ModalUpperSheet
 import com.lastaoutdoor.lasta.ui.screen.discovery.components.RangeSearchComposable
@@ -233,7 +234,9 @@ fun ActivitiesDisplay(
 
         Spacer(modifier = Modifier.height(16.dp))
         Row(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically) {
               Text(
                   text = a.locationName ?: "Unnamed Activity",
@@ -242,7 +245,9 @@ fun ActivitiesDisplay(
             }
         SeparatorComponent()
         Row(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically) {
               Icon(
                   imageVector = Icons.Default.Star,

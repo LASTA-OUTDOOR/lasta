@@ -65,4 +65,11 @@
     <string name="map">Carte</string>
     <string name="hiking">Randonnée</string>
     <string name="climbing">Escalade</string>
+    <string name = "weather_report">Prévisions météo</string>
+    <string name = "current_weather">Temps Actuel</string>
+    <string name = "city_w">Ville</string>
+    <string name = "temperature">Température</string>
+    <string name = "descr_w">Description</string>
+    <string name = "wind_speed">Vitesse du vent</string>
+
 </resources>
