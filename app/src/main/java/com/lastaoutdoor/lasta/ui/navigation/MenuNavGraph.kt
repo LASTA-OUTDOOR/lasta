@@ -20,6 +20,7 @@ import com.lastaoutdoor.lasta.ui.screen.activities.MoreInfoScreen
 import com.lastaoutdoor.lasta.ui.screen.discovery.DiscoveryScreen
 import com.lastaoutdoor.lasta.ui.screen.favorites.FavoritesScreen
 import com.lastaoutdoor.lasta.ui.screen.profile.ProfileScreen
+import com.lastaoutdoor.lasta.ui.screen.settings.SettingsScreen
 import com.lastaoutdoor.lasta.ui.screen.social.ConversationScreen
 import com.lastaoutdoor.lasta.ui.screen.social.FriendProfileScreen
 import com.lastaoutdoor.lasta.ui.screen.social.NotificationsScreen
@@ -53,10 +54,15 @@ fun MenuNavGraph(
         }
         composable(fav) { FavoritesScreen(navController) }
         composable(soc) { SocialScreen(navController) }
-        composable(prof) { ProfileScreen(rootNavController = rootNavController) }
+        composable(prof) {
+          ProfileScreen(rootNavController = rootNavController, navController = navController)
+        }
         composable(LeafScreen.MoreInfo.route) {
           MoreInfoScreen(
               navController = navController, moreInfoScreenViewModel = moreInfoScreenViewModel)
+        }
+        composable(LeafScreen.Settings.route) {
+          SettingsScreen(rootNavController = rootNavController, navController = navController)
         }
         composable(
             LeafScreen.Conversation.route + "/{userId}",

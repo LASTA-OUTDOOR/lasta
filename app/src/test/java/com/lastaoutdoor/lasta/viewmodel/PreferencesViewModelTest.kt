@@ -217,7 +217,8 @@ class PreferencesViewModelTest {
 
   private class FakePreferencesRepository : PreferencesRepository {
     private val userPreferencesStateFlow =
-        MutableStateFlow(UserPreferences(false, "", "", "", "", HikingLevel.BEGINNER))
+        MutableStateFlow(
+            UserPreferences(false, "", "", "", "", HikingLevel.BEGINNER, "English", "Hiking"))
     override val userPreferencesFlow: Flow<UserPreferences> = userPreferencesStateFlow
 
     fun setUserPreferences(userPreferences: UserPreferences) {
@@ -242,8 +243,17 @@ class PreferencesViewModelTest {
           userPreferencesStateFlow.value.copy(hikingLevel = hikingLevel)
     }
 
+    override suspend fun updateLanguage(language: String) {
+      userPreferencesStateFlow.value = userPreferencesStateFlow.value.copy(language = language)
+    }
+
+    override suspend fun updatePrefSport(prefSport: String) {
+      userPreferencesStateFlow.value = userPreferencesStateFlow.value.copy(prefSport = prefSport)
+    }
+
     override suspend fun clearPreferences() {
-      userPreferencesStateFlow.value = UserPreferences(false, "", "", "", "", HikingLevel.BEGINNER)
+      userPreferencesStateFlow.value =
+          UserPreferences(false, "", "", "", "", HikingLevel.BEGINNER, "English", "Hiking")
     }
   }
 }

@@ -71,4 +71,6 @@
     <string name="type_message">Schreibe deine Nachricht hier</string>
     <string name="your_message">"Deine Nachricht "</string>
     <string name="send_message">Senden</string>
+    <string name="Account_settings">Kontoeinstellungen</string>
+    <string name="delete_account">Konto löschen</string>
 </resources>

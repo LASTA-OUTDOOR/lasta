@@ -16,4 +16,8 @@ interface PreferencesRepository {
   suspend fun updateHikingLevel(hikingLevel: HikingLevel)
 
   suspend fun clearPreferences()
+
+  suspend fun updateLanguage(language: String)
+
+  suspend fun updatePrefSport(prefSport: String)
 }

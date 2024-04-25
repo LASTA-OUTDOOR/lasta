@@ -132,6 +132,10 @@ class AuthViewModelTest {
       this.shouldThrow = shouldThrow
     }
 
+    override fun observeIsSignUp(): Flow<Boolean> {
+      return MutableStateFlow(false)
+    }
+
     override suspend fun startGoogleSignIn(): Flow<Response<BeginSignInResult>> {
       return if (shouldThrow) {
         beginSignInResultExceptionFlow

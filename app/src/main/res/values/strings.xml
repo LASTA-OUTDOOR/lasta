@@ -94,6 +94,32 @@
     <string name="type_message">Type your message</string>
     <string name="your_message">Your message</string>
     <string name="send_message">Send</string>
+    <!--Settings-->
+    <string name = "Account_settings">Settings</string>
+    <string name= "delete_account">Delete Account</string>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 </resources>

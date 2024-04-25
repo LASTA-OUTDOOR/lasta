@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -25,8 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,6 +51,7 @@ import com.lastaoutdoor.lasta.data.model.profile.Year
 import com.lastaoutdoor.lasta.data.model.user.HikingLevel
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
+import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
 import com.lastaoutdoor.lasta.ui.navigation.RootScreen
 import com.lastaoutdoor.lasta.ui.screen.profile.components.BarGraph
 import com.lastaoutdoor.lasta.ui.screen.profile.components.BarType
@@ -70,15 +68,15 @@ import java.util.Calendar
 @Composable
 fun ProfileScreen(
     profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(),
-    rootNavController: NavHostController
+    rootNavController: NavHostController,
+    navController: NavHostController
 ) {
-  // profileScreenVIewModel.addTrailToUserActivities()
   val activities by profileScreenViewModel.trails.collectAsState()
   val timeFrame by profileScreenViewModel.timeFrame.collectAsState()
   val sport by profileScreenViewModel.sport.collectAsState()
 
   LazyColumn(modifier = Modifier.padding(16.dp).testTag("ProfileScreen")) {
-    item { UserInfo(rootNavController) }
+    item { UserInfo(rootNavController, navController) }
     item {
       SportSelection(sport, profileScreenViewModel::setSport)
       Spacer(modifier = Modifier.height(16.dp))
@@ -105,6 +103,7 @@ fun ProfileScreen(
 @Composable
 fun UserInfo(
     rootNavController: NavHostController,
+    navController: NavHostController,
     authViewModel: AuthViewModel = hiltViewModel(),
     preferencesViewModel: PreferencesViewModel = hiltViewModel()
 ) {
@@ -124,46 +123,13 @@ fun UserInfo(
     }
   }
 
-  var showDialog by remember { mutableStateOf(false) }
-
-  if (showDialog) {
-    AlertDialog(
-        modifier = Modifier.testTag("AlertDialog"),
-        onDismissRequest = { showDialog = false },
-        title = { Text(LocalContext.current.getString(R.string.preferences)) },
-        text = {
-          Column {
-            Text(LocalContext.current.getString(R.string.hiking_lvl))
-            HikingRow(selectedHikingLevel = hikingLevel)
-          }
-        },
-        confirmButton = {
-          Row {
-            Button(onClick = { showDialog = false }) {
-              Text(LocalContext.current.getString(R.string.save))
-            }
-          }
-        },
-        dismissButton = {
-          Button(
-              onClick = {
-                showDialog = false
-                authViewModel.signOut()
-                preferencesViewModel.clearPreferences()
-                preferencesViewModel.updateIsLoggedIn(false)
-                rootNavController.popBackStack()
-                rootNavController.navigate(RootScreen.Login.route)
-              }) {
-                Text(LocalContext.current.getString(R.string.sign_out))
-              }
-        })
-  }
-
   Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
     Column {
-      Button(onClick = { showDialog = true }, modifier = Modifier.testTag("showDialog")) {
-        Text("≡")
-      }
+      Button(
+          onClick = { navController.navigate(LeafScreen.Settings.route) },
+          modifier = Modifier.testTag("showSettings")) {
+            Text("≡")
+          }
     }
   }
   Spacer(modifier = Modifier.height(8.dp))
