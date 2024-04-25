@@ -65,4 +65,12 @@
     <string name="map">Carte</string>
     <string name="hiking">Randonnée</string>
     <string name="climbing">Escalade</string>
+    <string name="no_friend_activities">Pas d\'acitivités récentes...  Ajoutes des amis pour en voir plus !</string>
+    <string name="add_friend_title">Ajouter un amis</string>
+    <string name="select_friend">Choisis un amis</string>
+    <string name="type_message">Ecris ton message ici</string>
+    <string name="your_message">Ton message</string>
+    <string name="send_message">Envoyer</string>
+    <string name="Account_settings">Paramètres du compte</string>
+    <string name="delete_account">Supprimer compte</string>
 </resources>

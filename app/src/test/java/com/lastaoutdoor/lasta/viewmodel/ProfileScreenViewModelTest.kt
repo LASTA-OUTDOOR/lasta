@@ -370,7 +370,7 @@ class ProfileScreenViewModelTest {
 
   class FakePreferencesRepository : PreferencesRepository {
     private val _preferences =
-        MutableStateFlow(UserPreferences(true, "1", "", "", "", "", HikingLevel.BEGINNER))
+        MutableStateFlow(UserPreferences(true, "1", "", "", "", "", HikingLevel.BEGINNER, "", ""))
 
     val preferences: Flow<UserPreferences> = _preferences
     override val userPreferencesFlow: Flow<UserPreferences> = _preferences
@@ -392,6 +392,14 @@ class ProfileScreenViewModelTest {
     }
 
     override suspend fun clearPreferences() {
+      TODO("Not yet implemented")
+    }
+
+    override suspend fun updateLanguage(language: String) {
+      TODO("Not yet implemented")
+    }
+
+    override suspend fun updatePrefSport(prefSport: String) {
       TODO("Not yet implemented")
     }
 

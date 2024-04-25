@@ -18,7 +18,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
 @Composable
 fun ConnectionMissing() {
@@ -55,7 +57,22 @@ fun FriendsMissing() {
 }
 
 @Composable
-fun MessageMissing() {
+fun ActivitiesMissing() {
+  Column(
+      modifier = Modifier.fillMaxSize().testTag("FriendMissing"),
+      verticalArrangement = Arrangement.Center,
+      horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            text = LocalContext.current.getString(R.string.no_friend_activities),
+            style =
+                TextStyle(
+                    fontWeight = FontWeight.Normal, fontSize = 20.sp, textAlign = TextAlign.Center),
+            modifier = Modifier.padding(15.dp))
+      }
+}
+
+@Composable
+fun MessageMissing(viewModel: SocialViewModel = hiltViewModel()) {
   Column(
       modifier = Modifier.fillMaxSize().testTag("MessageMissing"),
       verticalArrangement = Arrangement.Center,
@@ -66,7 +83,7 @@ fun MessageMissing() {
                 TextStyle(
                     fontWeight = FontWeight.Normal, fontSize = 20.sp, textAlign = TextAlign.Center),
             modifier = Modifier.padding(15.dp))
-        Button(onClick = { /*TODO*/}) {
+        Button(onClick = { viewModel.displayFriendPicker() }) {
           Text(text = LocalContext.current.getString(R.string.start_conv))
         }
       }

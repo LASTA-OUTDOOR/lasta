@@ -24,25 +24,17 @@ class ProfileScreenTest {
     hiltRule.inject()
     composeRule.activity.setContent {
       val rootNavController = rememberNavController()
-      ProfileScreen(rootNavController = rootNavController)
+      ProfileScreen(rootNavController = rootNavController, navController = rootNavController)
     }
   }
 
-  /*
-  @Test
-  fun profileScreenIsDisplayed() {
-    composeRule.onNodeWithTag("ProfileScreen").assertIsDisplayed()
-  }
-
+  /**
+   * @Test fun profileScreenIsDisplayed() {
+   *   composeRule.onNodeWithTag("ProfileScreen").assertIsDisplayed() }
    */
-
-  /*
-  @Test
-  fun testSpinner() {
-    composeRule.onNodeWithTag("spinnerIcon").performClick()
-    composeRule.onNodeWithTag("DropdownItem1").performClick()
-    composeRule.onNodeWithTag("TestClimb").assertIsDisplayed()
-  }
-
+  /**
+   * @Test fun testSpinner() { composeRule.onNodeWithTag("spinnerIcon").performClick()
+   *   composeRule.onNodeWithTag("DropdownItem1").performClick()
+   *   composeRule.onNodeWithTag("TestClimb").assertIsDisplayed() }
    */
 }

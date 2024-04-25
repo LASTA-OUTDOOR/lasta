@@ -27,7 +27,10 @@ class LoginScreenTest {
   @Before
   fun setUp() {
     hiltRule.inject()
-    composeRule.activity.setContent { LoginScreen(navController = rememberNavController()) }
+    composeRule.activity.setContent {
+      LoginScreen(
+          navController = rememberNavController(), rootNavController = rememberNavController())
+    }
   }
 
   @Test

@@ -46,6 +46,8 @@ class PreferencesRepositoryImpl(private val context: Context) : PreferencesRepos
     val PROFILE_PICTURE_URL_KEY = stringPreferencesKey("profilePictureUrl")
     val BIO_KEY = stringPreferencesKey("bio")
     val HIKING_LEVEL_KEY = stringPreferencesKey("hikingLevel")
+    val LANGUAGE_KEY = stringPreferencesKey("language")
+    val PREF_SPORT_KEY = stringPreferencesKey("prefSport")
   }
 
   /**
@@ -72,7 +74,9 @@ class PreferencesRepositoryImpl(private val context: Context) : PreferencesRepos
                 profilePictureUrl = preferences[PROFILE_PICTURE_URL_KEY] ?: "",
                 bio = preferences[BIO_KEY] ?: "",
                 hikingLevel =
-                    HikingLevel.valueOf(preferences[HIKING_LEVEL_KEY] ?: HikingLevel.BEGINNER.name))
+                    HikingLevel.valueOf(preferences[HIKING_LEVEL_KEY] ?: HikingLevel.BEGINNER.name),
+                language = preferences[LANGUAGE_KEY] ?: "",
+                prefSport = preferences[PREF_SPORT_KEY] ?: "")
           }
 
   /**
@@ -101,6 +105,14 @@ class PreferencesRepositoryImpl(private val context: Context) : PreferencesRepos
    */
   override suspend fun updateHikingLevel(hikingLevel: HikingLevel) {
     dataStore.edit { preferences -> preferences[HIKING_LEVEL_KEY] = hikingLevel.name }
+  }
+
+  override suspend fun updateLanguage(language: String) {
+    dataStore.edit { preferences -> preferences[LANGUAGE_KEY] = language }
+  }
+
+  override suspend fun updatePrefSport(prefSport: String) {
+    dataStore.edit { preferences -> preferences[PREF_SPORT_KEY] = prefSport }
   }
 
   override suspend fun updateBio(bio: String) {

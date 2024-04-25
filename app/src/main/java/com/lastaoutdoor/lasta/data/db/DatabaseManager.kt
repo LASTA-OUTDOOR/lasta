@@ -1,11 +1,14 @@
 package com.lastaoutdoor.lasta.data.db
 
 import com.google.firebase.Firebase
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
+import com.lastaoutdoor.lasta.data.model.social.ConversationModel
+import com.lastaoutdoor.lasta.data.model.social.MessageModel
 import com.lastaoutdoor.lasta.data.model.user.HikingLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.data.model.user.UserPreferences
@@ -14,6 +17,7 @@ import kotlinx.coroutines.tasks.await
 
 private const val USERS_COLLECTION = "users"
 private const val ACTIVITIES_COLLECTION = "activities_database"
+private const val CONVERSATION_COLLECTION = "conversations"
 private const val ERR_NOT_FOUND = -1.0
 
 /** Class containing functions for interacting with the Firestore database */
@@ -49,11 +53,13 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
       val email = document.getString("email") ?: ""
       val displayName = document.getString("displayName") ?: ""
       val profilePictureUrl = document.getString("profilePictureUrl") ?: ""
-      var hikingLevel = document.getString("hikingLevel") ?: ""
       val bio = document.getString("bio") ?: ""
-      if (hikingLevel == "null" || hikingLevel == "") hikingLevel = "BEGINNER"
-      return UserModel(
-          uid, displayName, email, profilePictureUrl, bio, HikingLevel.valueOf(hikingLevel))
+      val hikingLevel = document.getString("hikingLevel")?.uppercase() ?: ""
+      return try {
+        UserModel(uid, displayName, email, profilePictureUrl, bio, HikingLevel.valueOf(hikingLevel))
+      } catch (e: Exception) {
+        UserModel(uid, displayName, email, profilePictureUrl, bio, HikingLevel.BEGINNER)
+      }
     }
     return UserModel("", "", "", "", "", HikingLevel.BEGINNER)
   }
@@ -132,7 +138,7 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
    * @param field The field to update
    * @param value The new value of the field
    */
-  fun updateFieldInUser(uid: String, field: String, value: String) {
+  fun updateFieldInUser(uid: String, field: String, value: Any) {
     // Create a reference to the document with the user's UID
     val userDocumentRef = database.collection(USERS_COLLECTION).document(uid)
 
@@ -380,6 +386,132 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
   }
 
   /**
+   * Function to get the conversation between 2 users
+   *
+   * @param userId The unique identifier of the user
+   * @param friendId The unique identifier of the friend
+   * @param createNew If true, create a new conversation if it doesn't exist
+   * @return The conversation object between the user and the friend
+   */
+  fun getConversation(
+      userId: String,
+      friendId: String,
+      createNew: Boolean = true
+  ): ConversationModel {
+
+    // id is concatenation of userId and friendId, first is the smallest
+    val id = if (userId < friendId) userId + friendId else friendId + userId
+
+    // Try to find a document in the Firestore database with the conversation ID
+    val conversationDocumentRef = database.collection(CONVERSATION_COLLECTION).document(id)
+
+    // If we didn't get any result, we create a new conversation
+    var document = runBlocking { conversationDocumentRef.get().await() }
+    if (!document.exists() && createNew) {
+
+      println("null document")
+
+      // store a conversation in the Firestore database
+      val conversation =
+          hashMapOf("members" to listOf(userId, friendId), "messages" to emptyList<MessageModel>())
+
+      // Store the conversation in the Firestore database
+      conversationDocumentRef.set(conversation, SetOptions.merge())
+
+      document = runBlocking { conversationDocumentRef.get().await() }
+    } else if (!document.exists()) {
+      return ConversationModel(users = emptyList(), messages = emptyList(), lastMessage = null)
+    }
+
+    // Write the result in a ConversationModel object
+    val user = runBlocking { getUserFromDatabase(userId) }
+    val friend = runBlocking { getUserFromDatabase(friendId) }
+
+    // chronological order of messages
+    val messages: ArrayList<MessageModel>
+
+    messages =
+        (document.get("messages") as? ArrayList<*>)
+            ?.map {
+              val message = it as HashMap<*, *>
+              MessageModel(
+                  message["from"] as String,
+                  message["content"] as String,
+                  message["timestamp"] as Timestamp)
+            }
+            ?.sortedBy { it.timestamp }
+            ?.toCollection(ArrayList()) ?: ArrayList()
+
+    return if (messages.isEmpty()) {
+      ConversationModel(users = listOf(user, friend), messages = messages, lastMessage = null)
+    } else {
+      ConversationModel(
+          users = listOf(user, friend),
+          messages = messages,
+          lastMessage =
+              MessageModel(
+                  messages.last().from, messages.last().content, messages.last().timestamp))
+    }
+  }
+
+  /**
+   * Function to get all the created conversation on a user : name of the UserModel of the friend,
+   * last message if there is one
+   *
+   * @param userId The unique identifier of the user
+   * @param friends The list of friends of the user
+   * @return The list of conversation preview
+   */
+  fun getAllConversation(userId: String, friends: List<UserModel>): List<ConversationModel> {
+    val conversations: ArrayList<ConversationModel> = ArrayList()
+
+    for (friend in friends) {
+      val conversation = getConversation(userId, friend.userId, false)
+      if (conversation.users.isEmpty()) continue
+      conversations.add(conversation)
+    }
+    return conversations
+  }
+
+  /**
+   * Function to send a message from a user to a friend
+   *
+   * @param userId The unique identifier of the user
+   * @param friendUserId The unique identifier of the friend
+   * @param message The message to send
+   */
+  fun sendMessage(userId: String, friendUserId: String, message: String) {
+    // parameters check
+    if (message.isEmpty() || userId.isEmpty() || friendUserId.isEmpty()) return
+
+    println("Sending")
+
+    // Create a reference to the conversation document in the Firestore database
+    val id = if (userId < friendUserId) userId + friendUserId else friendUserId + userId
+
+    val conversationDocumentRef = database.collection(CONVERSATION_COLLECTION).document(id)
+
+    // check if the conversation exists
+    val document = runBlocking { conversationDocumentRef.get().await() }
+    if (!document.exists()) return
+
+    println("Conversation exists")
+
+    // Create a map containing the message
+    val messageData: (Timestamp) -> HashMap<String, Any> = {
+      hashMapOf("from" to userId, "content" to message, "timestamp" to it)
+    }
+
+    // Add the message to the conversation
+    conversationDocumentRef.update("messages", FieldValue.arrayUnion(messageData(Timestamp.now())))
+
+    // Update the last message in the conversation
+    conversationDocumentRef.update("lastMessage", messageData(Timestamp.now()))
+
+    println("Message sent")
+  }
+
+  /**
    * Function to get a user's preferences from the Firestore database
    *
    * @param uid The unique identifier of the user
@@ -404,11 +536,14 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
               email = prefSettings["email"] as String,
               profilePictureUrl = prefSettings["profilePictureUrl"] as String,
               bio = prefSettings["bio"] as String,
-              hikingLevel = prefSettings["hikingLevel"] as HikingLevel)
+              hikingLevel = prefSettings["hikingLevel"] as HikingLevel,
+              language = prefSettings["language"] as String,
+              prefSport = prefSettings["prefSport"] as String)
         }
       }
+
       // Return default preferences if not found
-      return UserPreferences(false, "", "", "", "", "", HikingLevel.BEGINNER)
+      return UserPreferences(false, "", "", "", "", "", HikingLevel.BEGINNER, "English", "Hiking")
     }
   }
 }

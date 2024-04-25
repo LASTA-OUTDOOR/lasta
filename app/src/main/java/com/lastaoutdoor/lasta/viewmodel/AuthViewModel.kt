@@ -24,6 +24,13 @@ constructor(private val authRepo: AuthRepository, val oneTapClient: SignInClient
   var beginSignInResult: BeginSignInResult? by mutableStateOf(null)
   var user: UserModel? by mutableStateOf(null)
   var signedOut: Boolean by mutableStateOf(false)
+  var isSignUp: Boolean by mutableStateOf(false)
+
+  init {
+    viewModelScope.launch {
+      authRepo.observeIsSignUp().collect { isSignUpValue -> isSignUp = isSignUpValue }
+    }
+  }
 
   fun startGoogleSignIn() {
     viewModelScope.launch {

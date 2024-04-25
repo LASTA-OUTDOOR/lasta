@@ -20,7 +20,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -34,7 +33,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -70,7 +68,7 @@ import com.lastaoutdoor.lasta.data.model.profile.Year
 import com.lastaoutdoor.lasta.data.model.user.HikingLevel
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
-import com.lastaoutdoor.lasta.ui.navigation.RootScreen
+import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
 import com.lastaoutdoor.lasta.ui.screen.profile.components.BarGraph
 import com.lastaoutdoor.lasta.ui.screen.profile.components.BarType
 import com.lastaoutdoor.lasta.utils.chartDisplayValues
@@ -94,6 +92,7 @@ import java.util.Calendar
 fun ProfileScreen(
     profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(),
     rootNavController: NavHostController,
+    navController: NavHostController
 ) {
   // profileScreenVIewModel.addTrailToUserActivities()
   val activities by profileScreenViewModel.filteredActivities.collectAsState()
@@ -110,7 +109,7 @@ fun ProfileScreen(
                   .background(MaterialTheme.colorScheme.primary)
                   .padding(16.dp)
                   .height(150.dp)) {
-            UserInfo(rootNavController, isCurrentUser = isCurrentUser)
+            UserInfo(rootNavController, navController, isCurrentUser = isCurrentUser)
           }
     }
     item {
@@ -154,6 +153,7 @@ fun ProfileScreen(
 @Composable
 fun UserInfo(
     rootNavController: NavHostController,
+    navController: NavHostController,
     authViewModel: AuthViewModel = hiltViewModel(),
     preferencesViewModel: PreferencesViewModel = hiltViewModel(),
     profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(),
@@ -166,6 +166,7 @@ fun UserInfo(
   val hikingLevel = user.value.hikingLevel
   val bio = user.value.bio
   var isEditBio by rememberSaveable { mutableStateOf(false) }
+
   ChangeBio(
       isEditBio,
       onDismissRequest = { isEditBio = false },
@@ -176,130 +177,88 @@ fun UserInfo(
         isEditBio = false
       })
 
-  LaunchedEffect(key1 = authViewModel.signedOut) {
-    if (authViewModel.signedOut) {
-      preferencesViewModel.clearPreferences()
-      preferencesViewModel.updateIsLoggedIn(false)
-      rootNavController.popBackStack()
-      rootNavController.navigate(RootScreen.Login.route)
-    }
-  }
+  Row(
+      modifier = Modifier.fillMaxWidth(),
+      horizontalArrangement = Arrangement.SpaceBetween,
+  ) {
+    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+      Column {
+        AsyncImage(
+            model = profilePictureUrl,
+            contentDescription = "Profile picture",
+            modifier =
+                Modifier.size(100.dp)
+                    .clip(CircleShape)
+                    .border(2.dp, MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(100.dp)),
+            contentScale = ContentScale.Crop,
+            error = painterResource(id = R.drawable.default_profile_icon))
+      }
 
-  var showDialog by remember { mutableStateOf(false) }
+      Spacer(modifier = Modifier.width(16.dp))
 
-  if (showDialog) {
-    AlertDialog(
-        modifier = Modifier.testTag("AlertDialog"),
-        onDismissRequest = { showDialog = false },
-        title = { Text(LocalContext.current.getString(R.string.preferences)) },
-        text = {
+      Column {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically) {
+              Text(
+                  text = userName ?: "",
+                  color = MaterialTheme.colorScheme.onPrimary,
+                  textAlign = TextAlign.Center,
+                  style = MaterialTheme.typography.titleLarge,
+                  fontWeight = FontWeight.Bold)
+
+              Spacer(modifier = Modifier.width(8.dp))
+              if (isCurrentUser) {
+                IconButton(
+                    onClick = { navController.navigate(LeafScreen.Settings.route) },
+                    modifier = Modifier.testTag("showDialog")) {
+                      Icon(
+                          Icons.Filled.Menu,
+                          contentDescription = "Edit bio",
+                          tint = MaterialTheme.colorScheme.onPrimary,
+                          modifier = Modifier.size(24.dp))
+                    }
+              }
+            }
+        Spacer(modifier = Modifier.height(8.dp))
+        // Bio
+        Surface(
+            modifier = Modifier.fillMaxWidth().height(80.dp),
+            shadowElevation = 4.dp,
+            shape = MaterialTheme.shapes.small,
+            color = MaterialTheme.colorScheme.primary,
+        ) {
           Column {
-            Text(LocalContext.current.getString(R.string.hiking_lvl))
-            HikingRow(selectedHikingLevel = hikingLevel)
-
-            /* Button added to test the changing of user, can be deleted!!! */
-            Button(
-                onClick = { profileScreenViewModel.updateUser("7buKEm8BTWWVYouR1YvAzhvXAdS2") }) {
-                  Text("Change User")
-                }
-          }
-        },
-        confirmButton = {
-          Row {
-            Button(onClick = { showDialog = false }) {
-              Text(LocalContext.current.getString(R.string.save))
-            }
-          }
-        },
-        dismissButton = {
-          Button(
-              onClick = {
-                showDialog = false
-                authViewModel.signOut()
-                preferencesViewModel.clearPreferences()
-                preferencesViewModel.updateIsLoggedIn(false)
-                rootNavController.popBackStack()
-                rootNavController.navigate(RootScreen.Login.route)
-              }) {
-                Text(LocalContext.current.getString(R.string.sign_out))
-              }
-        })
-  }
-
-  Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-    Column {
-      AsyncImage(
-          model = profilePictureUrl,
-          contentDescription = "Profile picture",
-          modifier =
-              Modifier.size(100.dp)
-                  .clip(CircleShape)
-                  .border(2.dp, MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(100.dp)),
-          contentScale = ContentScale.Crop,
-          error = painterResource(id = R.drawable.default_profile_icon))
-    }
-
-    Spacer(modifier = Modifier.width(16.dp))
-
-    Column {
-      Row(
-          modifier = Modifier.fillMaxWidth(),
-          horizontalArrangement = Arrangement.SpaceBetween,
-          verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = userName ?: "",
-                color = MaterialTheme.colorScheme.onPrimary,
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold)
-
-            Spacer(modifier = Modifier.width(8.dp))
-            if (isCurrentUser) {
-              IconButton(
-                  onClick = { showDialog = true }, modifier = Modifier.testTag("showDialog")) {
-                    Icon(
-                        Icons.Filled.Menu,
-                        contentDescription = "Edit bio",
-                        tint = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.size(24.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween) {
+                  Text(
+                      text = "Bio" /* TODO : make this a xml string */,
+                      style = MaterialTheme.typography.bodySmall,
+                      modifier = Modifier.padding(8.dp, 8.dp, 0.dp, 8.dp))
+                  if (isCurrentUser) {
+                    IconButton(
+                        onClick = { isEditBio = true },
+                        modifier = Modifier.size(24.dp).align(Alignment.Top)) {
+                          Icon(
+                              Icons.Filled.Create,
+                              contentDescription = "Edit bio",
+                              tint = MaterialTheme.colorScheme.onPrimary,
+                              modifier = Modifier.size(24.dp))
+                        }
                   }
-            }
-          }
-      Spacer(modifier = Modifier.height(8.dp))
-      // Bio
-      Surface(
-          modifier = Modifier.fillMaxWidth().height(80.dp),
-          shadowElevation = 4.dp,
-          shape = MaterialTheme.shapes.small,
-          color = MaterialTheme.colorScheme.primary,
-      ) {
-        Column {
-          Row(
-              modifier = Modifier.fillMaxWidth(),
-              verticalAlignment = Alignment.CenterVertically,
-              horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(
-                    text = "Bio" /* TODO : make this a xml string */,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(8.dp, 8.dp, 0.dp, 8.dp))
-                if (isCurrentUser) {
-                  IconButton(
-                      onClick = { isEditBio = true },
-                      modifier = Modifier.size(24.dp).align(Alignment.Top)) {
-                        Icon(
-                            Icons.Filled.Create,
-                            contentDescription = "Edit bio",
-                            tint = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier.size(24.dp))
-                      }
                 }
-              }
-          Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = bio ?: "",
-                style = MaterialTheme.typography.bodyMedium,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(8.dp, 0.dp, 8.dp, 8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically) {
+                  Text(
+                      text = bio ?: "",
+                      style = MaterialTheme.typography.bodyMedium,
+                      overflow = TextOverflow.Ellipsis,
+                      modifier = Modifier.padding(8.dp, 0.dp, 8.dp, 8.dp))
+                }
           }
         }
       }
