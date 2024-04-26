@@ -9,7 +9,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.db.ActivitiesRepositoryImpl
+import com.lastaoutdoor.lasta.data.db.UserActivitiesRepositoryImpl
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
 import io.mockk.*
 import java.lang.Exception
@@ -22,7 +22,7 @@ import org.junit.Before
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class ActivitiesRepositoryImplTest {
+class UserActivitiesRepositoryImplTest {
   public class mockTask<T : Any> : Task<T>() {
     override fun addOnFailureListener(p0: OnFailureListener): Task<T> {
       return this
@@ -83,7 +83,7 @@ class ActivitiesRepositoryImplTest {
   private val user: FirebaseUser = mockk()
   private val documentReference: DocumentReference = mockk()
   private val documentSnapshot: DocumentSnapshot = mockk()
-  private val activitiesRepository = ActivitiesRepositoryImpl(firestore, context)
+  private val activitiesRepository = UserActivitiesRepositoryImpl(firestore, context)
   private val task: mockTask<DocumentSnapshot> = mockk()
   private val task2: mockTask<Void> = mockk()
 
@@ -144,7 +144,7 @@ class ActivitiesRepositoryImplTest {
             "Climbing" to arrayListOf<ActivitiesDatabaseType.Climb>())
     every { documentReference.set(userData, SetOptions.merge()) } returns task2
     val method: Method =
-        ActivitiesRepositoryImpl::class
+        UserActivitiesRepositoryImpl::class
             .java
             .getDeclaredMethod("addUserToActivitiesDatabase", FirebaseUser::class.java)
 

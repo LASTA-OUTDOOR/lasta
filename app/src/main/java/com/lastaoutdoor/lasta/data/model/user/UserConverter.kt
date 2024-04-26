@@ -7,5 +7,5 @@ fun UserPreferences.toUserModel(): UserModel {
       email = email,
       profilePictureUrl = profilePictureUrl,
       bio = bio,
-      hikingLevel = hikingLevel)
+      userLevel = userLevel)
 }

@@ -25,7 +25,7 @@ import coil.request.ImageRequest
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
-import com.lastaoutdoor.lasta.ui.screen.activities.TopBarLogo
+import com.lastaoutdoor.lasta.ui.screen.moreinfo.TopBarLogo
 
 // Display a simple page with all the information of a friend
 @Composable

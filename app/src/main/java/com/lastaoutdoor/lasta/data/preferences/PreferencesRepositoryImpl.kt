@@ -8,7 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.lastaoutdoor.lasta.data.model.user.HikingLevel
+import com.lastaoutdoor.lasta.data.model.user.UserLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.data.model.user.UserPreferences
 import com.lastaoutdoor.lasta.repository.PreferencesRepository
@@ -73,8 +73,8 @@ class PreferencesRepositoryImpl(private val context: Context) : PreferencesRepos
                 email = preferences[EMAIL_KEY] ?: "",
                 profilePictureUrl = preferences[PROFILE_PICTURE_URL_KEY] ?: "",
                 bio = preferences[BIO_KEY] ?: "",
-                hikingLevel =
-                    HikingLevel.valueOf(preferences[HIKING_LEVEL_KEY] ?: HikingLevel.BEGINNER.name),
+                userLevel =
+                    UserLevel.valueOf(preferences[HIKING_LEVEL_KEY] ?: UserLevel.BEGINNER.name),
                 language = preferences[LANGUAGE_KEY] ?: "",
                 prefSport = preferences[PREF_SPORT_KEY] ?: "")
           }
@@ -101,10 +101,10 @@ class PreferencesRepositoryImpl(private val context: Context) : PreferencesRepos
   /**
    * Update the hikingLevel preference
    *
-   * @param hikingLevel the new value for the hikingLevel preference
+   * @param userLevel the new value for the hikingLevel preference
    */
-  override suspend fun updateHikingLevel(hikingLevel: HikingLevel) {
-    dataStore.edit { preferences -> preferences[HIKING_LEVEL_KEY] = hikingLevel.name }
+  override suspend fun updateHikingLevel(userLevel: UserLevel) {
+    dataStore.edit { preferences -> preferences[HIKING_LEVEL_KEY] = userLevel.name }
   }
 
   override suspend fun updateLanguage(language: String) {

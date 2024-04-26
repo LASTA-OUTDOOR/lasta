@@ -9,7 +9,7 @@ import com.google.firebase.firestore.firestore
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.data.model.social.ConversationModel
 import com.lastaoutdoor.lasta.data.model.social.MessageModel
-import com.lastaoutdoor.lasta.data.model.user.HikingLevel
+import com.lastaoutdoor.lasta.data.model.user.UserLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.data.model.user.UserPreferences
 import kotlinx.coroutines.runBlocking
@@ -41,7 +41,7 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
             "email" to user.email,
             "displayName" to user.userName,
             "profilePictureUrl" to user.profilePictureUrl,
-            "hikingLevel" to user.hikingLevel.toString(),
+            "hikingLevel" to user.userLevel.toString(),
             "friends" to emptyList<String>())
     userDocumentRef.set(userData, SetOptions.merge())
   }
@@ -56,12 +56,12 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
       val bio = document.getString("bio") ?: ""
       val hikingLevel = document.getString("hikingLevel")?.uppercase() ?: ""
       return try {
-        UserModel(uid, displayName, email, profilePictureUrl, bio, HikingLevel.valueOf(hikingLevel))
+        UserModel(uid, displayName, email, profilePictureUrl, bio, UserLevel.valueOf(hikingLevel))
       } catch (e: Exception) {
-        UserModel(uid, displayName, email, profilePictureUrl, bio, HikingLevel.BEGINNER)
+        UserModel(uid, displayName, email, profilePictureUrl, bio, UserLevel.BEGINNER)
       }
     }
-    return UserModel("", "", "", "", "", HikingLevel.BEGINNER)
+    return UserModel("", "", "", "", "", UserLevel.BEGINNER)
   }
 
   suspend fun getUserFromEmail(mail: String): UserModel? {
@@ -76,7 +76,7 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
       var hikingLevel = document.getString("hikingLevel") ?: ""
       if (hikingLevel == "null" || hikingLevel == "") hikingLevel = "BEGINNER"
       return UserModel(
-          document.id, displayName, email, profilePictureUrl, bio, HikingLevel.valueOf(hikingLevel))
+          document.id, displayName, email, profilePictureUrl, bio, UserLevel.valueOf(hikingLevel))
     } else {
       return null
     }
@@ -127,7 +127,7 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
             "email" to user.email,
             "displayName" to user.userName,
             "profilePictureUrl" to user.profilePictureUrl,
-            "hikingLevel" to user.hikingLevel.toString())
+            "hikingLevel" to user.userLevel.toString())
     userDocumentRef.set(userData, SetOptions.merge())
   }
 
@@ -270,7 +270,7 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
             "userName" to preferences.userName,
             "email" to preferences.email,
             "profilePictureUrl" to preferences.profilePictureUrl,
-            "hikingLevel" to preferences.hikingLevel)
+            "hikingLevel" to preferences.userLevel)
 
     // Merge the preferences into the user's document
     val data = hashMapOf("prefSettings" to prefSettings)
@@ -536,14 +536,14 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
               email = prefSettings["email"] as String,
               profilePictureUrl = prefSettings["profilePictureUrl"] as String,
               bio = prefSettings["bio"] as String,
-              hikingLevel = prefSettings["hikingLevel"] as HikingLevel,
+              userLevel = prefSettings["hikingLevel"] as UserLevel,
               language = prefSettings["language"] as String,
               prefSport = prefSettings["prefSport"] as String)
         }
       }
 
       // Return default preferences if not found
-      return UserPreferences(false, "", "", "", "", "", HikingLevel.BEGINNER, "English", "Hiking")
+      return UserPreferences(false, "", "", "", "", "", UserLevel.BEGINNER, "English", "Hiking")
     }
   }
 }

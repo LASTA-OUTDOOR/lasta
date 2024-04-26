@@ -7,7 +7,7 @@ data class UserPreferences(
     val email: String,
     val profilePictureUrl: String,
     val bio: String,
-    val hikingLevel: HikingLevel,
+    val userLevel: UserLevel,
     val language: String,
     val prefSport: String
 )

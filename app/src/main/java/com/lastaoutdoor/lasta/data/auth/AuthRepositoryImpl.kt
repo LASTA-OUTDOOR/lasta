@@ -6,7 +6,7 @@ import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.lastaoutdoor.lasta.data.db.DatabaseManager
-import com.lastaoutdoor.lasta.data.model.user.HikingLevel
+import com.lastaoutdoor.lasta.data.model.user.UserLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.repository.AuthRepository
 import com.lastaoutdoor.lasta.utils.Response
@@ -57,7 +57,7 @@ constructor(
         isSignUp.value = userCredential.additionalUserInfo?.isNewUser ?: false
         if (isSignUp.value) {
           // This is a sign-up, so create a new UserModel
-          val userModel = UserModel(user, bio = "", HikingLevel.BEGINNER)
+          val userModel = UserModel(user, bio = "", UserLevel.BEGINNER)
 
           // Add the user to the Firestore database
           DatabaseManager().addUserToDatabase(userModel)
@@ -75,7 +75,7 @@ constructor(
                     user.email ?: "",
                     user.photoUrl?.toString() ?: "",
                     userModel.bio,
-                    userModel.hikingLevel)
+                    userModel.userLevel)
             DatabaseManager().updateUserInfo(newUserModel)
             isSignUp.value = false
             emit(Response.Success(newUserModel))

@@ -6,7 +6,7 @@ import androidx.compose.material.icons.filled.Email
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.data.model.social.ConversationModel
 import com.lastaoutdoor.lasta.data.model.social.MessageModel
-import com.lastaoutdoor.lasta.data.model.user.HikingLevel
+import com.lastaoutdoor.lasta.data.model.user.UserLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.data.model.user.UserPreferences
 import com.lastaoutdoor.lasta.repository.ConnectivityRepository
@@ -87,12 +87,12 @@ class FakeSocialRepository : SocialRepository {
 
   override fun getFriendRequests(userId: String): List<UserModel> {
     return receivedRequest.map {
-      UserModel(it, "name", "email", "photo", "bio", HikingLevel.BEGINNER)
+      UserModel(it, "name", "email", "photo", "bio", UserLevel.BEGINNER)
     }
   }
 
   override fun acceptFriendRequest(source: String, requester: String) {
-    friends.add(UserModel(requester, "name", "email", "photo", "bio", HikingLevel.BEGINNER))
+    friends.add(UserModel(requester, "name", "email", "photo", "bio", UserLevel.BEGINNER))
     receivedRequest.remove(requester)
   }
 
@@ -159,7 +159,7 @@ class FakePreferencesRepository(override val userPreferencesFlow: Flow<UserPrefe
 
   override suspend fun updateUserInfo(user: UserModel?) {}
 
-  override suspend fun updateHikingLevel(hikingLevel: HikingLevel) {}
+  override suspend fun updateHikingLevel(hikingLevel: UserLevel) {}
 
   override suspend fun updateLanguage(language: String) {}
 
@@ -179,7 +179,7 @@ class SocialViewModelTest {
   private val userPreferencesFlow =
       MutableStateFlow(
           UserPreferences(
-              true, "email", "name", "photo", "", "", HikingLevel.BEGINNER, "English", "Hiking"))
+              true, "email", "name", "photo", "", "", UserLevel.BEGINNER, "English", "Hiking"))
 
   @Before
   fun setUp() {

@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.ui.screen.activities
+package com.lastaoutdoor.lasta.ui.screen.moreinfo
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -141,8 +141,6 @@ fun RatingDisplay(rating: Double) {
   }
 }
 
-// intern helper function, WILL BE MOVED TO VIEWMODEL
-
 @Composable
 fun ElevatedDifficultyDisplay(diff: String) {
   ElevatedButton(
@@ -231,10 +229,10 @@ fun ElevatedActivityType(moreInfoScreenViewModel: MoreInfoScreenViewModel) {
       modifier = Modifier.padding(3.dp).width(64.dp).height(20.dp),
       colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
         Text(
-            moreInfoScreenViewModel.activityToDisplay.value
-                .getActivityType()
-                .toString()
-                .replaceFirstChar { it.uppercase() },
+            text =
+                moreInfoScreenViewModel.activityToDisplay.value.activityType
+                    .toString()
+                    .replaceFirstChar { it.uppercase() },
             style =
                 TextStyle(
                     fontSize = 11.sp,

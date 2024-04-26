@@ -11,7 +11,6 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.tasks.await
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -27,8 +26,8 @@ class DatabaseManagerTest {
   private val documentReference: DocumentReference = mockk()
   private val documentSnapshot: DocumentSnapshot = mockk()
   private lateinit var databaseManager: DatabaseManager
-  private val task: ActivitiesRepositoryImplTest.mockTask<DocumentSnapshot> = mockk()
-  private val task2: ActivitiesRepositoryImplTest.mockTask<Void> = mockk()
+  private val task: UserActivitiesRepositoryImplTest.mockTask<DocumentSnapshot> = mockk()
+  private val task2: UserActivitiesRepositoryImplTest.mockTask<Void> = mockk()
 
   @Before
   fun setup() {

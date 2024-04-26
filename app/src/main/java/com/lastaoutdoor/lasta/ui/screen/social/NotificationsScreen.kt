@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.ui.screen.activities.TopBarLogo
+import com.lastaoutdoor.lasta.ui.screen.moreinfo.TopBarLogo
 import com.lastaoutdoor.lasta.ui.screen.social.components.FriendsRequestList
 
 @Composable

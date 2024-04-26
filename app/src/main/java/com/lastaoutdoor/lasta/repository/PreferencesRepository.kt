@@ -1,6 +1,6 @@
 package com.lastaoutdoor.lasta.repository
 
-import com.lastaoutdoor.lasta.data.model.user.HikingLevel
+import com.lastaoutdoor.lasta.data.model.user.UserLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.data.model.user.UserPreferences
 import kotlinx.coroutines.flow.Flow
@@ -13,7 +13,7 @@ interface PreferencesRepository {
 
   suspend fun updateUserInfo(user: UserModel?)
 
-  suspend fun updateHikingLevel(hikingLevel: HikingLevel)
+  suspend fun updateHikingLevel(userLevel: UserLevel)
 
   suspend fun updateBio(bio: String)
 

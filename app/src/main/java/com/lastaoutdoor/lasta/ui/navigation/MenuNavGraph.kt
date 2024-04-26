@@ -14,12 +14,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.model.user.HikingLevel
+import com.lastaoutdoor.lasta.data.model.user.UserLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
-import com.lastaoutdoor.lasta.ui.screen.activities.MoreInfoScreen
 import com.lastaoutdoor.lasta.ui.screen.discover.DiscoveryScreen
 import com.lastaoutdoor.lasta.ui.screen.discovery.FilterScreen
 import com.lastaoutdoor.lasta.ui.screen.favorites.FavoritesScreen
+import com.lastaoutdoor.lasta.ui.screen.moreinfo.MoreInfoScreen
 import com.lastaoutdoor.lasta.ui.screen.profile.ProfileScreen
 import com.lastaoutdoor.lasta.ui.screen.settings.SettingsScreen
 import com.lastaoutdoor.lasta.ui.screen.social.ConversationScreen
@@ -109,7 +109,7 @@ fun MenuNavGraph(
                       null,
                       null,
                       null,
-                      HikingLevel.BEGINNER)
+                      UserLevel.BEGINNER)
 
               // Create a state for the UserModel with a default value
               val friendUserModel = remember { mutableStateOf(defaultUserModel) }

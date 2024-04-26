@@ -196,7 +196,7 @@ fun ActivitiesDisplay(
     discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel(),
     moreInfoScreenViewModel: MoreInfoScreenViewModel
 ) {
-  val activities = discoveryScreenViewModel.climbingActivities
+  val activities = discoveryScreenViewModel.climbingActivities.value
   for (a in activities) {
     Card(
         modifier =
@@ -256,11 +256,7 @@ fun ActivitiesDisplay(
                   tint = MaterialTheme.colorScheme.primary)
               Text(text = "? ${LocalContext.current.getString(R.string.popularity)}")
               Spacer(modifier = Modifier.width(8.dp))
-              Text(
-                  text =
-                      if (a.difficulty != 0)
-                          "${LocalContext.current.getString(R.string.difficulty)}: ${a.difficulty}"
-                      else "? ${LocalContext.current.getString(R.string.difficulty)}")
+              Text(text = "Difficulty: ${LocalContext.current.getString(R.string.difficulty)}")
               Spacer(modifier = Modifier.width(16.dp))
               // Distance from the user's location, NOT THE LENGTH OF THE ACTIVITY!!!
               Text(text = "? km")

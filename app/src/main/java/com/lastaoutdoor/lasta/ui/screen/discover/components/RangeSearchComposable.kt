@@ -92,7 +92,7 @@ fun RangeSearchComposable(
                 // Button to apply the range
                 ElevatedButton(
                     onClick = {
-                      discoveryScreenViewModel.fetchClimbingActivities(
+                      discoveryScreenViewModel.fetchBikingActivities(
                           range, discoveryScreenViewModel.selectedLocality.value.second)
                       onDismissRequest()
                     },
@@ -180,7 +180,7 @@ fun RangeSearchComposable(
                 // Button to apply the range
                 ElevatedButton(
                     onClick = {
-                      discoveryScreenViewModel.fetchClimbingActivities(
+                      discoveryScreenViewModel.fetchBikingActivities(
                           range, discoveryScreenViewModel.selectedLocality.value.second)
                       onDismissRequest()
                     },

@@ -6,12 +6,12 @@ import com.google.firebase.Timestamp
 import com.lastaoutdoor.lasta.data.db.DatabaseManager
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.data.model.profile.TimeFrame
-import com.lastaoutdoor.lasta.data.model.user.HikingLevel
+import com.lastaoutdoor.lasta.data.model.user.UserLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.data.model.user.toUserModel
 import com.lastaoutdoor.lasta.di.TimeProvider
-import com.lastaoutdoor.lasta.repository.ActivitiesRepository
 import com.lastaoutdoor.lasta.repository.PreferencesRepository
+import com.lastaoutdoor.lasta.repository.UserActivitiesRepository
 import com.lastaoutdoor.lasta.utils.calculateTimeRangeUntilNow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -31,13 +31,13 @@ import kotlinx.coroutines.launch
 class ProfileScreenViewModel
 @Inject
 constructor(
-    private val repository: ActivitiesRepository,
+    private val repository: UserActivitiesRepository,
     private val timeProvider: TimeProvider,
     private val preferences: PreferencesRepository,
 ) : ViewModel() {
 
   /** The current user. */
-  private val _user = MutableStateFlow(UserModel("", "", "", "", "", HikingLevel.BEGINNER))
+  private val _user = MutableStateFlow(UserModel("", "", "", "", "", UserLevel.BEGINNER))
   val user = _user
 
   /** Flag to check if the current user is the logged in user. */

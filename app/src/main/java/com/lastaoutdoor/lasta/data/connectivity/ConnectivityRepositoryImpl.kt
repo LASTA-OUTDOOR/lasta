@@ -16,6 +16,9 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 
+/**
+ * Implementation of [ConnectivityRepository] to provide the current connection state of the device.
+ */
 class ConnectivityRepositoryImpl @Inject constructor(@ApplicationContext context: Context) :
     ConnectivityRepository {
   private val connectivityManager: ConnectivityManager =
@@ -25,14 +28,17 @@ class ConnectivityRepositoryImpl @Inject constructor(@ApplicationContext context
       callbackFlow {
             val connectivityCallback =
                 object : ConnectivityManager.NetworkCallback() {
+                  // This method is called when the network is available.
                   override fun onAvailable(network: Network) {
                     trySend(ConnectionState.CONNECTED)
                   }
 
+                  // This method is called when the network timeouts.
                   override fun onUnavailable() {
                     trySend(ConnectionState.OFFLINE)
                   }
 
+                  // This method is called when the network is lost.
                   override fun onLost(network: Network) {
                     trySend(ConnectionState.OFFLINE)
                   }
@@ -45,10 +51,14 @@ class ConnectivityRepositoryImpl @Inject constructor(@ApplicationContext context
                     .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
                     .build()
 
+            // We register the network callback to listen to the network changes.
             connectivityManager.registerNetworkCallback(request, connectivityCallback)
 
+            // We remove the network callback when the flow is closed.
             awaitClose { connectivityManager.unregisterNetworkCallback(connectivityCallback) }
           }
+          // Here we are filtering out the same connection state to avoid emitting the same state
+          // multiple times.
           .distinctUntilChanged()
           .flowOn(Dispatchers.IO)
 }

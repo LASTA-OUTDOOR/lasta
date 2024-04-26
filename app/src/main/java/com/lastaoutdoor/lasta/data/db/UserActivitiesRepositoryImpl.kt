@@ -8,24 +8,17 @@ import com.google.firebase.firestore.SetOptions
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.data.model.user.UserModel
-import com.lastaoutdoor.lasta.repository.ActivitiesRepository
+import com.lastaoutdoor.lasta.repository.UserActivitiesRepository
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-/**
- * Implementation of the ActivitiesRepository interface. This class provides methods to interact
- * with the Firebase Firestore database.
- *
- * @property database The Firebase Firestore database instance.
- * @property context The application context.
- */
-class ActivitiesRepositoryImpl
+class UserActivitiesRepositoryImpl
 @Inject
 constructor(private val database: FirebaseFirestore, private val context: Context) :
-    ActivitiesRepository {
+    UserActivitiesRepository {
   private val activityConverter = ActivityConverter()
 
   /**

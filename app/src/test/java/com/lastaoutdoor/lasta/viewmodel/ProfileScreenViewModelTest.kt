@@ -8,12 +8,12 @@ import com.google.firebase.auth.FirebaseUser
 import com.lastaoutdoor.lasta.data.model.activity.Difficulty
 import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.data.model.profile.TimeFrame
-import com.lastaoutdoor.lasta.data.model.user.HikingLevel
+import com.lastaoutdoor.lasta.data.model.user.UserLevel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.data.model.user.UserPreferences
 import com.lastaoutdoor.lasta.di.TimeProvider
-import com.lastaoutdoor.lasta.repository.ActivitiesRepository
 import com.lastaoutdoor.lasta.repository.PreferencesRepository
+import com.lastaoutdoor.lasta.repository.UserActivitiesRepository
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -98,7 +98,7 @@ class ProfileScreenViewModelTest {
                 100),
             ActivitiesDatabaseType.Trail(
                 2,
-                Difficulty.MODERATE,
+                Difficulty.NORMAL,
                 null,
                 null,
                 Date(1649908800000),
@@ -109,7 +109,7 @@ class ProfileScreenViewModelTest {
                 200),
             ActivitiesDatabaseType.Trail(
                 3,
-                Difficulty.DIFFICULT,
+                Difficulty.HARD,
                 null,
                 null,
                 Date(1649995200000),
@@ -201,7 +201,7 @@ class ProfileScreenViewModelTest {
             ActivitiesDatabaseType.Trail(
                 1, Difficulty.EASY, null, null, Date(), Date(), 0.0, 0, 0, 0),
             ActivitiesDatabaseType.Trail(
-                2, Difficulty.MODERATE, null, null, Date(), Date(), 0.0, 0, 0, 0))
+                2, Difficulty.NORMAL, null, null, Date(), Date(), 0.0, 0, 0, 0))
 
     val method: Method =
         ProfileScreenViewModel::class
@@ -370,7 +370,7 @@ class ProfileScreenViewModelTest {
 
   class FakePreferencesRepository : PreferencesRepository {
     private val _preferences =
-        MutableStateFlow(UserPreferences(true, "1", "", "", "", "", HikingLevel.BEGINNER, "", ""))
+        MutableStateFlow(UserPreferences(true, "1", "", "", "", "", UserLevel.BEGINNER, "", ""))
 
     val preferences: Flow<UserPreferences> = _preferences
     override val userPreferencesFlow: Flow<UserPreferences> = _preferences
@@ -383,7 +383,7 @@ class ProfileScreenViewModelTest {
       TODO("Not yet implemented")
     }
 
-    override suspend fun updateHikingLevel(hikingLevel: HikingLevel) {
+    override suspend fun updateHikingLevel(hikingLevel: UserLevel) {
       TODO("Not yet implemented")
     }
 
@@ -408,7 +408,7 @@ class ProfileScreenViewModelTest {
     }
   }
 
-  private class FakeActivitiesRepository : ActivitiesRepository {
+  private class FakeActivitiesRepository : UserActivitiesRepository {
     private val userActivitiesMap: MutableMap<String, MutableList<ActivitiesDatabaseType>> =
         mutableMapOf()
 

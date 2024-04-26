@@ -65,7 +65,7 @@ import com.lastaoutdoor.lasta.data.model.profile.MonthsInYear
 import com.lastaoutdoor.lasta.data.model.profile.TimeFrame
 import com.lastaoutdoor.lasta.data.model.profile.WeeksInMonth
 import com.lastaoutdoor.lasta.data.model.profile.Year
-import com.lastaoutdoor.lasta.data.model.user.HikingLevel
+import com.lastaoutdoor.lasta.data.model.user.UserLevel
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
 import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
@@ -159,11 +159,10 @@ fun UserInfo(
     profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(),
     isCurrentUser: Boolean
 ) {
-
   val user = profileScreenViewModel.user.collectAsState()
   val userName = user.value.userName
   val profilePictureUrl = user.value.profilePictureUrl
-  val hikingLevel = user.value.hikingLevel
+  val hikingLevel = user.value.userLevel
   val bio = user.value.bio
   var isEditBio by rememberSaveable { mutableStateOf(false) }
 
@@ -325,7 +324,7 @@ fun ChangeBio(
 
 @Composable
 fun HikingRow(
-    selectedHikingLevel: HikingLevel,
+    selectedUserLevel: UserLevel,
     preferences: PreferencesViewModel = hiltViewModel(),
 ) {
   val userId by preferences.userId.collectAsState(initial = "")
@@ -333,11 +332,11 @@ fun HikingRow(
       modifier = Modifier.fillMaxWidth(.7f),
       horizontalArrangement = Arrangement.SpaceEvenly,
       verticalAlignment = Alignment.CenterVertically) {
-        HikingLevel.values().forEachIndexed { index, hikingLevel ->
-          Text(text = hikingLevel.level.toString(), maxLines = 1, overflow = TextOverflow.Ellipsis)
+        UserLevel.values().forEachIndexed { index, hikingLevel ->
+          Text(text = hikingLevel.toString(), maxLines = 1, overflow = TextOverflow.Ellipsis)
           RadioButton(
               modifier = Modifier.testTag("HikingLevelItem$index"),
-              selected = hikingLevel == selectedHikingLevel,
+              selected = hikingLevel == selectedUserLevel,
               onClick = {
                 preferences.updateHikingLevel(hikingLevel)
                 DatabaseManager().updateFieldInUser(userId, "hikingLevel", hikingLevel.toString())

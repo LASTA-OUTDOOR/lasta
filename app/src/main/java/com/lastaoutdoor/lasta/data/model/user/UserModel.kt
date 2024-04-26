@@ -10,9 +10,8 @@ import com.google.firebase.auth.FirebaseUser
  * @property email the email of the user
  * @property profilePictureUrl the URL of the user's profile picture
  * @property bio the bio of the user
- * @property prefSettings the user's preferences
  *
- * TODO: Check the fields are in sync with what the app is supposed to store and display
+ * TODO: Make all model files match with database so that updating and writing will be easier
  */
 data class UserModel(
     val userId: String,
@@ -20,12 +19,12 @@ data class UserModel(
     val email: String?,
     val profilePictureUrl: String?,
     val bio: String?,
-    val hikingLevel: HikingLevel
+    val userLevel: UserLevel
 ) {
   constructor(
       firebaseUser: FirebaseUser,
       bio: String,
-      hikingLevel: HikingLevel
+      hikingLevel: UserLevel
   ) : this(
       firebaseUser.uid,
       firebaseUser.displayName,
