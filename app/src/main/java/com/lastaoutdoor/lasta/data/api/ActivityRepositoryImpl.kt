@@ -20,6 +20,7 @@ import retrofit2.Callback
 class ActivityRepositoryImpl @Inject constructor(private val osmApiService: OSMApiService) :
     ActivityRepository {
 
+  // TODO make generic private function to fetch data from OSM API
   override suspend fun getClimbingPointsInfo(
       range: Int,
       lat: Double,
@@ -78,14 +79,15 @@ class ActivityRepositoryImpl @Inject constructor(private val osmApiService: OSMA
     }
   }
 
-  override suspend fun getHikingRoutesInfo(
+  private suspend fun getRoutesInfo(
       range: Int,
       lat: Double,
-      lon: Double
+      lon: Double,
+      getRoutesInfo: (String) -> Call<APIResponse<Relation>>,
+      query: (Int, Double, Double) -> String
   ): Response<List<Relation>> {
     return suspendCancellableCoroutine { continuation ->
-      osmApiService
-          .getHikingRoutesInfo(hikingInfoQuery(range, lat, lon))
+      getRoutesInfo(query(range, lat, lon))
           .enqueue(
               object : Callback<APIResponse<Relation>> {
                 override fun onResponse(
@@ -97,7 +99,7 @@ class ActivityRepositoryImpl @Inject constructor(private val osmApiService: OSMA
                         Response.Success(response.body()!!.elements), onCancellation = null)
                   } else {
                     continuation.resume(
-                        Response.Failure(Exception("Error fetching the hiking routes info")),
+                        Response.Failure(Exception("Error fetching the routes info")),
                         onCancellation = null)
                   }
                 }
@@ -109,10 +111,13 @@ class ActivityRepositoryImpl @Inject constructor(private val osmApiService: OSMA
     }
   }
 
-  override suspend fun getHikingRouteById(id: Long): Response<Relation> {
+  private suspend fun getRouteById(
+      id: Long,
+      getRouteById: (String) -> Call<APIResponse<Relation>>,
+      query: (Long) -> String
+  ): Response<Relation> {
     return suspendCancellableCoroutine { continuation ->
-      osmApiService
-          .getHikingRouteById(hikingRouteQuery(id))
+      getRouteById(query(id))
           .enqueue(
               object : Callback<APIResponse<Relation>> {
                 override fun onResponse(
@@ -124,7 +129,7 @@ class ActivityRepositoryImpl @Inject constructor(private val osmApiService: OSMA
                         Response.Success(response.body()!!.elements[0]), onCancellation = null)
                   } else {
                     continuation.resume(
-                        Response.Failure(Exception("Error fetching the hiking route info")),
+                        Response.Failure(Exception("Error fetching the route info")),
                         onCancellation = null)
                   }
                 }
@@ -134,6 +139,18 @@ class ActivityRepositoryImpl @Inject constructor(private val osmApiService: OSMA
                 }
               })
     }
+  }
+
+  override suspend fun getHikingRoutesInfo(
+      range: Int,
+      lat: Double,
+      lon: Double
+  ): Response<List<Relation>> {
+    return getRoutesInfo(range, lat, lon, osmApiService::getHikingRoutesInfo, this::hikingInfoQuery)
+  }
+
+  override suspend fun getHikingRouteById(id: Long): Response<Relation> {
+    return getRouteById(id, osmApiService::getHikingRouteById, this::hikingRouteQuery)
   }
 
   override suspend fun getBikingRoutesInfo(
@@ -141,57 +158,11 @@ class ActivityRepositoryImpl @Inject constructor(private val osmApiService: OSMA
       lat: Double,
       lon: Double
   ): Response<List<Relation>> {
-    return suspendCancellableCoroutine { continuation ->
-      osmApiService
-          .getBikingRoutesInfo(bikingInfoQuery(range, lat, lon))
-          .enqueue(
-              object : Callback<APIResponse<Relation>> {
-                override fun onResponse(
-                    call: Call<APIResponse<Relation>>,
-                    response: retrofit2.Response<APIResponse<Relation>>
-                ) {
-                  if (response.isSuccessful) {
-                    continuation.resume(
-                        Response.Success(response.body()!!.elements), onCancellation = null)
-                  } else {
-                    continuation.resume(
-                        Response.Failure(Exception("Error fetching the biking routes info")),
-                        onCancellation = null)
-                  }
-                }
-
-                override fun onFailure(call: Call<APIResponse<Relation>>, t: Throwable) {
-                  continuation.resume(Response.Failure(t), onCancellation = null)
-                }
-              })
-    }
+    return getRoutesInfo(range, lat, lon, osmApiService::getBikingRoutesInfo, this::bikingInfoQuery)
   }
 
   override suspend fun getBikingRouteById(id: Long): Response<Relation> {
-    return suspendCancellableCoroutine { continuation ->
-      osmApiService
-          .getBikingRouteById(bikingRouteQuery(id))
-          .enqueue(
-              object : Callback<APIResponse<Relation>> {
-                override fun onResponse(
-                    call: Call<APIResponse<Relation>>,
-                    response: retrofit2.Response<APIResponse<Relation>>
-                ) {
-                  if (response.isSuccessful) {
-                    continuation.resume(
-                        Response.Success(response.body()!!.elements[0]), onCancellation = null)
-                  } else {
-                    continuation.resume(
-                        Response.Failure(Exception("Error fetching the biking route info")),
-                        onCancellation = null)
-                  }
-                }
-
-                override fun onFailure(call: Call<APIResponse<Relation>>, t: Throwable) {
-                  continuation.resume(Response.Failure(t), onCancellation = null)
-                }
-              })
-    }
+    return getRouteById(id, osmApiService::getBikingRouteById, this::bikingRouteQuery)
   }
 
   /**
