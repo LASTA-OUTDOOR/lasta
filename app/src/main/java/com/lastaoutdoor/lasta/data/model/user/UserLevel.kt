@@ -10,3 +10,9 @@ enum class UserLevel {
     return name.lowercase().replaceFirstChar { it.uppercase() }
   }
 }
+
+data class UserActivitiesLevel(
+    val climbingLevel: UserLevel,
+    val hikingLevel: UserLevel,
+    val bikingLevel: UserLevel
+)

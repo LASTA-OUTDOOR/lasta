@@ -1,24 +1,24 @@
 package com.lastaoutdoor.lasta.data.model.user
 
 import com.google.firebase.auth.FirebaseUser
+import com.lastaoutdoor.lasta.data.model.activity.ActivityType
 
 data class UserModel(
     val userId: String,
-    val userName: String?,
-    val email: String?,
-    val profilePictureUrl: String?,
-    val bio: String?,
-    val userLevel: UserLevel
+    val userName: String = "",
+    val email: String = "",
+    val profilePictureUrl: String = "",
+    val description: String = "",
+    val language: Language = Language.ENGLISH,
+    val prefActivity: ActivityType = ActivityType.CLIMBING,
+    val levels: UserActivitiesLevel =
+        UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
 ) {
   constructor(
-      firebaseUser: FirebaseUser,
-      bio: String,
-      hikingLevel: UserLevel
+      user: FirebaseUser
   ) : this(
-      firebaseUser.uid,
-      firebaseUser.displayName,
-      firebaseUser.email,
-      firebaseUser.photoUrl?.toString(),
-      bio,
-      hikingLevel)
+      userId = user.uid,
+      userName = user.displayName ?: "",
+      email = user.email ?: "",
+      profilePictureUrl = user.photoUrl?.toString() ?: "")
 }
