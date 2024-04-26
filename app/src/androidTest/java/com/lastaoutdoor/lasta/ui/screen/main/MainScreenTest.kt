@@ -11,7 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.ui.MainActivity
-import com.lastaoutdoor.lasta.ui.navigation.RootScreen
+import com.lastaoutdoor.lasta.ui.navigation.BaseRoute
 import com.lastaoutdoor.lasta.ui.screen.loading.LoadingScreen
 import com.lastaoutdoor.lasta.ui.screen.login.LoginScreen
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -40,13 +40,13 @@ class MainScreenTest {
       NavHost(
           navController = navController,
           modifier = Modifier.testTag("MainAppNavGraph"),
-          route = RootScreen.Root.route,
-          startDestination = RootScreen.Main.route) {
-            composable(RootScreen.Loading.route) { LoadingScreen(navController = navController) }
-            composable(RootScreen.Login.route) {
+          route = BaseRoute.Root.route,
+          startDestination = BaseRoute.Main.route) {
+            composable(BaseRoute.Loading.route) { LoadingScreen(navController = navController) }
+            composable(BaseRoute.Login.route) {
               LoginScreen(navController = navController, rootNavController = navController)
             }
-            composable(RootScreen.Main.route) { MainScreen(rootNavController = navController) }
+            composable(BaseRoute.Main.route) { MainScreen(rootNavController = navController) }
           }
     }
   }

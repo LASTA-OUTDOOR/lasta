@@ -9,8 +9,9 @@
     <!--Nav-->
     <string name="app_name" translatable="false">Lasta</string>
     <string name="app_name_uppercase" translatable="false">LASTA</string>
-    <string name="tab_map">Map</string>
     <string name="tab_discover">Discover</string>
+    <string name="tab_favorites">Favorites</string>
+    <string name="tab_socials">Socials</string>
     <string name="tab_profile">Profile</string>
 
     <!--Discovery-->
@@ -68,9 +69,6 @@
     <string name="activity_type">Activity Type</string>
     <string name="not_specified">not specified</string>
     <string name="no_name">No name</string>
-    <!--NavBar-->
-    <string name="favs">Favorites</string>
-    <string name="socials">Socials</string>
     <!--UpperSheet-->
     <string name = "modify_search">Modify your search settings</string>
     <!--Range search-->

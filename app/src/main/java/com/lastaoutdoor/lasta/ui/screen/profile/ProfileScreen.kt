@@ -68,7 +68,7 @@ import com.lastaoutdoor.lasta.data.model.profile.Year
 import com.lastaoutdoor.lasta.data.model.user.UserLevel
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
-import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
+import com.lastaoutdoor.lasta.ui.navigation.DestinationRoute
 import com.lastaoutdoor.lasta.ui.screen.profile.components.BarGraph
 import com.lastaoutdoor.lasta.ui.screen.profile.components.BarType
 import com.lastaoutdoor.lasta.utils.chartDisplayValues
@@ -210,7 +210,7 @@ fun UserInfo(
               Spacer(modifier = Modifier.width(8.dp))
               if (isCurrentUser) {
                 IconButton(
-                    onClick = { navController.navigate(LeafScreen.Settings.route) },
+                    onClick = { navController.navigate(DestinationRoute.Settings.route) },
                     modifier = Modifier.testTag("showDialog")) {
                       Icon(
                           Icons.Filled.Menu,

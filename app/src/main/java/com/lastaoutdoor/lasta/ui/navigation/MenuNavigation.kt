@@ -1,30 +1,9 @@
 package com.lastaoutdoor.lasta.ui.navigation
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.outlined.Face
-import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.testTag
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
-import com.lastaoutdoor.lasta.R
 
 data class MenuNavigationItem(
     val route: String,
@@ -35,6 +14,7 @@ data class MenuNavigationItem(
 
 @Composable
 fun MenuNavigation(navController: NavHostController) {
+  /*
   val items =
       listOf(
           MenuNavigationItem(
@@ -61,9 +41,9 @@ fun MenuNavigation(navController: NavHostController) {
   val navBackStackEntry by navController.currentBackStackEntryAsState()
   val currentDestination = navBackStackEntry?.destination
 
-  if (currentDestination?.route != LeafScreen.MoreInfo.route &&
-      !(currentDestination?.route ?: "").contains(LeafScreen.Conversation.route) &&
-      currentDestination?.route != LeafScreen.Settings.route) {
+  if (currentDestination?.route != DestinationRoute.MoreInfo.route &&
+      !(currentDestination?.route ?: "").contains(DestinationRoute.Conversation.route) &&
+      currentDestination?.route != DestinationRoute.Settings.route) {
     NavigationBar(modifier = Modifier.testTag("MenuNavigation")) {
       items.forEach { item ->
         val selected = currentDestination?.route == item.route
@@ -89,7 +69,5 @@ fun MenuNavigation(navController: NavHostController) {
             })
       }
     }
-  } else {
-    Unit
-  }
+  }*/
 }

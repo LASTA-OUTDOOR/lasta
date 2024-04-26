@@ -8,14 +8,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.lastaoutdoor.lasta.ui.navigation.RootScreen
+import com.lastaoutdoor.lasta.ui.navigation.BaseRoute
 import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 
 @Composable
@@ -28,9 +27,9 @@ fun LoadingScreen(
     if (isLoggedIn != null) {
       navController.popBackStack()
       if (isLoggedIn == true) {
-        navController.navigate(RootScreen.Main.route)
+        navController.navigate(BaseRoute.Main.route)
       } else {
-        navController.navigate(RootScreen.Login.route)
+        navController.navigate(BaseRoute.Login.route)
       }
     }
   }

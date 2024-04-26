@@ -1,35 +1,10 @@
 package com.lastaoutdoor.lasta.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.testTag
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
-import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.model.user.UserLevel
-import com.lastaoutdoor.lasta.data.model.user.UserModel
-import com.lastaoutdoor.lasta.ui.screen.discover.DiscoveryScreen
-import com.lastaoutdoor.lasta.ui.screen.discovery.FilterScreen
-import com.lastaoutdoor.lasta.ui.screen.favorites.FavoritesScreen
-import com.lastaoutdoor.lasta.ui.screen.moreinfo.MoreInfoScreen
-import com.lastaoutdoor.lasta.ui.screen.profile.ProfileScreen
-import com.lastaoutdoor.lasta.ui.screen.settings.SettingsScreen
-import com.lastaoutdoor.lasta.ui.screen.social.ConversationScreen
-import com.lastaoutdoor.lasta.ui.screen.social.FriendProfileScreen
-import com.lastaoutdoor.lasta.ui.screen.social.NotificationsScreen
-import com.lastaoutdoor.lasta.ui.screen.social.SocialScreen
-import com.lastaoutdoor.lasta.ui.screen.social.components.SendMessageDialog
-import com.lastaoutdoor.lasta.viewmodel.ConversationViewModel
 import com.lastaoutdoor.lasta.viewmodel.MoreInfoScreenViewModel
-import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
 @Composable
 fun MenuNavGraph(
@@ -38,6 +13,7 @@ fun MenuNavGraph(
     modifier: Modifier,
     moreInfoScreenViewModel: MoreInfoScreenViewModel = hiltViewModel()
 ) {
+  /*
 
   // allows traducted roots
   val disc = LocalContext.current.getString(R.string.tab_discover)
@@ -48,7 +24,7 @@ fun MenuNavGraph(
 
   NavHost(
       navController = navController,
-      route = RootScreen.Main.route,
+      route = BaseRoute.Main.route,
       modifier = modifier.testTag("MenuNavGraph"),
       startDestination = disc) {
         composable(disc) {
@@ -61,15 +37,15 @@ fun MenuNavGraph(
         composable(prof) {
           ProfileScreen(rootNavController = rootNavController, navController = navController)
         }
-        composable(LeafScreen.MoreInfo.route) {
+        composable(DestinationRoute.MoreInfo.route) {
           MoreInfoScreen(
               navController = navController, moreInfoScreenViewModel = moreInfoScreenViewModel)
         }
-        composable(LeafScreen.Settings.route) {
+        composable(DestinationRoute.Settings.route) {
           SettingsScreen(rootNavController = rootNavController, navController = navController)
         }
         composable(
-            LeafScreen.Conversation.route + "/{userId}",
+            DestinationRoute.Conversation.route + "/{userId}",
             arguments = listOf(navArgument("userId") { type = NavType.StringType })) {
 
               // View Model
@@ -95,7 +71,7 @@ fun MenuNavGraph(
             }
         // The friend profile screen
         composable(
-            LeafScreen.FriendProfile.route + "/{friendId}",
+            DestinationRoute.FriendProfile.route + "/{friendId}",
             arguments = listOf(navArgument("friendId") { type = NavType.StringType })) {
 
               // get the friend userModel
@@ -124,8 +100,8 @@ fun MenuNavGraph(
               FriendProfileScreen(friend = friendUserModel.value, navController::popBackStack)
             }
 
-        composable(LeafScreen.Notifications.route) {
+        composable(DestinationRoute.Notifications.route) {
           NotificationsScreen(navController = navController)
         }
-      }
+      }*/
 }

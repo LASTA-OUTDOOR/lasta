@@ -2,6 +2,10 @@ package com.lastaoutdoor.lasta.data.model.api
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.lastaoutdoor.lasta.data.model.activity.Activity
+import com.lastaoutdoor.lasta.data.model.activity.BikingActivity
+import com.lastaoutdoor.lasta.data.model.activity.ClimbingActivity
+import com.lastaoutdoor.lasta.data.model.activity.HikingActivity
 
 data class Tags(
     @SerializedName("name") val name: String,
@@ -22,21 +26,32 @@ data class Position(
     @SerializedName("lon") @Expose val lon: Double
 )
 
-abstract class OSMData {
+abstract class OSMData(
+    @SerializedName("type") @Expose open val type: String,
+    @SerializedName("id") @Expose open val id: Long,
+    @SerializedName("tags") @Expose open val tags: Tags
+) {
   abstract fun getPosition(): Position
+
+  abstract fun getActivityFromData(): Activity
 }
 
 class NodeWay(
-    @SerializedName("type") @Expose val type: String,
-    @SerializedName("id") @Expose val id: Long,
+    @SerializedName("type") @Expose override val type: String,
+    @SerializedName("id") @Expose override val id: Long,
     @SerializedName("lat") @Expose val lat: Double?,
     @SerializedName("lon") @Expose val lon: Double?,
     @SerializedName("center") @Expose val center: Position?,
-    @SerializedName("tags") @Expose val tags: Tags,
-) : OSMData() {
+    @SerializedName("tags") @Expose override val tags: Tags,
+) : OSMData(type, id, tags) {
   override fun getPosition(): Position {
     if (type == "node") return Position(lat!!, lon!!)
     return center!!
+  }
+
+  override fun getActivityFromData(): Activity {
+    return ClimbingActivity(
+        activityId = "", osmId = id, name = tags.name, startPosition = getPosition())
   }
 }
 
@@ -49,13 +64,34 @@ class SimpleWay(@SerializedName("geometry") @Expose val nodes: List<Position>?) 
 }
 
 class Relation(
-    @SerializedName("type") @Expose val type: String,
-    @SerializedName("id") @Expose val id: Long,
-    @SerializedName("tags") @Expose val tags: Tags,
+    @SerializedName("type") @Expose override val type: String,
+    @SerializedName("id") @Expose override val id: Long,
+    @SerializedName("tags") @Expose override val tags: Tags,
     @SerializedName("members") @Expose val ways: List<SimpleWay>?,
-) : OSMData() {
+) : OSMData(type, id, tags) {
   override fun getPosition(): Position {
     if (ways != null && ways[0].nodes != null) return ways[0].nodes!![0]
     return Position(0.0, 0.0)
+  }
+
+  override fun getActivityFromData(): Activity {
+    return if (tags.route == "hiking") {
+      HikingActivity(
+          activityId = "",
+          osmId = id,
+          name = tags.name,
+          startPosition = getPosition(),
+          from = tags.from,
+          to = tags.to)
+    } else {
+      BikingActivity(
+          activityId = "",
+          osmId = id,
+          name = tags.name,
+          startPosition = getPosition(),
+          from = tags.from,
+          to = tags.to,
+          distance = tags.distance.toFloat())
+    }
   }
 }

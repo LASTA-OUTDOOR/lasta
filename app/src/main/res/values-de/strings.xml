@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Lasta</string>
-    <string name="tab_map">Karte</string>
     <string name="tab_discover">Entdecken</string>
     <string name="tab_profile">Profil</string>
     <string name="relevance">Relevanz</string>
-    <string name="filter_by">Filtern nach</string>
+    <string name="filter_by">Filtern nach :</string>
     <string name="filter">Filtern</string>
     <string name="rating">Bewertung</string>
     <string name="difficulty">Schwierigkeit</string>
@@ -36,8 +34,6 @@
     <string name="activity_type">Aktivitätstyp</string>
     <string name="not_specified">nicht angegeben</string>
     <string name="no_name">Kein Name</string>
-    <string name="favs">Favoriten</string>
-    <string name="socials">Freunde</string>
     <string name="modify_search">Ändern Sie Ihre Sucheinstellungen</string>
     <string name="locality">Lokalität :</string>
     <string name="dist_radius">Suchradius :</string>
@@ -86,4 +82,6 @@
     <string name="send_message">Senden</string>
     <string name="Account_settings">Kontoeinstellungen</string>
     <string name="delete_account">Konto löschen</string>
+    <string name="tab_favorites">Favoriten</string>
+    <string name="tab_socials">Freunde</string>
 </resources>

@@ -22,7 +22,7 @@ import androidx.navigation.NavHostController
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.db.DatabaseManager
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
-import com.lastaoutdoor.lasta.ui.navigation.RootScreen
+import com.lastaoutdoor.lasta.ui.navigation.BaseRoute
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 
 @SuppressLint("MutableCollectionMutableState")
@@ -133,7 +133,7 @@ fun SetupScreen(
                 db.updateFieldInUser(authViewModel.user?.userId.toString(), "prefSport", prefSport)
 
                 rootNavController.popBackStack()
-                rootNavController.navigate(RootScreen.Main.route)
+                rootNavController.navigate(BaseRoute.Main.route)
               },
           ) {
             Text(text = LocalContext.current.getString(R.string.save))

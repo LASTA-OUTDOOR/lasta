@@ -16,10 +16,10 @@ fun MainAppNavGraph(
   NavHost(
       navController = navController,
       modifier = Modifier.testTag("MainAppNavGraph"),
-      route = RootScreen.Root.route,
-      startDestination = RootScreen.Loading.route) {
-        composable(RootScreen.Loading.route) { LoadingScreen(navController = navController) }
-        composable(RootScreen.Login.route) { LoginNavGraph(rootNavController = navController) }
-        composable(RootScreen.Main.route) { MainScreen(rootNavController = navController) }
+      route = BaseRoute.Root.route,
+      startDestination = BaseRoute.Loading.route) {
+        composable(BaseRoute.Loading.route) { LoadingScreen(navController = navController) }
+        composable(BaseRoute.Login.route) { LoginNavGraph(rootNavController = navController) }
+        composable(BaseRoute.Main.route) { MainScreen(rootNavController = navController) }
       }
 }

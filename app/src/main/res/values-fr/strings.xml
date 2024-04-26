@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Lasta</string>
-    <string name="tab_map">Carte</string>
     <string name="tab_discover">Découvrir</string>
     <string name="tab_profile">Profil</string>
     <string name="relevance">Pertinence</string>
@@ -36,8 +34,6 @@
     <string name="around_you">autour de vous</string>
     <string name="Climbing">Grimpe</string>
     <string name="popularity">popularité</string>
-    <string name="favs">Favoris</string>
-    <string name="socials">Amis</string>
     <string name="modify_search">Modifiez vos paramètres de recherche</string>
     <string name="locality">Localité :</string>
     <string name="dist_radius">Rayon de recherche :</string>
@@ -71,7 +67,7 @@
     <string name = "temperature">Température</string>
     <string name = "descr_w">Description</string>
     <string name = "wind_speed">Vitesse du vent</string>
-    <string name="no_friend_activities">Pas d\'acitivités récentes...  Ajoutes des amis pour en voir plus !</string>
+    <string name="no_friend_activities">Pas d\'acitivités récentes…  Ajoutes des amis pour en voir plus !</string>
     <string name="add_friend_title">Ajouter un amis</string>
     <string name="select_friend">Choisis un amis</string>
     <string name="show_completed_activities">Afficher vos activités terminées</string>
@@ -86,4 +82,6 @@
     <string name="send_message">Envoyer</string>
     <string name="Account_settings">Paramètres du compte</string>
     <string name="delete_account">Supprimer compte</string>
+    <string name="tab_favorites">Favoris</string>
+    <string name="tab_socials">Amis</string>
 </resources>

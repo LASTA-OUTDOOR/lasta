@@ -16,8 +16,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -29,7 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
+import com.lastaoutdoor.lasta.ui.navigation.DestinationRoute
 import com.lastaoutdoor.lasta.ui.screen.social.components.TabMenu
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
@@ -57,7 +55,7 @@ fun Header(navController: NavController, viewModel: SocialViewModel = hiltViewMo
                 }
           }
           BadgedBox(badge = { if (viewModel.hasFriendRequest) Badge {} }) {
-            IconButton(onClick = { navController.navigate(LeafScreen.Notifications.route) }) {
+            IconButton(onClick = { navController.navigate(DestinationRoute.Notifications.route) }) {
               Icon(Icons.Filled.Notifications, contentDescription = "Notification Icon")
             }
           }

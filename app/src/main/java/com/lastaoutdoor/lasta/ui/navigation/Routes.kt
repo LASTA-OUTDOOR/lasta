@@ -1,54 +1,41 @@
 package com.lastaoutdoor.lasta.ui.navigation
 
-/** Sealed class representing all possible root screens in the application */
-sealed class RootScreen(val route: String) {
-  object Root : RootScreen("Root")
+open class Route(open val route: String)
 
-  object Loading : RootScreen("Loading")
+sealed class BaseRoute(override val route: String) : Route(route) {
+  object Root : BaseRoute("Root")
 
-  object Login : RootScreen("Login")
+  object Loading : BaseRoute("Loading")
 
-  object Main : RootScreen("Main")
+  object Login : BaseRoute("Login")
+
+  object Main : BaseRoute("Main")
 }
 
 /** Sealed class representing all possible leaf screens in the application */
-sealed class LeafScreen(val route: String) {
+sealed class DestinationRoute(override val route: String) : Route(route) {
 
-  object Discover : LeafScreen("Discover")
+  object Discover : DestinationRoute("Discover")
 
-  object Discover2 : LeafScreen("Découvrir")
+  object Favorites : DestinationRoute("Favorites")
 
-  object Discover3 : LeafScreen("Entdecken")
+  object Socials : DestinationRoute("Socials")
 
-  object Favorites : LeafScreen("Favorites")
+  object Profile : DestinationRoute("Profile")
 
-  object Favorites2 : LeafScreen("Favoriten")
+  object SignIn : DestinationRoute("SignIn")
 
-  object Favorites3 : LeafScreen("Favoris")
+  object Setup : DestinationRoute("Setup")
 
-  object Social : LeafScreen("Socials")
+  object MoreInfo : DestinationRoute("MoreInfo")
 
-  object Social2 : LeafScreen("Amis")
+  object Filter : DestinationRoute("Filter")
 
-  object Social3 : LeafScreen("Freunde")
+  object Conversation : DestinationRoute("Conversation")
 
-  object Profile : LeafScreen("Profile")
+  object Notifications : DestinationRoute("Notifications")
 
-  object Profile2 : LeafScreen("Profil")
+  object Settings : DestinationRoute("Settings")
 
-  object SignIn : LeafScreen("SignIn")
-
-  object Setup : LeafScreen("Setup")
-
-  object MoreInfo : LeafScreen("MoreInfo")
-
-  object Filter : LeafScreen("Filter")
-
-  object Conversation : LeafScreen("Conversation")
-
-  object Notifications : LeafScreen("Notifications")
-
-  object Settings : LeafScreen("Settings")
-
-  object FriendProfile : LeafScreen("FriendProfile")
+  object FriendProfile : DestinationRoute("FriendProfile")
 }

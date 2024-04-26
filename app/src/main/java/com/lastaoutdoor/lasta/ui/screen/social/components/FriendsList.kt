@@ -35,7 +35,7 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.model.user.UserModel
-import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
+import com.lastaoutdoor.lasta.ui.navigation.DestinationRoute
 import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
@@ -62,7 +62,7 @@ fun FriendsList(navController: NavController, viewModel: SocialViewModel = hiltV
         items(viewModel.friends.size) {
           FriendsCard(viewModel.friends[it]) {
             navController.navigate(
-                LeafScreen.FriendProfile.route + "/${viewModel.friends[it].userId}")
+                DestinationRoute.FriendProfile.route + "/${viewModel.friends[it].userId}")
           }
         }
       }

@@ -17,7 +17,7 @@ import androidx.navigation.NavHostController
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.db.DatabaseManager
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
-import com.lastaoutdoor.lasta.ui.navigation.RootScreen
+import com.lastaoutdoor.lasta.ui.navigation.BaseRoute
 import com.lastaoutdoor.lasta.ui.screen.moreinfo.TopBarLogo
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
@@ -140,7 +140,7 @@ fun SettingsScreen(
                 onClick = {
                   authViewModel.signOut()
                   rootNavController.popBackStack()
-                  rootNavController.navigate(RootScreen.Login.route)
+                  rootNavController.navigate(BaseRoute.Login.route)
                 }) {
                   Text(text = LocalContext.current.getString(R.string.sign_out))
                 }
@@ -151,7 +151,7 @@ fun SettingsScreen(
                   preferencesViewModel.updateIsLoggedIn(false)
                   authViewModel.signOut()
                   rootNavController.popBackStack()
-                  rootNavController.navigate(RootScreen.Login.route)
+                  rootNavController.navigate(BaseRoute.Login.route)
                 },
                 colors =
                     ButtonDefaults.buttonColors(

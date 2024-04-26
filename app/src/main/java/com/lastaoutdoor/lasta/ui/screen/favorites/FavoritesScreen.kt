@@ -15,7 +15,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.ui.components.WeatherReport
-import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
+import com.lastaoutdoor.lasta.ui.navigation.DestinationRoute
 
 @Composable
 fun FavoritesScreen(
@@ -30,7 +30,7 @@ fun FavoritesScreen(
       modifier = Modifier.fillMaxSize(),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally) {
-        Button(onClick = { navController.navigate(LeafScreen.MoreInfo.route) }) {
+        Button(onClick = { navController.navigate(DestinationRoute.MoreInfo.route) }) {
           Text(text = LocalContext.current.getString(R.string.more_info))
         }
         Button(onClick = { displayWeather.value = true }) {

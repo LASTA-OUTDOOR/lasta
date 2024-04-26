@@ -35,7 +35,7 @@ import coil.request.ImageRequest
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.model.social.ConversationModel
 import com.lastaoutdoor.lasta.data.model.user.UserModel
-import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
+import com.lastaoutdoor.lasta.ui.navigation.DestinationRoute
 import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
@@ -92,7 +92,7 @@ fun MessageCard(
               .padding(8.dp)
               .testTag("Message")
               .clickable {
-                navController.navigate(LeafScreen.Conversation.route + "/${friend.userId}")
+                navController.navigate(DestinationRoute.Conversation.route + "/${friend.userId}")
               }) {
         Column(modifier = Modifier.padding(8.dp)) {
           Row(

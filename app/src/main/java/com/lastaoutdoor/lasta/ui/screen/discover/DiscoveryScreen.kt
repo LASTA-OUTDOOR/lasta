@@ -48,7 +48,7 @@ import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
 import com.lastaoutdoor.lasta.ui.components.SearchBarComponent
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
-import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
+import com.lastaoutdoor.lasta.ui.navigation.DestinationRoute
 import com.lastaoutdoor.lasta.ui.screen.discover.components.ModalUpperSheet
 import com.lastaoutdoor.lasta.ui.screen.discover.components.RangeSearchComposable
 import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
@@ -143,7 +143,7 @@ fun HeaderComposable(
                 SearchBarComponent(Modifier.weight(1f), onSearch = { /*TODO*/})
                 Spacer(modifier = Modifier.width(8.dp))
                 IconButton(
-                    onClick = { navController.navigate(LeafScreen.Filter.route) },
+                    onClick = { navController.navigate(DestinationRoute.Filter.route) },
                     modifier = Modifier.size(iconSize)) {
                       Icon(
                           painter = painterResource(id = R.drawable.filter_icon),
@@ -206,7 +206,7 @@ fun ActivitiesDisplay(
                 .clickable(
                     onClick = {
                       moreInfoScreenViewModel.changeActivityToDisplay(a)
-                      navController.navigate(LeafScreen.MoreInfo.route)
+                      navController.navigate(DestinationRoute.MoreInfo.route)
                     }),
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
