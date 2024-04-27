@@ -1,34 +1,19 @@
 package com.lastaoutdoor.lasta.ui.navigation
 
-import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
 import com.lastaoutdoor.lasta.ui.screen.login.LoginScreen
 import com.lastaoutdoor.lasta.ui.screen.setup.SetupScreen
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 
-@Composable
-fun LoginNavGraph(
-    rootNavController: NavHostController,
-    authViewModel: AuthViewModel = hiltViewModel()
-) {
-  val navController = rememberNavController()
-
-  NavHost(
-      navController = navController,
-      route = BaseRoute.Login.route,
-      startDestination = DestinationRoute.SignIn.route) {
-        composable(DestinationRoute.SignIn.route) {
-          LoginScreen(
-              rootNavController = rootNavController,
-              navController = navController,
-              authViewModel = authViewModel)
-        }
-        composable(DestinationRoute.Setup.route) {
-          SetupScreen(rootNavController = rootNavController, authViewModel = authViewModel)
-        }
-      }
+fun NavGraphBuilder.addLoginNavGraph(navController: NavHostController) {
+  navigation(startDestination = DestinationRoute.SignIn.route, route = BaseRoute.Login.route) {
+    composable(DestinationRoute.SignIn.route) { entry ->
+      val authViewModel: AuthViewModel = entry.sharedViewModel(navController)
+      LoginScreen()
+    }
+    composable(DestinationRoute.Setup.route) { SetupScreen() }
+  }
 }

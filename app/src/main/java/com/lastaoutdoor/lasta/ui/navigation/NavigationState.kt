@@ -1,19 +1,15 @@
 package com.lastaoutdoor.lasta.ui.navigation
 
-import android.content.res.Resources
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 
 @Stable
-class NavigationState(val navController: NavHostController, private val resources: Resources) {
+class NavigationState(val navController: NavHostController) {
   val bottomBarTabs = BottomBarTab.values()
   private val bottomBarRoutes = bottomBarTabs.map { it.route }
 
@@ -36,19 +32,6 @@ class NavigationState(val navController: NavHostController, private val resource
   }
 }
 
-/**
- * A composable function that returns the [Resources]. It will be recomposed when `Configuration`
- * gets updated.
- */
 @Composable
-@ReadOnlyComposable
-private fun resources(): Resources {
-  LocalConfiguration.current
-  return LocalContext.current.resources
-}
-
-@Composable
-fun rememberNavigationState(
-    navController: NavHostController = rememberNavController(),
-    resources: Resources = resources()
-) = remember(navController, resources) { NavigationState(navController, resources) }
+fun rememberNavigationState(navController: NavHostController = rememberNavController()) =
+    remember(navController) { NavigationState(navController) }

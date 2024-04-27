@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.db.DatabaseManager
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
@@ -28,7 +29,7 @@ import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun SetupScreen(
-    rootNavController: NavHostController,
+    rootNavController: NavHostController = rememberNavController(),
     authViewModel: AuthViewModel = hiltViewModel()
 ) {
 

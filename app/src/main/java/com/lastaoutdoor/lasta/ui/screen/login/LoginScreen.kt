@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.lastaoutdoor.lasta.ui.navigation.BaseRoute
@@ -21,8 +22,8 @@ import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 
 @Composable
 fun LoginScreen(
-    rootNavController: NavHostController,
-    navController: NavHostController,
+    rootNavController: NavHostController = rememberNavController(),
+    navController: NavHostController = rememberNavController(),
     authViewModel: AuthViewModel = hiltViewModel(),
     preferencesViewModel: PreferencesViewModel = hiltViewModel(),
 ) {
