@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
 
-  fun observeIsSignUp(): Flow<Boolean>
+  val isSignUp: Flow<Boolean>
 
   suspend fun startGoogleSignIn(): Flow<Response<BeginSignInResult>>
 

@@ -1,5 +1,6 @@
 package com.lastaoutdoor.lasta.data.db
 
+import android.content.Context
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
@@ -21,7 +22,10 @@ private const val CONVERSATION_COLLECTION = "conversations"
 private const val ERR_NOT_FOUND = -1.0
 
 /** Class containing functions for interacting with the Firestore database */
-class DatabaseManager(private val database: FirebaseFirestore = Firebase.firestore) {
+class DatabaseManager(
+    private val context: Context,
+    private val database: FirebaseFirestore = Firebase.firestore
+) {
 
   // Attributes
   private val activityConverter = ActivityConverter()
@@ -46,7 +50,7 @@ class DatabaseManager(private val database: FirebaseFirestore = Firebase.firesto
     userDocumentRef.set(userData, SetOptions.merge())
   }
 
-  suspend fun getUserFromDatabase(uid: String): UserModel {
+  suspend fun getUserFromDatabase(uid: String): UserModel? {
     val userDocumentRef = database.collection(USERS_COLLECTION).document(uid)
     val document = userDocumentRef.get().await()
     if (document != null) {
