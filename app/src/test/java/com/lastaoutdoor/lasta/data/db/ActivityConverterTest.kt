@@ -1,7 +1,7 @@
 package com.lastaoutdoor.lasta.data.db
 
 import com.google.firebase.Timestamp
-import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
+import com.lastaoutdoor.lasta.models.profile.ActivitiesDatabaseType
 import java.util.Date
 import junit.framework.TestCase.assertEquals
 import org.junit.Before

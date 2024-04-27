@@ -1,7 +1,7 @@
 package com.lastaoutdoor.lasta.data.db
 
 import com.google.firebase.Timestamp
-import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
+import com.lastaoutdoor.lasta.models.profile.ActivitiesDatabaseType
 
 /** A converter class for converting between database and model representations of activities. */
 class ActivityConverter {

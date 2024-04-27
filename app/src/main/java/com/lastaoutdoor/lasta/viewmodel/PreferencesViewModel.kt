@@ -3,8 +3,8 @@ package com.lastaoutdoor.lasta.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.lastaoutdoor.lasta.data.model.user.UserLevel
-import com.lastaoutdoor.lasta.data.model.user.UserModel
+import com.lastaoutdoor.lasta.models.user.UserLevel
+import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.PreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

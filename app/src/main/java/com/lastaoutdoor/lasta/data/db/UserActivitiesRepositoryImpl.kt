@@ -6,8 +6,8 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
-import com.lastaoutdoor.lasta.data.model.user.UserModel
+import com.lastaoutdoor.lasta.models.profile.ActivitiesDatabaseType
+import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.UserActivitiesRepository
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope

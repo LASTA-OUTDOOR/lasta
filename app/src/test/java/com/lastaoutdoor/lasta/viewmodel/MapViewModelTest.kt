@@ -3,11 +3,11 @@ package com.lastaoutdoor.lasta.viewmodel
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.MapType
-import com.lastaoutdoor.lasta.data.model.activity.ActivityType
-import com.lastaoutdoor.lasta.data.model.api.NodeWay
-import com.lastaoutdoor.lasta.data.model.api.Position
-import com.lastaoutdoor.lasta.data.model.api.Relation
-import com.lastaoutdoor.lasta.data.model.api.Tags
+import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.api.NodeWay
+import com.lastaoutdoor.lasta.models.api.Position
+import com.lastaoutdoor.lasta.models.api.Relation
+import com.lastaoutdoor.lasta.models.api.Tags
 import com.lastaoutdoor.lasta.repository.ActivityRepository
 import com.lastaoutdoor.lasta.utils.Response
 import org.junit.Assert.*

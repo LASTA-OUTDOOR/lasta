@@ -3,6 +3,9 @@ package com.lastaoutdoor.lasta.ui.navigation
 open class Route(open val route: String)
 
 sealed class BaseRoute(override val route: String) : Route(route) {
+
+  object App : BaseRoute("App")
+
   object Root : BaseRoute("Root")
 
   object Loading : BaseRoute("Loading")
@@ -15,6 +18,12 @@ sealed class BaseRoute(override val route: String) : Route(route) {
 /** Sealed class representing all possible leaf screens in the application */
 sealed class DestinationRoute(override val route: String) : Route(route) {
 
+  object Loading : DestinationRoute("Loading")
+
+  object SignIn : DestinationRoute("SignIn")
+
+  object Setup : DestinationRoute("Setup")
+
   object Discover : DestinationRoute("Discover")
 
   object Favorites : DestinationRoute("Favorites")
@@ -22,10 +31,6 @@ sealed class DestinationRoute(override val route: String) : Route(route) {
   object Socials : DestinationRoute("Socials")
 
   object Profile : DestinationRoute("Profile")
-
-  object SignIn : DestinationRoute("SignIn")
-
-  object Setup : DestinationRoute("Setup")
 
   object MoreInfo : DestinationRoute("MoreInfo")
 
@@ -35,7 +40,7 @@ sealed class DestinationRoute(override val route: String) : Route(route) {
 
   object Notifications : DestinationRoute("Notifications")
 
-  object Settings : DestinationRoute("Settings")
-
   object FriendProfile : DestinationRoute("FriendProfile")
+
+  object Settings : DestinationRoute("Settings")
 }

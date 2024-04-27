@@ -4,12 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Timestamp
 import com.lastaoutdoor.lasta.data.db.DatabaseManager
-import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
-import com.lastaoutdoor.lasta.data.model.profile.TimeFrame
-import com.lastaoutdoor.lasta.data.model.user.UserLevel
-import com.lastaoutdoor.lasta.data.model.user.UserModel
 import com.lastaoutdoor.lasta.data.model.user.toUserModel
-import com.lastaoutdoor.lasta.di.TimeProvider
+import com.lastaoutdoor.lasta.data.time.TimeProvider
+import com.lastaoutdoor.lasta.models.profile.ActivitiesDatabaseType
+import com.lastaoutdoor.lasta.models.profile.TimeFrame
+import com.lastaoutdoor.lasta.models.user.UserLevel
+import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.UserActivitiesRepository
 import com.lastaoutdoor.lasta.utils.calculateTimeRangeUntilNow

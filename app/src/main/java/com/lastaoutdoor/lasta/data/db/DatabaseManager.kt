@@ -6,12 +6,12 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
-import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
-import com.lastaoutdoor.lasta.data.model.social.ConversationModel
-import com.lastaoutdoor.lasta.data.model.social.MessageModel
-import com.lastaoutdoor.lasta.data.model.user.UserLevel
-import com.lastaoutdoor.lasta.data.model.user.UserModel
-import com.lastaoutdoor.lasta.data.model.user.UserPreferences
+import com.lastaoutdoor.lasta.models.profile.ActivitiesDatabaseType
+import com.lastaoutdoor.lasta.models.social.ConversationModel
+import com.lastaoutdoor.lasta.models.social.MessageModel
+import com.lastaoutdoor.lasta.models.user.UserLevel
+import com.lastaoutdoor.lasta.models.user.UserModel
+import com.lastaoutdoor.lasta.models.user.UserPreferences
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 

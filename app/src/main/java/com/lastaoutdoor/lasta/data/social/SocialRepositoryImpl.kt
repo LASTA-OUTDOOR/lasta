@@ -1,9 +1,9 @@
 package com.lastaoutdoor.lasta.data.social
 
 import com.lastaoutdoor.lasta.data.db.DatabaseManager
-import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
-import com.lastaoutdoor.lasta.data.model.social.ConversationModel
-import com.lastaoutdoor.lasta.data.model.user.UserModel
+import com.lastaoutdoor.lasta.models.profile.ActivitiesDatabaseType
+import com.lastaoutdoor.lasta.models.social.ConversationModel
+import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.SocialRepository
 import javax.inject.Inject
 import kotlinx.coroutines.runBlocking

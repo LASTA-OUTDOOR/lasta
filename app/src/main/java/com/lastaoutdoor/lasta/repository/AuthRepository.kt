@@ -2,7 +2,7 @@ package com.lastaoutdoor.lasta.repository
 
 import com.google.android.gms.auth.api.identity.BeginSignInResult
 import com.google.firebase.auth.AuthCredential
-import com.lastaoutdoor.lasta.data.model.user.UserModel
+import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.utils.Response
 import kotlinx.coroutines.flow.Flow
 

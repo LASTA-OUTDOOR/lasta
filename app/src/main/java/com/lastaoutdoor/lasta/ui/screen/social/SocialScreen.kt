@@ -67,7 +67,7 @@ fun Header(navController: NavController, viewModel: SocialViewModel = hiltViewMo
 }
 
 @Composable
-fun SocialScreen(navController: NavController) {
+fun SocialScreen() {
   Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
 
     // Page title and button

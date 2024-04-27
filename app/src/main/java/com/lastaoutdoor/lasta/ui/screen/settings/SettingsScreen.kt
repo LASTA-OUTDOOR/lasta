@@ -12,23 +12,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.db.DatabaseManager
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
 import com.lastaoutdoor.lasta.ui.navigation.BaseRoute
 import com.lastaoutdoor.lasta.ui.screen.moreinfo.TopBarLogo
-import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
-import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 
 @Composable
-fun SettingsScreen(
-    rootNavController: NavHostController,
-    navController: NavHostController,
-    preferencesViewModel: PreferencesViewModel = hiltViewModel(),
-    authViewModel: AuthViewModel = hiltViewModel()
-) {
+fun SettingsScreen() {
   val initialLanguage by preferencesViewModel.language.collectAsState(initial = "")
   var selectedLanguage = initialLanguage
   val database = DatabaseManager()

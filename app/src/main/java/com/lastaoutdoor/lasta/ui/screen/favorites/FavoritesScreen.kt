@@ -12,15 +12,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.window.Dialog
-import androidx.navigation.NavHostController
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.ui.components.WeatherReport
 import com.lastaoutdoor.lasta.ui.navigation.DestinationRoute
 
 @Composable
-fun FavoritesScreen(
-    navController: NavHostController,
-) {
+fun FavoritesScreen() {
   val displayWeather = remember { mutableStateOf(false) }
   if (displayWeather.value) {
     Dialog({ displayWeather.value = false }) { WeatherReport() }

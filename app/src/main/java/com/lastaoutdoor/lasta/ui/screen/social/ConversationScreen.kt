@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -22,23 +21,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.model.social.ConversationModel
-import com.lastaoutdoor.lasta.data.model.social.MessageModel
-import com.lastaoutdoor.lasta.data.model.user.UserModel
+import com.lastaoutdoor.lasta.models.social.MessageModel
+import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
 import com.lastaoutdoor.lasta.ui.screen.moreinfo.TopBarLogo
 
 @Composable
-fun ConversationScreen(
-    navController: NavController,
-    conversationModel: ConversationModel?,
-    refresh: () -> Unit,
-    userId: String,
-    friendId: String,
-    showSendDialog: () -> Unit
-) {
+fun ConversationScreen() {
   println(conversationModel)
   Column {
     if (conversationModel == null || conversationModel.users.isEmpty()) {

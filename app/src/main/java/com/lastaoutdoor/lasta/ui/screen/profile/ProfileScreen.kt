@@ -59,13 +59,13 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.db.DatabaseManager
-import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
-import com.lastaoutdoor.lasta.data.model.profile.DaysInWeek
-import com.lastaoutdoor.lasta.data.model.profile.MonthsInYear
-import com.lastaoutdoor.lasta.data.model.profile.TimeFrame
-import com.lastaoutdoor.lasta.data.model.profile.WeeksInMonth
-import com.lastaoutdoor.lasta.data.model.profile.Year
-import com.lastaoutdoor.lasta.data.model.user.UserLevel
+import com.lastaoutdoor.lasta.models.profile.ActivitiesDatabaseType
+import com.lastaoutdoor.lasta.models.profile.DaysInWeek
+import com.lastaoutdoor.lasta.models.profile.MonthsInYear
+import com.lastaoutdoor.lasta.models.profile.TimeFrame
+import com.lastaoutdoor.lasta.models.profile.WeeksInMonth
+import com.lastaoutdoor.lasta.models.profile.Year
+import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
 import com.lastaoutdoor.lasta.ui.navigation.DestinationRoute
@@ -89,11 +89,7 @@ import java.util.Calendar
  * @param rootNavController The NavController used for navigation.
  */
 @Composable
-fun ProfileScreen(
-    profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(),
-    rootNavController: NavHostController,
-    navController: NavHostController
-) {
+fun ProfileScreen() {
   // profileScreenVIewModel.addTrailToUserActivities()
   val activities by profileScreenViewModel.filteredActivities.collectAsState()
   val timeFrame by profileScreenViewModel.timeFrame.collectAsState()

@@ -25,9 +25,10 @@ fun AppNavGraph() {
         NavHost(
             modifier = Modifier.padding(paddingValues),
             navController = navigationState.navController,
-            route = BaseRoute.Root.route,
             startDestination = BaseRoute.Loading.route) {
+              addLoadingNavGraph(navigationState.navController)
               addLoginNavGraph(navigationState.navController)
+              addMainNavGraph(navigationState.navController)
             }
       }
 }

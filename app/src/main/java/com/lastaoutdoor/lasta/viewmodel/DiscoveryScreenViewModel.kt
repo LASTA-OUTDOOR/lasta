@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.model.activity.Activity
-import com.lastaoutdoor.lasta.data.model.activity.ActivityType
-import com.lastaoutdoor.lasta.data.model.activity.Difficulty
+import com.lastaoutdoor.lasta.models.activity.Activity
+import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.repository.ActivityRepository
 import com.lastaoutdoor.lasta.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,26 +16,6 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-
-enum class DiscoveryScreenType {
-  LIST,
-  MAP;
-
-  override fun toString(): String {
-    return name.lowercase().replaceFirstChar { it.uppercase() }
-  }
-
-  fun toStringCon(con: Context): String {
-    return when (this) {
-      LIST -> con.getString(R.string.list)
-      MAP -> con.getString(R.string.map)
-    }
-  }
-
-  fun toStringConDisp(con: Context): (DiscoveryScreenType) -> String {
-    return { it -> it.toStringCon(con) }
-  }
-}
 
 @HiltViewModel
 class DiscoveryScreenViewModel @Inject constructor(private val repository: ActivityRepository) :
@@ -127,5 +107,25 @@ class DiscoveryScreenViewModel @Inject constructor(private val repository: Activ
   // Set the selected locality
   fun setSelectedLocality(locality: Pair<String, LatLng>) {
     _selectedLocality.value = locality
+  }
+}
+
+enum class DiscoveryScreenType {
+  LIST,
+  MAP;
+
+  override fun toString(): String {
+    return name.lowercase().replaceFirstChar { it.uppercase() }
+  }
+
+  fun toStringCon(con: Context): String {
+    return when (this) {
+      LIST -> con.getString(R.string.list)
+      MAP -> con.getString(R.string.map)
+    }
+  }
+
+  fun toStringConDisp(con: Context): (DiscoveryScreenType) -> String {
+    return { it -> it.toStringCon(con) }
   }
 }
