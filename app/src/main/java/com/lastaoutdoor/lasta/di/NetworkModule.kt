@@ -14,13 +14,13 @@ import com.lastaoutdoor.lasta.data.api.osm.OSMApiService
 import com.lastaoutdoor.lasta.data.api.weather.WeatherApiService
 import com.lastaoutdoor.lasta.data.api.weather.WeatherRepositoryImpl
 import com.lastaoutdoor.lasta.data.auth.AuthRepositoryImpl
-import com.lastaoutdoor.lasta.data.db.UserActivitiesRepositoryImpl
+import com.lastaoutdoor.lasta.data.db.UserActivitiesDBRepositoryImpl
 import com.lastaoutdoor.lasta.data.social.SocialRepositoryImpl
-import com.lastaoutdoor.lasta.repository.ActivityRepository
-import com.lastaoutdoor.lasta.repository.AuthRepository
-import com.lastaoutdoor.lasta.repository.SocialRepository
-import com.lastaoutdoor.lasta.repository.UserActivitiesRepository
-import com.lastaoutdoor.lasta.repository.WeatherRepository
+import com.lastaoutdoor.lasta.repository.api.ActivityRepository
+import com.lastaoutdoor.lasta.repository.api.WeatherRepository
+import com.lastaoutdoor.lasta.repository.auth.AuthRepository
+import com.lastaoutdoor.lasta.repository.db.SocialRepository
+import com.lastaoutdoor.lasta.repository.db.UserActivitiesDBRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,9 +34,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-  @Singleton @Provides fun provideFirebaseAuth() = Firebase.auth
+  @Singleton @Provides fun provideFirebaseAuth(): FirebaseAuth = Firebase.auth
 
-  @Provides @Singleton fun provideFirebaseFirestore() = Firebase.firestore
+  @Provides @Singleton fun provideFirebaseFirestore(): FirebaseFirestore = Firebase.firestore
 
   @Provides
   @Named("signInRequest")
@@ -105,7 +105,7 @@ object NetworkModule {
   fun provideActivitiesRepository(
       @ApplicationContext context: Context,
       database: FirebaseFirestore
-  ): UserActivitiesRepository = UserActivitiesRepositoryImpl(database, context)
+  ): UserActivitiesDBRepository = UserActivitiesDBRepositoryImpl(database, context)
 
   @Singleton
   @Provides

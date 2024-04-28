@@ -12,8 +12,8 @@ import com.lastaoutdoor.lasta.models.profile.TimeFrame
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.models.user.UserPreferences
-import com.lastaoutdoor.lasta.repository.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.UserActivitiesRepository
+import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic

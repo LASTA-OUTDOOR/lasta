@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.repository
+package com.lastaoutdoor.lasta.repository.app
 
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.Language

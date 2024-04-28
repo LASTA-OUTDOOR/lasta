@@ -9,9 +9,9 @@ import com.lastaoutdoor.lasta.models.social.MessageModel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.models.user.UserPreferences
-import com.lastaoutdoor.lasta.repository.ConnectivityRepository
-import com.lastaoutdoor.lasta.repository.PreferencesRepository
-import com.lastaoutdoor.lasta.repository.SocialRepository
+import com.lastaoutdoor.lasta.repository.app.ConnectivityRepository
+import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
+import com.lastaoutdoor.lasta.repository.db.SocialRepository
 import com.lastaoutdoor.lasta.utils.ConnectionState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

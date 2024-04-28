@@ -1,166 +1,93 @@
 package com.lastaoutdoor.lasta.data.db
 
 import android.content.Context
-import com.google.firebase.Firebase
-import com.google.firebase.Timestamp
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import com.google.firebase.firestore.firestore
-import com.lastaoutdoor.lasta.models.profile.ActivitiesDatabaseType
-import com.lastaoutdoor.lasta.models.social.ConversationModel
-import com.lastaoutdoor.lasta.models.social.MessageModel
+import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.user.Language
+import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
-import com.lastaoutdoor.lasta.models.user.UserPreferences
-import kotlinx.coroutines.runBlocking
+import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
+import javax.inject.Singleton
 
-private const val USERS_COLLECTION = "users"
-private const val ACTIVITIES_COLLECTION = "activities_database"
-private const val CONVERSATION_COLLECTION = "conversations"
-private const val ERR_NOT_FOUND = -1.0
+@Singleton
+class UserDBRepositoryImpl @Inject constructor(private val context: Context, private val database: FirebaseFirestore) :
+    UserDBRepository {
 
-/** Class containing functions for interacting with the Firestore database */
-class DatabaseManager(
-    private val context: Context,
-    private val database: FirebaseFirestore = Firebase.firestore
-) {
+  private val userCollection = database.collection(context.getString(R.string.user_db_name))
 
-  // Attributes
-  private val activityConverter = ActivityConverter()
+  override suspend fun getUserById(userId: String): UserModel? {
+    val user = userCollection.document(userId).get().await()
+    return if (user.exists()) {
+      val userName = user.getString("userName") ?: ""
+      val email = user.getString("email") ?: ""
+      val profilePictureUrl = user.getString("profilePictureUrl") ?: ""
+      val description = user.getString("description") ?: ""
+      val language = Language.valueOf(user.getString("language") ?: Language.ENGLISH.name)
+      val prefActivity =
+          ActivityType.valueOf(user.getString("prefActivity") ?: ActivityType.CLIMBING.name)
+      val levels =
+          UserActivitiesLevel(
+              climbingLevel =
+                  UserLevel.valueOf(user.getString("climbingLevel") ?: UserLevel.BEGINNER.name),
+              hikingLevel =
+                  UserLevel.valueOf(user.getString("hikingLevel") ?: UserLevel.BEGINNER.name),
+              bikingLevel =
+                  UserLevel.valueOf(user.getString("bikingLevel") ?: UserLevel.BEGINNER.name))
+      UserModel(
+          userId, userName, email, profilePictureUrl, description, language, prefActivity, levels)
+    } else null
+  }
 
-  /**
-   * Function to add a user to the Firestore database
-   *
-   * @param user The user to add to the database
-   */
-  fun addUserToDatabase(user: UserModel) {
+  override suspend fun getUserByEmail(email: String): UserModel? {
+    val query = userCollection.whereEqualTo("email", email).get().await()
+    return if (!query.isEmpty) {
+      val user = query.documents[0]
+      val userId = user.id
+      val userName = user.getString("userName") ?: ""
+      val profilePictureUrl = user.getString("profilePictureUrl") ?: ""
+      val description = user.getString("description") ?: ""
+      val language = Language.valueOf(user.getString("language") ?: Language.ENGLISH.name)
+      val prefActivity =
+          ActivityType.valueOf(user.getString("prefActivity") ?: ActivityType.CLIMBING.name)
+      val levels =
+          UserActivitiesLevel(
+              climbingLevel =
+                  UserLevel.valueOf(user.getString("climbingLevel") ?: UserLevel.BEGINNER.name),
+              hikingLevel =
+                  UserLevel.valueOf(user.getString("hikingLevel") ?: UserLevel.BEGINNER.name),
+              bikingLevel =
+                  UserLevel.valueOf(user.getString("bikingLevel") ?: UserLevel.BEGINNER.name))
+      UserModel(
+          userId, userName, email, profilePictureUrl, description, language, prefActivity, levels)
+    } else null
+  }
 
-    val userDocumentRef = database.collection(USERS_COLLECTION).document(user.userId)
-
-    // Create a data map with the user's information
+  override fun updateUser(user: UserModel) {
     val userData =
         hashMapOf(
+            "userName" to user.userName,
             "email" to user.email,
-            "displayName" to user.userName,
             "profilePictureUrl" to user.profilePictureUrl,
-            "hikingLevel" to user.userLevel.toString(),
-            "friends" to emptyList<String>())
-    userDocumentRef.set(userData, SetOptions.merge())
+            "description" to user.description,
+            "language" to user.language.name,
+            "prefActivity" to user.prefActivity.name,
+            "levels" to
+                hashMapOf(
+                    "climbingLevel" to user.levels.climbingLevel.name,
+                    "hikingLevel" to user.levels.hikingLevel.name,
+                    "bikingLevel" to user.levels.bikingLevel.name))
+    userCollection
+        .document(user.userId)
+        .set(userData, SetOptions.merge())
+        .addOnSuccessListener { /* TODO */}
+        .addOnFailureListener { e -> e.printStackTrace() }
   }
-
-  suspend fun getUserFromDatabase(uid: String): UserModel? {
-    val userDocumentRef = database.collection(USERS_COLLECTION).document(uid)
-    val document = userDocumentRef.get().await()
-    if (document != null) {
-      val email = document.getString("email") ?: ""
-      val displayName = document.getString("displayName") ?: ""
-      val profilePictureUrl = document.getString("profilePictureUrl") ?: ""
-      val bio = document.getString("bio") ?: ""
-      val hikingLevel = document.getString("hikingLevel")?.uppercase() ?: ""
-      return try {
-        UserModel(uid, displayName, email, profilePictureUrl, bio, UserLevel.valueOf(hikingLevel))
-      } catch (e: Exception) {
-        UserModel(uid, displayName, email, profilePictureUrl, bio, UserLevel.BEGINNER)
-      }
-    }
-    return UserModel("", "", "", "", "", UserLevel.BEGINNER)
-  }
-
-  suspend fun getUserFromEmail(mail: String): UserModel? {
-    val userDocumentRef = database.collection(USERS_COLLECTION)
-    val query = userDocumentRef.whereEqualTo("email", mail).get().await()
-    if (!query.isEmpty) {
-      val document = query.documents[0]
-      val email = document.getString("email") ?: ""
-      val displayName = document.getString("displayName") ?: ""
-      val profilePictureUrl = document.getString("profilePictureUrl") ?: ""
-      val bio = document.getString("bio") ?: ""
-      var hikingLevel = document.getString("hikingLevel") ?: ""
-      if (hikingLevel == "null" || hikingLevel == "") hikingLevel = "BEGINNER"
-      return UserModel(
-          document.id, displayName, email, profilePictureUrl, bio, UserLevel.valueOf(hikingLevel))
-    } else {
-      return null
-    }
-  }
-
-  /**
-   * Function to get a field from the user's document in the Firestore database
-   *
-   * @param uid The unique identifier of the user
-   * @param field The field to get
-   * @return The value of the field
-   */
-  suspend fun getFieldFromUser(uid: String, field: String): String {
-    // Create a reference to the document with the user's UID
-    val userDocumentRef = database.collection(USERS_COLLECTION).document(uid)
-
-    // Get the document snapshot
-    val documentSnapshot = userDocumentRef.get().await()
-
-    // Get the field from the document snapshot
-    return documentSnapshot.getString(field) ?: ""
-  }
-
-  /**
-   * Function to add a field to the user's document in the Firestore database
-   *
-   * @param uid The unique identifier of the user
-   * @param field The field to add
-   * @param value The value of the field
-   */
-  fun addFieldToUser(uid: String, field: String, value: String) {
-    // Create a reference to the document with the user's UID
-    val userDocumentRef = database.collection(USERS_COLLECTION).document(uid)
-
-    // Create a data map with the field and value
-    val data = hashMapOf(field to value)
-
-    // Set the field in the document
-    userDocumentRef.set(data, SetOptions.merge())
-  }
-
-  fun updateUserInfo(user: UserModel) {
-    val userDocumentRef = database.collection(USERS_COLLECTION).document(user.userId)
-
-    // Create a data map with the user's information
-    val userData =
-        hashMapOf(
-            "email" to user.email,
-            "displayName" to user.userName,
-            "profilePictureUrl" to user.profilePictureUrl,
-            "hikingLevel" to user.userLevel.toString())
-    userDocumentRef.set(userData, SetOptions.merge())
-  }
-
-  /**
-   * Function to update a field in the user's document in the Firestore database
-   *
-   * @param uid The unique identifier of the user
-   * @param field The field to update
-   * @param value The new value of the field
-   */
-  fun updateFieldInUser(uid: String, field: String, value: Any) {
-    // Create a reference to the document with the user's UID
-    val userDocumentRef = database.collection(USERS_COLLECTION).document(uid)
-
-    // Create a data map with the field and value
-    val data = hashMapOf(field to value)
-
-    // Update the field in the document
-    userDocumentRef.update(data as Map<String, Any>)
-  }
-
-  /**
-   * Function to create a new collection in the Firestore database
-   *
-   * @param collectionName The name of the collection to create
-   */
-  fun createCollection(collectionName: String) {
-    database.collection(collectionName)
-  }
+  /*
 
   /**
    * Function to get a field of a hiking activity from the user's document in the Firestore database
@@ -549,5 +476,5 @@ class DatabaseManager(
       // Return default preferences if not found
       return UserPreferences(false, "", "", "", "", "", UserLevel.BEGINNER, "English", "Hiking")
     }
-  }
+  }*/
 }

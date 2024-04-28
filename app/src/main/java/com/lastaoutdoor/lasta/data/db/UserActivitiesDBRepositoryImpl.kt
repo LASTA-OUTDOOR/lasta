@@ -8,17 +8,17 @@ import com.google.firebase.firestore.SetOptions
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.models.user.UserModel
-import com.lastaoutdoor.lasta.repository.UserActivitiesRepository
+import com.lastaoutdoor.lasta.repository.db.UserActivitiesDBRepository
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-class UserActivitiesRepositoryImpl
+class UserActivitiesDBRepositoryImpl
 @Inject
 constructor(private val database: FirebaseFirestore, private val context: Context) :
-    UserActivitiesRepository {
+    UserActivitiesDBRepository {
   private val activityConverter = ActivityConverter()
 
   /**
@@ -30,7 +30,7 @@ constructor(private val database: FirebaseFirestore, private val context: Contex
     try {
       val userDocumentRef =
           database
-              .collection(context.getString(R.string.activities_database_name))
+              .collection(context.getString(R.string.user_activities_db_name))
               .document(user.uid)
       val userData =
           hashMapOf(

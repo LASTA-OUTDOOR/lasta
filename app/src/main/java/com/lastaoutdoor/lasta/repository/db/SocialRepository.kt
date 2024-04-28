@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.repository
+package com.lastaoutdoor.lasta.repository.db
 
 import com.lastaoutdoor.lasta.models.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.models.social.ConversationModel

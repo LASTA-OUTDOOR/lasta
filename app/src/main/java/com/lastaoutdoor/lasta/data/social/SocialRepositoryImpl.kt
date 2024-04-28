@@ -1,17 +1,17 @@
 package com.lastaoutdoor.lasta.data.social
 
-import com.lastaoutdoor.lasta.data.db.DatabaseManager
+import com.lastaoutdoor.lasta.data.db.UserDBRepositoryImpl
 import com.lastaoutdoor.lasta.models.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.models.social.ConversationModel
 import com.lastaoutdoor.lasta.models.user.UserModel
-import com.lastaoutdoor.lasta.repository.SocialRepository
+import com.lastaoutdoor.lasta.repository.db.SocialRepository
 import javax.inject.Inject
 import kotlinx.coroutines.runBlocking
 
 class SocialRepositoryImpl @Inject constructor() : SocialRepository {
 
   // database manager for firestore interactions
-  private val manager = DatabaseManager()
+  private val manager = UserDBRepositoryImpl()
 
   override fun getFriends(userId: String): List<UserModel> {
     return manager.getFriends(userId)

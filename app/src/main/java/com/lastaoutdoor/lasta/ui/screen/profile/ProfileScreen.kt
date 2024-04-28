@@ -58,7 +58,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.db.DatabaseManager
+import com.lastaoutdoor.lasta.data.db.UserDBRepositoryImpl
 import com.lastaoutdoor.lasta.models.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.models.profile.DaysInWeek
 import com.lastaoutdoor.lasta.models.profile.MonthsInYear
@@ -168,7 +168,7 @@ fun UserInfo(
       bioText = bio ?: "",
       onBioChange = { newBio ->
         preferencesViewModel.updateBio(newBio)
-        DatabaseManager().updateFieldInUser(user.value.userId, "bio", newBio)
+        UserDBRepositoryImpl().updateFieldInUser(user.value.userId, "bio", newBio)
         isEditBio = false
       })
 
@@ -335,7 +335,8 @@ fun HikingRow(
               selected = hikingLevel == selectedUserLevel,
               onClick = {
                 preferences.updateHikingLevel(hikingLevel)
-                DatabaseManager().updateFieldInUser(userId, "hikingLevel", hikingLevel.toString())
+                UserDBRepositoryImpl()
+                    .updateFieldInUser(userId, "hikingLevel", hikingLevel.toString())
               })
         }
       }

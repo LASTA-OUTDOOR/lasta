@@ -7,8 +7,8 @@ import com.lastaoutdoor.lasta.data.connectivity.ConnectivityRepositoryImpl
 import com.lastaoutdoor.lasta.data.preferences.PreferencesRepositoryImpl
 import com.lastaoutdoor.lasta.data.time.RealTimeProvider
 import com.lastaoutdoor.lasta.data.time.TimeProvider
-import com.lastaoutdoor.lasta.repository.ConnectivityRepository
-import com.lastaoutdoor.lasta.repository.PreferencesRepository
+import com.lastaoutdoor.lasta.repository.app.ConnectivityRepository
+import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

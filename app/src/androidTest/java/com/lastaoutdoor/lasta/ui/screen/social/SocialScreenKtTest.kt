@@ -3,7 +3,7 @@ package com.lastaoutdoor.lasta.ui.screen.social
 import com.lastaoutdoor.lasta.models.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.models.social.ConversationModel
 import com.lastaoutdoor.lasta.models.user.UserModel
-import com.lastaoutdoor.lasta.repository.SocialRepository
+import com.lastaoutdoor.lasta.repository.db.SocialRepository
 
 // Class mocking the social repository
 class FakeSocialRepository : SocialRepository {

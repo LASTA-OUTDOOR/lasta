@@ -3,8 +3,7 @@ package com.lastaoutdoor.lasta.data.auth
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.FirebaseAuth
-import com.lastaoutdoor.lasta.repository.AuthRepository
-import org.junit.Assert.*
+import com.lastaoutdoor.lasta.repository.auth.AuthRepository
 
 // @RunWith(RobolectricTestRunner::class)
 // @Config(manifest = Config.NONE)

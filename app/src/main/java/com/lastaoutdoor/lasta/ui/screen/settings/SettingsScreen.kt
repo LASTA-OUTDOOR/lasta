@@ -13,7 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.db.DatabaseManager
+import com.lastaoutdoor.lasta.data.db.UserDBRepositoryImpl
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
 import com.lastaoutdoor.lasta.ui.navigation.BaseRoute
 import com.lastaoutdoor.lasta.ui.screen.moreinfo.TopBarLogo
@@ -22,7 +22,7 @@ import com.lastaoutdoor.lasta.ui.screen.moreinfo.TopBarLogo
 fun SettingsScreen() {
   val initialLanguage by preferencesViewModel.language.collectAsState(initial = "")
   var selectedLanguage = initialLanguage
-  val database = DatabaseManager()
+  val database = UserDBRepositoryImpl()
 
   // If prefViewmodel pref sport is hiking set a called "isHiking" to true
   val isHiking = preferencesViewModel.prefSport.collectAsState(initial = "").value == "Hiking"

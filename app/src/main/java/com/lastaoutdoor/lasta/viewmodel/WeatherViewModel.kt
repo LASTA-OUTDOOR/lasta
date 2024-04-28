@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
-import com.lastaoutdoor.lasta.repository.WeatherRepository
+import com.lastaoutdoor.lasta.repository.api.WeatherRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch

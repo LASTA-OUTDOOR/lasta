@@ -21,7 +21,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.db.DatabaseManager
+import com.lastaoutdoor.lasta.data.db.UserDBRepositoryImpl
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
 import com.lastaoutdoor.lasta.ui.navigation.BaseRoute
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
@@ -127,7 +127,7 @@ fun SetupScreen(
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
           Button(
               onClick = {
-                val db = DatabaseManager()
+                val db = UserDBRepositoryImpl()
                 db.updateFieldInUser(
                     authViewModel.user?.userId.toString(), "language", selectedLanguage)
                 val prefSport = if (isHikingSelected) "Hiking" else "Climbing"

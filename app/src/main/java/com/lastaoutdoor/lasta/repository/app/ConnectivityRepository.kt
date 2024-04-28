@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.repository
+package com.lastaoutdoor.lasta.repository.app
 
 import com.lastaoutdoor.lasta.utils.ConnectionState
 import kotlinx.coroutines.flow.Flow

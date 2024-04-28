@@ -1,11 +1,11 @@
-package com.lastaoutdoor.lasta.repository
+package com.lastaoutdoor.lasta.repository.db
 
 import com.google.firebase.auth.FirebaseUser
 import com.lastaoutdoor.lasta.models.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.models.user.UserModel
 
 /** This interface provides methods for interacting with user activities data. */
-interface UserActivitiesRepository {
+interface UserActivitiesDBRepository {
 
   /**
    * Adds an activity to a user's activities.

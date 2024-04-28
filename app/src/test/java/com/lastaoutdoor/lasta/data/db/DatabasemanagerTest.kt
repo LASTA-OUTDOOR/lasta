@@ -4,7 +4,7 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.db.DatabaseManager
+import com.lastaoutdoor.lasta.data.db.UserDBRepositoryImpl
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.every
@@ -25,14 +25,14 @@ class DatabaseManagerTest {
   private val user: FirebaseUser = mockk()
   private val documentReference: DocumentReference = mockk()
   private val documentSnapshot: DocumentSnapshot = mockk()
-  private lateinit var databaseManager: DatabaseManager
+  private lateinit var databaseManager: UserDBRepositoryImpl
   private val task: UserActivitiesRepositoryImplTest.mockTask<DocumentSnapshot> = mockk()
   private val task2: UserActivitiesRepositoryImplTest.mockTask<Void> = mockk()
 
   @Before
   fun setup() {
 
-    databaseManager = DatabaseManager(firestore)
+    databaseManager = UserDBRepositoryImpl(firestore)
     every { context.getString(R.string.activities_database_name) } returns "activities"
     every { firestore.collection("users") } returns mockk()
     every { firestore.collection("users").document(any()) } returns documentReference

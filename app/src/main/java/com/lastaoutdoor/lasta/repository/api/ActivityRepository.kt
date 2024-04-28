@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.repository
+package com.lastaoutdoor.lasta.repository.api
 
 import com.lastaoutdoor.lasta.models.api.NodeWay
 import com.lastaoutdoor.lasta.models.api.Relation

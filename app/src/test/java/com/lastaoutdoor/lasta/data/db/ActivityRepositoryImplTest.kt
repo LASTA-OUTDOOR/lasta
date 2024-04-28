@@ -9,7 +9,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.db.UserActivitiesRepositoryImpl
+import com.lastaoutdoor.lasta.data.db.UserActivitiesDBRepositoryImpl
 import com.lastaoutdoor.lasta.models.profile.ActivitiesDatabaseType
 import io.mockk.*
 import java.lang.Exception
@@ -82,7 +82,7 @@ class UserActivitiesRepositoryImplTest {
   private val user: FirebaseUser = mockk()
   private val documentReference: DocumentReference = mockk()
   private val documentSnapshot: DocumentSnapshot = mockk()
-  private val activitiesRepository = UserActivitiesRepositoryImpl(firestore, context)
+  private val activitiesRepository = UserActivitiesDBRepositoryImpl(firestore, context)
   private val task: mockTask<DocumentSnapshot> = mockk()
   private val task2: mockTask<Void> = mockk()
 
@@ -143,7 +143,7 @@ class UserActivitiesRepositoryImplTest {
             "Climbing" to arrayListOf<ActivitiesDatabaseType.Climb>())
     every { documentReference.set(userData, SetOptions.merge()) } returns task2
     val method: Method =
-        UserActivitiesRepositoryImpl::class
+        UserActivitiesDBRepositoryImpl::class
             .java
             .getDeclaredMethod("addUserToActivitiesDatabase", FirebaseUser::class.java)
 

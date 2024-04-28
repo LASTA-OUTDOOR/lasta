@@ -3,15 +3,15 @@ package com.lastaoutdoor.lasta.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Timestamp
-import com.lastaoutdoor.lasta.data.db.DatabaseManager
+import com.lastaoutdoor.lasta.data.db.UserDBRepositoryImpl
 import com.lastaoutdoor.lasta.data.model.user.toUserModel
 import com.lastaoutdoor.lasta.data.time.TimeProvider
 import com.lastaoutdoor.lasta.models.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.models.profile.TimeFrame
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
-import com.lastaoutdoor.lasta.repository.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.UserActivitiesRepository
+import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.utils.calculateTimeRangeUntilNow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -157,7 +157,7 @@ constructor(
    */
   fun updateUser(uid: String) {
     viewModelScope.launch {
-      val user = DatabaseManager().getUserFromDatabase(uid)
+      val user = UserDBRepositoryImpl().getUserFromDatabase(uid)
       updateUser(user)
     }
   }

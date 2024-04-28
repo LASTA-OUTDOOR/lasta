@@ -2,7 +2,7 @@ package com.lastaoutdoor.lasta.data.api.osm
 
 import com.lastaoutdoor.lasta.models.api.NodeWay
 import com.lastaoutdoor.lasta.models.api.Relation
-import com.lastaoutdoor.lasta.repository.ActivityRepository
+import com.lastaoutdoor.lasta.repository.api.ActivityRepository
 import com.lastaoutdoor.lasta.utils.Response
 import javax.inject.Inject
 import javax.inject.Singleton
