@@ -10,15 +10,41 @@ import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.tasks.await
 
 @Singleton
-class UserDBRepositoryImpl @Inject constructor(private val context: Context, private val database: FirebaseFirestore) :
+class UserDBRepositoryImpl
+@Inject
+constructor(private val context: Context, private val database: FirebaseFirestore) :
     UserDBRepository {
 
   private val userCollection = database.collection(context.getString(R.string.user_db_name))
+
+  override fun updateUser(user: UserModel) {
+    val userData =
+        hashMapOf(
+            "userName" to user.userName,
+            "email" to user.email,
+            "profilePictureUrl" to user.profilePictureUrl,
+            "description" to user.description,
+            "language" to user.language.name,
+            "prefActivity" to user.prefActivity.name,
+            "levels" to
+                hashMapOf(
+                    "climbingLevel" to user.levels.climbingLevel.name,
+                    "hikingLevel" to user.levels.hikingLevel.name,
+                    "bikingLevel" to user.levels.bikingLevel.name),
+            "friends" to user.friends,
+            "friendRequests" to user.friendRequests,
+            "favorites" to user.favorites)
+    userCollection
+        .document(user.userId)
+        .set(userData, SetOptions.merge())
+        .addOnSuccessListener { /* TODO */}
+        .addOnFailureListener { e -> e.printStackTrace() }
+  }
 
   override suspend fun getUserById(userId: String): UserModel? {
     val user = userCollection.document(userId).get().await()
@@ -38,8 +64,21 @@ class UserDBRepositoryImpl @Inject constructor(private val context: Context, pri
                   UserLevel.valueOf(user.getString("hikingLevel") ?: UserLevel.BEGINNER.name),
               bikingLevel =
                   UserLevel.valueOf(user.getString("bikingLevel") ?: UserLevel.BEGINNER.name))
+      val friends = (user.get("friends") ?: emptyList<String>()) as List<String>
+      val friendRequests = (user.get("friendRequests") ?: emptyList<String>()) as List<String>
+      val favorites = (user.get("favorites") ?: emptyList<String>()) as List<String>
       UserModel(
-          userId, userName, email, profilePictureUrl, description, language, prefActivity, levels)
+          userId,
+          userName,
+          email,
+          profilePictureUrl,
+          description,
+          language,
+          prefActivity,
+          levels,
+          friends,
+          friendRequests,
+          favorites)
     } else null
   }
 
@@ -62,30 +101,22 @@ class UserDBRepositoryImpl @Inject constructor(private val context: Context, pri
                   UserLevel.valueOf(user.getString("hikingLevel") ?: UserLevel.BEGINNER.name),
               bikingLevel =
                   UserLevel.valueOf(user.getString("bikingLevel") ?: UserLevel.BEGINNER.name))
+      val friends = (user.get("friends") ?: emptyList<String>()) as List<String>
+      val friendRequests = (user.get("friendRequests") ?: emptyList<String>()) as List<String>
+      val favorites = (user.get("favorites") ?: emptyList<String>()) as List<String>
       UserModel(
-          userId, userName, email, profilePictureUrl, description, language, prefActivity, levels)
+          userId,
+          userName,
+          email,
+          profilePictureUrl,
+          description,
+          language,
+          prefActivity,
+          levels,
+          friends,
+          friendRequests,
+          favorites)
     } else null
-  }
-
-  override fun updateUser(user: UserModel) {
-    val userData =
-        hashMapOf(
-            "userName" to user.userName,
-            "email" to user.email,
-            "profilePictureUrl" to user.profilePictureUrl,
-            "description" to user.description,
-            "language" to user.language.name,
-            "prefActivity" to user.prefActivity.name,
-            "levels" to
-                hashMapOf(
-                    "climbingLevel" to user.levels.climbingLevel.name,
-                    "hikingLevel" to user.levels.hikingLevel.name,
-                    "bikingLevel" to user.levels.bikingLevel.name))
-    userCollection
-        .document(user.userId)
-        .set(userData, SetOptions.merge())
-        .addOnSuccessListener { /* TODO */}
-        .addOnFailureListener { e -> e.printStackTrace() }
   }
   /*
 

@@ -1,10 +1,10 @@
 package com.lastaoutdoor.lasta.data.model.profile
 
-import com.lastaoutdoor.lasta.models.profile.DaysInWeek
-import com.lastaoutdoor.lasta.models.profile.MonthsInYear
-import com.lastaoutdoor.lasta.models.profile.TimeFrame
-import com.lastaoutdoor.lasta.models.profile.WeeksInMonth
-import com.lastaoutdoor.lasta.models.profile.Year
+import com.lastaoutdoor.lasta.utils.DaysInWeek
+import com.lastaoutdoor.lasta.utils.MonthsInYear
+import com.lastaoutdoor.lasta.utils.TimeFrame
+import com.lastaoutdoor.lasta.utils.WeeksInMonth
+import com.lastaoutdoor.lasta.utils.Year
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
 

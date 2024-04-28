@@ -1,12 +1,12 @@
 package com.lastaoutdoor.lasta.ui.screen.social
 
-import com.lastaoutdoor.lasta.models.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.models.social.ConversationModel
 import com.lastaoutdoor.lasta.models.user.UserModel
-import com.lastaoutdoor.lasta.repository.db.SocialRepository
+import com.lastaoutdoor.lasta.models.useractivities.ActivitiesDatabaseType
+import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
 
 // Class mocking the social repository
-class FakeSocialRepository : SocialRepository {
+class FakeSocialRepository : SocialDBRepository {
 
   /*var friends: ArrayList<UserModel> = ArrayList()
     var activities: ArrayList<ActivitiesDatabaseType> = ArrayList()

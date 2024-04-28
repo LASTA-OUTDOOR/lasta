@@ -2,8 +2,7 @@ package com.lastaoutdoor.lasta.utils
 
 import com.google.firebase.Timestamp
 import com.lastaoutdoor.lasta.data.time.TimeProvider
-import com.lastaoutdoor.lasta.models.profile.ActivitiesDatabaseType
-import com.lastaoutdoor.lasta.models.profile.TimeFrame
+import com.lastaoutdoor.lasta.models.useractivities.ActivitiesDatabaseType
 import java.text.SimpleDateFormat
 import java.time.DayOfWeek
 import java.time.LocalDate

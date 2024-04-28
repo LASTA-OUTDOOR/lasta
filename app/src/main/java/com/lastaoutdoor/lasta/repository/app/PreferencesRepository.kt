@@ -30,5 +30,13 @@ interface PreferencesRepository {
 
   suspend fun updateBikingLevel(level: UserLevel)
 
+  suspend fun updateFriends(friends: List<String>)
+
+  suspend fun updateFriendRequests(friendRequests: List<String>)
+
+  suspend fun updateFavorites(favorites: List<String>)
+
+  suspend fun updateDownloadedActivities(downloadedActivities: List<String>)
+
   suspend fun clearPreferences()
 }

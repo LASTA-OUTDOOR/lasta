@@ -14,12 +14,12 @@ import com.lastaoutdoor.lasta.data.api.osm.OSMApiService
 import com.lastaoutdoor.lasta.data.api.weather.WeatherApiService
 import com.lastaoutdoor.lasta.data.api.weather.WeatherRepositoryImpl
 import com.lastaoutdoor.lasta.data.auth.AuthRepositoryImpl
+import com.lastaoutdoor.lasta.data.db.SocialDBRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.UserActivitiesDBRepositoryImpl
-import com.lastaoutdoor.lasta.data.social.SocialRepositoryImpl
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
 import com.lastaoutdoor.lasta.repository.api.WeatherRepository
 import com.lastaoutdoor.lasta.repository.auth.AuthRepository
-import com.lastaoutdoor.lasta.repository.db.SocialRepository
+import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserActivitiesDBRepository
 import dagger.Module
 import dagger.Provides
@@ -109,7 +109,7 @@ object NetworkModule {
 
   @Singleton
   @Provides
-  fun provideSocialRepository(): SocialRepository {
-    return SocialRepositoryImpl()
+  fun provideSocialRepository(): SocialDBRepository {
+    return SocialDBRepositoryImpl()
   }
 }

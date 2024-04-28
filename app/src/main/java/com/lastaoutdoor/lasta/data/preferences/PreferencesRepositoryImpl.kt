@@ -53,6 +53,10 @@ class PreferencesRepositoryImpl(private val context: Context) : PreferencesRepos
     val CLIMBING_LEVEL_KEY = stringPreferencesKey("climbingLevel")
     val HIKING_LEVEL_KEY = stringPreferencesKey("hikingLevel")
     val BIKING_LEVEL_KEY = stringPreferencesKey("bikingLevel")
+    val FRIENDS_KEY = stringPreferencesKey("friends")
+    val FRIEND_REQUESTS_KEY = stringPreferencesKey("friendRequests")
+    val FAVORITES_KEY = stringPreferencesKey("favorites")
+    val DOWNLOADED_ACTIVITIES_KEY = stringPreferencesKey("downloadedActivities")
   }
 
   /**
@@ -73,24 +77,32 @@ class PreferencesRepositoryImpl(private val context: Context) : PreferencesRepos
           .map { preferences ->
             UserPreferences(
                 isLoggedIn = preferences[IS_LOGGED_IN_KEY] ?: false,
-                UserModel(
-                    userId = preferences[USERID_KEY] ?: "",
-                    userName = preferences[USER_NAME_KEY] ?: "",
-                    email = preferences[EMAIL_KEY] ?: "",
-                    profilePictureUrl = preferences[PROFILE_PICTURE_URL_KEY] ?: "",
-                    description = preferences[DESCRIPTION_KEY] ?: "",
-                    language = Language.valueOf(preferences[LANGUAGE_KEY] ?: Language.ENGLISH.name),
-                    prefActivity =
-                        ActivityType.valueOf(
-                            preferences[PREF_ACTIVITY_KEY] ?: ActivityType.CLIMBING.name),
-                    levels =
-                        UserActivitiesLevel(
-                            UserLevel.valueOf(
-                                preferences[CLIMBING_LEVEL_KEY] ?: UserLevel.BEGINNER.name),
-                            UserLevel.valueOf(
-                                preferences[HIKING_LEVEL_KEY] ?: UserLevel.BEGINNER.name),
-                            UserLevel.valueOf(
-                                preferences[BIKING_LEVEL_KEY] ?: UserLevel.BEGINNER.name))))
+                user =
+                    UserModel(
+                        userId = preferences[USERID_KEY] ?: "",
+                        userName = preferences[USER_NAME_KEY] ?: "",
+                        email = preferences[EMAIL_KEY] ?: "",
+                        profilePictureUrl = preferences[PROFILE_PICTURE_URL_KEY] ?: "",
+                        description = preferences[DESCRIPTION_KEY] ?: "",
+                        language =
+                            Language.valueOf(preferences[LANGUAGE_KEY] ?: Language.ENGLISH.name),
+                        prefActivity =
+                            ActivityType.valueOf(
+                                preferences[PREF_ACTIVITY_KEY] ?: ActivityType.CLIMBING.name),
+                        levels =
+                            UserActivitiesLevel(
+                                UserLevel.valueOf(
+                                    preferences[CLIMBING_LEVEL_KEY] ?: UserLevel.BEGINNER.name),
+                                UserLevel.valueOf(
+                                    preferences[HIKING_LEVEL_KEY] ?: UserLevel.BEGINNER.name),
+                                UserLevel.valueOf(
+                                    preferences[BIKING_LEVEL_KEY] ?: UserLevel.BEGINNER.name)),
+                        friends = preferences[FRIENDS_KEY]?.split(",") ?: emptyList(),
+                        friendRequests =
+                            preferences[FRIEND_REQUESTS_KEY]?.split(",") ?: emptyList(),
+                        favorites = preferences[FAVORITES_KEY]?.split(",") ?: emptyList()),
+                downloadedActivities =
+                    preferences[DOWNLOADED_ACTIVITIES_KEY]?.split(",") ?: emptyList())
           }
 
   /**
@@ -114,6 +126,9 @@ class PreferencesRepositoryImpl(private val context: Context) : PreferencesRepos
       preferences[CLIMBING_LEVEL_KEY] = userModel.levels.climbingLevel.name
       preferences[HIKING_LEVEL_KEY] = userModel.levels.hikingLevel.name
       preferences[BIKING_LEVEL_KEY] = userModel.levels.bikingLevel.name
+      preferences[FRIENDS_KEY] = userModel.friends.joinToString(",")
+      preferences[FRIEND_REQUESTS_KEY] = userModel.friendRequests.joinToString(",")
+      preferences[FAVORITES_KEY] = userModel.favorites.joinToString(",")
     }
   }
 
@@ -147,6 +162,26 @@ class PreferencesRepositoryImpl(private val context: Context) : PreferencesRepos
 
   override suspend fun updateBikingLevel(level: UserLevel) {
     dataStore.edit { preferences -> preferences[BIKING_LEVEL_KEY] = level.name }
+  }
+
+  override suspend fun updateFriends(friends: List<String>) {
+    dataStore.edit { preferences -> preferences[FRIENDS_KEY] = friends.joinToString(",") }
+  }
+
+  override suspend fun updateFriendRequests(friendRequests: List<String>) {
+    dataStore.edit { preferences ->
+      preferences[FRIEND_REQUESTS_KEY] = friendRequests.joinToString(",")
+    }
+  }
+
+  override suspend fun updateFavorites(favorites: List<String>) {
+    dataStore.edit { preferences -> preferences[FAVORITES_KEY] = favorites.joinToString(",") }
+  }
+
+  override suspend fun updateDownloadedActivities(downloadedActivities: List<String>) {
+    dataStore.edit { preferences ->
+      preferences[DOWNLOADED_ACTIVITIES_KEY] = downloadedActivities.joinToString(",")
+    }
   }
 
   override suspend fun clearPreferences() {

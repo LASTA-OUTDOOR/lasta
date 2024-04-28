@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.models.profile
+package com.lastaoutdoor.lasta.utils
 
 private const val DAYS_IN_A_WEEK = 7
 private const val WEEKS_IN_A_MONTH = 5

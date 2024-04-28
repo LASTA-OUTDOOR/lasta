@@ -1,6 +1,6 @@
 package com.lastaoutdoor.lasta.data.model.profile
 
-import com.lastaoutdoor.lasta.models.profile.ActivitiesDatabaseType
+import com.lastaoutdoor.lasta.models.useractivities.ActivitiesDatabaseType
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
 

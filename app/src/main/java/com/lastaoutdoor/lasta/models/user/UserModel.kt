@@ -12,7 +12,10 @@ data class UserModel(
     val language: Language = Language.ENGLISH,
     val prefActivity: ActivityType = ActivityType.CLIMBING,
     val levels: UserActivitiesLevel =
-        UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
+        UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER),
+    val friends: List<String> = emptyList(),
+    val friendRequests: List<String> = emptyList(),
+    val favorites: List<String> = emptyList()
 ) {
   constructor(
       user: FirebaseUser

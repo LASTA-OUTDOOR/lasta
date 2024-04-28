@@ -7,13 +7,13 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.lastaoutdoor.lasta.data.time.TimeProvider
 import com.lastaoutdoor.lasta.models.activity.Difficulty
-import com.lastaoutdoor.lasta.models.profile.ActivitiesDatabaseType
-import com.lastaoutdoor.lasta.models.profile.TimeFrame
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.models.user.UserPreferences
+import com.lastaoutdoor.lasta.models.useractivities.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.repository.UserActivitiesRepository
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
+import com.lastaoutdoor.lasta.utils.TimeFrame
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic

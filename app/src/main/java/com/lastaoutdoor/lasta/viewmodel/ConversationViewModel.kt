@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.lastaoutdoor.lasta.models.social.ConversationModel
 import com.lastaoutdoor.lasta.repository.app.ConnectivityRepository
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
-import com.lastaoutdoor.lasta.repository.db.SocialRepository
+import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.first
@@ -17,7 +17,7 @@ import kotlinx.coroutines.runBlocking
 class ConversationViewModel
 @Inject
 constructor(
-    val repository: SocialRepository,
+    val repository: SocialDBRepository,
     val connectionRepo: ConnectivityRepository,
     val preferences: PreferencesRepository
 ) : ViewModel() {

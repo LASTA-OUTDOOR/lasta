@@ -1,12 +1,10 @@
 package com.lastaoutdoor.lasta.data
 
 import com.google.android.gms.maps.model.LatLng
-import com.lastaoutdoor.lasta.data.db.HikingField
 import com.lastaoutdoor.lasta.models.activity.ClimbingStyle
 import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.models.map.HikingMarker
 import com.lastaoutdoor.lasta.models.map.MapItinerary
-import com.lastaoutdoor.lasta.models.profile.Popularity
 import org.junit.Test
 
 class DataClassesTest {

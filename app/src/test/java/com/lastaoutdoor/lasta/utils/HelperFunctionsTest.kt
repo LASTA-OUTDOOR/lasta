@@ -1,8 +1,7 @@
 package com.lastaoutdoor.lasta.utils
 
 import com.lastaoutdoor.lasta.data.time.TimeProvider
-import com.lastaoutdoor.lasta.models.profile.ActivitiesDatabaseType
-import com.lastaoutdoor.lasta.models.profile.TimeFrame
+import com.lastaoutdoor.lasta.models.useractivities.ActivitiesDatabaseType
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.unmockkObject

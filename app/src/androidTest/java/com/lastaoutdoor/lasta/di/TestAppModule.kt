@@ -16,9 +16,9 @@ import com.lastaoutdoor.lasta.data.api.weather.WeatherApiService
 import com.lastaoutdoor.lasta.data.api.weather.WeatherRepositoryImpl
 import com.lastaoutdoor.lasta.data.auth.AuthRepositoryImpl
 import com.lastaoutdoor.lasta.data.connectivity.ConnectivityRepositoryImpl
+import com.lastaoutdoor.lasta.data.db.SocialDBRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.UserActivitiesDBRepositoryImpl
 import com.lastaoutdoor.lasta.data.preferences.PreferencesRepositoryImpl
-import com.lastaoutdoor.lasta.data.social.SocialRepositoryImpl
 import com.lastaoutdoor.lasta.data.time.RealTimeProvider
 import com.lastaoutdoor.lasta.data.time.TimeProvider
 import com.lastaoutdoor.lasta.repository.UserActivitiesRepository
@@ -27,7 +27,7 @@ import com.lastaoutdoor.lasta.repository.api.WeatherRepository
 import com.lastaoutdoor.lasta.repository.app.ConnectivityRepository
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.auth.AuthRepository
-import com.lastaoutdoor.lasta.repository.db.SocialRepository
+import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -132,11 +132,11 @@ object TestAppModule {
   /** Provides the [TimeProvider] class */
   @Provides @Singleton fun provideTimeProvider(): TimeProvider = RealTimeProvider()
 
-  /** Provides the [SocialRepository] class */
+  /** Provides the [SocialDBRepository] class */
   @Singleton
   @Provides
-  fun provideSocialRepository(): SocialRepository {
-    return SocialRepositoryImpl()
+  fun provideSocialRepository(): SocialDBRepository {
+    return SocialDBRepositoryImpl()
   }
 
   @Singleton

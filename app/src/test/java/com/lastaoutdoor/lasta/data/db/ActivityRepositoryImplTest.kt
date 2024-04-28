@@ -10,7 +10,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.db.UserActivitiesDBRepositoryImpl
-import com.lastaoutdoor.lasta.models.profile.ActivitiesDatabaseType
+import com.lastaoutdoor.lasta.models.useractivities.ActivitiesDatabaseType
 import io.mockk.*
 import java.lang.Exception
 import java.lang.reflect.Method

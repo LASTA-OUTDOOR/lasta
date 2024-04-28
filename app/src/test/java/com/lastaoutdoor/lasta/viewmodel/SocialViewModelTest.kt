@@ -3,15 +3,15 @@ package com.lastaoutdoor.lasta.viewmodel
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Email
-import com.lastaoutdoor.lasta.models.profile.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.models.social.ConversationModel
 import com.lastaoutdoor.lasta.models.social.MessageModel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.models.user.UserPreferences
+import com.lastaoutdoor.lasta.models.useractivities.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.repository.app.ConnectivityRepository
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
-import com.lastaoutdoor.lasta.repository.db.SocialRepository
+import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
 import com.lastaoutdoor.lasta.utils.ConnectionState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -46,7 +46,7 @@ class MainCoroutineRule(private val dispatcher: TestDispatcher = StandardTestDis
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class FakeSocialRepository : SocialRepository {
+class FakeSocialRepository : SocialDBRepository {
 
   var friends: ArrayList<UserModel> = ArrayList()
   var activities: ArrayList<ActivitiesDatabaseType> = ArrayList()

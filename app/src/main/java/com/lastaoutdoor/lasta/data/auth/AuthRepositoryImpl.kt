@@ -25,7 +25,7 @@ constructor(
     private var oneTapClient: SignInClient,
     @Named("signInRequest") private var signInRequest: BeginSignInRequest,
     @Named("signUpRequest") private var signUpRequest: BeginSignInRequest,
-  private val userDBRepo: UserDBRepositoryImpl
+    private val userDBRepo: UserDBRepositoryImpl
 ) : AuthRepository {
 
   private val _isSignUp: MutableStateFlow<Boolean> = MutableStateFlow(false)
