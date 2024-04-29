@@ -16,11 +16,13 @@ import com.lastaoutdoor.lasta.data.api.weather.WeatherRepositoryImpl
 import com.lastaoutdoor.lasta.data.auth.AuthRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.SocialDBRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.UserActivitiesDBRepositoryImpl
+import com.lastaoutdoor.lasta.data.db.UserDBRepositoryImpl
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
 import com.lastaoutdoor.lasta.repository.api.WeatherRepository
 import com.lastaoutdoor.lasta.repository.auth.AuthRepository
 import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserActivitiesDBRepository
+import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -83,7 +85,7 @@ object NetworkModule {
 
   @Singleton
   @Provides
-  fun provideOutdoorActivitiesRepository(osmApiService: OSMApiService): ActivityRepository =
+  fun provideActivitiesRepository(osmApiService: OSMApiService): ActivityRepository =
       ActivityRepositoryImpl(osmApiService)
 
   @Singleton
@@ -98,18 +100,28 @@ object NetworkModule {
       oneTapClient: SignInClient,
       @Named("signInRequest") signInRequest: BeginSignInRequest,
       @Named("signUpRequest") signUpRequest: BeginSignInRequest,
-  ): AuthRepository = AuthRepositoryImpl(auth, oneTapClient, signInRequest, signUpRequest)
+      userDBRepository: UserDBRepository
+  ): AuthRepository =
+      AuthRepositoryImpl(auth, oneTapClient, signInRequest, signUpRequest, userDBRepository)
 
   @Singleton
   @Provides
-  fun provideActivitiesRepository(
+  fun provideUserDBRepository(
       @ApplicationContext context: Context,
-      database: FirebaseFirestore
-  ): UserActivitiesDBRepository = UserActivitiesDBRepositoryImpl(database, context)
+      firestore: FirebaseFirestore
+  ): UserDBRepository = UserDBRepositoryImpl(context, firestore)
 
   @Singleton
   @Provides
-  fun provideSocialRepository(): SocialDBRepository {
-    return SocialDBRepositoryImpl()
-  }
+  fun provideUserActivitiesDBRepository(
+      @ApplicationContext context: Context,
+      firestore: FirebaseFirestore
+  ): UserActivitiesDBRepository = UserActivitiesDBRepositoryImpl(context, firestore)
+
+  @Singleton
+  @Provides
+  fun provideDBRepository(
+      @ApplicationContext context: Context,
+      firestore: FirebaseFirestore
+  ): SocialDBRepository = SocialDBRepositoryImpl(context, firestore)
 }

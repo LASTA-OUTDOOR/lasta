@@ -5,9 +5,9 @@ import com.google.android.gms.auth.api.identity.BeginSignInResult
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
-import com.lastaoutdoor.lasta.data.db.UserDBRepositoryImpl
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.auth.AuthRepository
+import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import com.lastaoutdoor.lasta.utils.Response
 import javax.inject.Inject
 import javax.inject.Named
@@ -25,7 +25,7 @@ constructor(
     private var oneTapClient: SignInClient,
     @Named("signInRequest") private var signInRequest: BeginSignInRequest,
     @Named("signUpRequest") private var signUpRequest: BeginSignInRequest,
-    private val userDBRepo: UserDBRepositoryImpl
+    private val userDBRepo: UserDBRepository
 ) : AuthRepository {
 
   private val _isSignUp: MutableStateFlow<Boolean> = MutableStateFlow(false)

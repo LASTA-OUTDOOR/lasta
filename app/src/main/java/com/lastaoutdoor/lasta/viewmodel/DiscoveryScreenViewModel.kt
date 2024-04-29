@@ -7,8 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.Activity
-import com.lastaoutdoor.lasta.models.activity.ActivityType
-import com.lastaoutdoor.lasta.models.activity.Difficulty
+import com.lastaoutdoor.lasta.models.activity.BikingActivity
+import com.lastaoutdoor.lasta.models.activity.ClimbingActivity
+import com.lastaoutdoor.lasta.models.activity.HikingActivity
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
 import com.lastaoutdoor.lasta.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -55,8 +56,7 @@ class DiscoveryScreenViewModel @Inject constructor(private val repository: Activ
       val climbingPoints = (response as Response.Success).data ?: emptyList()
       climbingActivities.value = ArrayList()
       climbingPoints.forEach { point ->
-        climbingActivities.value.add(
-            Activity(ActivityType.CLIMBING, Difficulty.EASY, 0f, "", point.tags.name))
+        climbingActivities.value.add(ClimbingActivity("", point.id, point.tags.name))
       }
     }
   }
@@ -73,7 +73,8 @@ class DiscoveryScreenViewModel @Inject constructor(private val repository: Activ
       climbingActivities.value = ArrayList()
       hikingPoints.forEach { point ->
         climbingActivities.value.add(
-            Activity(ActivityType.HIKING, Difficulty.EASY, 0f, "", point.tags.name))
+            HikingActivity(
+                "", point.id, point.tags.name, from = point.tags.from, to = point.tags.to))
       }
     }
   }
@@ -90,7 +91,13 @@ class DiscoveryScreenViewModel @Inject constructor(private val repository: Activ
       climbingActivities.value = ArrayList()
       hikingPoints.forEach { point ->
         climbingActivities.value.add(
-            Activity(ActivityType.BIKING, Difficulty.EASY, 0f, "", point.tags.name))
+            BikingActivity(
+                "",
+                point.id,
+                point.tags.name,
+                from = point.tags.from,
+                to = point.tags.to,
+                distance = point.tags.distance.toFloat()))
       }
     }
   }

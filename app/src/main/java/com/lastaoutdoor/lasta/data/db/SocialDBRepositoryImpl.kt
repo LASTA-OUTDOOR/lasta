@@ -17,9 +17,7 @@ import javax.inject.Singleton
 import kotlinx.coroutines.tasks.await
 
 @Singleton
-class SocialDBRepositoryImpl
-@Inject
-constructor(private val context: Context, private val database: FirebaseFirestore) :
+class SocialDBRepositoryImpl @Inject constructor(context: Context, database: FirebaseFirestore) :
     SocialDBRepository {
   private val userCollection = database.collection(context.getString(R.string.user_db_name))
   private val conversationCollection =
@@ -40,8 +38,28 @@ constructor(private val context: Context, private val database: FirebaseFirestor
     return friends
   }
 
+  override suspend fun getFriendRequests(userId: String): List<UserModel> {
+    val friendRequests: ArrayList<UserModel> = ArrayList()
+    val userDocument = userCollection.document(userId).get().await()
+    val friendRequestIds = userDocument.get("friendRequests") as? ArrayList<String>
+    if (friendRequestIds != null) {
+      val friendRequestsQuery =
+          userCollection.whereIn(FieldPath.documentId(), friendRequestIds).get().await()
+      if (!friendRequestsQuery.isEmpty) {
+        for (friendRequest in friendRequestsQuery.documents) {
+          val friendRequestModel = friendRequest.toObject(UserModel::class.java)
+          if (friendRequestModel != null) {
+            friendRequests.add(friendRequestModel)
+          }
+        }
+      }
+    }
+
+    return friendRequests
+  }
+
   override suspend fun getLatestFriendActivities(userId: String, days: Int): List<UserActivity> {
-    TODO("Not yet implemented")
+    return emptyList()
   }
 
   override suspend fun getConversation(
@@ -57,7 +75,7 @@ constructor(private val context: Context, private val database: FirebaseFirestor
     val conversationDocumentRef = conversationCollection.document(id)
 
     // If we didn't get any result, we create a new conversation
-    var document = conversationDocumentRef.get().await()
+    val document = conversationDocumentRef.get().await()
     if (!document.exists() && createNew) {
       // store a conversation in the Firestore database
       val conversation =
@@ -99,13 +117,19 @@ constructor(private val context: Context, private val database: FirebaseFirestor
     return conversationsQuery.documents.mapNotNull { it.toObject(ConversationModel::class.java) }
   }
 
-  override suspend fun sendFriendRequest(userId: String, receiverId: String) {
+  override suspend fun sendFriendRequest(userId: String, receiverId: String): Boolean {
+    var success = false
     // Create a reference to the user's document in the Firestore database
     val userDocumentRef = userCollection.document(receiverId)
 
     // Store the uid of the sender in the user's document in an array in case there are multiple
     // requests (This does not allow duplicates)
-    userDocumentRef.update("friendRequests", FieldValue.arrayUnion(userId))
+    userDocumentRef
+        .update("friendRequests", FieldValue.arrayUnion(userId))
+        .addOnSuccessListener { success = true }
+        .addOnFailureListener { e -> e.printStackTrace() }
+
+    return success
   }
 
   override suspend fun acceptFriendRequest(source: String, requester: String) {
@@ -113,16 +137,16 @@ constructor(private val context: Context, private val database: FirebaseFirestor
     val userDocumentRef = userCollection.document(source)
 
     // Remove the requester from the friend requests array
-    userDocumentRef.update("friendRequests", FieldValue.arrayRemove(requester))
+    userDocumentRef.update("friendRequests", FieldValue.arrayRemove(requester)).await()
 
     // Add the requester to the friends array
-    userDocumentRef.update("friends", FieldValue.arrayUnion(requester))
+    userDocumentRef.update("friends", FieldValue.arrayUnion(requester)).await()
 
     // Create a reference to the requester's document in the Firestore database
     val requesterDocumentRef = userCollection.document(requester)
 
     // Add the source to the requester's friends array
-    requesterDocumentRef.update("friends", FieldValue.arrayUnion(source))
+    requesterDocumentRef.update("friends", FieldValue.arrayUnion(source)).await()
   }
 
   override suspend fun declineFriendRequest(source: String, requester: String) {
@@ -130,7 +154,7 @@ constructor(private val context: Context, private val database: FirebaseFirestor
     val userDocumentRef = userCollection.document(source)
 
     // Remove the requester from the friend requests array
-    userDocumentRef.update("friendRequests", FieldValue.arrayRemove(requester))
+    userDocumentRef.update("friendRequests", FieldValue.arrayRemove(requester)).await()
   }
 
   override suspend fun sendMessage(userId: String, friendUserId: String, message: String) {
@@ -151,9 +175,11 @@ constructor(private val context: Context, private val database: FirebaseFirestor
     }
 
     // Add the message to the conversation
-    conversationDocumentRef.update("messages", FieldValue.arrayUnion(messageData(Timestamp.now())))
+    conversationDocumentRef
+        .update("messages", FieldValue.arrayUnion(messageData(Timestamp.now())))
+        .await()
 
     // Update the last message in the conversation
-    conversationDocumentRef.update("lastMessage", messageData(Timestamp.now()))
+    conversationDocumentRef.update("lastMessage", messageData(Timestamp.now())).await()
   }
 }

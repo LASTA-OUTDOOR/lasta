@@ -2,7 +2,11 @@ package com.lastaoutdoor.lasta.utils
 
 import com.google.firebase.Timestamp
 import com.lastaoutdoor.lasta.data.time.TimeProvider
-import com.lastaoutdoor.lasta.models.useractivities.ActivitiesDatabaseType
+import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.user.BikinUserActivity
+import com.lastaoutdoor.lasta.models.user.ClimbingUserActivity
+import com.lastaoutdoor.lasta.models.user.HikingUserActivity
+import com.lastaoutdoor.lasta.models.user.UserActivity
 import java.text.SimpleDateFormat
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -52,10 +56,7 @@ fun createDateTime(year: Int, month: Int, day: Int, hour: Int, minute: Int, seco
           .toInstant())
 }
 
-fun chartDisplayValues(
-    activities: List<ActivitiesDatabaseType>,
-    timeFrame: TimeFrame
-): List<Float> {
+fun chartDisplayValues(activities: List<UserActivity>, timeFrame: TimeFrame): List<Float> {
   val values =
       when (timeFrame) {
         TimeFrame.W,
@@ -81,11 +82,11 @@ fun chartDisplayValues(
           TimeFrame.ALL -> indexYearFromDate(a.timeStarted, a.timeStarted)
         }
     values[index] +=
-        when (a.sport) {
-          ActivitiesDatabaseType.Sports.HIKING ->
-              metersToKilometers((a as ActivitiesDatabaseType.Trail).distanceInMeters)
-          ActivitiesDatabaseType.Sports.CLIMBING ->
-              metersToKilometers((a as ActivitiesDatabaseType.Climb).elevationGainedInMeters)
+        when (a.activityType) {
+          ActivityType.CLIMBING ->
+              metersToKilometers((a as ClimbingUserActivity).totalElevation.toLong())
+          ActivityType.HIKING -> metersToKilometers((a as HikingUserActivity).distanceDone.toLong())
+          ActivityType.BIKING -> metersToKilometers((a as BikinUserActivity).distanceDone.toLong())
         }
   }
   return values
@@ -130,7 +131,7 @@ fun metersToKilometers(meters: Long): Float {
   return meters / 1000f
 }
 
-fun timeFromActivityInMillis(activities: List<ActivitiesDatabaseType>): Long {
+fun timeFromActivityInMillis(activities: List<UserActivity>): Long {
   return activities.sumOf { it.timeFinished.time - it.timeStarted.time }
 }
 

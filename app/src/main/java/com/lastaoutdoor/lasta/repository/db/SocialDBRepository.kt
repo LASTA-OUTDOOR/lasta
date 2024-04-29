@@ -9,6 +9,8 @@ interface SocialDBRepository {
   // returns all the friends of the user
   suspend fun getFriends(friendIds: List<String>): List<UserModel>
 
+  suspend fun getFriendRequests(userId: String): List<UserModel>
+
   // returns all the activities done by friends in the last
   suspend fun getLatestFriendActivities(userId: String, days: Int): List<UserActivity>
 
@@ -24,7 +26,7 @@ interface SocialDBRepository {
 
   // sends a friend request to the user with the given email, returns true if the request was sent
   // successfully
-  suspend fun sendFriendRequest(userId: String, receiverId: String)
+  suspend fun sendFriendRequest(userId: String, receiverId: String): Boolean
 
   // accept a friend request
   suspend fun acceptFriendRequest(source: String, requester: String)

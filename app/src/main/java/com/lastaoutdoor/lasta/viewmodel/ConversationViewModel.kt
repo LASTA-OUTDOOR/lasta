@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.lastaoutdoor.lasta.models.social.ConversationModel
 import com.lastaoutdoor.lasta.repository.app.ConnectivityRepository
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
@@ -11,6 +12,7 @@ import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 @HiltViewModel
@@ -26,18 +28,19 @@ constructor(
   val userId: String = runBlocking { preferences.userPreferencesFlow.first().user.userId }
 
   // friend user id
-  var friendUserId: String by mutableStateOf("")
+  private var friendUserId: String by mutableStateOf("")
 
   // The conversation between the user and the friend
   var conversation: ConversationModel? by mutableStateOf(null)
 
   // Display the send message dialog
-  var showSendMessageDialog: Boolean by mutableStateOf(false)
+  private var showSendMessageDialog: Boolean by mutableStateOf(false)
 
   // refresh the conversation
   fun updateConversation() {
-    if (friendUserId.isEmpty()) return
-    conversation = repository.getConversation(userId, friendUserId)
+    viewModelScope.launch {
+      if (friendUserId.isNotEmpty()) conversation = repository.getConversation(userId, friendUserId)
+    }
   }
 
   // update the friend user id
@@ -57,10 +60,11 @@ constructor(
 
   // send a message
   fun send(message: String) {
-    println("VM : sending the message")
-    if (message.isEmpty()) return
-    println("VM : notNUll")
-    repository.sendMessage(userId, friendUserId, message)
-    updateConversation()
+    viewModelScope.launch {
+      if (message.isNotEmpty()) {
+        repository.sendMessage(userId, friendUserId, message)
+        updateConversation()
+      }
+    }
   }
 }

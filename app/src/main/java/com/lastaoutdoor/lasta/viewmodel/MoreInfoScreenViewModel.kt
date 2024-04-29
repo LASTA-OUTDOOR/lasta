@@ -11,8 +11,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MoreInfoScreenViewModel @Inject constructor() : ViewModel() {
   /* Just a default activity to fill in the mutable state*/
-  private val dummyActivity =
-      Activity(ActivityType.CLIMBING, Difficulty.EASY, 1.5f, "3 hours", "Test Title")
+  private val dummyActivity = Activity("", 0, ActivityType.CLIMBING, "Dummy")
   val activityToDisplay = mutableStateOf(dummyActivity)
 
   /*Changes the int difficulty of the activity for its String equivalent : 0 -> Easy, 1 -> Medium, etc...*/

@@ -9,4 +9,6 @@ interface UserDBRepository {
   suspend fun getUserById(userId: String): UserModel?
 
   suspend fun getUserByEmail(email: String): UserModel?
+
+  suspend fun updateField(userId: String, field: String, value: Any)
 }

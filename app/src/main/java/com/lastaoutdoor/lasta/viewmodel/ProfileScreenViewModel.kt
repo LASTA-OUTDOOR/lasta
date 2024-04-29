@@ -3,14 +3,13 @@ package com.lastaoutdoor.lasta.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Timestamp
-import com.lastaoutdoor.lasta.data.db.UserDBRepositoryImpl
-import com.lastaoutdoor.lasta.data.model.user.toUserModel
 import com.lastaoutdoor.lasta.data.time.TimeProvider
-import com.lastaoutdoor.lasta.models.user.UserLevel
+import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.user.UserActivity
 import com.lastaoutdoor.lasta.models.user.UserModel
-import com.lastaoutdoor.lasta.models.useractivities.ActivitiesDatabaseType
-import com.lastaoutdoor.lasta.repository.UserActivitiesRepository
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
+import com.lastaoutdoor.lasta.repository.db.UserActivitiesDBRepository
+import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import com.lastaoutdoor.lasta.utils.TimeFrame
 import com.lastaoutdoor.lasta.utils.calculateTimeRangeUntilNow
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,13 +30,14 @@ import kotlinx.coroutines.launch
 class ProfileScreenViewModel
 @Inject
 constructor(
-    private val repository: UserActivitiesRepository,
+    private val repository: UserActivitiesDBRepository,
     private val timeProvider: TimeProvider,
     private val preferences: PreferencesRepository,
+    private val userDBRepo: UserDBRepository
 ) : ViewModel() {
 
   /** The current user. */
-  private val _user = MutableStateFlow(UserModel("", "", "", "", "", UserLevel.BEGINNER))
+  private val _user = MutableStateFlow(UserModel(""))
   val user = _user
 
   /** Flag to check if the current user is the logged in user. */
@@ -45,19 +45,19 @@ constructor(
   val isCurrentUser = _isCurrentUser
 
   /** Cache for storing fetched activities. */
-  private val _activitiesCache = MutableStateFlow<List<ActivitiesDatabaseType>>(emptyList())
+  private val _activitiesCache = MutableStateFlow<List<UserActivity>>(emptyList())
   val activities = _activitiesCache
 
   /** Live data for filtered activities. */
-  private val _filteredActivities = MutableStateFlow<List<ActivitiesDatabaseType>>(emptyList())
-  val filteredActivities: StateFlow<List<ActivitiesDatabaseType>> = _filteredActivities
+  private val _filteredActivities = MutableStateFlow<List<UserActivity>>(emptyList())
+  val filteredActivities: StateFlow<List<UserActivity>> = _filteredActivities
 
   /** The selected time frame for filtering activities. */
   private val _time = MutableStateFlow(TimeFrame.W)
   val timeFrame: StateFlow<TimeFrame> = _time
 
   /** The selected sport for filtering activities. */
-  private val _sport = MutableStateFlow(ActivitiesDatabaseType.Sports.HIKING)
+  private val _sport = MutableStateFlow(ActivityType.CLIMBING)
   val sport = _sport
 
   /** Initializes the ViewModel by fetching the current user and user activities. */
@@ -70,7 +70,7 @@ constructor(
   private fun fetchCurrentUser() {
     viewModelScope.launch {
       preferences.userPreferencesFlow.collect { userPreferences ->
-        _user.value = userPreferences.toUserModel()
+        _user.value = userPreferences.user
       }
     }
   }
@@ -79,7 +79,7 @@ constructor(
   private fun fetchUserActivities() {
     viewModelScope.launch {
       _activitiesCache.value =
-          repository.getUserActivities(user.value, sport.value).sortedBy { it.timeStarted }
+          repository.getUserActivities(_user.value.userId).sortedBy { it.timeStarted }
       applyFilters()
     }
   }
@@ -97,9 +97,9 @@ constructor(
    * @return The filtered list of activities.
    */
   private fun filterTrailsByTimeFrame(
-      activities: List<ActivitiesDatabaseType>,
+      activities: List<UserActivity>,
       timeFrame: TimeFrame
-  ): List<ActivitiesDatabaseType> {
+  ): List<UserActivity> {
     return when (timeFrame) {
       TimeFrame.W,
       TimeFrame.M,
@@ -130,7 +130,7 @@ constructor(
    *
    * @param s The selected sport.
    */
-  fun setSport(s: ActivitiesDatabaseType.Sports) {
+  fun setSport(s: ActivityType) {
     _sport.value = s
     fetchUserActivities()
   }
@@ -140,12 +140,12 @@ constructor(
    *
    * @param user The new user.
    */
-  fun updateUser(user: UserModel) {
+  private fun updateUser(user: UserModel) {
     if (user != _user.value) {
       _user.value = user
       fetchUserActivities()
       viewModelScope.launch {
-        _isCurrentUser.value = user.userId == preferences.userPreferencesFlow.first().uid
+        _isCurrentUser.value = user.userId == preferences.userPreferencesFlow.first().user.userId
       }
     }
   }
@@ -155,10 +155,10 @@ constructor(
    *
    * @param uid The user id of the new user.
    */
-  fun updateUser(uid: String) {
+  fun updateUser(userId: String) {
     viewModelScope.launch {
-      val user = UserDBRepositoryImpl().getUserFromDatabase(uid)
-      updateUser(user)
+      val user = userDBRepo.getUserById(userId)
+      if (user != null) updateUser(user)
     }
   }
 }
