@@ -30,7 +30,6 @@ fun FavoritesScreen(
     val requestPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
         if (isGranted) {
             locationPermissionGranted = true
-        } else {
         }
     }
   val displayWeather = remember { mutableStateOf(false) }
@@ -42,15 +41,14 @@ fun FavoritesScreen(
       modifier = Modifier.fillMaxSize(),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally) {
-        Button(onClick = {
-            if(locationPermissionGranted) {
-                navController.navigate(LeafScreen.MoreInfo.route)
-            }else
-                requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
-        }) {
+        Button(onClick = { navController.navigate(LeafScreen.MoreInfo.route) }) {
           Text(text = LocalContext.current.getString(R.string.more_info))
         }
-        Button(onClick = { displayWeather.value = true }) {
+        Button(onClick = { if(locationPermissionGranted) {
+            displayWeather.value = true
+        }else {
+            requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
+        }}) {
           Text(text = LocalContext.current.getString(R.string.weather_report))
         }
       }
