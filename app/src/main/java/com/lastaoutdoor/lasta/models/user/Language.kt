@@ -5,7 +5,7 @@ enum class Language {
   FRENCH,
   GERMAN;
 
-  fun getEnglishName(): String {
+  override fun toString(): String {
     return name.lowercase().replaceFirstChar { it.uppercase() }
   }
 

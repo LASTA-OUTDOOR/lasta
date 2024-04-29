@@ -10,6 +10,7 @@ import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.AuthCredential
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.auth.AuthRepository
+import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import com.lastaoutdoor.lasta.utils.Response
 import com.lastaoutdoor.lasta.utils.Response.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +20,11 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class AuthViewModel
 @Inject
-constructor(private val authRepo: AuthRepository, val oneTapClient: SignInClient) : ViewModel() {
+constructor(
+    private val authRepo: AuthRepository,
+    private val userDBRepository: UserDBRepository,
+    val oneTapClient: SignInClient
+) : ViewModel() {
 
   var beginSignInResult: BeginSignInResult? by mutableStateOf(null)
   var user: UserModel? by mutableStateOf(null)
@@ -75,5 +80,9 @@ constructor(private val authRepo: AuthRepository, val oneTapClient: SignInClient
         }
       }
     }
+  }
+
+  fun updateFieldInUser(userId: String, field: String, value: Any) {
+    viewModelScope.launch { userDBRepository.updateField(userId, field, value) }
   }
 }

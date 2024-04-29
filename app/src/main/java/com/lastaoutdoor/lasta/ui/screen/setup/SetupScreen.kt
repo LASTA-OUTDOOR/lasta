@@ -14,28 +14,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.db.UserDBRepositoryImpl
+import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.user.Language
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
-import com.lastaoutdoor.lasta.ui.navigation.BaseRoute
-import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun SetupScreen(
-    rootNavController: NavHostController = rememberNavController(),
-    authViewModel: AuthViewModel = hiltViewModel()
+    userId: String,
+    updateFieldInUser: (String, String, String) -> Unit,
+    updateLanguage: (Language) -> Unit,
+    updatePrefActivity: (ActivityType) -> Unit,
+    navigateToMain: () -> Unit,
 ) {
 
-  Modifier.testTag("SetupScreen")
-
-  val languages = listOf("English", "Français", "Deutsch")
+  val languages = Language.values()
 
   var selectedLanguage by remember { mutableStateOf(languages[0]) }
   val outdoorActivities =
@@ -68,10 +64,10 @@ fun SetupScreen(
                   style = MaterialTheme.typography.headlineMedium,
                   color = MaterialTheme.colorScheme.onBackground)
               DropDownMenuComponent(
-                  items = languages,
+                  items = languages.toList(),
                   selectedItem = selectedLanguage,
                   onItemSelected = { selectedLanguage = it },
-                  String::toString,
+                  Language::toString,
                   fieldText = LocalContext.current.getString(R.string.languague))
             }
         Spacer(modifier = Modifier.height(40.dp))
@@ -127,14 +123,13 @@ fun SetupScreen(
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
           Button(
               onClick = {
-                val db = UserDBRepositoryImpl()
-                db.updateFieldInUser(
-                    authViewModel.user?.userId.toString(), "language", selectedLanguage)
-                val prefSport = if (isHikingSelected) "Hiking" else "Climbing"
-                db.updateFieldInUser(authViewModel.user?.userId.toString(), "prefSport", prefSport)
-
-                rootNavController.popBackStack()
-                rootNavController.navigate(BaseRoute.Main.route)
+                updateFieldInUser(userId, "language", selectedLanguage.name)
+                updateLanguage(selectedLanguage)
+                val prefActivity =
+                    if (isHikingSelected) ActivityType.HIKING else ActivityType.CLIMBING
+                updateFieldInUser(userId, "prefActivity", prefActivity.name)
+                updatePrefActivity(prefActivity)
+                navigateToMain()
               },
           ) {
             Text(text = LocalContext.current.getString(R.string.save))

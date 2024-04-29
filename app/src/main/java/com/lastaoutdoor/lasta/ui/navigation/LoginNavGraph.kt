@@ -38,6 +38,18 @@ fun NavGraphBuilder.addLoginNavGraph(navController: NavHostController) {
             navController.navigate(BaseRoute.Main.route)
           })
     }
-    composable(DestinationRoute.Setup.route) { SetupScreen() }
+    composable(DestinationRoute.Setup.route) { entry ->
+      val authViewModel: AuthViewModel = entry.sharedViewModel(navController)
+      val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
+      SetupScreen(
+          userId = authViewModel.user?.userId ?: "",
+          updateFieldInUser = authViewModel::updateFieldInUser,
+          updateLanguage = preferencesViewModel::updateLanguage,
+          updatePrefActivity = preferencesViewModel::updatePrefActivity,
+          navigateToMain = {
+            navController.popBackStack()
+            navController.navigate(BaseRoute.Main.route)
+          })
+    }
   }
 }

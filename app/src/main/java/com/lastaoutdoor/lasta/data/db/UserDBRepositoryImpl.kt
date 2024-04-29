@@ -125,6 +125,6 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
     val data = hashMapOf(field to value)
 
     // Update the field in the document
-    userDocumentRef.update(data as Map<String, Any>)
+    userDocumentRef.update(data as Map<String, Any>).await()
   }
 }

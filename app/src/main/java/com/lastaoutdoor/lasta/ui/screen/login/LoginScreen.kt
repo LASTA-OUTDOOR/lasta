@@ -15,8 +15,6 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.GoogleAuthProvider
 import com.lastaoutdoor.lasta.models.user.UserModel
-import com.lastaoutdoor.lasta.ui.navigation.BaseRoute
-import com.lastaoutdoor.lasta.ui.navigation.DestinationRoute
 import com.lastaoutdoor.lasta.ui.screen.login.components.LoginContent
 
 @Composable
