@@ -29,7 +29,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -42,47 +41,71 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
+import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.models.activity.Activity
+import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
 import com.lastaoutdoor.lasta.ui.components.SearchBarComponent
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
-import com.lastaoutdoor.lasta.ui.navigation.DestinationRoute
 import com.lastaoutdoor.lasta.ui.screen.discover.components.ModalUpperSheet
 import com.lastaoutdoor.lasta.ui.screen.discover.components.RangeSearchComposable
 import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
-import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenType
-import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenViewModel
-import com.lastaoutdoor.lasta.viewmodel.MoreInfoScreenViewModel
+import com.lastaoutdoor.lasta.viewmodel.DiscoverDisplayType
 
 @Composable
-fun DiscoverScreen() {
-  val screen by discoveryScreenViewModel.screen.collectAsState()
+fun DiscoverScreen(
+    activities: List<Activity>,
+    screen: DiscoverDisplayType,
+    range: Double,
+    localities: List<Pair<String, LatLng>>,
+    selectedLocality: Pair<String, LatLng>,
+    fetchActivities: (Double, LatLng) -> Unit,
+    setScreen: (DiscoverDisplayType) -> Unit,
+    setRange: (Double) -> Unit,
+    setSelectedLocality: (Pair<String, LatLng>) -> Unit,
+    navigateToMoreInfo: () -> Unit,
+    navigateToFilter: () -> Unit,
+    changeActivityToDisplay: (Activity) -> Unit
+) {
 
   var isRangePopup by rememberSaveable { mutableStateOf(false) }
 
   RangeSearchComposable(
-      discoveryScreenViewModel = discoveryScreenViewModel,
-      isRangePopup = isRangePopup,
-      onDismissRequest = { isRangePopup = false })
+      screen,
+      range,
+      localities,
+      selectedLocality,
+      setRange,
+      setSelectedLocality,
+      fetchActivities,
+      isRangePopup) {
+        isRangePopup = false
+      }
 
-  if (screen == DiscoveryScreenType.LIST) {
+  if (screen == DiscoverDisplayType.LIST) {
     LazyColumn(
         modifier =
             Modifier.testTag("discoveryScreen").background(MaterialTheme.colorScheme.background)) {
           item {
-            HeaderComposable(navController = navController, updatePopup = { isRangePopup = true })
+            HeaderComposable(
+                screen,
+                range,
+                selectedLocality,
+                setScreen,
+                { isRangePopup = true },
+                navigateToFilter)
           }
 
           item {
             Spacer(modifier = Modifier.height(8.dp))
-            ActivitiesDisplay(navController, moreInfoScreenViewModel = moreInfoScreenViewModel)
+            ActivitiesDisplay(activities, changeActivityToDisplay, navigateToMoreInfo)
           }
         }
-  } else if (screen == DiscoveryScreenType.MAP) {
+  } else if (screen == DiscoverDisplayType.MAP) {
     Column {
-      HeaderComposable(navController = navController, updatePopup = { isRangePopup = true })
+      HeaderComposable(
+          screen, range, selectedLocality, setScreen, { isRangePopup = true }, navigateToFilter)
       Box(modifier = Modifier.fillMaxHeight()) { MapScreen() }
     }
   }
@@ -93,13 +116,13 @@ fun DiscoverScreen() {
 
 @Composable
 fun HeaderComposable(
-    navController: NavController,
-    discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel(),
-    updatePopup: () -> Unit
+    screen: DiscoverDisplayType,
+    range: Double,
+    selectedLocality: Pair<String, LatLng>,
+    setScreen: (DiscoverDisplayType) -> Unit,
+    updatePopup: () -> Unit,
+    navigateToFilter: () -> Unit
 ) {
-  val screen by discoveryScreenViewModel.screen.collectAsState()
-  val range by discoveryScreenViewModel.range.collectAsState()
-  val selectedLocality = discoveryScreenViewModel.selectedLocality.collectAsState().value
   val iconSize = 48.dp // Adjust icon size as needed
 
   Surface(
@@ -138,29 +161,24 @@ fun HeaderComposable(
               verticalAlignment = Alignment.CenterVertically) {
                 SearchBarComponent(Modifier.weight(1f), onSearch = { /*TODO*/})
                 Spacer(modifier = Modifier.width(8.dp))
-                IconButton(
-                    onClick = { navController.navigate(DestinationRoute.Filter.route) },
-                    modifier = Modifier.size(iconSize)) {
-                      Icon(
-                          painter = painterResource(id = R.drawable.filter_icon),
-                          contentDescription = "Filter",
-                          modifier = Modifier.size(24.dp))
-                    }
+                IconButton(onClick = { navigateToFilter() }, modifier = Modifier.size(iconSize)) {
+                  Icon(
+                      painter = painterResource(id = R.drawable.filter_icon),
+                      contentDescription = "Filter",
+                      modifier = Modifier.size(24.dp))
+                }
               }
           Row(
               modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
               verticalAlignment = Alignment.CenterVertically,
               horizontalArrangement = Arrangement.Center) {
                 val contex = LocalContext.current
-                DisplaySelection<DiscoveryScreenType>(
-                    DiscoveryScreenType.values().toList(),
-                    screen,
-                    discoveryScreenViewModel::setScreen) {
-                      it.toStringCon(contex)
-                    }
+                DisplaySelection(DiscoverDisplayType.values().toList(), screen, setScreen) {
+                  it.toStringCon(contex)
+                }
               }
 
-          if (screen == DiscoveryScreenType.LIST) {
+          if (screen == DiscoverDisplayType.LIST) {
             Row(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically) {
@@ -188,11 +206,10 @@ fun HeaderComposable(
 
 @Composable
 fun ActivitiesDisplay(
-    navController: NavController,
-    discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel(),
-    moreInfoScreenViewModel: MoreInfoScreenViewModel
+    activities: List<Activity>,
+    changeActivityToDisplay: (Activity) -> Unit,
+    navigateToMoreInfo: () -> Unit
 ) {
-  val activities = discoveryScreenViewModel.climbingActivities.value
   for (a in activities) {
     Card(
         modifier =
@@ -201,8 +218,8 @@ fun ActivitiesDisplay(
                 .padding(vertical = 8.dp, horizontal = 16.dp)
                 .clickable(
                     onClick = {
-                      moreInfoScreenViewModel.changeActivityToDisplay(a)
-                      navController.navigate(DestinationRoute.MoreInfo.route)
+                      changeActivityToDisplay(a)
+                      navigateToMoreInfo()
                     }),
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
@@ -218,7 +235,13 @@ fun ActivitiesDisplay(
                           .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
                           .padding(PaddingValues(8.dp))) {
                     Text(
-                        text = LocalContext.current.getString(R.string.Climbing),
+                        text =
+                            LocalContext.current.getString(
+                                when (a.activityType) {
+                                  ActivityType.HIKING -> R.string.hiking
+                                  ActivityType.CLIMBING -> R.string.climbing
+                                  ActivityType.BIKING -> R.string.biking
+                                }),
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onPrimary)
                   }
@@ -238,7 +261,7 @@ fun ActivitiesDisplay(
             modifier = Modifier.fillMaxWidth().padding(8.dp),
             verticalAlignment = Alignment.CenterVertically) {
               Text(
-                  text = a.locationName ?: "Unnamed Activity",
+                  text = a.name,
                   style = MaterialTheme.typography.titleMedium,
                   fontWeight = FontWeight.Bold)
             }

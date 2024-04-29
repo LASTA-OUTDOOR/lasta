@@ -42,7 +42,7 @@ import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FilterScreen() {
+fun FilterScreen(navigateBack: () -> Unit) {
   var fromDistance by remember { mutableStateOf(0) }
   var toDistance by remember { mutableStateOf(1000) }
 
@@ -54,7 +54,7 @@ fun FilterScreen() {
         TopAppBar(
             title = { Text(text = stringResource(id = R.string.filter_options)) },
             navigationIcon = {
-              IconButton(onClick = { navController.popBackStack() }) {
+              IconButton(onClick = { navigateBack() }) {
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
               }
             })
@@ -150,7 +150,7 @@ fun FilterScreen() {
         ElevatedButton(
             onClick = {
               // todo: save the filter options to be applied to the discovery screen
-              navController.popBackStack()
+              navigateBack()
             },
             modifier = Modifier.width(305.dp).height(48.dp).testTag("applyFilterOptionsButton"),
             colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {

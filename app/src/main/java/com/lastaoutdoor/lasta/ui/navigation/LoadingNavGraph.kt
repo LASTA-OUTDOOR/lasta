@@ -1,5 +1,6 @@
 package com.lastaoutdoor.lasta.ui.navigation
 
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -10,7 +11,7 @@ import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 fun NavGraphBuilder.addLoadingNavGraph(navController: NavHostController) {
   navigation(startDestination = DestinationRoute.Loading.route, route = BaseRoute.Loading.route) {
     composable(DestinationRoute.Loading.route) { entry ->
-      val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
+      val preferencesViewModel: PreferencesViewModel = hiltViewModel(entry)
       LoadingScreen(
           isLoggedIn = preferencesViewModel.isLoggedIn.value,
           navigateWhenLoggedIn = {

@@ -13,21 +13,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.window.Dialog
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.ui.components.WeatherReport
-import com.lastaoutdoor.lasta.ui.navigation.DestinationRoute
 
 @Composable
-fun FavoritesScreen() {
+fun FavoritesScreen(navigateToMoreInfo: () -> Unit, weather: WeatherResponse) {
   val displayWeather = remember { mutableStateOf(false) }
   if (displayWeather.value) {
-    Dialog({ displayWeather.value = false }) { WeatherReport() }
+    Dialog({ displayWeather.value = false }) { WeatherReport(weather) }
   }
 
   Column(
       modifier = Modifier.fillMaxSize(),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally) {
-        Button(onClick = { navController.navigate(DestinationRoute.MoreInfo.route) }) {
+        Button(onClick = { navigateToMoreInfo() }) {
           Text(text = LocalContext.current.getString(R.string.more_info))
         }
         Button(onClick = { displayWeather.value = true }) {

@@ -49,8 +49,9 @@
     <string name = "start">Start</string>
     <string name = "on_map">View on Map</string>
     <!--Profile-->
-    <string name = "hiking">Hiking</string>
     <string name = "climbing">Climbing</string>
+    <string name = "hiking">Hiking</string>
+    <string name = "biking">Biking</string>
 
     <string name = "hiking_lvl">Hiking Level</string>
     <string name = "preferences">Preferences</string>

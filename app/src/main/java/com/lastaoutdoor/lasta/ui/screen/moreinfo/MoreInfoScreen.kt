@@ -31,21 +31,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.ui.theme.Black
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
 import com.lastaoutdoor.lasta.ui.theme.YellowDifficulty
 import com.lastaoutdoor.lasta.viewmodel.MoreInfoScreenViewModel
 
 @Composable
-fun MoreInfoScreen() {
+fun MoreInfoScreen(activityToDisplay: Activity, processDiffText: (Activity) -> String, navigateBack: () -> Unit, ) {
   LazyColumn(modifier = Modifier.padding(8.dp)) {
     item { Spacer(modifier = Modifier.height(15.dp)) }
     // contains the top icon buttons
-    item { TopBar(navController) }
+    item { TopBar(navigateBack) }
     // displays activity title and duration
-    item { ActivityTitleZone(moreInfoScreenViewModel) }
+    item { ActivityTitleZone(activityToDisplay) }
     // displays activity difficulty, ration and view on map button
-    item { MiddleZone(moreInfoScreenViewModel) }
+    item { MiddleZone(activityToDisplay, processDiffText) }
     // filled with a spacer for the moment but will contain address + community
     item { Spacer(modifier = Modifier.height(350.dp)) }
     // Bottom start activity button
@@ -77,9 +78,9 @@ fun StartButton() {
 }
 
 @Composable
-fun MiddleZone(moreInfoScreenViewModel: MoreInfoScreenViewModel) {
+fun MiddleZone(activityToDisplay: Activity, processDiffText: (Activity) -> String) {
   Row {
-    DiffAndRating(moreInfoScreenViewModel)
+    DiffAndRating(activityToDisplay, processDiffText)
     Spacer(Modifier.width(170.dp))
     ViewOnMapButton()
   }
@@ -109,12 +110,12 @@ fun ViewOnMapButton() {
 }
 
 @Composable
-fun DiffAndRating(moreInfoScreenViewModel: MoreInfoScreenViewModel) {
+fun DiffAndRating(activityToDisplay: Activity, processDiffText: (Activity) -> String) {
   Column(modifier = Modifier.padding(vertical = 5.dp)) {
     ElevatedDifficultyDisplay(
         diff =
-            moreInfoScreenViewModel.processDiffText(
-                moreInfoScreenViewModel.activityToDisplay.value))
+            processDiffText(
+                activityToDisplay))
     /*Not implemented yet so a hard-coded value is returned*/
     RatingDisplay(4.3)
   }
@@ -163,9 +164,9 @@ fun ElevatedDifficultyDisplay(diff: String) {
 
 // Top Bar that displays the four clickable logos with distinct usages
 @Composable
-fun TopBar(navController: NavController) {
+fun TopBar(navigateBack: () -> Unit) {
   Row(modifier = Modifier.fillMaxWidth().testTag("Top Bar")) {
-    TopBarLogo(R.drawable.arrow_back) { navController.navigateUp() }
+    TopBarLogo(R.drawable.arrow_back) { navigateBack() }
     Spacer(modifier = Modifier.width(180.dp))
     TopBarLogo(R.drawable.download_button) {}
     TopBarLogo(R.drawable.share) {}
@@ -184,11 +185,11 @@ fun TopBarLogo(logoPainterId: Int, f: () -> Unit) {
 }
 
 @Composable
-fun ActivityTitleZone(moreInfoScreenViewModel: MoreInfoScreenViewModel) {
-  Row { ElevatedActivityType(moreInfoScreenViewModel) }
+fun ActivityTitleZone(activityToDisplay: Activity) {
+  Row { ElevatedActivityType(activityToDisplay) }
   Row {
     ActivityPicture()
-    ActivityTitleText(moreInfoScreenViewModel)
+    ActivityTitleText(activityToDisplay)
   }
 }
 
@@ -203,13 +204,13 @@ fun ActivityPicture() {
 }
 
 @Composable
-fun ActivityTitleText(moreInfoScreenViewModel: MoreInfoScreenViewModel) {
+fun ActivityTitleText(activityToDisplay: Activity) {
   Column(modifier = Modifier.padding(vertical = 25.dp, horizontal = 5.dp)) {
     Text(
-        text = moreInfoScreenViewModel.activityToDisplay.value.locationName ?: "No Title",
+        text = activityToDisplay.name,
         style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight(600)))
     Text(
-        text = moreInfoScreenViewModel.activityToDisplay.value.duration ?: "No Duration",
+        text = "No Duration",
         style =
             TextStyle(
                 fontSize = 14.sp,
@@ -222,7 +223,7 @@ fun ActivityTitleText(moreInfoScreenViewModel: MoreInfoScreenViewModel) {
 }
 
 @Composable
-fun ElevatedActivityType(moreInfoScreenViewModel: MoreInfoScreenViewModel) {
+fun ElevatedActivityType(activityToDisplay: Activity) {
   ElevatedButton(
       onClick = {},
       contentPadding = PaddingValues(all = 3.dp),
@@ -230,9 +231,8 @@ fun ElevatedActivityType(moreInfoScreenViewModel: MoreInfoScreenViewModel) {
       colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
         Text(
             text =
-                moreInfoScreenViewModel.activityToDisplay.value.activityType
-                    .toString()
-                    .replaceFirstChar { it.uppercase() },
+                activityToDisplay.activityType
+                    .toString(),
             style =
                 TextStyle(
                     fontSize = 11.sp,

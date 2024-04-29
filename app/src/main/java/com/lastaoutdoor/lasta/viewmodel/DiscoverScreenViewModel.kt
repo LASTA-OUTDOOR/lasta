@@ -19,13 +19,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class DiscoveryScreenViewModel @Inject constructor(private val repository: ActivityRepository) :
+class DiscoverScreenViewModel @Inject constructor(private val repository: ActivityRepository) :
     ViewModel() {
 
-  val climbingActivities = mutableStateOf<ArrayList<Activity>>(ArrayList())
+  val activities = mutableStateOf<ArrayList<Activity>>(ArrayList())
 
-  private val _screen = MutableStateFlow(DiscoveryScreenType.LIST)
-  val screen: StateFlow<DiscoveryScreenType> = _screen
+  private val _screen = MutableStateFlow(DiscoverDisplayType.LIST)
+  val screen: StateFlow<DiscoverDisplayType> = _screen
 
   private val _range = MutableStateFlow(10000.0)
   val range: StateFlow<Double> = _range
@@ -54,9 +54,9 @@ class DiscoveryScreenViewModel @Inject constructor(private val repository: Activ
           repository.getClimbingPointsInfo(
               rad.toInt(), centerLocation.latitude, centerLocation.longitude)
       val climbingPoints = (response as Response.Success).data ?: emptyList()
-      climbingActivities.value = ArrayList()
+      activities.value = ArrayList()
       climbingPoints.forEach { point ->
-        climbingActivities.value.add(ClimbingActivity("", point.id, point.tags.name))
+        activities.value.add(ClimbingActivity("", point.id, point.tags.name))
       }
     }
   }
@@ -70,9 +70,9 @@ class DiscoveryScreenViewModel @Inject constructor(private val repository: Activ
           repository.getHikingRoutesInfo(
               rad.toInt(), centerLocation.latitude, centerLocation.longitude)
       val hikingPoints = (response as Response.Success).data ?: emptyList()
-      climbingActivities.value = ArrayList()
+      activities.value = ArrayList()
       hikingPoints.forEach { point ->
-        climbingActivities.value.add(
+        activities.value.add(
             HikingActivity(
                 "", point.id, point.tags.name, from = point.tags.from, to = point.tags.to))
       }
@@ -88,9 +88,9 @@ class DiscoveryScreenViewModel @Inject constructor(private val repository: Activ
           repository.getBikingRoutesInfo(
               rad.toInt(), centerLocation.latitude, centerLocation.longitude)
       val hikingPoints = (response as Response.Success).data ?: emptyList()
-      climbingActivities.value = ArrayList()
+      activities.value = ArrayList()
       hikingPoints.forEach { point ->
-        climbingActivities.value.add(
+        activities.value.add(
             BikingActivity(
                 "",
                 point.id,
@@ -102,7 +102,7 @@ class DiscoveryScreenViewModel @Inject constructor(private val repository: Activ
     }
   }
 
-  fun setScreen(screen: DiscoveryScreenType) {
+  fun setScreen(screen: DiscoverDisplayType) {
     _screen.value = screen
   }
 
@@ -117,7 +117,7 @@ class DiscoveryScreenViewModel @Inject constructor(private val repository: Activ
   }
 }
 
-enum class DiscoveryScreenType {
+enum class DiscoverDisplayType {
   LIST,
   MAP;
 
@@ -132,7 +132,7 @@ enum class DiscoveryScreenType {
     }
   }
 
-  fun toStringConDisp(con: Context): (DiscoveryScreenType) -> String {
+  fun toStringConDisp(con: Context): (DiscoverDisplayType) -> String {
     return { it -> it.toStringCon(con) }
   }
 }
