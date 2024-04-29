@@ -26,7 +26,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -78,11 +77,12 @@ private fun FriendsCard(friend: UserModel, navToFriend: () -> Unit) {
               containerColor = MaterialTheme.colorScheme.surfaceVariant,
           ),
       modifier =
-          Modifier.height(height = 100.dp)
-              .fillMaxWidth()
-              .padding(8.dp)
-              .testTag("Friend")
-              .clickable { navToFriend() }) {
+      Modifier
+          .height(height = 100.dp)
+          .fillMaxWidth()
+          .padding(8.dp)
+          .testTag("Friend")
+          .clickable { navToFriend() }) {
         Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
 
           // Profile picture
@@ -97,13 +97,23 @@ private fun FriendsCard(friend: UserModel, navToFriend: () -> Unit) {
               contentDescription = "Profile Picture",
               contentScale = ContentScale.Crop,
               error = painterResource(R.drawable.default_profile_icon),
-              modifier = Modifier.clip(RoundedCornerShape(100.dp)).size(60.dp).fillMaxHeight())
+              modifier = Modifier
+                  .clip(RoundedCornerShape(100.dp))
+                  .size(60.dp)
+                  .fillMaxHeight())
 
           // Text information
           Column(modifier = Modifier.padding(8.dp)) {
             Text(text = friend.userName ?: "Name error", fontWeight = FontWeight.Bold)
-            Text(
-                text = "Bio no yet implemented, but will be here", overflow = TextOverflow.Ellipsis)
+              //little easteregg
+              if (friend.userName == "Jérémy Doffey" || friend.userName == "Thimphou") {Text(text = "scrum loser")}
+              //display the user's sport preference
+              Row {
+                  Text(text = friend.userLevel.toString())
+                  //add prefered sport after refactor
+
+              }
+
           }
         }
       }
