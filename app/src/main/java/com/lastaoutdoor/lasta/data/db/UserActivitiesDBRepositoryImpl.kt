@@ -6,19 +6,19 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.models.user.ClimbingUserActivity
+import com.lastaoutdoor.lasta.models.user.HikingUserActivity
 import com.lastaoutdoor.lasta.models.user.UserModel
-import com.lastaoutdoor.lasta.models.useractivities.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.repository.db.UserActivitiesDBRepository
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-class UserActivitiesDBRepositoryImpl
-@Inject
-constructor(private val database: FirebaseFirestore, private val context: Context) :
-    UserActivitiesDBRepository {
+class UserActivitiesDBRepositoryImpl(
+    private val context: Context,
+    private val database: FirebaseFirestore
+) : UserActivitiesDBRepository {
   private val activityConverter = ActivityConverter()
 
   /**
@@ -34,8 +34,8 @@ constructor(private val database: FirebaseFirestore, private val context: Contex
               .document(user.uid)
       val userData =
           hashMapOf(
-              "Hiking" to arrayListOf<ActivitiesDatabaseType.Trail>(),
-              "Climbing" to arrayListOf<ActivitiesDatabaseType.Climb>())
+              "Hiking" to arrayListOf<HikingUserActivity>(),
+              "Climbing" to arrayListOf<ClimbingUserActivity>())
       userDocumentRef.set(userData, SetOptions.merge())
     } catch (e: Exception) {
       /* TODO: cache the information so that we can add activities when we have internet again */

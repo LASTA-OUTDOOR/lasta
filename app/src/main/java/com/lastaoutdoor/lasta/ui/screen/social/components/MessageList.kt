@@ -76,7 +76,7 @@ fun MessageCard(
     viewModel: SocialViewModel = hiltViewModel()
 ) {
 
-  val friend: UserModel? = message.users.firstOrNull { it.userId != viewModel.userId }
+  val friend: UserModel? = message.members.firstOrNull { it.userId != viewModel.userId }
   if (friend == null) {
     return
   }

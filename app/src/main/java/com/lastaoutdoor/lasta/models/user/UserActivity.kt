@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.models.useractivities
+package com.lastaoutdoor.lasta.models.user
 
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import java.util.Date

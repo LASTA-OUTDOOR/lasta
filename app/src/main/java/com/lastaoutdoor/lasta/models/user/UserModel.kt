@@ -24,4 +24,19 @@ data class UserModel(
       userName = user.displayName ?: "",
       email = user.email ?: "",
       profilePictureUrl = user.photoUrl?.toString() ?: "")
+
+  fun copyUserWithFirebaseInfo(user: FirebaseUser): UserModel {
+    return UserModel(
+        user.uid,
+        user.displayName ?: "",
+        user.email ?: "",
+        user.photoUrl?.toString() ?: "",
+        description,
+        language,
+        prefActivity,
+        levels,
+        friends,
+        friendRequests,
+        favorites)
+  }
 }

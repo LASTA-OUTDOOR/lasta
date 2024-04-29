@@ -23,7 +23,7 @@ constructor(
 ) : ViewModel() {
 
   // current user id
-  var userId: String = runBlocking { preferences.userPreferencesFlow.first().uid }
+  val userId: String = runBlocking { preferences.userPreferencesFlow.first().user.userId }
 
   // friend user id
   var friendUserId: String by mutableStateOf("")

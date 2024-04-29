@@ -66,14 +66,9 @@ constructor(
           emit(Response.Success(newUser))
         } else {
           // This is a sign-in, retrieve user data from Firestore
-          val previouslyLoggedUser = userDBRepo.getUserById(user.uid)
-          if (previouslyLoggedUser != null) {
-            val updatedUser =
-                UserModel(
-                    user.uid,
-                    user.displayName ?: "",
-                    user.email ?: "",
-                    user.photoUrl?.toString() ?: "")
+          val dbUser = userDBRepo.getUserById(user.uid)
+          if (dbUser != null) {
+            val updatedUser = dbUser.copyUserWithFirebaseInfo(user)
             userDBRepo.updateUser(updatedUser)
             emit(Response.Success(updatedUser))
           } else {
