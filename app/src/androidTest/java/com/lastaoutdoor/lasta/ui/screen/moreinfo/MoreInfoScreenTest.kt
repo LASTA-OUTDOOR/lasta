@@ -4,6 +4,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.lastaoutdoor.lasta.di.AppModule
@@ -32,8 +33,24 @@ class MoreInfoScreenTest {
     }
   }
 
+  // Test that the top bar is displayed
   @Test
   fun topBar_isDisplayed() {
-    composeRule.onNodeWithTag("Top Bar").assertIsDisplayed()
+    composeRule.onNodeWithTag("MoreInfoTopBar").assertIsDisplayed()
+  }
+
+  // Test that the more info screen is displayed
+  @Test
+  fun moreInfoComposable_isDisplayed() {
+    // Check that the more info screen is displayed correctly
+    composeRule.onNodeWithTag("MoreInfoComposable").assertIsDisplayed()
+    // Check that start button is displayed
+    composeRule.onNodeWithTag("MoreInfoStartButton").assertIsDisplayed()
+    composeRule.onNodeWithTag("MoreInfoStartButton").performClick()
+    // Check that middle zone is displayed
+    composeRule.onNodeWithTag("MoreInfoMiddleZone").assertIsDisplayed()
+    // Check that activity title zone is displayed
+    composeRule.onNodeWithTag("MoreInfoActivityTitleZone").assertIsDisplayed()
+    composeRule.onNodeWithTag("MoreInfoActivityTypeComposable").assertIsDisplayed()
   }
 }
