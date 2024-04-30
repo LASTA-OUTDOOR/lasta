@@ -15,29 +15,99 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
+import com.lastaoutdoor.lasta.models.social.ConversationModel
+import com.lastaoutdoor.lasta.models.user.UserActivity
+import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.screen.social.components.TabMenu
-import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
+import com.lastaoutdoor.lasta.utils.ConnectionState
 
 @Composable
-fun Header(navController: NavController, viewModel: SocialViewModel = hiltViewModel()) {
+fun SocialScreen(
+    hasFriendRequests: Boolean,
+    topButton: Boolean,
+    topButtonIcon: ImageVector,
+    topButtonOnClick: () -> Unit,
+    refreshFriendRequests: () -> Unit,
+    navigateToNotifications: () -> Unit,
+    isConnedted: ConnectionState,
+    friends: List<UserModel>,
+    messages: List<ConversationModel>,
+    latestFriendActivities: List<UserActivity>,
+    addFriendDialog: Boolean,
+    friendRequestFeedback: String,
+    isDisplayedFriendPicker: Boolean,
+    refreshMessages: () -> Unit,
+    clearFriendRequestFeedback: () -> Unit,
+    hideAddFriendDialog: () -> Unit,
+    requestFriend: (String) -> Unit,
+    refreshFriends: () -> Unit,
+    showTopButton: (ImageVector, () -> Unit) -> Unit,
+    hideTopButton: () -> Unit,
+    displayAddFriendDialog: () -> Unit,
+    displayFriendPicker: () -> Unit,
+    hideFriendPicker: () -> Unit,
+    changeDisplayFriendPicker: () -> Unit,
+    navigateToConversation: (String) -> Unit,
+    navigateToFriendProfile: (String) -> Unit
+) {
+  Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+
+    // Page title and button
+    Header(
+        hasFriendRequests,
+        topButton,
+        topButtonIcon,
+        topButtonOnClick,
+        refreshFriendRequests,
+        navigateToNotifications)
+
+    // Tabs
+    TabMenu(
+        isConnedted,
+        friends,
+        messages,
+        latestFriendActivities,
+        addFriendDialog,
+        friendRequestFeedback,
+        isDisplayedFriendPicker,
+        refreshMessages,
+        clearFriendRequestFeedback,
+        hideAddFriendDialog,
+        requestFriend,
+        refreshFriends,
+        showTopButton,
+        hideTopButton,
+        displayAddFriendDialog,
+        displayFriendPicker,
+        hideFriendPicker,
+        changeDisplayFriendPicker,
+        navigateToConversation,
+        navigateToFriendProfile)
+  }
+}
+
+@Composable
+fun Header(
+    hasFriendRequests: Boolean,
+    topButton: Boolean,
+    topButtonIcon: ImageVector,
+    topButtonOnClick: () -> Unit,
+    refreshFriendRequests: () -> Unit,
+    navigateToNotifications: () -> Unit
+) {
 
   // This will be called when the composable becomes visible
-  LaunchedEffect(Unit) { viewModel.refreshFriendRequests() }
+  // LaunchedEffect(Unit) { refreshFriendRequests() }
 
   Row(
       modifier = Modifier.fillMaxWidth().testTag("Header"),
@@ -49,15 +119,15 @@ fun Header(navController: NavController, viewModel: SocialViewModel = hiltViewMo
         )
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-          if (viewModel.topButton) {
+          if (topButton) {
             IconButton(
-                onClick = { viewModel.topButtonOnClick.invoke() },
+                onClick = { topButtonOnClick.invoke() },
                 modifier = Modifier.align(Alignment.CenterVertically).testTag("TopButton")) {
-                  Icon(viewModel.topButtonIcon, contentDescription = "Top Action Button")
+                  Icon(topButtonIcon, contentDescription = "Top Action Button")
                 }
           }
-          BadgedBox(badge = { if (viewModel.hasFriendRequest) Badge {} }) {
-            IconButton(onClick = { navController.navigate(LeafScreen.Notifications.route) }) {
+          BadgedBox(badge = { if (hasFriendRequests) Badge {} }) {
+            IconButton(onClick = { navigateToNotifications() }) {
               Icon(Icons.Filled.Notifications, contentDescription = "Notification Icon")
             }
           }
@@ -66,16 +136,4 @@ fun Header(navController: NavController, viewModel: SocialViewModel = hiltViewMo
             modifier =
                 Modifier.padding(top = 8.dp, bottom = 40.dp).align(Alignment.CenterVertically))
       }
-}
-
-@Composable
-fun SocialScreen(navController: NavController) {
-  Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-
-    // Page title and button
-    Header(navController)
-
-    // Tabs
-    TabMenu(navController)
-  }
 }

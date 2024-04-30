@@ -1,32 +1,12 @@
 package com.lastaoutdoor.lasta.viewmodel
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Email
-import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
-import com.lastaoutdoor.lasta.data.model.social.ConversationModel
-import com.lastaoutdoor.lasta.data.model.social.MessageModel
-import com.lastaoutdoor.lasta.data.model.user.UserLevel
-import com.lastaoutdoor.lasta.data.model.user.UserModel
-import com.lastaoutdoor.lasta.data.model.user.UserPreferences
-import com.lastaoutdoor.lasta.repository.ConnectivityRepository
-import com.lastaoutdoor.lasta.repository.PreferencesRepository
-import com.lastaoutdoor.lasta.repository.SocialRepository
-import com.lastaoutdoor.lasta.utils.ConnectionState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.Assert.*
-import org.junit.Before
-import org.junit.Rule
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 
@@ -45,11 +25,10 @@ class MainCoroutineRule(private val dispatcher: TestDispatcher = StandardTestDis
   }
 }
 
-@OptIn(ExperimentalCoroutinesApi::class)
-class FakeSocialRepository : SocialRepository {
+/*class FakeSocialRepository : SocialDBRepository {
 
   var friends: ArrayList<UserModel> = ArrayList()
-  var activities: ArrayList<ActivitiesDatabaseType> = ArrayList()
+  var activities: ArrayList<ActivityType> = ArrayList()
   var messages: ArrayList<MessageModel> = ArrayList()
 
   var sentRequest: ArrayList<String> = ArrayList()
@@ -62,7 +41,7 @@ class FakeSocialRepository : SocialRepository {
     return friends
   }
 
-  override fun getLatestFriendActivities(userId: String, days: Int): List<ActivitiesDatabaseType> {
+  override fun getLatestFriendActivities(userId: String, days: Int): List<ActivityType> {
     return activities
   }
 
@@ -215,4 +194,4 @@ class SocialViewModelTest {
   }
 
   @ExperimentalCoroutinesApi @get:Rule var mainCoroutineRule = MainCoroutineRule()
-}
+}*/

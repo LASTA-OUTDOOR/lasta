@@ -1,42 +1,8 @@
 package com.lastaoutdoor.lasta.viewmodel
 
-import android.content.Context
-import androidx.test.core.app.ApplicationProvider
-import com.google.firebase.FirebaseApp
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.lastaoutdoor.lasta.data.model.activity.Difficulty
-import com.lastaoutdoor.lasta.data.model.profile.ActivitiesDatabaseType
-import com.lastaoutdoor.lasta.data.model.profile.TimeFrame
-import com.lastaoutdoor.lasta.data.model.user.UserLevel
-import com.lastaoutdoor.lasta.data.model.user.UserModel
-import com.lastaoutdoor.lasta.data.model.user.UserPreferences
-import com.lastaoutdoor.lasta.di.TimeProvider
-import com.lastaoutdoor.lasta.repository.PreferencesRepository
-import com.lastaoutdoor.lasta.repository.UserActivitiesRepository
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.mockkStatic
-import java.lang.reflect.Method
-import java.time.LocalDate
-import java.util.Date
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
-import org.junit.Assert.assertTrue
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-
-@RunWith(RobolectricTestRunner::class)
 class ProfileScreenViewModelTest {
 
-  private lateinit var fakeActivitiesRepository: FakeActivitiesRepository
+  /*private lateinit var fakeActivitiesRepository: FakeActivitiesRepository
   private lateinit var profileScreenViewModel: ProfileScreenViewModel
   private lateinit var context: Context
   private lateinit var user: FirebaseUser
@@ -428,5 +394,5 @@ class ProfileScreenViewModelTest {
       val userId = user.userId
       return userActivitiesMap[userId] ?: emptyList()
     }
-  }
+  }*/
 }

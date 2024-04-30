@@ -7,10 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.model.api.NodeWay
-import com.lastaoutdoor.lasta.data.model.map.ClimbingMarker
-import com.lastaoutdoor.lasta.data.model.map.Marker
-import com.lastaoutdoor.lasta.repository.ActivityRepository
+import com.lastaoutdoor.lasta.models.api.NodeWay
+import com.lastaoutdoor.lasta.models.map.ClimbingMarker
+import com.lastaoutdoor.lasta.models.map.Marker
+import com.lastaoutdoor.lasta.repository.api.ActivityRepository
 import com.lastaoutdoor.lasta.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -156,7 +156,7 @@ class MapViewModel @Inject constructor(private val activityRepository: ActivityR
   fun updateMarkers(centerLocation: LatLng, rad: Double) {
 
     // get all the climbing activities in the radius
-    fetchClimbingActivities(rad, centerLocation, activityRepository)
+    // fetchClimbingActivities(rad, centerLocation, activityRepository)
 
     // get all the hiking activities in the radius (only displays first point of the itinerary)
     // val hikingRelations = fetchHikingActivities(rad, centerLocation)

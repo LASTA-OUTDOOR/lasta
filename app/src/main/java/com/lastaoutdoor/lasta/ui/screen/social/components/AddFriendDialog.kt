@@ -27,19 +27,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
 // Dialog to select a friend to send a message to
 @Composable
-fun AddFriendDialog(viewModel: SocialViewModel = hiltViewModel()) {
+fun AddFriendDialog(
+    friendRequestFeedback: String,
+    clearFriendRequestFeedback: () -> Unit,
+    hideAddFriendDialog: () -> Unit,
+    requestFriend: (String) -> Unit
+) {
 
   // Reset the feedback message
-  viewModel.clearFriendRequestFeedback()
+  clearFriendRequestFeedback()
 
   Dialog(
-      onDismissRequest = { viewModel.hideAddFriendDialog() },
+      onDismissRequest = { hideAddFriendDialog() },
       properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)) {
         Card(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
@@ -58,14 +61,14 @@ fun AddFriendDialog(viewModel: SocialViewModel = hiltViewModel()) {
                     LocalContext.current.getString(R.string.fr_email_add),
                     modifier = Modifier.testTag("SubHeader"),
                     textAlign = TextAlign.Center)
-                AddFriendForm()
+                AddFriendForm(friendRequestFeedback, requestFriend)
               }
         }
       }
 }
 
 @Composable
-private fun AddFriendForm(viewModel: SocialViewModel = hiltViewModel()) {
+private fun AddFriendForm(friendRequestFeedback: String, requestFriend: (String) -> Unit) {
 
   // to hide the keyboard
   val focusManager = LocalFocusManager.current
@@ -82,17 +85,17 @@ private fun AddFriendForm(viewModel: SocialViewModel = hiltViewModel()) {
           KeyboardActions(
               onDone = {
                 focusManager.clearFocus()
-                viewModel.requestFriend(text)
+                requestFriend(text)
               }))
 
   // Error message / Feedback
-  Text(viewModel.friendRequestFeedback, style = MaterialTheme.typography.bodyLarge)
+  Text(friendRequestFeedback, style = MaterialTheme.typography.bodyLarge)
 
   // Submit Button
   Button(
       onClick = {
         focusManager.clearFocus()
-        viewModel.requestFriend(text)
+        requestFriend(text)
       },
       modifier = Modifier.testTag("SubmitButton")) {
         Text(LocalContext.current.getString(R.string.send_fr))

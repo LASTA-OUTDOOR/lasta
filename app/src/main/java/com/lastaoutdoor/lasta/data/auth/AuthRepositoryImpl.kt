@@ -5,10 +5,9 @@ import com.google.android.gms.auth.api.identity.BeginSignInResult
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
-import com.lastaoutdoor.lasta.data.db.DatabaseManager
-import com.lastaoutdoor.lasta.data.model.user.UserLevel
-import com.lastaoutdoor.lasta.data.model.user.UserModel
-import com.lastaoutdoor.lasta.repository.AuthRepository
+import com.lastaoutdoor.lasta.models.user.UserModel
+import com.lastaoutdoor.lasta.repository.auth.AuthRepository
+import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import com.lastaoutdoor.lasta.utils.Response
 import javax.inject.Inject
 import javax.inject.Named
@@ -25,15 +24,16 @@ constructor(
     private val auth: FirebaseAuth,
     private var oneTapClient: SignInClient,
     @Named("signInRequest") private var signInRequest: BeginSignInRequest,
-    @Named("signUpRequest") private var signUpRequest: BeginSignInRequest
+    @Named("signUpRequest") private var signUpRequest: BeginSignInRequest,
+    private val userDBRepo: UserDBRepository
 ) : AuthRepository {
 
-  private val isSignUp: MutableStateFlow<Boolean> = MutableStateFlow(false)
-
-  override fun observeIsSignUp(): Flow<Boolean> = isSignUp
+  private val _isSignUp: MutableStateFlow<Boolean> = MutableStateFlow(false)
+  override val isSignUp: Flow<Boolean> = _isSignUp
 
   override suspend fun startGoogleSignIn(): Flow<Response<BeginSignInResult>> = flow {
     try {
+      emit(Response.Loading)
       val signInResult = oneTapClient.beginSignIn(signInRequest).await()
       emit(Response.Success(signInResult))
     } catch (e: Exception) {
@@ -54,37 +54,30 @@ constructor(
       val userCredential = auth.signInWithCredential(googleCredential).await()
       val user = userCredential.user
       if (user != null) {
-        isSignUp.value = userCredential.additionalUserInfo?.isNewUser ?: false
-        if (isSignUp.value) {
+        _isSignUp.value = userCredential.additionalUserInfo?.isNewUser ?: false
+        if (_isSignUp.value) {
           // This is a sign-up, so create a new UserModel
-          val userModel = UserModel(user, bio = "", UserLevel.BEGINNER)
+          val newUser = UserModel(user)
 
           // Add the user to the Firestore database
-          DatabaseManager().addUserToDatabase(userModel)
+          userDBRepo.updateUser(newUser)
 
           // Emit success response with UserModel
-          emit(Response.Success(userModel))
+          emit(Response.Success(newUser))
         } else {
           // This is a sign-in, retrieve user data from Firestore
-          val userModel = DatabaseManager().getUserFromDatabase(user.uid)
-          if (userModel.userId.isNotEmpty()) {
-            val newUserModel =
-                UserModel(
-                    userModel.userId,
-                    user.displayName ?: "",
-                    user.email ?: "",
-                    user.photoUrl?.toString() ?: "",
-                    userModel.bio,
-                    userModel.userLevel)
-            DatabaseManager().updateUserInfo(newUserModel)
-            isSignUp.value = false
-            emit(Response.Success(newUserModel))
+          val dbUser = userDBRepo.getUserById(user.uid)
+          emit(Response.Success(UserModel(user)))
+          if (dbUser != null) {
+            val updatedUser = dbUser.copyUserWithFirebaseInfo(user)
+            userDBRepo.updateUser(updatedUser)
+            emit(Response.Success(updatedUser))
           } else {
-            emit(Response.Failure(Exception("User data not found")))
+            emit(Response.Failure(NoSuchElementException("User data not found")))
           }
         }
       } else {
-        emit(Response.Failure(Exception("User is null")))
+        emit(Response.Failure(NoSuchElementException("User is null")))
       }
     } catch (e: Exception) {
       emit(Response.Failure(e))

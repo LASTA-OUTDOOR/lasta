@@ -8,10 +8,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lastaoutdoor.lasta.data.model.user.UserModel
-import com.lastaoutdoor.lasta.repository.ConnectivityRepository
-import com.lastaoutdoor.lasta.repository.PreferencesRepository
-import com.lastaoutdoor.lasta.repository.SocialRepository
+import com.lastaoutdoor.lasta.models.social.ConversationModel
+import com.lastaoutdoor.lasta.models.user.UserActivity
+import com.lastaoutdoor.lasta.models.user.UserModel
+import com.lastaoutdoor.lasta.repository.app.ConnectivityRepository
+import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
+import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
+import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import com.lastaoutdoor.lasta.utils.ConnectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -20,28 +23,28 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 @HiltViewModel
 class SocialViewModel
 @Inject
 constructor(
-    val repository: SocialRepository,
-    val connectionRepo: ConnectivityRepository,
+    val repository: SocialDBRepository,
+    private val userDBRepo: UserDBRepository,
+    connectionRepo: ConnectivityRepository,
     val preferences: PreferencesRepository
 ) : ViewModel() {
 
   // get the user id
-  val userId = runBlocking { preferences.userPreferencesFlow.first().uid }
+  var user: UserModel by mutableStateOf(UserModel(""))
 
   // Get all the friends request
-  var friendsRequest: List<UserModel> by mutableStateOf(repository.getFriendRequests(userId))
+  var friendRequests: List<UserModel> by mutableStateOf(emptyList())
 
   // feedback message for the friend request
   var friendRequestFeedback: String by mutableStateOf("")
 
   // Is there a notification for a friend request
-  var hasFriendRequest: Boolean by mutableStateOf(friendsRequest.isNotEmpty())
+  var hasFriendRequest: Boolean = friendRequests.isNotEmpty()
 
   // number of days to consider for the latest activities
   private val numberOfDays = 7
@@ -56,13 +59,13 @@ constructor(
   var displayAddFriendDialog by mutableStateOf(false)
 
   // returns all the friends of the users
-  var friends = repository.getFriends(userId)
+  var friends: List<UserModel> by mutableStateOf(emptyList())
 
   // returns all the existing conversations
-  var messages by mutableStateOf(repository.getAllConversations(userId, friends))
+  var messages: List<ConversationModel> by mutableStateOf(emptyList())
 
   // returns all the activities done by friends in the last 7 days
-  val latestFriendActivities = repository.getLatestFriendActivities(userId, numberOfDays)
+  val latestFriendActivities: List<UserActivity> by mutableStateOf(emptyList())
 
   // Fetch connection info from the repository, set isConnected to true if connected, false
   // otherwise
@@ -74,6 +77,15 @@ constructor(
 
   var topButtonIcon by mutableStateOf(Icons.Filled.Email)
   var topButtonOnClick by mutableStateOf({})
+
+  init {
+    viewModelScope.launch {
+      user = preferences.userPreferencesFlow.first().user
+      refreshFriends()
+      refreshFriendRequests()
+      refreshMessages()
+    }
+  }
 
   fun getNumberOfDays(): Int {
     return numberOfDays
@@ -99,9 +111,10 @@ constructor(
           if (android.util.Patterns.EMAIL_ADDRESS != null &&
               android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             // get current user id from the flow
-            val userId = preferences.userPreferencesFlow.first().uid
+            val userId = preferences.userPreferencesFlow.first().user.userId
+            val friendId = userDBRepo.getUserByEmail(email)?.userId ?: ""
             // 2. send friend request
-            if (repository.sendFriendRequest(userId, email)) "Friend request sent"
+            if (repository.sendFriendRequest(userId, friendId)) "Friend request sent"
             else "Failed to send friend request"
           } else {
             "The email address is not valid"
@@ -110,34 +123,38 @@ constructor(
   }
 
   fun acceptFriend(friend: UserModel) {
-    repository.acceptFriendRequest(userId, friend.userId)
-    // update the list of friends
-    refreshFriendRequests()
+    viewModelScope.launch {
+      repository.acceptFriendRequest(user.userId, friend.userId)
+      // update the list of friends
+      refreshFriendRequests()
+    }
   }
 
   // Decline a friend request
   fun declineFriend(friend: UserModel) {
-    repository.declineFriendRequest(userId, friend.userId)
-    // update the list of friends
-    refreshFriendRequests()
+    viewModelScope.launch {
+      repository.declineFriendRequest(user.userId, friend.userId)
+      // update the list of friends
+      refreshFriendRequests()
+    }
   }
 
   // Refresh the list of friends request
   fun refreshFriendRequests() {
     viewModelScope.launch {
-      friendsRequest = repository.getFriendRequests(userId)
-      hasFriendRequest = friendsRequest.isNotEmpty()
+      friendRequests = repository.getFriendRequests(user.userId)
+      hasFriendRequest = friendRequests.isNotEmpty()
     }
   }
 
   // Refresh the list of friends
   fun refreshFriends() {
-    viewModelScope.launch { friends = repository.getFriends(userId) }
+    viewModelScope.launch { friends = repository.getFriends(user.friends) }
   }
 
   // Refresh the list of friends
   fun refreshMessages() {
-    viewModelScope.launch { messages = repository.getAllConversations(userId, friends) }
+    viewModelScope.launch { messages = repository.getAllConversations(user.userId) }
   }
 
   // This displays the friend picker (in order to send a message)
