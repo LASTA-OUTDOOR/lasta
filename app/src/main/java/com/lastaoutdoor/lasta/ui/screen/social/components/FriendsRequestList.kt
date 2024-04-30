@@ -19,7 +19,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,38 +27,40 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.model.user.UserModel
+import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.utils.ConnectionState
-import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
 @Composable
-fun FriendsRequestList(viewModel: SocialViewModel = hiltViewModel()) {
+fun FriendsRequestList(
+    isConnected: ConnectionState,
+    friendRequests: List<UserModel>,
+    acceptFriend: (UserModel) -> Unit,
+    declineFriend: (UserModel) -> Unit
+) {
   Text(
       LocalContext.current.getString(R.string.friend_req),
       style = MaterialTheme.typography.titleLarge,
       modifier = Modifier.padding(8.dp).testTag("FriendRequestTitle"))
-  val isConnected = viewModel.isConnected.collectAsState()
   when {
-    isConnected.value == ConnectionState.OFFLINE -> {
+    isConnected == ConnectionState.OFFLINE -> {
       ConnectionMissing()
     }
-    viewModel.friendsRequest.isEmpty() -> {
+    friendRequests.isEmpty() -> {
       Text(
           LocalContext.current.getString(R.string.no_friend),
           Modifier.padding(8.dp).testTag("NoFriendRequest"))
     }
     else -> {
       LazyColumn {
-        items(viewModel.friendsRequest.size) {
+        items(friendRequests.size) {
           FriendsRequestCard(
-              viewModel.friendsRequest[it],
-              { friend: UserModel -> viewModel.acceptFriend(friend) },
-              { friend: UserModel -> viewModel.declineFriend(friend) })
+              friendRequests[it],
+              { friend: UserModel -> acceptFriend(friend) },
+              { friend: UserModel -> declineFriend(friend) })
         }
       }
     }

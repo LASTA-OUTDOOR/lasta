@@ -16,8 +16,8 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.test.espresso.Espresso
 import com.google.android.gms.maps.model.LatLng
-import com.lastaoutdoor.lasta.data.model.map.ClimbingMarker
 import com.lastaoutdoor.lasta.di.AppModule
+import com.lastaoutdoor.lasta.models.map.ClimbingMarker
 import com.lastaoutdoor.lasta.ui.MainActivity
 import com.lastaoutdoor.lasta.viewmodel.MapViewModel
 import dagger.hilt.android.testing.HiltAndroidRule

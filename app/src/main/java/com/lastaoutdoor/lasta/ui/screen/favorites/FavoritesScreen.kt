@@ -16,15 +16,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.window.Dialog
-import androidx.navigation.NavHostController
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.ui.components.WeatherReport
-import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
 
 @Composable
-fun FavoritesScreen(
-    navController: NavHostController,
-) {
+fun FavoritesScreen(navigateToMoreInfo: () -> Unit, weather: WeatherResponse) {
     var locationPermissionGranted by remember { mutableStateOf(false) }
 
     val requestPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -34,14 +31,14 @@ fun FavoritesScreen(
     }
   val displayWeather = remember { mutableStateOf(false) }
   if (displayWeather.value) {
-    Dialog({ displayWeather.value = false }) { WeatherReport() }
+    Dialog({ displayWeather.value = false }) { WeatherReport(weather) }
   }
 
   Column(
       modifier = Modifier.fillMaxSize(),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally) {
-        Button(onClick = { navController.navigate(LeafScreen.MoreInfo.route) }) {
+        Button(onClick = { navigateToMoreInfo() }) {
           Text(text = LocalContext.current.getString(R.string.more_info))
         }
         Button(onClick = { if(locationPermissionGranted) {

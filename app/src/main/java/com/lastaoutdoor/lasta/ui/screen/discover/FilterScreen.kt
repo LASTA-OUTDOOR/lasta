@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.ui.screen.discovery
+package com.lastaoutdoor.lasta.ui.screen.discover
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,15 +35,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.model.activity.ActivityType
+import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.ui.theme.AccentGreen
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FilterScreen(navController: NavController) {
+fun FilterScreen(navigateBack: () -> Unit) {
   var fromDistance by remember { mutableStateOf(0) }
   var toDistance by remember { mutableStateOf(1000) }
 
@@ -55,7 +54,7 @@ fun FilterScreen(navController: NavController) {
         TopAppBar(
             title = { Text(text = stringResource(id = R.string.filter_options)) },
             navigationIcon = {
-              IconButton(onClick = { navController.popBackStack() }) {
+              IconButton(onClick = { navigateBack() }) {
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
               }
             })
@@ -151,7 +150,7 @@ fun FilterScreen(navController: NavController) {
         ElevatedButton(
             onClick = {
               // todo: save the filter options to be applied to the discovery screen
-              navController.popBackStack()
+              navigateBack()
             },
             modifier = Modifier.width(305.dp).height(48.dp).testTag("applyFilterOptionsButton"),
             colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {

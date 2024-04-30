@@ -5,7 +5,7 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
-import com.lastaoutdoor.lasta.repository.ConnectivityRepository
+import com.lastaoutdoor.lasta.repository.app.ConnectivityRepository
 import com.lastaoutdoor.lasta.utils.ConnectionState
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject

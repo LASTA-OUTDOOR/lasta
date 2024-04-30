@@ -11,9 +11,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.lastaoutdoor.lasta.data.api.WeatherResponse
-import com.lastaoutdoor.lasta.repository.WeatherRepository
-import dagger.hilt.android.internal.Contexts.getApplication
+
+import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
+import com.lastaoutdoor.lasta.repository.api.WeatherRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
