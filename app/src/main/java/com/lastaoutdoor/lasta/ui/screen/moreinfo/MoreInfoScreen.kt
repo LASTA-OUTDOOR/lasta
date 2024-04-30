@@ -52,25 +52,25 @@ fun MoreInfoScreen(navController: NavController, moreInfoScreenViewModel: MoreIn
 
 @Composable
 fun StartButton() {
-  Row(
-      modifier = Modifier.fillMaxWidth().testTag("Start button"),
-      horizontalArrangement = Arrangement.Center) {
+    Row(
+        modifier = Modifier.fillMaxWidth().testTag("Start button"),
+        horizontalArrangement = Arrangement.Center) {
         ElevatedButton(
             onClick = {
-              /** TODO : Start Activity */
+                /** TODO : Start Activity */
             },
-            modifier = Modifier.width(305.dp).height(48.dp),
+            modifier = Modifier.fillMaxWidth(0.8f).height(48.dp), // takes up 80% of the width
             colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
-              Text(
-                  LocalContext.current.getString(R.string.start),
-                  style =
-                      TextStyle(
-                          fontSize = 22.sp,
-                          lineHeight = 28.sp,
-                          fontWeight = FontWeight(400),
-                      ))
-            }
-      }
+            Text(
+                LocalContext.current.getString(R.string.start),
+                style =
+                TextStyle(
+                    fontSize = 22.sp,
+                    lineHeight = 28.sp,
+                    fontWeight = FontWeight(400),
+                ))
+        }
+    }
 }
 
 @Composable
