@@ -28,6 +28,7 @@ import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.viewmodel.ConversationViewModel
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenViewModel
 import com.lastaoutdoor.lasta.viewmodel.MoreInfoScreenViewModel
+import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 import com.lastaoutdoor.lasta.viewmodel.ProfileScreenViewModel
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 import com.lastaoutdoor.lasta.viewmodel.WeatherViewModel
@@ -72,7 +73,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           socialViewModel.topButtonIcon,
           socialViewModel.topButtonOnClick,
           socialViewModel::refreshFriendRequests,
-        {navController.navigate(DestinationRoute.Notifications.route)},
+          { navController.navigate(DestinationRoute.Notifications.route) },
           isConnected,
           socialViewModel.friends,
           socialViewModel.messages,
@@ -91,24 +92,34 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           socialViewModel::displayFriendPicker,
           socialViewModel::hideFriendPicker,
           socialViewModel::displayFriendPicker,
-        {userId: String -> navController.navigate(DestinationRoute.Conversation.route + "/$userId") },
-        {userId: String -> navController.navigate(DestinationRoute.Conversation.route + "/$userId") },)
+          { userId: String ->
+            navController.navigate(DestinationRoute.Conversation.route + "/$userId")
+          },
+          { userId: String ->
+            navController.navigate(DestinationRoute.Conversation.route + "/$userId")
+          },
+      )
     }
     composable(DestinationRoute.Profile.route) { entry ->
       val profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(entry)
+      val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
 
       val activities by profileScreenViewModel.filteredActivities.collectAsState()
       val timeFrame by profileScreenViewModel.timeFrame.collectAsState()
       val sport by profileScreenViewModel.sport.collectAsState()
       val isCurrentUser by profileScreenViewModel.isCurrentUser.collectAsState()
+      val user = preferencesViewModel.user.collectAsState(initial = UserModel("")).value
       ProfileScreen(
           activities,
           timeFrame,
           sport,
           isCurrentUser,
-          profileScreenViewModel::setTimeFrame,
+          user,
+          preferencesViewModel::updateDescription,
           profileScreenViewModel::setSport,
-          profileScreenViewModel::fetchActivities)
+          profileScreenViewModel::setTimeFrame) {
+            navController.navigate(DestinationRoute.Settings.route)
+          }
     }
 
     composable(DestinationRoute.MoreInfo.route) { entry ->

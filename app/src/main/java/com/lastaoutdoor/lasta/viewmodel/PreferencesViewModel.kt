@@ -19,6 +19,7 @@ class PreferencesViewModel @Inject constructor(private val preferences: Preferen
     ViewModel() {
   // Decompose UserPreferences into individual properties available as Flows
   val isLoggedIn = preferences.userPreferencesFlow.map { it.isLoggedIn }.asLiveData()
+  val user = preferences.userPreferencesFlow.map { it.user }
   val userId = preferences.userPreferencesFlow.map { it.user.userId }
   val userName = preferences.userPreferencesFlow.map { it.user.userName }
   val email = preferences.userPreferencesFlow.map { it.user.userName }
