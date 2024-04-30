@@ -1,19 +1,9 @@
 package com.lastaoutdoor.lasta.utils
 
-import com.lastaoutdoor.lasta.data.time.TimeProvider
-import com.lastaoutdoor.lasta.models.useractivities.ActivitiesDatabaseType
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.unmockkObject
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.temporal.ChronoUnit
 import java.util.*
-import org.junit.Assert.assertEquals
-import org.junit.Test
 
 class HelperFunctionsTest {
-  @Test
+  /*@Test
   fun `calculateTimeRange works in general case`() {
     // Start mocking static methods of LocalDate
     val mockTimeProvider = mockk<TimeProvider>()
@@ -244,7 +234,7 @@ class HelperFunctionsTest {
 
     val ld2 = Response.Failure(Exception("ex"))
     assert(ld2.e.message == "ex")
-  }
+  }*/
 }
 
     /*

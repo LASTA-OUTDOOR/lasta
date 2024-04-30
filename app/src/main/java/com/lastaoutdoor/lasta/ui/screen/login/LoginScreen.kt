@@ -16,6 +16,7 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.GoogleAuthProvider
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.screen.login.components.LoginContent
+import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 
 @Composable
 fun LoginScreen(
@@ -27,10 +28,9 @@ fun LoginScreen(
     oneTapClient: SignInClient,
     updatePreferencesOnLogin: (UserModel) -> Unit,
     navigateToSetup: () -> Unit,
-    navigateToMain: () -> Unit
+    navigateToMain: () -> Unit,
+    authViewModel: AuthViewModel
 ) {
-  Modifier.testTag("LoginScreen")
-
   val launcher =
       rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
           result ->
@@ -53,8 +53,9 @@ fun LoginScreen(
     }
   }
 
-  LaunchedEffect(key1 = user) {
-    user?.let {
+  LaunchedEffect(key1 = authViewModel.user) {
+    authViewModel.user?.let {
+      println("Hello")
       updatePreferencesOnLogin(it)
       if (isSignUp) {
         navigateToSetup()

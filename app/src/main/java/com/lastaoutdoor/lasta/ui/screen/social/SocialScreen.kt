@@ -108,7 +108,7 @@ fun Header(
 ) {
 
   // This will be called when the composable becomes visible
-  LaunchedEffect(Unit) { refreshFriendRequests() }
+  //LaunchedEffect(Unit) { refreshFriendRequests() }
 
   Row(
       modifier = Modifier.fillMaxWidth().testTag("Header"),

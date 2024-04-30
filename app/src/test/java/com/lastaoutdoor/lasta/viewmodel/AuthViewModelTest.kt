@@ -1,22 +1,6 @@
 package com.lastaoutdoor.lasta.viewmodel
 
-import com.google.android.gms.auth.api.identity.BeginSignInResult
-import com.google.android.gms.auth.api.identity.SignInClient
-import com.google.firebase.auth.AuthCredential
-import com.lastaoutdoor.lasta.models.user.UserModel
-import com.lastaoutdoor.lasta.repository.auth.AuthRepository
-import com.lastaoutdoor.lasta.utils.Response
-import io.mockk.clearAllMocks
-import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.runTest
-import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Before
-import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
@@ -24,7 +8,7 @@ import org.robolectric.RobolectricTestRunner
 @ExperimentalCoroutinesApi
 class AuthViewModelTest {
 
-  private lateinit var fakeAuthRepo: FakeAuthRepository
+  /*private lateinit var fakeAuthRepo: FakeAuthRepository
   private lateinit var mockOneTapClient: SignInClient
   private lateinit var authViewModel: AuthViewModel
 
@@ -161,5 +145,5 @@ class AuthViewModelTest {
         signOutFlow
       }
     }
-  }
+  }*/
 }

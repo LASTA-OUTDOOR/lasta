@@ -60,20 +60,21 @@ constructor(
           val newUser = UserModel(user)
 
           // Add the user to the Firestore database
-          userDBRepo.updateUser(newUser)
+          //userDBRepo.updateUser(newUser)
 
           // Emit success response with UserModel
           emit(Response.Success(newUser))
         } else {
           // This is a sign-in, retrieve user data from Firestore
-          val dbUser = userDBRepo.getUserById(user.uid)
-          if (dbUser != null) {
+          //val dbUser = userDBRepo.getUserById(user.uid)
+          emit(Response.Success(UserModel(user)))
+          /*if (dbUser != null) {
             val updatedUser = dbUser.copyUserWithFirebaseInfo(user)
             userDBRepo.updateUser(updatedUser)
             emit(Response.Success(updatedUser))
           } else {
             emit(Response.Failure(NoSuchElementException("User data not found")))
-          }
+          }*/
         }
       } else {
         emit(Response.Failure(NoSuchElementException("User is null")))

@@ -64,8 +64,8 @@ fun DiscoverScreen(
     setScreen: (DiscoverDisplayType) -> Unit,
     setRange: (Double) -> Unit,
     setSelectedLocality: (Pair<String, LatLng>) -> Unit,
-    navigateToMoreInfo: () -> Unit,
     navigateToFilter: () -> Unit,
+    navigateToMoreInfo: () -> Unit,
     changeActivityToDisplay: (Activity) -> Unit
 ) {
 

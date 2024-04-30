@@ -36,13 +36,15 @@ fun NavGraphBuilder.addLoginNavGraph(navController: NavHostController) {
           {
             navController.popBackStack()
             navController.navigate(BaseRoute.Main.route)
-          })
+          },
+        authViewModel)
     }
     composable(DestinationRoute.Setup.route) { entry ->
       val authViewModel: AuthViewModel = entry.sharedViewModel(navController)
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
+      val userId = preferencesViewModel.userId.collectAsState(initial = "").value
       SetupScreen(
-          userId = authViewModel.user?.userId ?: "",
+          userId = userId,
           updateFieldInUser = authViewModel::updateFieldInUser,
           updateLanguage = preferencesViewModel::updateLanguage,
           updatePrefActivity = preferencesViewModel::updatePrefActivity,

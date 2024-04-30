@@ -63,7 +63,7 @@ constructor(
   /** Initializes the ViewModel by fetching the current user and user activities. */
   init {
     fetchCurrentUser()
-    fetchUserActivities()
+    //fetchUserActivities()
   }
 
   /** Fetches the current user from the preferences. */

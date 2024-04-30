@@ -3,7 +3,7 @@ package com.lastaoutdoor.lasta.data.api
 import androidx.test.core.app.ApplicationProvider
 import com.lastaoutdoor.lasta.data.api.osm.APIResponse
 import com.lastaoutdoor.lasta.data.api.osm.ActivityRepositoryImpl
-import com.lastaoutdoor.lasta.di.AppModule
+import com.lastaoutdoor.lasta.di.NetworkModule
 import com.lastaoutdoor.lasta.models.api.NodeWay
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -12,7 +12,7 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class ApiDataClassesTest {
   private val con = ApplicationProvider.getApplicationContext<android.content.Context>()
-  private val rep = ActivityRepositoryImpl(AppModule.provideOSMAPIService(con))
+  private val rep = ActivityRepositoryImpl(NetworkModule.provideOSMAPIService(con))
 
   @Test
   fun outdoorActivityResponse() {

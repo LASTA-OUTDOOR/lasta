@@ -12,7 +12,6 @@ import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.auth.AuthRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import com.lastaoutdoor.lasta.utils.Response
-import com.lastaoutdoor.lasta.utils.Response.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
@@ -36,7 +35,7 @@ constructor(
       authRepo.startGoogleSignIn().collect { response ->
         when (response) {
           is Response.Loading -> {}
-          is Success -> {
+          is Response.Success -> {
             beginSignInResult = response.data
           }
           is Response.Failure -> {
@@ -53,7 +52,7 @@ constructor(
       authRepo.finishGoogleSignIn(googleCredential).collect { response ->
         when (response) {
           is Response.Loading -> {}
-          is Success -> {
+          is Response.Success -> {
             user = response.data
           }
           is Response.Failure -> {
@@ -70,7 +69,9 @@ constructor(
       authRepo.signOut().collect { response ->
         when (response) {
           is Response.Loading -> {}
-          is Success -> {
+          is Response.Success -> {
+            user = null
+            beginSignInResult = null
             signedOut = true
           }
           is Response.Failure -> {

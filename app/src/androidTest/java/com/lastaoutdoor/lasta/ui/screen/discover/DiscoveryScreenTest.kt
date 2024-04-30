@@ -1,11 +1,8 @@
 package com.lastaoutdoor.lasta.ui.screen.discover
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import com.lastaoutdoor.lasta.data.api.FakeActivityRepository
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.ui.MainActivity
-import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenViewModel
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -21,11 +18,6 @@ class DiscoveryScreenTest {
 
   // Create a compose rule
   @get:Rule(order = 1) val composeRule = createAndroidComposeRule<MainActivity>()
-
-  // Bind the fake view model to the test
-  @BindValue
-  val discoveryScreenViewModel: DiscoverScreenViewModel =
-      DiscoverScreenViewModel(FakeActivityRepository())
 
   // Set up the test
   @Before

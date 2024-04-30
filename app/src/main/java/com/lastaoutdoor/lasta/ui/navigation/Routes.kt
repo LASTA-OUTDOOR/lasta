@@ -18,7 +18,7 @@ sealed class BaseRoute(override val route: String) : Route(route) {
 /** Sealed class representing all possible leaf screens in the application */
 sealed class DestinationRoute(override val route: String) : Route(route) {
 
-  object Loading : DestinationRoute("Loading")
+  object Loading : DestinationRoute("DestLoading")
 
   object SignIn : DestinationRoute("SignIn")
 
