@@ -43,9 +43,7 @@ fun MoreInfoScreen(
     processDiffText: (Activity) -> String,
     navigateBack: () -> Unit,
 ) {
-  Column(modifier = Modifier
-    .fillMaxSize()
-    .testTag("MoreInfoComposable")) {
+  Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoComposable")) {
     LazyColumn(modifier = Modifier.weight(1f).padding(8.dp)) {
       item { Spacer(modifier = Modifier.height(15.dp)) }
       // contains the top icon buttons
@@ -90,7 +88,7 @@ fun StartButton() {
 fun MiddleZone(activityToDisplay: Activity, processDiffText: (Activity) -> String) {
   Row(modifier = Modifier.fillMaxWidth().testTag("MoreInfoMiddleZone")) {
     DiffAndRating(activityToDisplay, processDiffText)
-    Spacer(Modifier.width(170.dp))
+    Spacer(Modifier.weight(1f))
     ViewOnMapButton()
   }
 }
@@ -104,9 +102,7 @@ fun ViewOnMapButton() {
           /** TODO : Go to map */
         },
         contentPadding = PaddingValues(all = 3.dp),
-        modifier = Modifier
-          .width(130.dp)
-          .height(40.dp),
+        modifier = Modifier.width(130.dp).height(40.dp),
         colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
           Text(
               LocalContext.current.getString(R.string.on_map),
@@ -159,9 +155,7 @@ fun ElevatedDifficultyDisplay(diff: String) {
   ElevatedButton(
       onClick = {},
       contentPadding = PaddingValues(all = 3.dp),
-      modifier = Modifier
-        .width(80.dp)
-        .height(24.dp),
+      modifier = Modifier.width(80.dp).height(24.dp),
       colors = ButtonDefaults.buttonColors(containerColor = YellowDifficulty)) {
         Text(
             diff,
@@ -181,7 +175,7 @@ fun ElevatedDifficultyDisplay(diff: String) {
 fun TopBar(navigateBack: () -> Unit) {
   Row(modifier = Modifier.fillMaxWidth().testTag("Top Bar")) {
     TopBarLogo(R.drawable.arrow_back) { navigateBack() }
-    Spacer(modifier = Modifier.width(180.dp))
+    Spacer(modifier = Modifier.weight(1f))
     TopBarLogo(R.drawable.download_button) {}
     TopBarLogo(R.drawable.share) {}
     TopBarLogo(R.drawable.favourite) {}
@@ -195,9 +189,7 @@ fun TopBarLogo(logoPainterId: Int, f: () -> Unit) {
     Icon(
         painter = painterResource(id = logoPainterId),
         contentDescription = "Top Bar logo",
-        modifier = Modifier
-          .width(26.dp)
-          .height(26.dp))
+        modifier = Modifier.width(26.dp).height(26.dp))
   }
 }
 
@@ -218,10 +210,7 @@ fun ActivityPicture() {
     Image(
         painter = painterResource(id = R.drawable.ellipse),
         contentDescription = "Soon Activity Picture",
-        modifier = Modifier
-          .padding(5.dp)
-          .width(70.dp)
-          .height(70.dp))
+        modifier = Modifier.padding(5.dp).width(70.dp).height(70.dp))
   }
 }
 

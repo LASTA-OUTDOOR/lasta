@@ -1,9 +1,5 @@
 package com.lastaoutdoor.lasta.viewmodel
 
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-
-@RunWith(RobolectricTestRunner::class)
 class ProfileScreenViewModelTest {
 
   /*private lateinit var fakeActivitiesRepository: FakeActivitiesRepository

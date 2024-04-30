@@ -42,7 +42,7 @@ class DiscoverScreenViewModel @Inject constructor(private val repository: Activi
   val selectedLocality: StateFlow<Pair<String, LatLng>> = _selectedLocality
 
   init {
-    //fetchBikingActivities()
+    // fetchBikingActivities()
   }
 
   fun fetchClimbingActivities(

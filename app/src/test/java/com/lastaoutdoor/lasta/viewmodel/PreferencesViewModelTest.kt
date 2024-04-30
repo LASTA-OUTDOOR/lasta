@@ -1,11 +1,5 @@
 package com.lastaoutdoor.lasta.viewmodel
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-
-@RunWith(RobolectricTestRunner::class)
-@ExperimentalCoroutinesApi
 class PreferencesViewModelTest {
 
   /*private lateinit var fakePreferencesRepo: FakePreferencesRepository
