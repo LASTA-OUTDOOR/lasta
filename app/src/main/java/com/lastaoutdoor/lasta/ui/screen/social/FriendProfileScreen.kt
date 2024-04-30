@@ -47,7 +47,7 @@ fun FriendProfileScreen(friend: UserModel?, onBack: () -> Unit) {
 // back arrow to go back to the previous screen
 @Composable
 private fun Header(onBack: () -> Unit) {
-  Row(modifier = Modifier.fillMaxWidth()) { TopBarLogo(R.drawable.arrow_back) { onBack.invoke() } }
+  Row(modifier = Modifier.fillMaxWidth()) { TopBarLogo(R.drawable.arrow_back) { onBack() } }
 }
 
 // Display the profile picture of the friend in an AsyncImage

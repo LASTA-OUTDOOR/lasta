@@ -29,16 +29,18 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.ui.theme.Black
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
 import com.lastaoutdoor.lasta.ui.theme.YellowDifficulty
-import com.lastaoutdoor.lasta.viewmodel.MoreInfoScreenViewModel
 
 @Composable
-fun MoreInfoScreen(activityToDisplay: Activity, processDiffText: (Activity) -> String, navigateBack: () -> Unit, ) {
+fun MoreInfoScreen(
+    activityToDisplay: Activity,
+    processDiffText: (Activity) -> String,
+    navigateBack: () -> Unit,
+) {
   LazyColumn(modifier = Modifier.padding(8.dp)) {
     item { Spacer(modifier = Modifier.height(15.dp)) }
     // contains the top icon buttons
@@ -112,10 +114,7 @@ fun ViewOnMapButton() {
 @Composable
 fun DiffAndRating(activityToDisplay: Activity, processDiffText: (Activity) -> String) {
   Column(modifier = Modifier.padding(vertical = 5.dp)) {
-    ElevatedDifficultyDisplay(
-        diff =
-            processDiffText(
-                activityToDisplay))
+    ElevatedDifficultyDisplay(diff = processDiffText(activityToDisplay))
     /*Not implemented yet so a hard-coded value is returned*/
     RatingDisplay(4.3)
   }
@@ -230,9 +229,7 @@ fun ElevatedActivityType(activityToDisplay: Activity) {
       modifier = Modifier.padding(3.dp).width(64.dp).height(20.dp),
       colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
         Text(
-            text =
-                activityToDisplay.activityType
-                    .toString(),
+            text = activityToDisplay.activityType.toString(),
             style =
                 TextStyle(
                     fontSize = 11.sp,

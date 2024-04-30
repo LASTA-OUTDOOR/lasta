@@ -8,8 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.Timestamp
-import com.lastaoutdoor.lasta.models.social.MessageModel
+import com.lastaoutdoor.lasta.models.social.ConversationModel
 import com.lastaoutdoor.lasta.models.user.UserActivity
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.app.ConnectivityRepository
@@ -39,7 +38,7 @@ constructor(
   var user: UserModel by mutableStateOf(UserModel(""))
 
   // Get all the friends request
-  private var friendRequests: List<UserModel> by mutableStateOf(emptyList())
+  var friendRequests: List<UserModel> by mutableStateOf(emptyList())
 
   // feedback message for the friend request
   var friendRequestFeedback: String by mutableStateOf("")
@@ -63,7 +62,7 @@ constructor(
   var friends: List<UserModel> by mutableStateOf(emptyList())
 
   // returns all the existing conversations
-  var messages: List<MessageModel> by mutableStateOf(emptyList())
+  var messages: List<ConversationModel> by mutableStateOf(emptyList())
 
   // returns all the activities done by friends in the last 7 days
   val latestFriendActivities: List<UserActivity> by mutableStateOf(emptyList())
@@ -155,12 +154,7 @@ constructor(
 
   // Refresh the list of friends
   fun refreshMessages() {
-    viewModelScope.launch {
-      messages =
-          repository.getAllConversations(user.userId).map {
-            it.lastMessage ?: MessageModel("", "", Timestamp.now())
-          }
-    }
+    viewModelScope.launch { messages = repository.getAllConversations(user.userId) }
   }
 
   // This displays the friend picker (in order to send a message)

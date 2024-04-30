@@ -28,7 +28,7 @@ constructor(
   val userId: String = runBlocking { preferences.userPreferencesFlow.first().user.userId }
 
   // friend user id
-  private var friendUserId: String by mutableStateOf("")
+  var friendUserId: String by mutableStateOf("")
 
   // The conversation between the user and the friend
   var conversation: ConversationModel? by mutableStateOf(null)

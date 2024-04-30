@@ -13,16 +13,39 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
+import com.lastaoutdoor.lasta.models.social.ConversationModel
+import com.lastaoutdoor.lasta.models.user.UserActivity
+import com.lastaoutdoor.lasta.models.user.UserModel
+import com.lastaoutdoor.lasta.utils.ConnectionState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TabMenu(navController: NavController, viewModel: SocialViewModel = hiltViewModel()) {
+fun TabMenu(
+    isConnedted: ConnectionState,
+    friends: List<UserModel>,
+    messages: List<ConversationModel>,
+    latestFriendActivities: List<UserActivity>,
+    addFriendDialog: Boolean,
+    friendRequestFeedback: String,
+    isDisplayedFriendPicker: Boolean,
+    refreshMessages: () -> Unit,
+    clearFriendRequestFeedback: () -> Unit,
+    hideAddFriendDialog: () -> Unit,
+    requestFriend: (String) -> Unit,
+    refreshFriends: () -> Unit,
+    showTopButton: (ImageVector, () -> Unit) -> Unit,
+    hideTopButton: () -> Unit,
+    displayAddFriendDialog: () -> Unit,
+    displayFriendPicker: () -> Unit,
+    hideFriendPicker: () -> Unit,
+    changeDisplayFriendPicker: () -> Unit,
+    navigateToConversation: (String) -> Unit,
+    navigateToFriendProfile: (String) -> Unit
+) {
 
   var state by remember { mutableIntStateOf(0) }
   val titles =
@@ -45,16 +68,33 @@ fun TabMenu(navController: NavController, viewModel: SocialViewModel = hiltViewM
   // use the state variable to choose which composable to display
   when (state) {
     0 -> {
-      viewModel.hideTopButton()
-      FriendsActivityList()
+      hideTopButton()
+      FriendsActivityList(isConnedted, latestFriendActivities)
     }
     1 -> {
-      viewModel.showTopButton(Icons.Filled.Add, onClick = { viewModel.displayAddFriendDialog() })
-      FriendsList(navController)
+      showTopButton(Icons.Filled.Add) { displayAddFriendDialog() }
+      FriendsList(
+          isConnedted,
+          friends,
+          addFriendDialog,
+          friendRequestFeedback,
+          clearFriendRequestFeedback,
+          hideAddFriendDialog,
+          requestFriend,
+          refreshFriends,
+          navigateToFriendProfile)
     }
     2 -> {
-      viewModel.showTopButton(Icons.Filled.Email, onClick = { viewModel.displayFriendPicker() })
-      MessageList(navController)
+      showTopButton(Icons.Filled.Email) { displayFriendPicker() }
+      MessageList(
+          isConnedted,
+          messages,
+          refreshMessages,
+          friends,
+          hideFriendPicker,
+          navigateToConversation,
+          isDisplayedFriendPicker,
+          changeDisplayFriendPicker)
     }
   }
 }

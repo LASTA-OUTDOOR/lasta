@@ -22,26 +22,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.models.social.ConversationModel
 import com.lastaoutdoor.lasta.models.social.MessageModel
-import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
 import com.lastaoutdoor.lasta.ui.screen.moreinfo.TopBarLogo
 
 @Composable
-fun ConversationScreen() {
-  println(conversationModel)
+fun ConversationScreen(
+    conversationModel: ConversationModel?,
+    refresh: () -> Unit,
+    userId: String,
+    friendId: String,
+    showSendDialog: () -> Unit,
+    navigateBack: () -> Unit
+) {
   Column {
-    if (conversationModel == null || conversationModel.users.isEmpty()) {
+    if (conversationModel == null || conversationModel.members.isEmpty()) {
       refresh.invoke()
       return
     }
 
-    val friend: UserModel? = conversationModel.users.firstOrNull { it.userId == friendId }
-    if (friend == null) {
-      return
-    }
+    val friend = conversationModel.members.firstOrNull { it == friendId } ?: return
 
-    Header(navController::popBackStack, friend.userName ?: "Friend")
+    Header(navigateBack, friend)
     SeparatorComponent()
 
     Column(

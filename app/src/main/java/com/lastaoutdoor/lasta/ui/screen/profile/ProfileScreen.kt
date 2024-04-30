@@ -59,6 +59,8 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.db.UserDBRepositoryImpl
+import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.user.UserActivity
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.useractivities.ActivitiesDatabaseType
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
@@ -81,21 +83,8 @@ import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 import com.lastaoutdoor.lasta.viewmodel.ProfileScreenViewModel
 import java.util.Calendar
 
-/**
- * Composable function for the ProfileScreen. It displays the user's profile information and
- * activities.
- *
- * @param profileScreenViewModel The ViewModel that holds the state for this screen.
- * @param rootNavController The NavController used for navigation.
- */
 @Composable
-fun ProfileScreen() {
-  // profileScreenVIewModel.addTrailToUserActivities()
-  val activities by profileScreenViewModel.filteredActivities.collectAsState()
-  val timeFrame by profileScreenViewModel.timeFrame.collectAsState()
-  val sport by profileScreenViewModel.sport.collectAsState()
-  val isCurrentUser by profileScreenViewModel.isCurrentUser.collectAsState()
-
+fun ProfileScreen(activities: List<UserActivity>, timeFrame: TimeFrame, sport: ActivityType, isCurrentUser: Boolean) {
   LazyColumn(modifier = Modifier.testTag("ProfileScreen")) {
     item {
       Box(
@@ -105,7 +94,7 @@ fun ProfileScreen() {
                   .background(MaterialTheme.colorScheme.primary)
                   .padding(16.dp)
                   .height(150.dp)) {
-            UserInfo(rootNavController, navController, isCurrentUser = isCurrentUser)
+            UserInfo(isCurrentUser)
           }
     }
     item {
