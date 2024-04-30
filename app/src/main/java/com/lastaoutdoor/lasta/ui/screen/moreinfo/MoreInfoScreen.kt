@@ -161,13 +161,13 @@ fun ElevatedDifficultyDisplay(diff: String) {
 // Top Bar that displays the four clickable logos with distinct usages
 @Composable
 fun TopBar(navController: NavController) {
-  Row(modifier = Modifier.fillMaxWidth().testTag("Top Bar")) {
-    TopBarLogo(R.drawable.arrow_back) { navController.navigateUp() }
-    Spacer(modifier = Modifier.width(180.dp))
-    TopBarLogo(R.drawable.download_button) {}
-    TopBarLogo(R.drawable.share) {}
-    TopBarLogo(R.drawable.favourite) {}
-  }
+    Row(modifier = Modifier.fillMaxWidth().testTag("Top Bar")) {
+        TopBarLogo(R.drawable.arrow_back) { navController.navigateUp() }
+        Spacer(modifier = Modifier.weight(1f)) // takes up remaining space
+        TopBarLogo(R.drawable.download_button) {}
+        TopBarLogo(R.drawable.share) {}
+        TopBarLogo(R.drawable.favourite) {}
+    }
 }
 
 @Composable
