@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -38,19 +39,15 @@ import com.lastaoutdoor.lasta.viewmodel.MoreInfoScreenViewModel
 
 @Composable
 fun MoreInfoScreen(navController: NavController, moreInfoScreenViewModel: MoreInfoScreenViewModel) {
-  LazyColumn(modifier = Modifier.padding(8.dp)) {
-    item { Spacer(modifier = Modifier.height(15.dp)) }
-    // contains the top icon buttons
-    item { TopBar(navController) }
-    // displays activity title and duration
-    item { ActivityTitleZone(moreInfoScreenViewModel) }
-    // displays activity difficulty, ration and view on map button
-    item { MiddleZone(moreInfoScreenViewModel) }
-    // filled with a spacer for the moment but will contain address + community
-    item { Spacer(modifier = Modifier.height(350.dp)) }
-    // Bottom start activity button
-    item { StartButton() }
-  }
+    Column(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(modifier = Modifier.weight(1f).padding(8.dp)) {
+            item { Spacer(modifier = Modifier.height(15.dp)) }
+            item { TopBar(navController) }
+            item { ActivityTitleZone(moreInfoScreenViewModel) }
+            item { MiddleZone(moreInfoScreenViewModel) }
+        }
+        StartButton()
+    }
 }
 
 @Composable
@@ -78,11 +75,11 @@ fun StartButton() {
 
 @Composable
 fun MiddleZone(moreInfoScreenViewModel: MoreInfoScreenViewModel) {
-  Row {
-    DiffAndRating(moreInfoScreenViewModel)
-    Spacer(Modifier.width(170.dp))
-    ViewOnMapButton()
-  }
+    Row(modifier = Modifier.fillMaxWidth()) {
+        DiffAndRating(moreInfoScreenViewModel)
+        Spacer(modifier = Modifier.weight(1f)) // takes up remaining space
+        ViewOnMapButton()
+    }
 }
 
 @Composable
