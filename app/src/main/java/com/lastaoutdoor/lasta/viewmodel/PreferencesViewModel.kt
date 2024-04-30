@@ -89,4 +89,8 @@ class PreferencesViewModel @Inject constructor(private val preferences: Preferen
   fun updateDownloadedActivities(downloadedActivities: List<String>) {
     viewModelScope.launch { preferences.updateDownloadedActivities(downloadedActivities) }
   }
+
+  fun clearPreferences() {
+    viewModelScope.launch { preferences.clearPreferences() }
+  }
 }

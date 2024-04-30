@@ -13,6 +13,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.user.Language
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.screen.discover.DiscoverScreen
 import com.lastaoutdoor.lasta.ui.screen.discover.FilterScreen
@@ -25,6 +27,7 @@ import com.lastaoutdoor.lasta.ui.screen.social.FriendProfileScreen
 import com.lastaoutdoor.lasta.ui.screen.social.NotificationsScreen
 import com.lastaoutdoor.lasta.ui.screen.social.SocialScreen
 import com.lastaoutdoor.lasta.utils.ConnectionState
+import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 import com.lastaoutdoor.lasta.viewmodel.ConversationViewModel
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenViewModel
 import com.lastaoutdoor.lasta.viewmodel.MoreInfoScreenViewModel
@@ -175,6 +178,25 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           FriendProfileScreen(friendUserModel.value, navController::navigateUp)
         }
 
-    composable(DestinationRoute.Settings.route) { SettingsScreen() }
+    composable(DestinationRoute.Settings.route) { entry ->
+      val authViewModel: AuthViewModel = hiltViewModel(entry)
+      val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
+      val language = preferencesViewModel.language.collectAsState(initial = Language.ENGLISH).value
+      val prefActivity = preferencesViewModel.prefActivity.collectAsState(ActivityType.HIKING).value
+
+      SettingsScreen(
+          language,
+          prefActivity,
+          preferencesViewModel::updateLanguage,
+          preferencesViewModel::updatePrefActivity,
+          { navController.navigateUp() },
+          {
+            preferencesViewModel.clearPreferences()
+            preferencesViewModel.updateIsLoggedIn(false)
+            authViewModel.signOut()
+            navController.popBackStack()
+            navController.navigate(BaseRoute.Login.route)
+          })
+    }
   }
 }

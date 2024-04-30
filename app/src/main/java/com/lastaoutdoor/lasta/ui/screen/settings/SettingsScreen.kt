@@ -13,25 +13,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.db.UserDBRepositoryImpl
+import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.user.Language
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
-import com.lastaoutdoor.lasta.ui.navigation.BaseRoute
 import com.lastaoutdoor.lasta.ui.screen.moreinfo.TopBarLogo
 
 @Composable
-fun SettingsScreen() {
-  val initialLanguage by preferencesViewModel.language.collectAsState(initial = "")
-  var selectedLanguage = initialLanguage
-  val database = UserDBRepositoryImpl()
+fun SettingsScreen(
+    language: Language,
+    prefActivity: ActivityType,
+    updateLanguage: (Language) -> Unit,
+    updatePrefActivity: (ActivityType) -> Unit,
+    navigateBack: () -> Unit,
+    signOutAndNavigate: () -> Unit
+) {
+  var selectedLanguage = language
 
   // If prefViewmodel pref sport is hiking set a called "isHiking" to true
-  val isHiking = preferencesViewModel.prefSport.collectAsState(initial = "").value == "Hiking"
+  val isHiking = prefActivity == ActivityType.HIKING
   var selectedSport = isHiking
 
   TopBarLogo(logoPainterId = R.drawable.arrow_back) {
     // preferencesViewModel.updateLanguage(selectedLanguage)
     // database.updateFieldInUser(authViewModel.user!!.userId, "language", selectedLanguage)
-    navController.navigateUp()
+    navigateBack()
   }
 
   Column(
@@ -59,13 +64,13 @@ fun SettingsScreen() {
                   style = MaterialTheme.typography.headlineMedium,
                   color = MaterialTheme.colorScheme.onBackground)
               DropDownMenuComponent(
-                  items = listOf("English", "Français", "Deutsch"),
+                  items = Language.values().toList(),
                   selectedItem = selectedLanguage,
-                  onItemSelected = { newLanguage: String ->
+                  onItemSelected = { newLanguage: Language ->
                     selectedLanguage = newLanguage
-                    preferencesViewModel.updateLanguage(newLanguage)
+                    updateLanguage(newLanguage)
                   },
-                  toStr = { it },
+                  toStr = { it.name },
                   fieldText = LocalContext.current.getString(R.string.languague))
             }
 
@@ -84,7 +89,7 @@ fun SettingsScreen() {
               Button(
                   onClick = {
                     selectedSport = true
-                    preferencesViewModel.updatePrefSport("Hiking")
+                    updatePrefActivity(ActivityType.HIKING)
                     // database.updateFieldInUser(authViewModel.user!!.userId, "prefSport",
                     // "Hiking")
                   },
@@ -104,7 +109,7 @@ fun SettingsScreen() {
               Button(
                   onClick = {
                     selectedSport = false
-                    preferencesViewModel.updatePrefSport("Climbing")
+                    updatePrefActivity(ActivityType.CLIMBING)
                     // database.updateFieldInUser(authViewModel.user!!.userId, "prefSport",
                     // "Climbing")
                   },
@@ -127,23 +132,12 @@ fun SettingsScreen() {
 
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
           Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-            Button(
-                onClick = {
-                  authViewModel.signOut()
-                  rootNavController.popBackStack()
-                  rootNavController.navigate(BaseRoute.Login.route)
-                }) {
-                  Text(text = LocalContext.current.getString(R.string.sign_out))
-                }
+            Button(onClick = { signOutAndNavigate() }) {
+              Text(text = LocalContext.current.getString(R.string.sign_out))
+            }
 
             Button(
-                onClick = {
-                  preferencesViewModel.clearPreferences()
-                  preferencesViewModel.updateIsLoggedIn(false)
-                  authViewModel.signOut()
-                  rootNavController.popBackStack()
-                  rootNavController.navigate(BaseRoute.Login.route)
-                },
+                onClick = { signOutAndNavigate() },
                 colors =
                     ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.error,

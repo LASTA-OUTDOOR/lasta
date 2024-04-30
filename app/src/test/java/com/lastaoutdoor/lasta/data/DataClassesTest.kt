@@ -19,7 +19,6 @@ class DataClassesTest {
             hm.id == 4L)
   }
 
-
   @Test
   fun mapit() {
     val mp = MapItinerary(0, "name", emptyList())
