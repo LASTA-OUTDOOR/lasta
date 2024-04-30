@@ -81,9 +81,9 @@ constructor(
   init {
     viewModelScope.launch {
       user = preferences.userPreferencesFlow.first().user
-      // refreshFriends()
-      // refreshFriendRequests()
-      // refreshMessages()
+      refreshFriends()
+      refreshFriendRequests()
+      refreshMessages()
     }
   }
 

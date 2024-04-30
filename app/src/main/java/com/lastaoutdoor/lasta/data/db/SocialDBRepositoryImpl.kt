@@ -25,6 +25,7 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
 
   override suspend fun getFriends(friendIds: List<String>): List<UserModel> {
     val friends: ArrayList<UserModel> = ArrayList()
+    if (friendIds.size == 1) return friends
     val friendsQuery = userCollection.whereIn(FieldPath.documentId(), friendIds).get().await()
     if (!friendsQuery.isEmpty) {
       for (friend in friendsQuery.documents) {
@@ -42,7 +43,7 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
     val friendRequests: ArrayList<UserModel> = ArrayList()
     val userDocument = userCollection.document(userId).get().await()
     val friendRequestIds = userDocument.get("friendRequests") as? ArrayList<String>
-    if (friendRequestIds != null) {
+    if (friendRequestIds != null && friendRequestIds.isNotEmpty()) {
       val friendRequestsQuery =
           userCollection.whereIn(FieldPath.documentId(), friendRequestIds).get().await()
       if (!friendRequestsQuery.isEmpty) {
