@@ -156,7 +156,7 @@ class MapViewModel @Inject constructor(private val activityRepository: ActivityR
   fun updateMarkers(centerLocation: LatLng, rad: Double) {
 
     // get all the climbing activities in the radius
-    //fetchClimbingActivities(rad, centerLocation, activityRepository)
+    // fetchClimbingActivities(rad, centerLocation, activityRepository)
 
     // get all the hiking activities in the radius (only displays first point of the itinerary)
     // val hikingRelations = fetchHikingActivities(rad, centerLocation)
