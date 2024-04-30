@@ -193,7 +193,7 @@ fun TopBarLogo(logoPainterId: Int, f: () -> Unit) {
 @Composable
 fun ActivityTitleZone(moreInfoScreenViewModel: MoreInfoScreenViewModel) {
   Row { ElevatedActivityType(moreInfoScreenViewModel) }
-  Row (modifier = Modifier.testTag("MoreInfoActivityTitleZone"))  {
+  Row(modifier = Modifier.testTag("MoreInfoActivityTitleZone")) {
     ActivityPicture()
     ActivityTitleText(moreInfoScreenViewModel)
   }
@@ -234,7 +234,11 @@ fun ElevatedActivityType(moreInfoScreenViewModel: MoreInfoScreenViewModel) {
   ElevatedButton(
       onClick = {},
       contentPadding = PaddingValues(all = 3.dp),
-      modifier = Modifier.padding(3.dp).width(64.dp).height(20.dp).testTag("MoreInfoActivityTypeComposable"),
+      modifier =
+          Modifier.padding(3.dp)
+              .width(64.dp)
+              .height(20.dp)
+              .testTag("MoreInfoActivityTypeComposable"),
       colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
         Text(
             text =
