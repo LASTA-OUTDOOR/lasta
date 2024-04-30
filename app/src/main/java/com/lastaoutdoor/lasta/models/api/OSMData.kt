@@ -26,24 +26,20 @@ data class Position(
     @SerializedName("lon") @Expose val lon: Double
 )
 
-abstract class OSMData(
-    @SerializedName("type") @Expose open val type: String,
-    @SerializedName("id") @Expose open val id: Long,
-    @SerializedName("tags") @Expose open val tags: Tags
-) {
+abstract class OSMData {
   abstract fun getPosition(): Position
 
   abstract fun getActivityFromData(): Activity
 }
 
 class NodeWay(
-    @SerializedName("type") @Expose override val type: String,
-    @SerializedName("id") @Expose override val id: Long,
+    @SerializedName("type") @Expose val type: String,
+    @SerializedName("id") @Expose val id: Long,
     @SerializedName("lat") @Expose val lat: Double?,
     @SerializedName("lon") @Expose val lon: Double?,
     @SerializedName("center") @Expose val center: Position?,
-    @SerializedName("tags") @Expose override val tags: Tags,
-) : OSMData(type, id, tags) {
+    @SerializedName("tags") @Expose val tags: Tags,
+) : OSMData() {
   override fun getPosition(): Position {
     if (type == "node") return Position(lat!!, lon!!)
     return center!!
@@ -64,11 +60,11 @@ class SimpleWay(@SerializedName("geometry") @Expose val nodes: List<Position>?) 
 }
 
 class Relation(
-    @SerializedName("type") @Expose override val type: String,
-    @SerializedName("id") @Expose override val id: Long,
-    @SerializedName("tags") @Expose override val tags: Tags,
+    @SerializedName("type") @Expose val type: String,
+    @SerializedName("id") @Expose val id: Long,
+    @SerializedName("tags") @Expose val tags: Tags,
     @SerializedName("members") @Expose val ways: List<SimpleWay>?,
-) : OSMData(type, id, tags) {
+) : OSMData() {
   override fun getPosition(): Position {
     if (ways != null && ways[0].nodes != null) return ways[0].nodes!![0]
     return Position(0.0, 0.0)
