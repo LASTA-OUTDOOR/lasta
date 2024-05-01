@@ -99,7 +99,7 @@ fun SetupScreen(
                             containerColor = MaterialTheme.colorScheme.secondaryContainer,
                             contentColor = MaterialTheme.colorScheme.onSecondary)
                       }) {
-                    Text(text = outdoorActivities[1])
+                    Text(text = outdoorActivities[0])
                   }
               Button(
                   onClick = { selectedPrefActivity = true },
@@ -114,7 +114,7 @@ fun SetupScreen(
                             containerColor = MaterialTheme.colorScheme.secondaryContainer,
                             contentColor = MaterialTheme.colorScheme.onSecondary)
                       }) {
-                    Text(text = outdoorActivities[0])
+                    Text(text = outdoorActivities[1])
                   }
             }
 

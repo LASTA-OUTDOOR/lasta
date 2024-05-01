@@ -41,8 +41,9 @@ class NodeWay(
     @SerializedName("tags") @Expose val tags: Tags,
 ) : OSMData() {
   override fun getPosition(): Position {
-    if (type == "node") return Position(lat!!, lon!!)
-    return center!!
+    return if (type == "node" && lat != null && lon != null) Position(lat, lon)
+    else if (type == "way" && center != null) center
+    else Position(0.0, 0.0)
   }
 
   override fun getActivityFromData(): Activity {
