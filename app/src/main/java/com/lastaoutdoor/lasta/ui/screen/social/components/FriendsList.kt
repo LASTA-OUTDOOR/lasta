@@ -112,9 +112,8 @@ private fun FriendsCard(friend: UserModel, navToFriend: () -> Unit) {
               if (friend.userName == "Jérémy Doffey" || friend.userName == "Thimphou") {Text(text = "scrum loser")}
               //display the user's sport preference
               Row {
-                  Text(text = friend.userLevel.toString())
-                  //add prefered sport after refactor
-
+                  Text(text = friend.levels.toString())
+                  Text(text = friend.prefActivity.toString())
               }
 
           }
