@@ -39,7 +39,7 @@ class MoreInfoScreenViewModel @Inject constructor() : ViewModel() {
   }
   fun goToMarker(activity: Activity) : com.lastaoutdoor.lasta.models.map.Marker {
     return when(activity.activityType){
-      ActivityType.CLIMBING -> ClimbingMarker(activity.name, LatLng(activity.startPosition.lat,activity.startPosition.lon),"",
+      ActivityType.CLIMBING -> ClimbingMarker(activity.name, LatLng(46.55,  6.549/*activity.startPosition.lat,activity.startPosition.lon*/),"",
         R.drawable.climbing_icon)
       ActivityType.HIKING -> HikingMarker(activity.name, LatLng(activity.startPosition.lat,activity.startPosition.lon),"",
         R.drawable.hiking_icon,activity.osmId)

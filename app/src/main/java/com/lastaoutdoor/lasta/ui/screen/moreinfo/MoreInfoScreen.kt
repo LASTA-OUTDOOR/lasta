@@ -36,6 +36,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.map.Marker
@@ -51,16 +52,16 @@ fun MoreInfoScreen(
     activityToDisplay: Activity,
     processDiffText: (Activity) -> String,
 
-    isMapDisplayed_ : Boolean,
+
     goToMarker : (Activity) -> Marker,
-    switchMapIsDisplayed : (Boolean) -> Unit,
+
     navigateBack: () -> Unit,
 ) {
   var isMapDisplayed = remember { mutableStateOf(false) }
   if(!isMapDisplayed.value){
     Column(modifier = Modifier
-      .fillMaxSize()
-      .testTag("MoreInfoComposable")) {
+        .fillMaxSize()
+        .testTag("MoreInfoComposable")) {
         LazyColumn(
             modifier = Modifier
                 .weight(1f)
@@ -79,9 +80,15 @@ fun MoreInfoScreen(
     }
   }else{
     Column(modifier = Modifier
-              .fillMaxSize()
-              .testTag("MoreInfoMap")){
-                  MapScreen()
+        .fillMaxSize()
+        .testTag("MoreInfoMap")){
+                  val m : MapViewModel = hiltViewModel()
+                  val a  = goToMarker(activityToDisplay)
+
+
+                  MapScreen(m)
+                  m.updateSelectedMarker(a)
+                  //Text(a.position.latitude.toString())
 
               }
 

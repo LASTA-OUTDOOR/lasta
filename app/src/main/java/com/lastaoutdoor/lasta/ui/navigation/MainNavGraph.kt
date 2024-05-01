@@ -128,8 +128,8 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
     composable(DestinationRoute.MoreInfo.route) { entry ->
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
       val activityToDisplay = moreInfoScreenViewModel.activityToDisplay.value
-      val isMapDisplayed = moreInfoScreenViewModel.isMapDisplayed.value
-      MoreInfoScreen(activityToDisplay, moreInfoScreenViewModel::processDiffText ,isMapDisplayed, moreInfoScreenViewModel::goToMarker,moreInfoScreenViewModel::switchMapIsDisplayed) {
+
+      MoreInfoScreen(activityToDisplay, moreInfoScreenViewModel::processDiffText , moreInfoScreenViewModel::goToMarker) {
         navController.navigateUp()
       }
     }
