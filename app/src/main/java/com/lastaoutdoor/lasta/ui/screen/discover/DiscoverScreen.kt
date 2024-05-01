@@ -69,15 +69,15 @@ fun DiscoverScreen(
     navigateToFilter: () -> Unit,
     navigateToMoreInfo: () -> Unit,
     changeActivityToDisplay: (Activity) -> Unit,
-    state : MapState,
+    state: MapState,
     updatePermission: (Boolean) -> Unit,
-    initialPosition : LatLng,
-    initialZoom : Float,
+    initialPosition: LatLng,
+    initialZoom: Float,
     updateMarkers: (LatLng, Double) -> Unit,
-    updateSelectedMarker : (Marker) -> Unit,
-    clearSelectedItinerary : () -> Unit,
-    selectedZoom : Float,
-    updateSelectedItinerary : (Long) -> Unit,
+    updateSelectedMarker: (Marker) -> Unit,
+    clearSelectedItinerary: () -> Unit,
+    selectedZoom: Float,
+    updateSelectedItinerary: (Long) -> Unit,
 ) {
 
   var isRangePopup by rememberSaveable { mutableStateOf(false) }
@@ -117,7 +117,18 @@ fun DiscoverScreen(
     Column {
       HeaderComposable(
           screen, range, selectedLocality, setScreen, { isRangePopup = true }, navigateToFilter)
-      Box(modifier = Modifier.fillMaxHeight()) { MapScreen(state, updatePermission, initialPosition, initialZoom, updateMarkers, updateSelectedMarker, clearSelectedItinerary, selectedZoom, updateSelectedItinerary) }
+      Box(modifier = Modifier.fillMaxHeight()) {
+        MapScreen(
+            state,
+            updatePermission,
+            initialPosition,
+            initialZoom,
+            updateMarkers,
+            updateSelectedMarker,
+            clearSelectedItinerary,
+            selectedZoom,
+            updateSelectedItinerary)
+      }
     }
   }
 

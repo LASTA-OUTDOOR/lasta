@@ -42,7 +42,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
     composable(DestinationRoute.Discover.route) { entry ->
       val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
-      val mapViewModel : MapViewModel = entry.sharedViewModel(navController)
+      val mapViewModel: MapViewModel = entry.sharedViewModel(navController)
       val activities = discoverScreenViewModel.activities.value
       val screen = discoverScreenViewModel.screen.collectAsState().value
       val range = discoverScreenViewModel.range.collectAsState().value
@@ -72,7 +72,6 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           initialZoom,
           mapViewModel::updateMarkers,
           mapViewModel::updateSelectedMarker,
-
           mapViewModel::clearSelectedItinerary,
           selectedZoom,
           mapViewModel::updateSelectedItinerary)

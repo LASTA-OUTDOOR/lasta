@@ -1,7 +1,6 @@
 package com.lastaoutdoor.lasta.viewmodel
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,9 +12,9 @@ import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
 import com.lastaoutdoor.lasta.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -23,7 +22,7 @@ class MapViewModel @Inject constructor(private val activityRepository: ActivityR
     ViewModel() {
 
   // this is used to store the state of the map and modify it
-  var _state  =  MutableStateFlow(MapState())
+  var _state = MutableStateFlow(MapState())
   val state: StateFlow<MapState> = _state
 
   // if the user has not agreed to share his location, the map will be centered on Lausanne
