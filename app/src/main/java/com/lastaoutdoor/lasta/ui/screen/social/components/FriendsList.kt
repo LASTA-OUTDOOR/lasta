@@ -1,6 +1,5 @@
 package com.lastaoutdoor.lasta.ui.screen.social.components
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,7 +16,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,42 +25,47 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.model.user.UserModel
-import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
+import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.utils.ConnectionState
-import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun FriendsList(navController: NavController, viewModel: SocialViewModel = hiltViewModel()) {
+fun FriendsList(
+    isConnected: ConnectionState,
+    friends: List<UserModel>,
+    displayAddFriendDialog: Boolean,
+    friendRequestFeedback: String,
+    clearFriendRequestFeedback: () -> Unit,
+    hideAddFriendDialog: () -> Unit,
+    requestFriend: (String) -> Unit,
+    refreshFriends: () -> Unit,
+    navigateToFriendProfile: (String) -> Unit
+) {
 
-  LaunchedEffect(Unit) { viewModel.refreshFriends() }
+  LaunchedEffect(Unit) { refreshFriends() }
 
-  val isConnected = viewModel.isConnected.collectAsState()
   when {
-    isConnected.value == ConnectionState.OFFLINE -> {
+    isConnected == ConnectionState.OFFLINE -> {
       ConnectionMissing()
     }
-    viewModel.friends.isEmpty() -> {
+    friends.isEmpty() -> {
       // add friend dialog when you click on the add friend button
-      if (viewModel.displayAddFriendDialog) AddFriendDialog()
+      if (displayAddFriendDialog)
+          AddFriendDialog(
+              friendRequestFeedback, clearFriendRequestFeedback, hideAddFriendDialog, requestFriend)
       FriendsMissing()
     }
     else -> {
       // add friend dialog when you click on the add friend button
-      if (viewModel.displayAddFriendDialog) AddFriendDialog()
+      if (displayAddFriendDialog)
+          AddFriendDialog(
+              friendRequestFeedback, clearFriendRequestFeedback, hideAddFriendDialog, requestFriend)
       LazyColumn {
-        items(viewModel.friends.size) {
-          FriendsCard(viewModel.friends[it]) {
-            navController.navigate(
-                LeafScreen.FriendProfile.route + "/${viewModel.friends[it].userId}")
-          }
+        items(friends.size) {
+          FriendsCard(friends[it]) { navigateToFriendProfile(friends[it].userId) }
         }
       }
     }

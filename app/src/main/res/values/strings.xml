@@ -4,13 +4,17 @@
     <string name="web_client_id" translatable="false">720666228102-mtt8qsp3fuljeatb9128qss6c2qf91t2.apps.googleusercontent.com</string>
     <string name="osm_base_url" translatable="false">https://overpass.osm.ch/api/</string>
     <string name="weather_api_url" translatable="false">https://api.openweathermap.org/data/2.5/</string>
-    <string name="activities_database_name" translatable="false">activities_database</string>
+    <string name="user_db_name" translatable="false">users</string>
+    <string name="user_activities_db_name" translatable="false">user_activities</string>
+    <string name="activities_db_name" translatable="false">activities</string>
+    <string name="conversations_db_name" translatable="false">conversations</string>
 
     <!--Nav-->
     <string name="app_name" translatable="false">Lasta</string>
     <string name="app_name_uppercase" translatable="false">LASTA</string>
-    <string name="tab_map">Map</string>
     <string name="tab_discover">Discover</string>
+    <string name="tab_favorites">Favorites</string>
+    <string name="tab_socials">Socials</string>
     <string name="tab_profile">Profile</string>
 
     <!--Discovery-->
@@ -45,8 +49,9 @@
     <string name = "start">Start</string>
     <string name = "on_map">View on Map</string>
     <!--Profile-->
-    <string name = "hiking">Hiking</string>
     <string name = "climbing">Climbing</string>
+    <string name = "hiking">Hiking</string>
+    <string name = "biking">Biking</string>
 
     <string name = "hiking_lvl">Hiking Level</string>
     <string name = "preferences">Preferences</string>
@@ -68,9 +73,6 @@
     <string name="activity_type">Activity Type</string>
     <string name="not_specified">not specified</string>
     <string name="no_name">No name</string>
-    <!--NavBar-->
-    <string name="favs">Favorites</string>
-    <string name="socials">Socials</string>
     <!--UpperSheet-->
     <string name = "modify_search">Modify your search settings</string>
     <!--Range search-->

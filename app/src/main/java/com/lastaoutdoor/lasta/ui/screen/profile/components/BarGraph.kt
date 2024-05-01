@@ -28,7 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.lastaoutdoor.lasta.data.model.profile.SubTimeFrames
+import com.lastaoutdoor.lasta.utils.SubTimeFrames
 import kotlin.math.round
 
 enum class BarType {

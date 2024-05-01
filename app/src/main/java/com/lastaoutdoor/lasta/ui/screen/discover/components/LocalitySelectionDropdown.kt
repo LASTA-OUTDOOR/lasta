@@ -9,7 +9,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,15 +19,17 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.ui.theme.AccentGreen
-import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenViewModel
 
 // Dropdown to select the city
 @Composable
-fun LocalitySelectionDropdown(discoveryScreenViewModel: DiscoveryScreenViewModel) {
+fun LocalitySelectionDropdown(
+    localities: List<Pair<String, LatLng>>,
+    selectedLocality: Pair<String, LatLng>,
+    setSelectedLocality: (Pair<String, LatLng>) -> Unit
+) {
   var expanded by remember { mutableStateOf(false) }
-  val localities = discoveryScreenViewModel.localities
-  var selectedLocality = discoveryScreenViewModel.selectedLocality.collectAsState().value
 
   Box(modifier = Modifier.wrapContentSize().testTag("localitySelectionDropdown")) {
     Text(
@@ -43,7 +44,7 @@ fun LocalitySelectionDropdown(discoveryScreenViewModel: DiscoveryScreenViewModel
             modifier = Modifier.testTag("localitySelectionDropdownItem"),
             text = { Text(locality.first, color = AccentGreen) },
             onClick = {
-              discoveryScreenViewModel.setSelectedLocality(locality)
+              setSelectedLocality(locality)
               expanded = false
             })
       }

@@ -19,8 +19,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -29,26 +27,27 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
-import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenType
-import com.lastaoutdoor.lasta.viewmodel.DiscoveryScreenViewModel
+import com.lastaoutdoor.lasta.viewmodel.DiscoverDisplayType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RangeSearchComposable(
-    discoveryScreenViewModel: DiscoveryScreenViewModel = hiltViewModel(),
+    screen: DiscoverDisplayType,
+    range: Double,
+    localities: List<Pair<String, LatLng>>,
+    selectedLocality: Pair<String, LatLng>,
+    setRange: (Double) -> Unit,
+    setSelectedLocality: (Pair<String, LatLng>) -> Unit,
+    fetchActivities: (Double, LatLng) -> Unit,
     isRangePopup: Boolean,
     onDismissRequest: () -> Unit
 ) {
-  // create local variable to hold the current range whcih will then be sent as argument to the
-  // discoveryScreenViewModel.getActivities with the range
-  val range by discoveryScreenViewModel.range.collectAsState()
-  val screen by discoveryScreenViewModel.screen.collectAsState()
 
   // list view search popup
-  if (isRangePopup && screen == DiscoveryScreenType.LIST) {
+  if (isRangePopup && screen == DiscoverDisplayType.LIST) {
 
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
@@ -64,7 +63,7 @@ fun RangeSearchComposable(
                             fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
                 Spacer(modifier = Modifier.height(8.dp))
                 // Dropdown to select the city
-                LocalitySelectionDropdown(discoveryScreenViewModel)
+                LocalitySelectionDropdown(localities, selectedLocality, setSelectedLocality)
                 // Select the distance radius
                 Text(
                     text = LocalContext.current.getString(R.string.dist_radius),
@@ -76,9 +75,7 @@ fun RangeSearchComposable(
                 Row {
                   Slider(
                       value = range.toFloat(),
-                      onValueChange = {
-                        discoveryScreenViewModel.setRange(it.toDouble().coerceIn(1000.0, 50000.0))
-                      },
+                      onValueChange = { setRange(it.toDouble().coerceIn(1000.0, 50000.0)) },
                       valueRange = 0f..50000f,
                       steps = 100,
                       modifier = Modifier.width(300.dp).testTag("listSearchOptionsSlider"))
@@ -92,8 +89,7 @@ fun RangeSearchComposable(
                 // Button to apply the range
                 ElevatedButton(
                     onClick = {
-                      discoveryScreenViewModel.fetchBikingActivities(
-                          range, discoveryScreenViewModel.selectedLocality.value.second)
+                      fetchActivities(range, selectedLocality.second)
                       onDismissRequest()
                     },
                     modifier =
@@ -115,7 +111,7 @@ fun RangeSearchComposable(
   }
 
   // map range search popup
-  if (isRangePopup && screen == DiscoveryScreenType.MAP) {
+  if (isRangePopup && screen == DiscoverDisplayType.MAP) {
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         modifier = Modifier.fillMaxWidth().testTag("rangeSearch")) {
@@ -131,9 +127,7 @@ fun RangeSearchComposable(
                 Row {
                   Slider(
                       value = range.toFloat(),
-                      onValueChange = {
-                        discoveryScreenViewModel.setRange(it.toDouble().coerceIn(1000.0, 50000.0))
-                      },
+                      onValueChange = { setRange(it.toDouble().coerceIn(1000.0, 50000.0)) },
                       valueRange = 0f..50000f,
                       steps = 100,
                       modifier = Modifier.width(300.dp).testTag("mapRangeSearchSlider"))
@@ -153,7 +147,7 @@ fun RangeSearchComposable(
                               fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
                   Spacer(modifier = Modifier.height(8.dp))
                   // Dropdown to select the city
-                  LocalitySelectionDropdown(discoveryScreenViewModel)
+                  LocalitySelectionDropdown(localities, selectedLocality, setSelectedLocality)
                 }
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -180,8 +174,7 @@ fun RangeSearchComposable(
                 // Button to apply the range
                 ElevatedButton(
                     onClick = {
-                      discoveryScreenViewModel.fetchBikingActivities(
-                          range, discoveryScreenViewModel.selectedLocality.value.second)
+                      fetchActivities(range, selectedLocality.second)
                       onDismissRequest()
                     },
                     modifier =

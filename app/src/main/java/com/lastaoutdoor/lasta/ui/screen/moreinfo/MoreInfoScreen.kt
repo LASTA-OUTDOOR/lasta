@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -29,40 +30,45 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.ui.theme.Black
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
 import com.lastaoutdoor.lasta.ui.theme.YellowDifficulty
-import com.lastaoutdoor.lasta.viewmodel.MoreInfoScreenViewModel
 
+// MoreInfoScreen : displays all the information of an activity
 @Composable
-fun MoreInfoScreen(navController: NavController, moreInfoScreenViewModel: MoreInfoScreenViewModel) {
-  LazyColumn(modifier = Modifier.padding(8.dp)) {
-    item { Spacer(modifier = Modifier.height(15.dp)) }
-    // contains the top icon buttons
-    item { TopBar(navController) }
-    // displays activity title and duration
-    item { ActivityTitleZone(moreInfoScreenViewModel) }
-    // displays activity difficulty, ration and view on map button
-    item { MiddleZone(moreInfoScreenViewModel) }
-    // filled with a spacer for the moment but will contain address + community
-    item { Spacer(modifier = Modifier.height(350.dp)) }
-    // Bottom start activity button
-    item { StartButton() }
+fun MoreInfoScreen(
+    activityToDisplay: Activity,
+    processDiffText: (Activity) -> String,
+    navigateBack: () -> Unit,
+) {
+  Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoComposable")) {
+    LazyColumn(modifier = Modifier.weight(1f).padding(8.dp)) {
+      item { Spacer(modifier = Modifier.height(15.dp)) }
+      // contains the top icon buttons
+      item { TopBar(navigateBack) }
+      // displays activity title and duration
+      item { ActivityTitleZone(activityToDisplay) }
+      // displays activity difficulty, ration and view on map button
+      item { MiddleZone(activityToDisplay, processDiffText) }
+      // filled with a spacer for the moment but will contain address + community
+    }
+    StartButton()
   }
 }
 
+// Start button : once clicked, the activity tracking starts
 @Composable
 fun StartButton() {
   Row(
-      modifier = Modifier.fillMaxWidth().testTag("Start button"),
+      modifier = Modifier.fillMaxWidth().testTag("MoreInfoStartButton"),
       horizontalArrangement = Arrangement.Center) {
         ElevatedButton(
             onClick = {
               /** TODO : Start Activity */
             },
-            modifier = Modifier.width(305.dp).height(48.dp),
+            modifier = Modifier.fillMaxWidth(0.8f).height(48.dp), // takes up 80% of the width
             colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
               Text(
                   LocalContext.current.getString(R.string.start),
@@ -76,15 +82,18 @@ fun StartButton() {
       }
 }
 
+// Displays the difficulty and rating of the activity on the left and a button to view the activity
+// on the map on the right
 @Composable
-fun MiddleZone(moreInfoScreenViewModel: MoreInfoScreenViewModel) {
-  Row {
-    DiffAndRating(moreInfoScreenViewModel)
-    Spacer(Modifier.width(170.dp))
+fun MiddleZone(activityToDisplay: Activity, processDiffText: (Activity) -> String) {
+  Row(modifier = Modifier.fillMaxWidth().testTag("MoreInfoMiddleZone")) {
+    DiffAndRating(activityToDisplay, processDiffText)
+    Spacer(Modifier.weight(1f))
     ViewOnMapButton()
   }
 }
 
+// Button to view the activity on the map
 @Composable
 fun ViewOnMapButton() {
   Column(modifier = Modifier.padding(vertical = 25.dp), horizontalAlignment = Alignment.End) {
@@ -108,18 +117,17 @@ fun ViewOnMapButton() {
   }
 }
 
+// Displays the difficulty and rating of the activity
 @Composable
-fun DiffAndRating(moreInfoScreenViewModel: MoreInfoScreenViewModel) {
+fun DiffAndRating(activityToDisplay: Activity, processDiffText: (Activity) -> String) {
   Column(modifier = Modifier.padding(vertical = 5.dp)) {
-    ElevatedDifficultyDisplay(
-        diff =
-            moreInfoScreenViewModel.processDiffText(
-                moreInfoScreenViewModel.activityToDisplay.value))
+    ElevatedDifficultyDisplay(diff = processDiffText(activityToDisplay))
     /*Not implemented yet so a hard-coded value is returned*/
     RatingDisplay(4.3)
   }
 }
 
+// Displays the rating of the activity
 @Composable
 fun RatingDisplay(rating: Double) {
   Row(modifier = Modifier.padding(vertical = 30.dp)) {
@@ -141,6 +149,7 @@ fun RatingDisplay(rating: Double) {
   }
 }
 
+// Displays the difficulty of the activity
 @Composable
 fun ElevatedDifficultyDisplay(diff: String) {
   ElevatedButton(
@@ -163,16 +172,17 @@ fun ElevatedDifficultyDisplay(diff: String) {
 
 // Top Bar that displays the four clickable logos with distinct usages
 @Composable
-fun TopBar(navController: NavController) {
+fun TopBar(navigateBack: () -> Unit) {
   Row(modifier = Modifier.fillMaxWidth().testTag("Top Bar")) {
-    TopBarLogo(R.drawable.arrow_back) { navController.navigateUp() }
-    Spacer(modifier = Modifier.width(180.dp))
+    TopBarLogo(R.drawable.arrow_back) { navigateBack() }
+    Spacer(modifier = Modifier.weight(1f))
     TopBarLogo(R.drawable.download_button) {}
     TopBarLogo(R.drawable.share) {}
     TopBarLogo(R.drawable.favourite) {}
   }
 }
 
+// Logo of the top bar
 @Composable
 fun TopBarLogo(logoPainterId: Int, f: () -> Unit) {
   IconButton(onClick = { f() }) {
@@ -183,15 +193,17 @@ fun TopBarLogo(logoPainterId: Int, f: () -> Unit) {
   }
 }
 
+// Displays the title of the activity, its type and its duration
 @Composable
-fun ActivityTitleZone(moreInfoScreenViewModel: MoreInfoScreenViewModel) {
-  Row { ElevatedActivityType(moreInfoScreenViewModel) }
+fun ActivityTitleZone(activityToDisplay: Activity) {
+  Row { ElevatedActivityType(activityToDisplay) }
   Row {
     ActivityPicture()
-    ActivityTitleText(moreInfoScreenViewModel)
+    ActivityTitleText(activityToDisplay)
   }
 }
 
+// Displays the picture of the activity
 @Composable
 fun ActivityPicture() {
   Column {
@@ -203,13 +215,13 @@ fun ActivityPicture() {
 }
 
 @Composable
-fun ActivityTitleText(moreInfoScreenViewModel: MoreInfoScreenViewModel) {
+fun ActivityTitleText(activityToDisplay: Activity) {
   Column(modifier = Modifier.padding(vertical = 25.dp, horizontal = 5.dp)) {
     Text(
-        text = moreInfoScreenViewModel.activityToDisplay.value.locationName ?: "No Title",
+        text = activityToDisplay.name,
         style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight(600)))
     Text(
-        text = moreInfoScreenViewModel.activityToDisplay.value.duration ?: "No Duration",
+        text = "No Duration",
         style =
             TextStyle(
                 fontSize = 14.sp,
@@ -222,17 +234,18 @@ fun ActivityTitleText(moreInfoScreenViewModel: MoreInfoScreenViewModel) {
 }
 
 @Composable
-fun ElevatedActivityType(moreInfoScreenViewModel: MoreInfoScreenViewModel) {
+fun ElevatedActivityType(activityToDisplay: Activity) {
   ElevatedButton(
       onClick = {},
       contentPadding = PaddingValues(all = 3.dp),
-      modifier = Modifier.padding(3.dp).width(64.dp).height(20.dp),
+      modifier =
+          Modifier.padding(3.dp)
+              .width(64.dp)
+              .height(20.dp)
+              .testTag("MoreInfoActivityTypeComposable"),
       colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
         Text(
-            text =
-                moreInfoScreenViewModel.activityToDisplay.value.activityType
-                    .toString()
-                    .replaceFirstChar { it.uppercase() },
+            text = activityToDisplay.activityType.toString(),
             style =
                 TextStyle(
                     fontSize = 11.sp,

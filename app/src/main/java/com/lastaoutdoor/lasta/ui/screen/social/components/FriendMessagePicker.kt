@@ -16,8 +16,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,21 +26,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.model.user.UserModel
-import com.lastaoutdoor.lasta.ui.navigation.LeafScreen
-import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
+import com.lastaoutdoor.lasta.models.user.UserModel
 
 // Dialog to select a friend to send a message to
 @Composable
-fun FriendPicker(navController: NavController, viewModel: SocialViewModel = hiltViewModel()) {
+fun FriendPicker(
+    friends: List<UserModel>,
+    hideFriendPicker: () -> Unit,
+    navigateToConversation: (String) -> Unit
+) {
   Dialog(
-      onDismissRequest = { viewModel.hideFriendPicker() },
+      onDismissRequest = { hideFriendPicker() },
       properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)) {
         Card(
             modifier = Modifier.fillMaxWidth().fillMaxHeight(0.6f).padding(16.dp),
@@ -54,7 +52,7 @@ fun FriendPicker(navController: NavController, viewModel: SocialViewModel = hilt
               textAlign = TextAlign.Center,
               modifier = Modifier.fillMaxWidth().padding(16.dp))
 
-          FriendLazyColumn(viewModel, navController)
+          FriendLazyColumn(friends, hideFriendPicker, navigateToConversation)
         }
       }
 }
@@ -62,18 +60,19 @@ fun FriendPicker(navController: NavController, viewModel: SocialViewModel = hilt
 // List of all friends to select from when sending a message
 @Composable
 private fun FriendLazyColumn(
-    viewModel: SocialViewModel = hiltViewModel(),
-    navController: NavController
+    friends: List<UserModel>,
+    hideFriendPicker: () -> Unit,
+    navigateToConversation: (String) -> Unit
 ) {
   LazyColumn(modifier = Modifier.fillMaxSize().padding(8.dp)) {
-    items(viewModel.friends.size) {
-      val friend = viewModel.friends[it]
+    items(friends.size) {
+      val friend = friends[it]
 
       Card(
           modifier =
               Modifier.fillMaxWidth().padding(8.dp).clickable {
-                viewModel.hideFriendPicker()
-                navController.navigate(LeafScreen.Conversation.route + "/${friend.userId}")
+                hideFriendPicker()
+                navigateToConversation(friend.userId)
               },
           colors =
               CardColors(
