@@ -137,6 +137,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
     composable(DestinationRoute.Filter.route) { entry ->
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
       val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
+
       FilterScreen(
           discoverScreenViewModel.selectedLevels,
           discoverScreenViewModel::setSelectedLevels,

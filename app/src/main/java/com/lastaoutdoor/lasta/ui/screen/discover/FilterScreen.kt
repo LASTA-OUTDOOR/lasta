@@ -65,19 +65,23 @@ fun FilterScreen(
   var selectedActivity by remember { mutableStateOf(initialSelectedActivityType) }
   var selectedIndex by remember { mutableIntStateOf(activities.indexOf(selectedActivity)) }
 
-  var userActivitiesLevel = UserLevel.values()
   var initialSelectedLevels = selectedLevels.collectAsState().value
   var selectedLevels by remember { mutableStateOf(initialSelectedLevels) }
-  var selectedActivityLevel by remember { mutableStateOf(activities.indexOf(selectedLevels)) }
-  //Update selected levels when the selected activity changes
-  SideEffect {
-      val indexSelected = activities.indexOf(selectedActivityType.value)
-      selectedActivityLevel = when (indexSelected) {
-          0 -> selectedLevels.climbingLevel
-          1 -> selectedLevels.hikingLevel
-          2 -> selectedLevels.bikingLevel
-          else -> UserLevel.BEGINNER
-      }
+
+  val activityLevelsMap = remember {
+      mapOf(
+          ActivityType.CLIMBING to selectedLevels.climbingLevel,
+          ActivityType.HIKING to selectedLevels.hikingLevel,
+          ActivityType.BIKING to selectedLevels.bikingLevel
+      )
+  }
+
+  fun userLevelToDifficultyLevel(userLevel: UserLevel): String {
+    return when (userLevel) {
+      UserLevel.BEGINNER -> "Easy"
+      UserLevel.INTERMEDIATE -> "Medium"
+      UserLevel.ADVANCED -> "Hard"
+    }
   }
 
   Column(
@@ -116,20 +120,13 @@ fun FilterScreen(
         Text(
             text = stringResource(id = R.string.filter_difficulty_level),
             style = TextStyle(fontSize = 20.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
+        val selectedActivityLevels = activityLevelsMap[selectedActivity] ?: UserLevel.BEGINNER
         Row(verticalAlignment = Alignment.CenterVertically) {
-          userActivitiesLevel.forEachIndexed { index, difficultyLevel ->
+          UserLevel.values().forEach { levelItem ->
             RadioButton(
-                selected = index == indexSelected, // TODO: link with database
-                onClick = {
-                    indexSelected = index
-                    setSelectedLevels(
-                        when (selectedActivity) {
-                            ActivityType.CLIMBING -> selectedLevels.copy(climbingLevel = difficultyLevel)
-                            ActivityType.HIKING -> selectedLevels.copy(hikingLevel = difficultyLevel)
-                            ActivityType.BIKING -> selectedLevels.copy(bikingLevel = difficultyLevel)
-                        })
-                })
-            Text(text = difficultyLevel.toString())
+                selected = levelItem == selectedActivityLevels,
+                onClick = {/*TODO*/})
+            Text(text = userLevelToDifficultyLevel(levelItem))
           }
         }
 
