@@ -273,9 +273,9 @@ fun ActivitiesDisplay(
                   imageVector = Icons.Default.Star,
                   contentDescription = "Rating",
                   tint = MaterialTheme.colorScheme.primary)
-              Text(text = "? ${LocalContext.current.getString(R.string.popularity)}")
+              Text(text = "${a.rating} (${a.numRatings})")
               Spacer(modifier = Modifier.width(8.dp))
-              Text(text = "Difficulty: ${LocalContext.current.getString(R.string.difficulty)}")
+              Text(text = "Difficulty: ${a.difficulty}")
               Spacer(modifier = Modifier.width(16.dp))
               // Distance from the user's location, NOT THE LENGTH OF THE ACTIVITY!!!
               Text(text = "? km")

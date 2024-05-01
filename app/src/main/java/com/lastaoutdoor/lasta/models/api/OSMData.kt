@@ -3,9 +3,6 @@ package com.lastaoutdoor.lasta.models.api
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.lastaoutdoor.lasta.models.activity.Activity
-import com.lastaoutdoor.lasta.models.activity.BikingActivity
-import com.lastaoutdoor.lasta.models.activity.ClimbingActivity
-import com.lastaoutdoor.lasta.models.activity.HikingActivity
 
 data class Tags(
     @SerializedName("name") val name: String,
@@ -42,12 +39,11 @@ class NodeWay(
 ) : OSMData() {
   override fun getPosition(): Position {
     return if (type == "node" && lat != null && lon != null) Position(lat, lon)
-    else if (type == "way" && center != null) center
-    else Position(0.0, 0.0)
+    else if (type == "way" && center != null) center else Position(0.0, 0.0)
   }
 
   override fun getActivityFromData(): Activity {
-    return ClimbingActivity(
+    return Activity(
         activityId = "", osmId = id, name = tags.name, startPosition = getPosition())
   }
 }
@@ -72,23 +68,13 @@ class Relation(
   }
 
   override fun getActivityFromData(): Activity {
-    return if (tags.route == "hiking") {
-      HikingActivity(
-          activityId = "",
-          osmId = id,
-          name = tags.name,
-          startPosition = getPosition(),
-          from = tags.from,
-          to = tags.to)
-    } else {
-      BikingActivity(
-          activityId = "",
-          osmId = id,
-          name = tags.name,
-          startPosition = getPosition(),
-          from = tags.from,
-          to = tags.to,
-          distance = tags.distance.toFloat())
-    }
+    return Activity(
+      activityId = "",
+      osmId = id,
+      name = tags.name,
+      startPosition = getPosition(),
+      from = tags.from,
+      to = tags.to)
+
   }
 }

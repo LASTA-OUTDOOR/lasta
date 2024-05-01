@@ -7,10 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.Activity
-import com.lastaoutdoor.lasta.models.activity.BikingActivity
-import com.lastaoutdoor.lasta.models.activity.ClimbingActivity
-import com.lastaoutdoor.lasta.models.activity.HikingActivity
+import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
+import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
 import com.lastaoutdoor.lasta.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -19,10 +18,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class DiscoverScreenViewModel @Inject constructor(private val repository: ActivityRepository) :
-    ViewModel() {
+class DiscoverScreenViewModel
+@Inject
+constructor(
+    private val repository: ActivityRepository,
+    private val activitiesDB: ActivitiesDBRepository
+) : ViewModel() {
 
   val activities = mutableStateOf<ArrayList<Activity>>(ArrayList())
+  val activityIds = mutableStateOf<ArrayList<Long>>(ArrayList())
 
   private val _screen = MutableStateFlow(DiscoverDisplayType.LIST)
   val screen: StateFlow<DiscoverDisplayType> = _screen
@@ -55,9 +59,12 @@ class DiscoverScreenViewModel @Inject constructor(private val repository: Activi
               rad.toInt(), centerLocation.latitude, centerLocation.longitude)
       val climbingPoints = (response as Response.Success).data ?: emptyList()
       activities.value = ArrayList()
-      climbingPoints.forEach { point ->
-        activities.value.add(ClimbingActivity("", point.id, point.tags.name))
+      activityIds.value = ArrayList()
+      climbingPoints.map { point ->
+        activityIds.value.add(point.id)
+        //activitiesDB.addActivity(Activity("", point.id, ActivityType.CLIMBING, point.tags.name))
       }
+      activities.value = activitiesDB.getActivitiesByOSMIds(activityIds.value) as ArrayList<Activity>
     }
   }
 
@@ -73,8 +80,13 @@ class DiscoverScreenViewModel @Inject constructor(private val repository: Activi
       activities.value = ArrayList()
       hikingPoints.forEach { point ->
         activities.value.add(
-            HikingActivity(
-                "", point.id, point.tags.name, from = point.tags.from, to = point.tags.to))
+            Activity(
+                "",
+                point.id,
+                ActivityType.HIKING,
+                point.tags.name,
+                from = point.tags.from,
+                to = point.tags.to))
       }
     }
   }
@@ -91,9 +103,10 @@ class DiscoverScreenViewModel @Inject constructor(private val repository: Activi
       activities.value = ArrayList()
       hikingPoints.forEach { point ->
         activities.value.add(
-            BikingActivity(
+            Activity(
                 "",
                 point.id,
+                ActivityType.BIKING,
                 point.tags.name,
                 from = point.tags.from,
                 to = point.tags.to,
