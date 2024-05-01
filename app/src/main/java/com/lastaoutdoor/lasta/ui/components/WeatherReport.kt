@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -54,7 +55,7 @@ fun WeatherReportBig(weather: WeatherResponse?,displayWind:Boolean) {
                     color=PrimaryBlue
                 )
                 Text(
-                    text = "Humidity: ${weather.main.hum}%",
+                    text = "${LocalContext.current.getString(R.string.humidity)}: ${weather.main.hum}%",
                     fontWeight = FontWeight(1000),
                     fontSize = 11.sp,
                     color=PrimaryBlue
@@ -91,7 +92,7 @@ fun WeatherReportBig(weather: WeatherResponse?,displayWind:Boolean) {
     } else {
         Surface {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text(text = "Weather report not available ! Allow us to use your location and try again if you want this service ")
+                Text(text = LocalContext.current.getString(R.string.no_loc))
             }
 
         }
