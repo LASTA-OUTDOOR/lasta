@@ -18,10 +18,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.window.Dialog
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
-import com.lastaoutdoor.lasta.ui.components.WeatherReport
+import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
 
 @Composable
-fun FavoritesScreen(navigateToMoreInfo: () -> Unit, weather: WeatherResponse) {
+fun FavoritesScreen(navigateToMoreInfo: () -> Unit, weather: WeatherResponse?) {
     var locationPermissionGranted by remember { mutableStateOf(false) }
 
     val requestPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -31,7 +31,7 @@ fun FavoritesScreen(navigateToMoreInfo: () -> Unit, weather: WeatherResponse) {
     }
   val displayWeather = remember { mutableStateOf(false) }
   if (displayWeather.value) {
-    Dialog({ displayWeather.value = false }) { WeatherReport(weather) }
+    Dialog({ displayWeather.value = false }) { WeatherReportBig(weather) }
   }
 
   Column(
@@ -45,6 +45,7 @@ fun FavoritesScreen(navigateToMoreInfo: () -> Unit, weather: WeatherResponse) {
             displayWeather.value = true
         }else {
             requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
+            displayWeather.value=true
         }}) {
           Text(text = LocalContext.current.getString(R.string.weather_report))
         }

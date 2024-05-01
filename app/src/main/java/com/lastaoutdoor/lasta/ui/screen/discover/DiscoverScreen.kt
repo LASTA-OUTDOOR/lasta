@@ -33,6 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -43,11 +44,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
 import com.lastaoutdoor.lasta.ui.components.SearchBarComponent
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
+import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
+import com.lastaoutdoor.lasta.ui.components.WeatherReportSmall
 import com.lastaoutdoor.lasta.ui.screen.discover.components.ModalUpperSheet
 import com.lastaoutdoor.lasta.ui.screen.discover.components.RangeSearchComposable
 import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
@@ -66,7 +70,8 @@ fun DiscoverScreen(
     setSelectedLocality: (Pair<String, LatLng>) -> Unit,
     navigateToFilter: () -> Unit,
     navigateToMoreInfo: () -> Unit,
-    changeActivityToDisplay: (Activity) -> Unit
+    changeActivityToDisplay: (Activity) -> Unit,
+    weather: WeatherResponse?
 ) {
 
   var isRangePopup by rememberSaveable { mutableStateOf(false) }
@@ -86,7 +91,9 @@ fun DiscoverScreen(
   if (screen == DiscoverDisplayType.LIST) {
     LazyColumn(
         modifier =
-            Modifier.testTag("discoveryScreen").background(MaterialTheme.colorScheme.background)) {
+        Modifier
+            .testTag("discoveryScreen")
+            .background(MaterialTheme.colorScheme.background)) {
           item {
             HeaderComposable(
                 screen,
@@ -94,7 +101,8 @@ fun DiscoverScreen(
                 selectedLocality,
                 setScreen,
                 { isRangePopup = true },
-                navigateToFilter)
+                navigateToFilter,
+                weather)
           }
 
           item {
@@ -105,7 +113,7 @@ fun DiscoverScreen(
   } else if (screen == DiscoverDisplayType.MAP) {
     Column {
       HeaderComposable(
-          screen, range, selectedLocality, setScreen, { isRangePopup = true }, navigateToFilter)
+          screen, range, selectedLocality, setScreen, { isRangePopup = true }, navigateToFilter,weather)
       Box(modifier = Modifier.fillMaxHeight()) { MapScreen() }
     }
   }
@@ -121,7 +129,8 @@ fun HeaderComposable(
     selectedLocality: Pair<String, LatLng>,
     setScreen: (DiscoverDisplayType) -> Unit,
     updatePopup: () -> Unit,
-    navigateToFilter: () -> Unit
+    navigateToFilter: () -> Unit,
+    weather: WeatherResponse?
 ) {
   val iconSize = 48.dp // Adjust icon size as needed
 
@@ -132,7 +141,9 @@ fun HeaderComposable(
         Column {
           // Location bar
           Row(
-              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+              modifier = Modifier
+                  .fillMaxWidth()
+                  .padding(horizontal = 16.dp, vertical = 8.dp),
               verticalAlignment = Alignment.CenterVertically) {
                 Column {
                   Row {
@@ -140,7 +151,9 @@ fun HeaderComposable(
 
                     IconButton(
                         onClick = updatePopup,
-                        modifier = Modifier.size(24.dp).testTag("listSearchOptionsEnableButton")) {
+                        modifier = Modifier
+                            .size(24.dp)
+                            .testTag("listSearchOptionsEnableButton")) {
                           Icon(
                               Icons.Outlined.KeyboardArrowDown,
                               contentDescription = "Filter",
@@ -153,11 +166,17 @@ fun HeaderComposable(
                           "${LocalContext.current.getString(R.string.less_than)} ${(range / 1000).toInt()} km ${LocalContext.current.getString(R.string.around_you)}",
                       style = MaterialTheme.typography.bodySmall)
                 }
+                  Column(modifier = Modifier
+                      .fillMaxWidth(), horizontalAlignment = Alignment.End) {
+                      WeatherReportSmall(weather)
+                  }
               }
 
           // Search bar with toggle buttons
           Row(
-              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+              modifier = Modifier
+                  .fillMaxWidth()
+                  .padding(horizontal = 16.dp, vertical = 8.dp),
               verticalAlignment = Alignment.CenterVertically) {
                 SearchBarComponent(Modifier.weight(1f), onSearch = { /*TODO*/})
                 Spacer(modifier = Modifier.width(8.dp))
@@ -169,7 +188,9 @@ fun HeaderComposable(
                 }
               }
           Row(
-              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+              modifier = Modifier
+                  .fillMaxWidth()
+                  .padding(horizontal = 16.dp, vertical = 8.dp),
               verticalAlignment = Alignment.CenterVertically,
               horizontalArrangement = Arrangement.Center) {
                 val contex = LocalContext.current
@@ -180,7 +201,9 @@ fun HeaderComposable(
 
           if (screen == DiscoverDisplayType.LIST) {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically) {
                   Text(
                       LocalContext.current.getString(R.string.filter_by),
@@ -213,27 +236,31 @@ fun ActivitiesDisplay(
   for (a in activities) {
     Card(
         modifier =
-            Modifier.fillMaxWidth()
-                .wrapContentHeight()
-                .padding(vertical = 8.dp, horizontal = 16.dp)
-                .clickable(
-                    onClick = {
-                      changeActivityToDisplay(a)
-                      navigateToMoreInfo()
-                    }),
+        Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .clickable(
+                onClick = {
+                    changeActivityToDisplay(a)
+                    navigateToMoreInfo()
+                }),
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
     ) {
       Column {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
               Box(
                   modifier =
-                      Modifier.shadow(4.dp, RoundedCornerShape(30))
-                          .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
-                          .padding(PaddingValues(8.dp))) {
+                  Modifier
+                      .shadow(4.dp, RoundedCornerShape(30))
+                      .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
+                      .padding(PaddingValues(8.dp))) {
                     Text(
                         text =
                             LocalContext.current.getString(
@@ -258,7 +285,9 @@ fun ActivitiesDisplay(
 
         Spacer(modifier = Modifier.height(16.dp))
         Row(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically) {
               Text(
                   text = a.name,
@@ -267,7 +296,9 @@ fun ActivitiesDisplay(
             }
         SeparatorComponent()
         Row(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically) {
               Icon(
                   imageVector = Icons.Default.Star,

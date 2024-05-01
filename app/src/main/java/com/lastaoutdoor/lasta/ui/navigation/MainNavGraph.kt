@@ -1,11 +1,14 @@
 package com.lastaoutdoor.lasta.ui.navigation
 
+import android.Manifest
+import android.content.pm.PackageManager
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -13,6 +16,10 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.lastaoutdoor.lasta.data.api.weather.Main
+import com.lastaoutdoor.lasta.data.api.weather.Weather
+import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
+import com.lastaoutdoor.lasta.data.api.weather.Wind
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.Language
 import com.lastaoutdoor.lasta.models.user.UserModel
@@ -35,6 +42,7 @@ import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 import com.lastaoutdoor.lasta.viewmodel.ProfileScreenViewModel
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 import com.lastaoutdoor.lasta.viewmodel.WeatherViewModel
+import dagger.hilt.android.internal.Contexts.getApplication
 
 fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
   navigation(startDestination = DestinationRoute.Discover.route, route = BaseRoute.Main.route) {
@@ -47,6 +55,8 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val range = discoverScreenViewModel.range.collectAsState().value
       val localities = discoverScreenViewModel.localities
       val selectedLocality = discoverScreenViewModel.selectedLocality.collectAsState().value
+      val weatherViewModel: WeatherViewModel = hiltViewModel(entry)
+      val weather = weatherViewModel.weather.observeAsState().value
 
       DiscoverScreen(
           activities,
@@ -60,11 +70,12 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           discoverScreenViewModel::setSelectedLocality,
           { navController.navigate(DestinationRoute.Filter.route) },
           { navController.navigate(DestinationRoute.MoreInfo.route) },
-          moreInfoScreenViewModel::changeActivityToDisplay)
+          moreInfoScreenViewModel::changeActivityToDisplay,
+          weather)
     }
     composable(DestinationRoute.Favorites.route) { entry ->
       val weatherViewModel: WeatherViewModel = hiltViewModel(entry)
-      val weather = weatherViewModel.weather.observeAsState().value ?: return@composable
+      val weather = weatherViewModel.weather.observeAsState().value
       FavoritesScreen({ navController.navigate(DestinationRoute.MoreInfo.route) }, weather)
     }
     composable(DestinationRoute.Socials.route) { entry ->
