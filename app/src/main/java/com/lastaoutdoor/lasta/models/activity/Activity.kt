@@ -37,4 +37,23 @@ data class Activity(
         this.to,
         this.distance)
   }
+
+  fun copy(startPosition: Position): Activity {
+    return Activity(
+        this.activityId,
+        this.osmId,
+        this.activityType,
+        this.name,
+        startPosition,
+        this.rating,
+        this.numRatings,
+        this.ratings,
+        this.difficulty,
+        this.activityImageUrl,
+        this.climbingStyle,
+        this.elevationTotal,
+        this.from,
+        this.to,
+        this.distance)
+  }
 }

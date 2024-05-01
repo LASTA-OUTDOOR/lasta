@@ -54,7 +54,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           range,
           localities,
           selectedLocality,
-          discoverScreenViewModel::fetchBikingActivities,
+          discoverScreenViewModel::fetchActivities,
           discoverScreenViewModel::setScreen,
           discoverScreenViewModel::setRange,
           discoverScreenViewModel::setSelectedLocality,

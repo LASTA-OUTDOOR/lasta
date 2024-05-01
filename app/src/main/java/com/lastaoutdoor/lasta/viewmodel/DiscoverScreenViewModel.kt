@@ -8,6 +8,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.api.NodeWay
+import com.lastaoutdoor.lasta.models.api.Relation
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
 import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
 import com.lastaoutdoor.lasta.utils.Response
@@ -34,6 +36,9 @@ constructor(
   private val _range = MutableStateFlow(10000.0)
   val range: StateFlow<Double> = _range
 
+  private val _selectedActivityType = MutableStateFlow(ActivityType.BIKING)
+  val selectedActivityType: StateFlow<ActivityType> = _selectedActivityType
+
   // List of localities with their LatLng coordinates
   val localities =
       listOf(
@@ -46,72 +51,63 @@ constructor(
   val selectedLocality: StateFlow<Pair<String, LatLng>> = _selectedLocality
 
   init {
-    fetchClimbingActivities()
+    fetchActivities()
   }
 
-  fun fetchClimbingActivities(
-      rad: Double = 10000.0,
-      centerLocation: LatLng = LatLng(46.519962, 6.633597)
-  ) {
+  fun fetchActivities(rad: Double = 10000.0, centerLocation: LatLng = LatLng(46.519962, 6.633597)) {
     viewModelScope.launch {
       val response =
-          repository.getClimbingPointsInfo(
-              rad.toInt(), centerLocation.latitude, centerLocation.longitude)
-      val climbingPoints = (response as Response.Success).data ?: emptyList()
+          when (_selectedActivityType.value) {
+            ActivityType.CLIMBING ->
+                repository.getClimbingPointsInfo(
+                    rad.toInt(), centerLocation.latitude, centerLocation.longitude)
+            ActivityType.HIKING ->
+                repository.getHikingRoutesInfo(
+                    rad.toInt(), centerLocation.latitude, centerLocation.longitude)
+            ActivityType.BIKING ->
+                repository.getBikingRoutesInfo(
+                    rad.toInt(), centerLocation.latitude, centerLocation.longitude)
+          }
+      val osmData = (response as Response.Success).data ?: emptyList()
       activities.value = ArrayList()
       activityIds.value = ArrayList()
-      climbingPoints.map { point ->
-        activityIds.value.add(point.id)
-        //activitiesDB.addActivity(Activity("", point.id, ActivityType.CLIMBING, point.tags.name))
+      osmData.map { point ->
+        when (_selectedActivityType.value) {
+          ActivityType.CLIMBING -> {
+            val castedPoint = point as NodeWay
+            activityIds.value.add(castedPoint.id)
+            activitiesDB.addActivityIfNonExisting(
+                Activity("", point.id, ActivityType.CLIMBING, point.tags.name))
+          }
+          ActivityType.HIKING -> {
+            val castedPoint = point as Relation
+            activityIds.value.add(castedPoint.id)
+            activitiesDB.addActivityIfNonExisting(
+                Activity(
+                    "",
+                    point.id,
+                    ActivityType.HIKING,
+                    point.tags.name,
+                    from = point.tags.from,
+                    to = point.tags.to))
+          }
+          ActivityType.BIKING -> {
+            val castedPoint = point as Relation
+            activityIds.value.add(castedPoint.id)
+            activitiesDB.addActivityIfNonExisting(
+                Activity(
+                    "",
+                    point.id,
+                    ActivityType.BIKING,
+                    point.tags.name,
+                    from = point.tags.from,
+                    to = point.tags.to,
+                    distance = point.tags.distance.toFloat()))
+          }
+        }
       }
-      activities.value = activitiesDB.getActivitiesByOSMIds(activityIds.value) as ArrayList<Activity>
-    }
-  }
-
-  fun fetchHikingActivities(
-      rad: Double = 10000.0,
-      centerLocation: LatLng = LatLng(46.519962, 6.633597)
-  ) {
-    viewModelScope.launch {
-      val response =
-          repository.getHikingRoutesInfo(
-              rad.toInt(), centerLocation.latitude, centerLocation.longitude)
-      val hikingPoints = (response as Response.Success).data ?: emptyList()
-      activities.value = ArrayList()
-      hikingPoints.forEach { point ->
-        activities.value.add(
-            Activity(
-                "",
-                point.id,
-                ActivityType.HIKING,
-                point.tags.name,
-                from = point.tags.from,
-                to = point.tags.to))
-      }
-    }
-  }
-
-  fun fetchBikingActivities(
-      rad: Double = 10000.0,
-      centerLocation: LatLng = LatLng(46.519962, 6.633597)
-  ) {
-    viewModelScope.launch {
-      val response =
-          repository.getBikingRoutesInfo(
-              rad.toInt(), centerLocation.latitude, centerLocation.longitude)
-      val hikingPoints = (response as Response.Success).data ?: emptyList()
-      activities.value = ArrayList()
-      hikingPoints.forEach { point ->
-        activities.value.add(
-            Activity(
-                "",
-                point.id,
-                ActivityType.BIKING,
-                point.tags.name,
-                from = point.tags.from,
-                to = point.tags.to,
-                distance = point.tags.distance.toFloat()))
-      }
+      activities.value =
+          activitiesDB.getActivitiesByOSMIds(activityIds.value, false) as ArrayList<Activity>
     }
   }
 

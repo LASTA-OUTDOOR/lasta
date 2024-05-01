@@ -43,8 +43,7 @@ class NodeWay(
   }
 
   override fun getActivityFromData(): Activity {
-    return Activity(
-        activityId = "", osmId = id, name = tags.name, startPosition = getPosition())
+    return Activity(activityId = "", osmId = id, name = tags.name, startPosition = getPosition())
   }
 }
 
@@ -69,12 +68,11 @@ class Relation(
 
   override fun getActivityFromData(): Activity {
     return Activity(
-      activityId = "",
-      osmId = id,
-      name = tags.name,
-      startPosition = getPosition(),
-      from = tags.from,
-      to = tags.to)
-
+        activityId = "",
+        osmId = id,
+        name = tags.name,
+        startPosition = getPosition(),
+        from = tags.from,
+        to = tags.to)
   }
 }

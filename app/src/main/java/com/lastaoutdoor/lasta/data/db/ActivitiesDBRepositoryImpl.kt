@@ -21,7 +21,9 @@ constructor(context: Context, database: FirebaseFirestore) : ActivitiesDBReposit
   private val activitiesCollection =
       database.collection(context.getString(R.string.activities_db_name))
 
-  override suspend fun addActivity(activity: Activity): Activity {
+  override suspend fun addActivityIfNonExisting(activity: Activity): Boolean {
+    val query = activitiesCollection.whereEqualTo("osmId", activity.osmId).get().await()
+    if (!query.isEmpty) return false
     val activityData =
         hashMapOf(
             "osmId" to activity.osmId,
@@ -43,9 +45,8 @@ constructor(context: Context, database: FirebaseFirestore) : ActivitiesDBReposit
             "to" to activity.to,
             "distance" to activity.distance)
 
-    val documentRef = activitiesCollection.add(activityData).await()
-    val activityId = documentRef.id
-    return activity.copy(activityId)
+    activitiesCollection.add(activityData).await()
+    return true
   }
 
   override suspend fun getActivityById(activityId: String): Activity {
@@ -56,21 +57,27 @@ constructor(context: Context, database: FirebaseFirestore) : ActivitiesDBReposit
     TODO("Not yet implemented")
   }
 
-  override suspend fun getActivitiesByOSMIds(osmIds: List<Long>): List<Activity> {
+  override suspend fun getActivitiesByOSMIds(
+      osmIds: List<Long>,
+      onlyKnown: Boolean
+  ): List<Activity> {
     val activities = ArrayList<Activity>()
     val query = activitiesCollection.whereIn("osmId", osmIds).get().await()
     if (!query.isEmpty) {
       val documents = query.documents
       for (document in documents) {
-        val id = document.id
-        val osmId = document.getLong("osmId")!!
-        val activityType = document.getString("activityType")!!
-        val name = document.getString("name")!!
         val startPositionMap = document.get("startPosition") as Map<String, Double>
+        if (onlyKnown && startPositionMap["lat"] == 0.0 && startPositionMap["lon"] == 0.0) {
+          continue
+        }
         val startPosition =
             Position(
                 startPositionMap.getOrDefault("lat", 0.0),
                 startPositionMap.getOrDefault("lon", 0.0))
+        val id = document.id
+        val osmId = document.getLong("osmId")!!
+        val activityType = document.getString("activityType")!!
+        val name = document.getString("name")!!
 
         val rating = document.getDouble("rating")!!.toFloat()
         val numRatings = document.getLong("numRatings")!!.toInt()
@@ -108,23 +115,30 @@ constructor(context: Context, database: FirebaseFirestore) : ActivitiesDBReposit
     return activities
   }
 
-  override suspend fun updateActivity(activity: Activity): Activity {
+  override suspend fun updateActivity(activity: Activity) {
     TODO("Not yet implemented")
   }
 
-  override suspend fun addRating(activity: Activity, rating: Rating): Activity {
+  override suspend fun updateStartPosition(activityId: String, position: Position) {
+    val document = activitiesCollection.document(activityId)
+    document
+        .update("startPosition", hashMapOf("lat" to position.lat, "lon" to position.lon))
+        .await()
+  }
+
+  override suspend fun addRating(activity: Activity, rating: Rating) {
     TODO("Not yet implemented")
   }
 
-  override suspend fun deleteRating(activity: Activity, userId: String): Activity {
+  override suspend fun deleteRating(activity: Activity, userId: String) {
     TODO("Not yet implemented")
   }
 
-  override suspend fun updateDifficulty(activity: Activity, difficulty: Difficulty): Activity {
+  override suspend fun updateDifficulty(activity: Activity, difficulty: Difficulty) {
     TODO("Not yet implemented")
   }
 
-  override suspend fun updateImageUrl(activity: Activity, imageUrl: String): Activity {
+  override suspend fun updateImageUrl(activity: Activity, imageUrl: String) {
     TODO("Not yet implemented")
   }
 }
