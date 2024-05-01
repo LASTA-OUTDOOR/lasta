@@ -84,7 +84,6 @@ fun MoreInfoScreen(
     }
   } else {
     Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoMap")) {
-
       val a = goToMarker(activityToDisplay)
       TopBar(navigateBack)
       MapScreen(
