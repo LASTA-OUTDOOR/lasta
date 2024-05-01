@@ -61,8 +61,4 @@ class MoreInfoScreenViewModel @Inject constructor() : ViewModel() {
               ActivityType.BIKING)
     }
   }
-
-  fun switchMapIsDisplayed(bool: Boolean) {
-    isMapDisplayed.value = bool
-  }
 }
