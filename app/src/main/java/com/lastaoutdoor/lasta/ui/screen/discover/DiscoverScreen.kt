@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
@@ -60,12 +61,14 @@ fun DiscoverScreen(
     screen: DiscoverDisplayType,
     range: Double,
     centerPoint: LatLng,
+    favorites: List<String>,
     localities: List<Pair<String, LatLng>>,
     selectedLocality: Pair<String, LatLng>,
     fetchActivities: (Double, LatLng) -> Unit,
     setScreen: (DiscoverDisplayType) -> Unit,
     setRange: (Double) -> Unit,
     setSelectedLocality: (Pair<String, LatLng>) -> Unit,
+    flipFavorite: (String) -> Unit,
     navigateToFilter: () -> Unit,
     navigateToMoreInfo: () -> Unit,
     changeActivityToDisplay: (Activity) -> Unit
@@ -101,7 +104,13 @@ fun DiscoverScreen(
 
           item {
             Spacer(modifier = Modifier.height(8.dp))
-            ActivitiesDisplay(activities, centerPoint, changeActivityToDisplay, navigateToMoreInfo)
+            ActivitiesDisplay(
+                activities,
+                centerPoint,
+                favorites,
+                changeActivityToDisplay,
+                flipFavorite,
+                navigateToMoreInfo)
           }
         }
   } else if (screen == DiscoverDisplayType.MAP) {
@@ -210,12 +219,16 @@ fun HeaderComposable(
 fun ActivitiesDisplay(
     activities: List<Activity>,
     centerPoint: LatLng,
+    favorites: List<String>,
     changeActivityToDisplay: (Activity) -> Unit,
+    flipFavorite: (String) -> Unit,
     navigateToMoreInfo: () -> Unit
 ) {
-  val distances = activities.map {
-    SphericalUtil.computeDistanceBetween(centerPoint, LatLng(it.startPosition.lat, it.startPosition.lon))
-  }
+  val distances =
+      activities.map {
+        SphericalUtil.computeDistanceBetween(
+            centerPoint, LatLng(it.startPosition.lat, it.startPosition.lon))
+      }
   for (a in activities.sortedBy { distances[activities.indexOf(it)] }) {
     Card(
         modifier =
@@ -253,11 +266,12 @@ fun ActivitiesDisplay(
                   }
 
               IconButton(
-                  onClick = { /*TODO*/ /* changed to this when favorite Icons.Filled.Favorite*/},
-                  modifier = Modifier.size(24.dp)) {
+                  onClick = { flipFavorite(a.activityId) }, modifier = Modifier.size(24.dp)) {
                     Icon(
-                        Icons.Filled.FavoriteBorder,
-                        contentDescription = "Filter",
+                        imageVector =
+                            if (favorites.contains(a.activityId)) Icons.Filled.Favorite
+                            else Icons.Filled.FavoriteBorder,
+                        contentDescription = "Favorite Button",
                         modifier = Modifier.size(24.dp))
                   }
             }

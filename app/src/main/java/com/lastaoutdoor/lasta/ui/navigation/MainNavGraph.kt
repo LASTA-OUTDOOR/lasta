@@ -41,6 +41,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
     composable(DestinationRoute.Discover.route) { entry ->
       val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
+      val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
 
       val activities = discoverScreenViewModel.activities.value
       val screen = discoverScreenViewModel.screen.collectAsState().value
@@ -48,18 +49,21 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val centerPoint = discoverScreenViewModel.selectedLocality.collectAsState().value.second
       val localities = discoverScreenViewModel.localities
       val selectedLocality = discoverScreenViewModel.selectedLocality.collectAsState().value
+      val favorites = preferencesViewModel.favorites.collectAsState(initial = emptyList()).value
 
       DiscoverScreen(
           activities,
           screen,
           range,
           centerPoint,
+          favorites,
           localities,
           selectedLocality,
           discoverScreenViewModel::fetchActivities,
           discoverScreenViewModel::setScreen,
           discoverScreenViewModel::setRange,
           discoverScreenViewModel::setSelectedLocality,
+          preferencesViewModel::flipFavorite,
           { navController.navigate(DestinationRoute.Filter.route) },
           { navController.navigate(DestinationRoute.MoreInfo.route) },
           moreInfoScreenViewModel::changeActivityToDisplay)

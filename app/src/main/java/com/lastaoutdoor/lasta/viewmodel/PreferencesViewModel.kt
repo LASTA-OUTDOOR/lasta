@@ -98,8 +98,20 @@ constructor(private val preferences: PreferencesRepository, private val userDB: 
     viewModelScope.launch { preferences.updateFriendRequests(friendRequests) }
   }
 
-  fun updateFavorites(favorites: List<String>) {
-    viewModelScope.launch { preferences.updateFavorites(favorites) }
+  fun flipFavorite(favoriteId: String) {
+    viewModelScope.launch {
+      if (favorites.first().contains(favoriteId)) {
+        val newFavorites = favorites.first().toMutableList()
+        newFavorites.remove(favoriteId)
+        userDB.removeFavorite(userId.first(), favoriteId)
+        preferences.updateFavorites(newFavorites)
+      } else {
+        val newFavorites = favorites.first().toMutableList()
+        newFavorites.add(favoriteId)
+        userDB.addFavorite(userId.first(), favoriteId)
+        preferences.updateFavorites(newFavorites)
+      }
+    }
   }
 
   fun updateDownloadedActivities(downloadedActivities: List<String>) {

@@ -11,4 +11,8 @@ interface UserDBRepository {
   suspend fun getUserByEmail(email: String): UserModel?
 
   suspend fun updateField(userId: String, field: String, value: Any)
+
+  suspend fun addFavorite(userId: String, activityId: String)
+
+  suspend fun removeFavorite(userId: String, activityId: String)
 }

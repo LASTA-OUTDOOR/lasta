@@ -1,6 +1,7 @@
 package com.lastaoutdoor.lasta.data.db
 
 import android.content.Context
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.lastaoutdoor.lasta.R
@@ -126,5 +127,15 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
 
     // Update the field in the document
     userDocumentRef.update(data as Map<String, Any>).await()
+  }
+
+  override suspend fun addFavorite(userId: String, activityId: String) {
+    val userDocumentRef = userCollection.document(userId)
+    userDocumentRef.update("favorites", FieldValue.arrayUnion(activityId)).await()
+  }
+
+  override suspend fun removeFavorite(userId: String, activityId: String) {
+    val userDocumentRef = userCollection.document(userId)
+    userDocumentRef.update("favorites", FieldValue.arrayRemove(activityId)).await()
   }
 }
