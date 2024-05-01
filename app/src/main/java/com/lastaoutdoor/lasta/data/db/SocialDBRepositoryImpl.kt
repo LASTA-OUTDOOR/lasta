@@ -16,9 +16,9 @@ import com.lastaoutdoor.lasta.models.user.UserActivity
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.tasks.await
 
 @Singleton
 class SocialDBRepositoryImpl @Inject constructor(context: Context, database: FirebaseFirestore) :
@@ -41,12 +41,12 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
         val senderLanguagetoLanguage = Language.valueOf(senderLanguage)
         val prefActivity = friend.getString("prefActivity")!!
         val senderPrefActivity = ActivityType.valueOf(prefActivity)
-        val levels = friend.get("levels") as HashMap<String, String>
+        val levels = friend.get("levels") as HashMap<String, String> ?: HashMap()
         val senderLevels =
             UserActivitiesLevel(
-                climbingLevel = UserLevel.valueOf(levels["climbingLevel"]!!),
-                hikingLevel = UserLevel.valueOf(levels["hikingLevel"]!!),
-                bikingLevel = UserLevel.valueOf(levels["bikingLevel"]!!))
+                climbingLevel = UserLevel.valueOf(levels["climbingLevel"] ?: "BEGINNER"),
+                hikingLevel = UserLevel.valueOf(levels["hikingLevel"] ?: "BEGINNER"),
+                bikingLevel = UserLevel.valueOf(levels["bikingLevel"] ?: "BEGINNER"))
         val senderFriendRequests = friend.get("friendRequests") as ArrayList<String>
         val senderFriends = friend.get("friends") as ArrayList<String>
         val senderFavorites = friend.get("favorites") as ArrayList<String>
@@ -92,9 +92,9 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
           val levels = friendRequest.get("levels") as HashMap<String, String>
           val senderLevels =
               UserActivitiesLevel(
-                  climbingLevel = UserLevel.valueOf(levels["climbingLevel"]!!),
-                  hikingLevel = UserLevel.valueOf(levels["hikingLevel"]!!),
-                  bikingLevel = UserLevel.valueOf(levels["bikingLevel"]!!))
+                  climbingLevel = UserLevel.valueOf(levels["climbingLevel"] ?: "BEGINNER"),
+                  hikingLevel = UserLevel.valueOf(levels["hikingLevel"] ?: "BEGINNER"),
+                  bikingLevel = UserLevel.valueOf(levels["bikingLevel"] ?: "BEGINNER"))
           val senderFriendRequests = friendRequest.get("friendRequests") as ArrayList<String>
           val senderFriends = friendRequest.get("friends") as ArrayList<String>
           val senderFavorites = friendRequest.get("favorites") as ArrayList<String>
