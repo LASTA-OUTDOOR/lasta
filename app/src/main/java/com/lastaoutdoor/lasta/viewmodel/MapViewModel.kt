@@ -41,8 +41,11 @@ class MapViewModel @Inject constructor(private val activityRepository: ActivityR
   }
 
   // Update which marker is currently selected
-  fun updateSelectedMarker(marker: Marker) {
-    state.value.selectedMarker = marker
+  fun updateSelectedMarker(marker: Marker?) {
+    state.value.selectedMarker.value = marker
+    if (marker != null) {
+      state.value.markerList.add(marker)
+    }
   }
 
   // Update the selected itinerary which will draw it on the map
@@ -81,7 +84,7 @@ class MapViewModel @Inject constructor(private val activityRepository: ActivityR
         climbingMarkers.add(marker)
       }
 
-      state.value.markerList = climbingMarkers.toList()
+      state.value.markerList.addAll(climbingMarkers.toMutableList())
     }
   }
 

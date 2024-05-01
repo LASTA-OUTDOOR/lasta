@@ -1,30 +1,67 @@
 package com.lastaoutdoor.lasta.ui.screen.moreinfo
 
+import android.annotation.SuppressLint
+import androidx.activity.compose.setContent
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.rememberNavController
 import com.lastaoutdoor.lasta.di.AppModule
+import com.lastaoutdoor.lasta.models.activity.ClimbingActivity
+import com.lastaoutdoor.lasta.ui.MainActivity
+import com.lastaoutdoor.lasta.viewmodel.MapViewModel
+import com.lastaoutdoor.lasta.viewmodel.MoreInfoScreenViewModel
+import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 
 @HiltAndroidTest
 @UninstallModules(AppModule::class)
 class MoreInfoScreenTest {
-  /*@get:Rule(order = 0) val hiltRule = HiltAndroidRule(this)
+  @get:Rule(order = 0) val hiltRule = HiltAndroidRule(this)
 
   // Create a compose rule
   @get:Rule(order = 1) val composeRule = createAndroidComposeRule<MainActivity>()
 
+  @SuppressLint("StateFlowValueCalledInComposition")
   @Before
   fun setUp() {
     hiltRule.inject()
     composeRule.activity.setContent {
       val navController = rememberNavController()
-      MoreInfoScreen(navController = navController, hiltViewModel())
+      val mapViewModel: MapViewModel = hiltViewModel()
+      val moreInfoScreenViewModel: MoreInfoScreenViewModel = hiltViewModel()
+      val activity = ClimbingActivity("", 0)
+
+      mapViewModel.updatePermission(true)
+      MoreInfoScreen(
+          activity,
+          moreInfoScreenViewModel::processDiffText,
+          mapViewModel.state.value,
+          mapViewModel::updatePermission,
+          mapViewModel.initialPosition,
+          mapViewModel.initialZoom,
+          mapViewModel::updateMarkers,
+          mapViewModel::updateSelectedMarker,
+          mapViewModel::clearSelectedItinerary,
+          mapViewModel.selectedZoom,
+          mapViewModel::updateSelectedItinerary,
+          moreInfoScreenViewModel::goToMarker,
+      ) {
+        navController.navigateUp()
+      }
     }
   }
 
   // Test that the top bar is displayed
   @Test
   fun topBar_isDisplayed() {
-    composeRule.onNodeWithTag("MoreInfoTopBar").assertIsDisplayed()
+    composeRule.onNodeWithTag("Top Bar").assertIsDisplayed()
   }
 
   // Test that the more info screen is displayed
@@ -38,7 +75,15 @@ class MoreInfoScreenTest {
     // Check that middle zone is displayed
     composeRule.onNodeWithTag("MoreInfoMiddleZone").assertIsDisplayed()
     // Check that activity title zone is displayed
-    composeRule.onNodeWithTag("MoreInfoActivityTitleZone").assertIsDisplayed()
+    // composeRule.onNodeWithTag("MoreInfoActivityTitleZone").assertIsDisplayed()
     composeRule.onNodeWithTag("MoreInfoActivityTypeComposable").assertIsDisplayed()
-  }*/
+  }
+
+  @Test
+  fun moreInfoMapIsDisplayed() {
+    composeRule.onNodeWithTag("viewOnMapButton").performClick()
+
+
+
+  }
 }

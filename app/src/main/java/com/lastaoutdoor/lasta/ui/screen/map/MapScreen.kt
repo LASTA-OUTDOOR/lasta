@@ -67,10 +67,10 @@ fun InformationSheet(
       Column(modifier = Modifier.padding(16.dp)) {
         Text(
             modifier = Modifier.testTag("bottomSheetTitle"),
-            text = state.selectedMarker?.name ?: "No name",
+            text = state.selectedMarker.value?.name ?: "No name",
             style = MaterialTheme.typography.headlineLarge)
         Text(
-            "${LocalContext.current.getString(R.string.activity_type)} ${state.selectedMarker?.description ?: LocalContext.current.getString(R.string.activity_type)}",
+            "${LocalContext.current.getString(R.string.activity_type)} ${state.selectedMarker.value?.description ?: LocalContext.current.getString(R.string.activity_type)}",
             style = MaterialTheme.typography.bodyLarge)
       }
     }
@@ -119,7 +119,7 @@ fun MapScreen(
     initialPosition: LatLng,
     initialZoom: Float,
     updateMarkers: (LatLng, Double) -> Unit,
-    updateSelectedMarker: (Marker) -> Unit,
+    updateSelectedMarker: (Marker?) -> Unit,
     clearSelectedItinerary: () -> Unit,
     selectedZoom: Float,
     updateSelectedItinerary: (Long) -> Unit,
@@ -162,7 +162,7 @@ fun MapScreen(
       val rad = SphericalUtil.computeDistanceBetween(centerLocation, topLeftLocation)
 
       // update the markers based on the new center and radius
-      updateMarkers(centerLocation, rad)
+      // updateMarkers(centerLocation, rad)
     }
   }
 
@@ -191,11 +191,11 @@ private fun GoogleMapComposable(
     cameraPositionState: CameraPositionState,
     state: MapState,
     updateMarkers: (LatLng, Double) -> Unit,
-    updateSelectedMarker: (Marker) -> Unit,
+    updateSelectedMarker: (Marker?) -> Unit,
     clearSelectedItinerary: () -> Unit,
     selectedZoom: Float,
     updateSelectedItinerary: (Long) -> Unit,
-    updateSheet: () -> Unit,
+    updateSheet: (Boolean) -> Unit,
 ) {
   GoogleMap(
       modifier = Modifier.fillMaxSize(),
@@ -203,6 +203,16 @@ private fun GoogleMapComposable(
       uiSettings = state.uiSettings,
       cameraPositionState = cameraPositionState,
       onMapLoaded = {
+        if (state.selectedMarker.value != null) {
+
+          cameraPositionState.move(
+              CameraUpdateFactory.newCameraPosition(
+                  CameraPosition.fromLatLngZoom(
+                      state.selectedMarker.value!!.position, selectedZoom)))
+          updateSheet(true)
+
+          // updateSelectedMarker(null)
+        }
         val centerLocation = cameraPositionState.position.target
         val topLeftLocation =
             cameraPositionState.projection?.visibleRegion?.farLeft
@@ -223,7 +233,7 @@ private fun GoogleMapComposable(
           icon = BitmapDescriptorFactory.fromResource(marker.icon),
           snippet = marker.description,
           onClick = {
-            updateSheet()
+            updateSheet(true)
             updateSelectedMarker(marker)
             clearSelectedItinerary()
             // camera moves to the marker when clicked
@@ -243,7 +253,7 @@ private fun GoogleMapComposable(
           icon = BitmapDescriptorFactory.fromResource(marker.icon),
           snippet = marker.description,
           onClick = {
-            updateSheet()
+            updateSheet(true)
             updateSelectedMarker(marker)
             updateSelectedItinerary(marker.id)
             // camera moves to the marker when clicked

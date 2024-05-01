@@ -74,7 +74,7 @@ fun DiscoverScreen(
     initialPosition: LatLng,
     initialZoom: Float,
     updateMarkers: (LatLng, Double) -> Unit,
-    updateSelectedMarker: (Marker) -> Unit,
+    updateSelectedMarker: (Marker?) -> Unit,
     clearSelectedItinerary: () -> Unit,
     selectedZoom: Float,
     updateSelectedItinerary: (Long) -> Unit,

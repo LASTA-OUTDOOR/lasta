@@ -1,7 +1,9 @@
 package com.lastaoutdoor.lasta.ui.screen.map
 
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -10,7 +12,11 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
+import androidx.test.espresso.Espresso
+import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.di.AppModule
+import com.lastaoutdoor.lasta.models.map.ClimbingMarker
 import com.lastaoutdoor.lasta.ui.MainActivity
 import com.lastaoutdoor.lasta.viewmodel.MapState
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -55,9 +61,7 @@ class MapScreenTest {
     composeRule.onNodeWithTag("bottomSheet").assertIsDisplayed()
     isSheetOpen = false
   }
-}
 
-/*
   @OptIn(ExperimentalMaterial3Api::class)
   @Test
   fun bottomSheetTestDismiss() {
@@ -65,9 +69,8 @@ class MapScreenTest {
     isSheetOpen = true
 
     composeRule.activity.setContent {
-      val viewModel: MapViewModel = hiltViewModel()
-
-      viewModel.state.selectedMarker =
+      val state = MapState()
+      state.selectedMarker.value =
           ClimbingMarker("Test marker", LatLng(0.0, 0.0), "Test description", 1)
 
       Column {
@@ -78,6 +81,7 @@ class MapScreenTest {
         InformationSheet(
             sheetState = sheetState,
             isSheetOpen = isSheetOpen,
+            state,
             onDismissRequest = { isSheetOpen = false })
       }
     }
@@ -87,5 +91,3 @@ class MapScreenTest {
     composeRule.onNodeWithTag("bottomSheet").assertIsNotDisplayed()
   }
 }
-
-*/

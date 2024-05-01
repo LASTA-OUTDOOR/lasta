@@ -142,8 +142,25 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
     composable(DestinationRoute.MoreInfo.route) { entry ->
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
       val activityToDisplay = moreInfoScreenViewModel.activityToDisplay.value
-
-      MoreInfoScreen(activityToDisplay, moreInfoScreenViewModel::processDiffText , moreInfoScreenViewModel::goToMarker) {
+      val mapViewModel: MapViewModel = entry.sharedViewModel(navController)
+      val mapState = mapViewModel.state.collectAsState().value
+      val initialZoom = mapViewModel.initialZoom
+      val initialPosition = mapViewModel.initialPosition
+      val selectedZoom = mapViewModel.selectedZoom
+      MoreInfoScreen(
+          activityToDisplay,
+          moreInfoScreenViewModel::processDiffText,
+          mapState,
+          mapViewModel::updatePermission,
+          initialPosition,
+          initialZoom,
+          mapViewModel::updateMarkers,
+          mapViewModel::updateSelectedMarker,
+          mapViewModel::clearSelectedItinerary,
+          selectedZoom,
+          mapViewModel::updateSelectedItinerary,
+          moreInfoScreenViewModel::goToMarker,
+      ) {
         navController.navigateUp()
       }
     }

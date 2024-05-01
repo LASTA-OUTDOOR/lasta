@@ -9,13 +9,11 @@ import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.activity.Difficulty
-import com.lastaoutdoor.lasta.models.api.Position
 import com.lastaoutdoor.lasta.models.map.ClimbingMarker
 import com.lastaoutdoor.lasta.models.map.HikingMarker
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
 
 @HiltViewModel
 class MoreInfoScreenViewModel @Inject constructor() : ViewModel() {
@@ -37,18 +35,34 @@ class MoreInfoScreenViewModel @Inject constructor() : ViewModel() {
   fun changeActivityToDisplay(activity: Activity) {
     activityToDisplay.value = activity
   }
-  fun goToMarker(activity: Activity) : com.lastaoutdoor.lasta.models.map.Marker {
-    return when(activity.activityType){
-      ActivityType.CLIMBING -> ClimbingMarker(activity.name, LatLng(46.55,  6.549/*activity.startPosition.lat,activity.startPosition.lon*/),"",
-        R.drawable.climbing_icon)
-      ActivityType.HIKING -> HikingMarker(activity.name, LatLng(activity.startPosition.lat,activity.startPosition.lon),"",
-        R.drawable.hiking_icon,activity.osmId)
-      ActivityType.BIKING -> HikingMarker(activity.name, LatLng(activity.startPosition.lat,activity.startPosition.lon),"",
-        R.drawable.hiking_icon,activity.osmId, ActivityType.BIKING)
-    }
 
+  fun goToMarker(activity: Activity): com.lastaoutdoor.lasta.models.map.Marker {
+    return when (activity.activityType) {
+      ActivityType.CLIMBING ->
+          ClimbingMarker(
+              activity.name,
+              LatLng(46.55, 6.549 /*activity.startPosition.lat,activity.startPosition.lon*/),
+              "",
+              R.drawable.climbing_icon)
+      ActivityType.HIKING ->
+          HikingMarker(
+              activity.name,
+              LatLng(activity.startPosition.lat, activity.startPosition.lon),
+              "",
+              R.drawable.hiking_icon,
+              activity.osmId)
+      ActivityType.BIKING ->
+          HikingMarker(
+              activity.name,
+              LatLng(activity.startPosition.lat, activity.startPosition.lon),
+              "",
+              R.drawable.hiking_icon,
+              activity.osmId,
+              ActivityType.BIKING)
+    }
   }
-  fun switchMapIsDisplayed(bool : Boolean){
+
+  fun switchMapIsDisplayed(bool: Boolean) {
     isMapDisplayed.value = bool
   }
 }

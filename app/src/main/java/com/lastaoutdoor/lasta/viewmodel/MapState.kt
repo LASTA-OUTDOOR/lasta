@@ -1,5 +1,7 @@
 package com.lastaoutdoor.lasta.viewmodel
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.MapUiSettings
@@ -19,7 +21,7 @@ class MapState {
       MapUiSettings(zoomControlsEnabled = false, myLocationButtonEnabled = false)
 
   // List of markers to display on the map
-  var markerList: List<Marker> = emptyList()
+  var markerList: MutableList<Marker> = mutableListOf()
 
   // List of hiking markers to display on the map (first of itinerary)
   var itineraryStartMarkers: List<HikingMarker> = emptyList()
@@ -31,5 +33,5 @@ class MapState {
   var selectedItinerary: MapItinerary? = null
 
   // The marker displayed in the more info bottom sheet
-  var selectedMarker: Marker? = null
+  var selectedMarker: MutableState<Marker?> = mutableStateOf<Marker?>(null)
 }
