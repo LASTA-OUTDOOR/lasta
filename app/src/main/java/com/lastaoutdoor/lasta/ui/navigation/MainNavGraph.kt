@@ -45,6 +45,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val activities = discoverScreenViewModel.activities.value
       val screen = discoverScreenViewModel.screen.collectAsState().value
       val range = discoverScreenViewModel.range.collectAsState().value
+      val centerPoint = discoverScreenViewModel.selectedLocality.collectAsState().value.second
       val localities = discoverScreenViewModel.localities
       val selectedLocality = discoverScreenViewModel.selectedLocality.collectAsState().value
 
@@ -52,6 +53,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           activities,
           screen,
           range,
+          centerPoint,
           localities,
           selectedLocality,
           discoverScreenViewModel::fetchActivities,
@@ -128,9 +130,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
     composable(DestinationRoute.MoreInfo.route) { entry ->
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
       val activityToDisplay = moreInfoScreenViewModel.activityToDisplay.value
-      MoreInfoScreen(activityToDisplay, moreInfoScreenViewModel::processDiffText) {
-        navController.navigateUp()
-      }
+      MoreInfoScreen(activityToDisplay) { navController.navigateUp() }
     }
     composable(DestinationRoute.Filter.route) { FilterScreen { navController.popBackStack() } }
 
@@ -165,7 +165,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           val socialViewModel: SocialViewModel = entry.sharedViewModel(navController)
           socialViewModel.refreshFriends()
           val friendId = entry.arguments?.getString("friendId") ?: ""
-          val defaultUserModel: UserModel = UserModel(friendId)
+          val defaultUserModel = UserModel(friendId)
 
           // Create a state for the UserModel with a default value
           val friendUserModel = remember { mutableStateOf(defaultUserModel) }

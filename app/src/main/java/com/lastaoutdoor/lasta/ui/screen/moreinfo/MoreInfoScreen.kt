@@ -32,15 +32,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.Activity
+import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.ui.theme.Black
+import com.lastaoutdoor.lasta.ui.theme.GreenDifficulty
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
+import com.lastaoutdoor.lasta.ui.theme.RedDifficulty
 import com.lastaoutdoor.lasta.ui.theme.YellowDifficulty
 
 // MoreInfoScreen : displays all the information of an activity
 @Composable
 fun MoreInfoScreen(
     activityToDisplay: Activity,
-    processDiffText: (Activity) -> String,
     navigateBack: () -> Unit,
 ) {
   Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoComposable")) {
@@ -51,7 +53,7 @@ fun MoreInfoScreen(
       // displays activity title and duration
       item { ActivityTitleZone(activityToDisplay) }
       // displays activity difficulty, ration and view on map button
-      item { MiddleZone(activityToDisplay, processDiffText) }
+      item { MiddleZone(activityToDisplay) }
       // filled with a spacer for the moment but will contain address + community
     }
     StartButton()
@@ -85,9 +87,9 @@ fun StartButton() {
 // Displays the difficulty and rating of the activity on the left and a button to view the activity
 // on the map on the right
 @Composable
-fun MiddleZone(activityToDisplay: Activity, processDiffText: (Activity) -> String) {
+fun MiddleZone(activityToDisplay: Activity) {
   Row(modifier = Modifier.fillMaxWidth().testTag("MoreInfoMiddleZone")) {
-    DiffAndRating(activityToDisplay, processDiffText)
+    DiffAndRating(activityToDisplay)
     Spacer(Modifier.weight(1f))
     ViewOnMapButton()
   }
@@ -119,9 +121,9 @@ fun ViewOnMapButton() {
 
 // Displays the difficulty and rating of the activity
 @Composable
-fun DiffAndRating(activityToDisplay: Activity, processDiffText: (Activity) -> String) {
+fun DiffAndRating(activityToDisplay: Activity) {
   Column(modifier = Modifier.padding(vertical = 5.dp)) {
-    ElevatedDifficultyDisplay(diff = processDiffText(activityToDisplay))
+    ElevatedDifficultyDisplay(activityToDisplay)
     /*Not implemented yet so a hard-coded value is returned*/
     RatingDisplay(4.3)
   }
@@ -151,14 +153,20 @@ fun RatingDisplay(rating: Double) {
 
 // Displays the difficulty of the activity
 @Composable
-fun ElevatedDifficultyDisplay(diff: String) {
+fun ElevatedDifficultyDisplay(activityToDisplay: Activity) {
+  val difficultyColor =
+      when (activityToDisplay.difficulty) {
+        Difficulty.EASY -> GreenDifficulty
+        Difficulty.NORMAL -> YellowDifficulty
+        Difficulty.HARD -> RedDifficulty
+      }
   ElevatedButton(
-      onClick = {},
+      onClick = { /*TODO let user change activity difficulty */},
       contentPadding = PaddingValues(all = 3.dp),
       modifier = Modifier.width(80.dp).height(24.dp),
-      colors = ButtonDefaults.buttonColors(containerColor = YellowDifficulty)) {
+      colors = ButtonDefaults.buttonColors(containerColor = difficultyColor)) {
         Text(
-            diff,
+            activityToDisplay.difficulty.toString(),
             style =
                 TextStyle(
                     fontSize = 16.sp,

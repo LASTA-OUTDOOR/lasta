@@ -42,6 +42,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.SphericalUtil
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
@@ -58,6 +59,7 @@ fun DiscoverScreen(
     activities: List<Activity>,
     screen: DiscoverDisplayType,
     range: Double,
+    centerPoint: LatLng,
     localities: List<Pair<String, LatLng>>,
     selectedLocality: Pair<String, LatLng>,
     fetchActivities: (Double, LatLng) -> Unit,
@@ -99,7 +101,7 @@ fun DiscoverScreen(
 
           item {
             Spacer(modifier = Modifier.height(8.dp))
-            ActivitiesDisplay(activities, changeActivityToDisplay, navigateToMoreInfo)
+            ActivitiesDisplay(activities, centerPoint, changeActivityToDisplay, navigateToMoreInfo)
           }
         }
   } else if (screen == DiscoverDisplayType.MAP) {
@@ -207,10 +209,14 @@ fun HeaderComposable(
 @Composable
 fun ActivitiesDisplay(
     activities: List<Activity>,
+    centerPoint: LatLng,
     changeActivityToDisplay: (Activity) -> Unit,
     navigateToMoreInfo: () -> Unit
 ) {
-  for (a in activities) {
+  val distances = activities.map {
+    SphericalUtil.computeDistanceBetween(centerPoint, LatLng(it.startPosition.lat, it.startPosition.lon))
+  }
+  for (a in activities.sortedBy { distances[activities.indexOf(it)] }) {
     Card(
         modifier =
             Modifier.fillMaxWidth()
@@ -278,7 +284,9 @@ fun ActivitiesDisplay(
               Text(text = "Difficulty: ${a.difficulty}")
               Spacer(modifier = Modifier.width(16.dp))
               // Distance from the user's location, NOT THE LENGTH OF THE ACTIVITY!!!
-              Text(text = "? km")
+              Text(
+                  text =
+                      "${String.format("%.1f", SphericalUtil.computeDistanceBetween(centerPoint, LatLng(a.startPosition.lat, a.startPosition.lon)) / 1000)} km")
             }
       }
     }
