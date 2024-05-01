@@ -68,7 +68,9 @@
     <string name = "temperature">Température</string>
     <string name = "descr_w">Description</string>
     <string name = "wind_speed">Vitesse du vent</string>
-    <string name="no_friend_activities">Pas d\'acitivités récentes…  Ajoutes des amis pour en voir plus !</string>
+    <string name = "humidity">Humidité</string>
+    <string name = "no_loc">Bulletin météo indisponible ! Autorisez cette application à utiliser votre localisation et réessayez.</string>
+    <string name="no_friend_activities">Pas d\'activités récentes…  Ajoute des amis pour en voir plus !</string>
     <string name="add_friend_title">Ajouter un amis</string>
     <string name="select_friend">Choisis un amis</string>
     <string name="show_completed_activities">Afficher vos activités terminées</string>
