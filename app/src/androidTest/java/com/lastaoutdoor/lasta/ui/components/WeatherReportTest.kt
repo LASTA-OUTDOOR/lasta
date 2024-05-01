@@ -51,6 +51,7 @@ class WeatherReportTest {
                 Wind(5.0))
             WeatherReportBig(weather = fakeWeatherResponse, displayWind = true)
         }
+        composeRule.onNodeWithTag("temp").assertIsDisplayed()
         composeRule.onNodeWithTag("WeatherName").assertIsDisplayed()
         composeRule.onNodeWithTag("WeatherIcon").assertIsDisplayed()
         composeRule.onNodeWithTag("WindDisplay").assertIsDisplayed()
@@ -76,7 +77,7 @@ class WeatherReportTest {
                 Wind(5.0))
             WeatherReportSmall(weather = fakeWeatherResponse){}
         }
-
+        composeRule.onNodeWithTag("temp").assertIsDisplayed()
         composeRule.onNodeWithContentDescription("Current Weather Logo").assertIsDisplayed()
     }
     @Test

@@ -64,7 +64,7 @@ fun WeatherReportBig(weather: WeatherResponse?,displayWind:Boolean) {
 
             }
             Spacer(Modifier.size(40.dp))
-            Text(text = "${finalTemp}°C", fontSize = 22.sp,color=PrimaryBlue)
+            Text(text = "${finalTemp}°C", fontSize = 22.sp,color=PrimaryBlue,modifier = Modifier.testTag("temp"))
             Spacer(Modifier.size(30.dp))
             if(displayWind) {
                 Column(modifier = Modifier.testTag("WindDisplay")) {
@@ -117,6 +117,7 @@ fun WeatherReportSmall(weather: WeatherResponse?,onIconClick:()->Unit) {
                                 .toDouble()
                         Text(
                             text = "${finalTemp}°C",
+                            modifier = Modifier.testTag("temp")
                         )
                         IconButton(
                             modifier = Modifier.size(45.dp,45.dp),
