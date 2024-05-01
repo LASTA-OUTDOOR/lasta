@@ -46,18 +46,14 @@ fun MoreInfoScreen(
     weather: WeatherResponse?,
     navigateBack: () -> Unit
 ) {
-  Column(modifier = Modifier
-      .fillMaxSize()
-      .testTag("MoreInfoComposable")) {
-    LazyColumn(modifier = Modifier
-        .weight(1f)
-        .padding(8.dp)) {
+  Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoComposable")) {
+    LazyColumn(modifier = Modifier.weight(1f).padding(8.dp)) {
       item { Spacer(modifier = Modifier.height(15.dp)) }
       // contains the top icon buttons
       item { TopBar(navigateBack) }
       // displays activity title and duration
       item { ActivityTitleZone(activityToDisplay) }
-      item { WeatherReportBig(weather,true) }
+      item { WeatherReportBig(weather, true) }
       // displays activity difficulty, ration and view on map button
       item { MiddleZone(activityToDisplay, processDiffText) }
       // filled with a spacer for the moment but will contain address + community
@@ -70,17 +66,13 @@ fun MoreInfoScreen(
 @Composable
 fun StartButton() {
   Row(
-      modifier = Modifier
-          .fillMaxWidth()
-          .testTag("MoreInfoStartButton"),
+      modifier = Modifier.fillMaxWidth().testTag("MoreInfoStartButton"),
       horizontalArrangement = Arrangement.Center) {
         ElevatedButton(
             onClick = {
               /** TODO : Start Activity */
             },
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .height(48.dp), // takes up 80% of the width
+            modifier = Modifier.fillMaxWidth(0.8f).height(48.dp), // takes up 80% of the width
             colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
               Text(
                   LocalContext.current.getString(R.string.start),
@@ -98,9 +90,7 @@ fun StartButton() {
 // on the map on the right
 @Composable
 fun MiddleZone(activityToDisplay: Activity, processDiffText: (Activity) -> String) {
-  Row(modifier = Modifier
-      .fillMaxWidth()
-      .testTag("MoreInfoMiddleZone")) {
+  Row(modifier = Modifier.fillMaxWidth().testTag("MoreInfoMiddleZone")) {
     DiffAndRating(activityToDisplay, processDiffText)
     Spacer(Modifier.weight(1f))
     ViewOnMapButton()
@@ -116,9 +106,7 @@ fun ViewOnMapButton() {
           /** TODO : Go to map */
         },
         contentPadding = PaddingValues(all = 3.dp),
-        modifier = Modifier
-            .width(130.dp)
-            .height(40.dp),
+        modifier = Modifier.width(130.dp).height(40.dp),
         colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
           Text(
               LocalContext.current.getString(R.string.on_map),
@@ -171,9 +159,7 @@ fun ElevatedDifficultyDisplay(diff: String) {
   ElevatedButton(
       onClick = {},
       contentPadding = PaddingValues(all = 3.dp),
-      modifier = Modifier
-          .width(80.dp)
-          .height(24.dp),
+      modifier = Modifier.width(80.dp).height(24.dp),
       colors = ButtonDefaults.buttonColors(containerColor = YellowDifficulty)) {
         Text(
             diff,
@@ -191,9 +177,7 @@ fun ElevatedDifficultyDisplay(diff: String) {
 // Top Bar that displays the four clickable logos with distinct usages
 @Composable
 fun TopBar(navigateBack: () -> Unit) {
-  Row(modifier = Modifier
-      .fillMaxWidth()
-      .testTag("Top Bar")) {
+  Row(modifier = Modifier.fillMaxWidth().testTag("Top Bar")) {
     TopBarLogo(R.drawable.arrow_back) { navigateBack() }
     Spacer(modifier = Modifier.weight(1f))
     TopBarLogo(R.drawable.download_button) {}
@@ -209,9 +193,7 @@ fun TopBarLogo(logoPainterId: Int, f: () -> Unit) {
     Icon(
         painter = painterResource(id = logoPainterId),
         contentDescription = "Top Bar logo",
-        modifier = Modifier
-            .width(26.dp)
-            .height(26.dp))
+        modifier = Modifier.width(26.dp).height(26.dp))
   }
 }
 
@@ -232,10 +214,7 @@ fun ActivityPicture() {
     Image(
         painter = painterResource(id = R.drawable.ellipse),
         contentDescription = "Soon Activity Picture",
-        modifier = Modifier
-            .padding(5.dp)
-            .width(70.dp)
-            .height(70.dp))
+        modifier = Modifier.padding(5.dp).width(70.dp).height(70.dp))
   }
 }
 
@@ -264,11 +243,10 @@ fun ElevatedActivityType(activityToDisplay: Activity) {
       onClick = {},
       contentPadding = PaddingValues(all = 3.dp),
       modifier =
-      Modifier
-          .padding(3.dp)
-          .width(64.dp)
-          .height(20.dp)
-          .testTag("MoreInfoActivityTypeComposable"),
+          Modifier.padding(3.dp)
+              .width(64.dp)
+              .height(20.dp)
+              .testTag("MoreInfoActivityTypeComposable"),
       colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
         Text(
             text = activityToDisplay.activityType.toString(),

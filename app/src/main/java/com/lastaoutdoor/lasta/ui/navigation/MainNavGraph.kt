@@ -1,14 +1,11 @@
 package com.lastaoutdoor.lasta.ui.navigation
 
-import android.Manifest
-import android.content.pm.PackageManager
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -17,9 +14,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.lastaoutdoor.lasta.data.api.weather.Main
-import com.lastaoutdoor.lasta.data.api.weather.Weather
-import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
-import com.lastaoutdoor.lasta.data.api.weather.Wind
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.Language
 import com.lastaoutdoor.lasta.models.user.UserModel
@@ -43,7 +37,6 @@ import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 import com.lastaoutdoor.lasta.viewmodel.ProfileScreenViewModel
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 import com.lastaoutdoor.lasta.viewmodel.WeatherViewModel
-import dagger.hilt.android.internal.Contexts.getApplication
 
 fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
   navigation(startDestination = DestinationRoute.Discover.route, route = BaseRoute.Main.route) {
@@ -155,7 +148,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val activityToDisplay = moreInfoScreenViewModel.activityToDisplay.value
       val weatherViewModel: WeatherViewModel = hiltViewModel(entry)
       val weather = weatherViewModel.weather.observeAsState().value
-      MoreInfoScreen(activityToDisplay, moreInfoScreenViewModel::processDiffText,weather) {
+      MoreInfoScreen(activityToDisplay, moreInfoScreenViewModel::processDiffText, weather) {
         navController.navigateUp()
       }
     }

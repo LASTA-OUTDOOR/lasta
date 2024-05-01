@@ -7,11 +7,9 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.repository.api.WeatherRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +18,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 @HiltViewModel
-class WeatherViewModel @Inject constructor(private val weatherRepository: WeatherRepository,application: Application) :
+class WeatherViewModel
+@Inject
+constructor(private val weatherRepository: WeatherRepository, application: Application) :
     AndroidViewModel(application) {
 
   private val fusedLocationClient: FusedLocationProviderClient by lazy {
@@ -34,13 +34,10 @@ class WeatherViewModel @Inject constructor(private val weatherRepository: Weathe
     fetchWeather()
   }
 
-
   private fun fetchWeather() {
     if (ContextCompat.checkSelfPermission(
-        getApplication(),
-        Manifest.permission.ACCESS_FINE_LOCATION
-      ) == PackageManager.PERMISSION_GRANTED
-    ) {
+        getApplication(), Manifest.permission.ACCESS_FINE_LOCATION) ==
+        PackageManager.PERMISSION_GRANTED) {
       viewModelScope.launch {
         try {
           val location = fusedLocationClient.lastLocation.await()
