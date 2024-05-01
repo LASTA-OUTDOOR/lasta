@@ -68,6 +68,8 @@
     <string name = "temperature">Temperatur</string>
     <string name = "descr_w">Beschreibung</string>
     <string name = "wind_speed">Windgeschwindigkeit</string>
+    <string name = "humidity">Feuchtigkeit</string>
+    <string name = "no_loc">Wetterbericht nicht verfügbar! Erlauben Sie dieser Anwendung, Ihren Standort zu verwenden, und versuchen Sie es erneut.</string>
     <string name="show_completed_activities">Abgeschlossene Aktivitäten anzeigen</string>
     <string name="filter_options">" Filteroptionen"</string>
     <string name="filter_activity_type">Filtern Sie nach Aktivitätstyp :</string>
