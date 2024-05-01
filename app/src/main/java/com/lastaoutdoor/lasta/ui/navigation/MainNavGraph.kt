@@ -13,6 +13,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.lastaoutdoor.lasta.data.api.weather.Main
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.Language
 import com.lastaoutdoor.lasta.models.user.UserModel
@@ -48,6 +49,8 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val range = discoverScreenViewModel.range.collectAsState().value
       val localities = discoverScreenViewModel.localities
       val selectedLocality = discoverScreenViewModel.selectedLocality.collectAsState().value
+      val weatherViewModel: WeatherViewModel = hiltViewModel(entry)
+      val weather = weatherViewModel.weather.observeAsState().value
       val mapState = mapViewModel.state.collectAsState().value
       val initialZoom = mapViewModel.initialZoom
       val initialPosition = mapViewModel.initialPosition
@@ -66,6 +69,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           { navController.navigate(DestinationRoute.Filter.route) },
           { navController.navigate(DestinationRoute.MoreInfo.route) },
           moreInfoScreenViewModel::changeActivityToDisplay,
+          weather,
           mapState,
           mapViewModel::updatePermission,
           initialPosition,
@@ -78,7 +82,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
     }
     composable(DestinationRoute.Favorites.route) { entry ->
       val weatherViewModel: WeatherViewModel = hiltViewModel(entry)
-      val weather = weatherViewModel.weather.observeAsState().value ?: return@composable
+      val weather = weatherViewModel.weather.observeAsState().value
       FavoritesScreen({ navController.navigate(DestinationRoute.MoreInfo.route) }, weather)
     }
     composable(DestinationRoute.Socials.route) { entry ->
@@ -161,6 +165,9 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           mapViewModel::updateSelectedItinerary,
           moreInfoScreenViewModel::goToMarker,
       ) {
+      val weatherViewModel: WeatherViewModel = hiltViewModel(entry)
+      val weather = weatherViewModel.weather.observeAsState().value
+      MoreInfoScreen(activityToDisplay, moreInfoScreenViewModel::processDiffText, weather) {
         navController.navigateUp()
       }
     }
