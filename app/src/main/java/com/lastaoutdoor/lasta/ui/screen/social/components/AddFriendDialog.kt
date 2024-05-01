@@ -45,7 +45,7 @@ fun AddFriendDialog(
       onDismissRequest = { hideAddFriendDialog() },
       properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)) {
         Card(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier.fillMaxWidth().padding(16.dp).testTag("AddFriendDialog"),
             shape = RoundedCornerShape(16.dp),
         ) {
           Text(
