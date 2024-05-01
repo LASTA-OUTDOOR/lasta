@@ -139,7 +139,9 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
     composable(DestinationRoute.MoreInfo.route) { entry ->
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
       val activityToDisplay = moreInfoScreenViewModel.activityToDisplay.value
-      MoreInfoScreen(activityToDisplay, moreInfoScreenViewModel::processDiffText) {
+      val weatherViewModel: WeatherViewModel = hiltViewModel(entry)
+      val weather = weatherViewModel.weather.observeAsState().value
+      MoreInfoScreen(activityToDisplay, moreInfoScreenViewModel::processDiffText,weather) {
         navController.navigateUp()
       }
     }

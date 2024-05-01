@@ -22,32 +22,13 @@ import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
 
 @Composable
 fun FavoritesScreen(navigateToMoreInfo: () -> Unit, weather: WeatherResponse?) {
-    var locationPermissionGranted by remember { mutableStateOf(false) }
-
-    val requestPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-        if (isGranted) {
-            locationPermissionGranted = true
-        }
-    }
-  val displayWeather = remember { mutableStateOf(false) }
-  if (displayWeather.value) {
-    Dialog({ displayWeather.value = false }) { WeatherReportBig(weather) }
-  }
 
   Column(
       modifier = Modifier.fillMaxSize(),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally) {
         Button(onClick = { navigateToMoreInfo() }) {
-          Text(text = LocalContext.current.getString(R.string.more_info))
-        }
-        Button(onClick = { if(locationPermissionGranted) {
-            displayWeather.value = true
-        }else {
-            requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
-            displayWeather.value=true
-        }}) {
-          Text(text = LocalContext.current.getString(R.string.weather_report))
+            Text(text = LocalContext.current.getString(R.string.more_info))
         }
       }
 }

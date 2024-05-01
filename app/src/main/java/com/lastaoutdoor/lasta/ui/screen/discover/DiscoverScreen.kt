@@ -31,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.AbsoluteAlignment
@@ -42,6 +43,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
@@ -133,7 +135,12 @@ fun HeaderComposable(
     weather: WeatherResponse?
 ) {
   val iconSize = 48.dp // Adjust icon size as needed
-
+  val displayWeather= remember{mutableStateOf(false)}
+  if(displayWeather.value){
+      Dialog(onDismissRequest = {displayWeather.value=false}) {
+          Surface { WeatherReportBig(weather = weather,displayWind=false) }
+      }
+  }
   Surface(
       modifier = Modifier.fillMaxWidth(),
       color = MaterialTheme.colorScheme.background,
@@ -168,7 +175,7 @@ fun HeaderComposable(
                 }
                   Column(modifier = Modifier
                       .fillMaxWidth(), horizontalAlignment = Alignment.End) {
-                      WeatherReportSmall(weather)
+                      WeatherReportSmall(weather) {displayWeather.value=true}
                   }
               }
 
