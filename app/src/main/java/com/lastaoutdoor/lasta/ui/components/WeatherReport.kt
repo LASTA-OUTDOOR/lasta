@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -45,9 +46,9 @@ fun WeatherReportBig(weather: WeatherResponse?,displayWind:Boolean) {
             Image(
                 painter = painterResource(id = getWeatherIconFromId(weather.weather.firstOrNull()?.icon?:"01d")),
                 contentDescription = "Current Weather Logo",
-                modifier = Modifier.size(63.dp,63.dp)
+                modifier = Modifier.size(63.dp,63.dp).testTag("WeatherIcon")
             )
-            Column(verticalArrangement = Arrangement.Top){
+            Column(verticalArrangement = Arrangement.Top, modifier = Modifier.testTag("WeatherName")){
                 Text(
                     text = weather.name,
                     fontWeight = FontWeight(1000),
@@ -66,7 +67,7 @@ fun WeatherReportBig(weather: WeatherResponse?,displayWind:Boolean) {
             Text(text = "${finalTemp}°C", fontSize = 22.sp,color=PrimaryBlue)
             Spacer(Modifier.size(30.dp))
             if(displayWind) {
-                Column {
+                Column(modifier = Modifier.testTag("WindDisplay")) {
                     Text(
                         text = "${weather.wind.speed}",
                         color = PrimaryBlue,
@@ -91,7 +92,7 @@ fun WeatherReportBig(weather: WeatherResponse?,displayWind:Boolean) {
         }
     } else {
         Surface {
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(modifier = Modifier.padding(16.dp).testTag("NoLocMessage")) {
                 Text(text = LocalContext.current.getString(R.string.no_loc))
             }
 
@@ -104,7 +105,6 @@ fun WeatherReportBig(weather: WeatherResponse?,displayWind:Boolean) {
 fun WeatherReportSmall(weather: WeatherResponse?,onIconClick:()->Unit) {
     if(weather!=null){
         Surface{
-
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
@@ -130,7 +130,6 @@ fun WeatherReportSmall(weather: WeatherResponse?,onIconClick:()->Unit) {
                         )}
                     }
                 }
-
         }
     }
 }
