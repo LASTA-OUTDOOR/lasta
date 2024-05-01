@@ -1,3 +1,5 @@
+@file:Suppress("NAME_SHADOWING")
+
 package com.lastaoutdoor.lasta.ui.screen.discover
 
 import androidx.compose.foundation.layout.Column
@@ -22,8 +24,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,30 +43,48 @@ import androidx.compose.ui.unit.sp
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
+import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.ui.theme.AccentGreen
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
-import kotlin.reflect.KFunction1
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilterScreen(
-    prefActivity: ActivityType, levels: UserActivitiesLevel, selectedActivityType: StateFlow<ActivityType>, setSelectedActivityType: (ActivityType) -> Unit, navigateBack: () -> Unit) {
+    selectedLevels: StateFlow<UserActivitiesLevel>,
+    setSelectedLevels: (UserActivitiesLevel) -> Unit,
+    selectedActivityType: StateFlow<ActivityType>,
+    setSelectedActivityType: (ActivityType) -> Unit,
+    navigateBack: () -> Unit
+) {
   var fromDistance by remember { mutableStateOf(0) }
   var toDistance by remember { mutableStateOf(1000) }
 
-    var activities = ActivityType.values()
-    var initialSelectedActivityType = selectedActivityType.collectAsState().value
-    var selectedActivity by remember { mutableStateOf(initialSelectedActivityType)}
-    var selectedIndex by remember { mutableStateOf(activities.indexOf(selectedActivity)) }
+  var activities = ActivityType.values()
+  var initialSelectedActivityType = selectedActivityType.collectAsState().value
+  var selectedActivity by remember { mutableStateOf(initialSelectedActivityType) }
+  var selectedIndex by remember { mutableIntStateOf(activities.indexOf(selectedActivity)) }
 
-  var initialLevels by remember { mutableStateOf(levels) }
+  var userActivitiesLevel = UserLevel.values()
+  var initialSelectedLevels = selectedLevels.collectAsState().value
+  var selectedLevels by remember { mutableStateOf(initialSelectedLevels) }
+  var selectedActivityLevel by remember { mutableStateOf(activities.indexOf(selectedLevels)) }
+  //Update selected levels when the selected activity changes
+  SideEffect {
+      val indexSelected = activities.indexOf(selectedActivityType.value)
+      selectedActivityLevel = when (indexSelected) {
+          0 -> selectedLevels.climbingLevel
+          1 -> selectedLevels.hikingLevel
+          2 -> selectedLevels.bikingLevel
+          else -> UserLevel.BEGINNER
+      }
+  }
 
   Column(
       modifier = Modifier
           .fillMaxSize()
-          .padding(16.dp),
+          .padding(16.dp)
+          .testTag("filterScreen"),
       horizontalAlignment = Alignment.CenterHorizontally) {
 
         // return button to go back to the discovery screen
@@ -82,11 +104,7 @@ fun FilterScreen(
             style = TextStyle(fontSize = 20.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
         Row(verticalAlignment = Alignment.CenterVertically) {
           activities.forEachIndexed { index, activityType ->
-            RadioButton(
-                selected = index == selectedIndex,
-                onClick = {
-                    selectedIndex = index
-                })
+            RadioButton(selected = index == selectedIndex, onClick = { selectedIndex = index })
             Text(text = activityType.toString())
           }
         }
@@ -98,14 +116,20 @@ fun FilterScreen(
         Text(
             text = stringResource(id = R.string.filter_difficulty_level),
             style = TextStyle(fontSize = 20.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
-        // TODO: Replace with your actual difficulty levels
-        val difficultyLevels = listOf("Easy", "Medium", "Hard")
         Row(verticalAlignment = Alignment.CenterVertically) {
-          difficultyLevels.forEach { difficultyLevel ->
+          userActivitiesLevel.forEachIndexed { index, difficultyLevel ->
             RadioButton(
-                selected = false, // TODO: link with database
-                onClick = { /*TODO*/})
-            Text(text = difficultyLevel)
+                selected = index == indexSelected, // TODO: link with database
+                onClick = {
+                    indexSelected = index
+                    setSelectedLevels(
+                        when (selectedActivity) {
+                            ActivityType.CLIMBING -> selectedLevels.copy(climbingLevel = difficultyLevel)
+                            ActivityType.HIKING -> selectedLevels.copy(hikingLevel = difficultyLevel)
+                            ActivityType.BIKING -> selectedLevels.copy(bikingLevel = difficultyLevel)
+                        })
+                })
+            Text(text = difficultyLevel.toString())
           }
         }
 
@@ -165,7 +189,7 @@ fun FilterScreen(
         // Apply the filter options
         ElevatedButton(
             onClick = {
-                setSelectedActivityType(activities[selectedIndex])
+              setSelectedActivityType(activities[selectedIndex])
               navigateBack()
             },
             modifier = Modifier

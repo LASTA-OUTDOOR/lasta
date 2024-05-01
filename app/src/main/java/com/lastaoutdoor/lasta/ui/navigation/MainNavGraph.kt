@@ -134,17 +134,17 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
         navController.navigateUp()
       }
     }
-    composable(DestinationRoute.Filter.route) {entry ->
-        val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
-        val prefActivity = preferencesViewModel.prefActivity.collectAsState(initial = ActivityType.HIKING).value
-        val levels = preferencesViewModel.levels.collectAsState(initial = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)).value
-        val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
-        FilterScreen (
-            prefActivity,
-            levels,
-            discoverScreenViewModel.selectedActivityType,
-            discoverScreenViewModel::setSelectedActivityType,
-        ) { navController.popBackStack() }
+    composable(DestinationRoute.Filter.route) { entry ->
+      val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
+      val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
+      FilterScreen(
+          discoverScreenViewModel.selectedLevels,
+          discoverScreenViewModel::setSelectedLevels,
+          discoverScreenViewModel.selectedActivityType,
+          discoverScreenViewModel::setSelectedActivityType,
+      ) {
+        navController.popBackStack()
+      }
     }
 
     composable(
