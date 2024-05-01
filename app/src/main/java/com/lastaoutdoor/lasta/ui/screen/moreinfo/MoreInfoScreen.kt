@@ -31,7 +31,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.models.activity.Activity
+import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
 import com.lastaoutdoor.lasta.ui.theme.Black
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
 import com.lastaoutdoor.lasta.ui.theme.YellowDifficulty
@@ -41,7 +43,8 @@ import com.lastaoutdoor.lasta.ui.theme.YellowDifficulty
 fun MoreInfoScreen(
     activityToDisplay: Activity,
     processDiffText: (Activity) -> String,
-    navigateBack: () -> Unit,
+    weather: WeatherResponse?,
+    navigateBack: () -> Unit
 ) {
   Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoComposable")) {
     LazyColumn(modifier = Modifier.weight(1f).padding(8.dp)) {
@@ -50,6 +53,7 @@ fun MoreInfoScreen(
       item { TopBar(navigateBack) }
       // displays activity title and duration
       item { ActivityTitleZone(activityToDisplay) }
+      item { WeatherReportBig(weather, true) }
       // displays activity difficulty, ration and view on map button
       item { MiddleZone(activityToDisplay, processDiffText) }
       // filled with a spacer for the moment but will contain address + community

@@ -25,12 +25,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.firebase.ui.auth.AuthUI.getApplicationContext
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.SphericalUtil
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
@@ -39,7 +39,8 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.viewmodel.MapViewModel
+import com.lastaoutdoor.lasta.models.map.Marker
+import com.lastaoutdoor.lasta.viewmodel.MapState
 import kotlinx.coroutines.launch
 
 // Called after a click on a pointer on the map
@@ -50,9 +51,9 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InformationSheet(
-    viewModel: MapViewModel = hiltViewModel(),
     sheetState: SheetState,
     isSheetOpen: Boolean,
+    state: MapState,
     onDismissRequest: () -> Unit
 ) {
 
@@ -66,10 +67,10 @@ fun InformationSheet(
       Column(modifier = Modifier.padding(16.dp)) {
         Text(
             modifier = Modifier.testTag("bottomSheetTitle"),
-            text = viewModel.state.selectedMarker?.name ?: "No name",
+            text = state.selectedMarker?.name ?: "No name",
             style = MaterialTheme.typography.headlineLarge)
         Text(
-            "${LocalContext.current.getString(R.string.activity_type)} ${viewModel.state.selectedMarker?.description ?: LocalContext.current.getString(R.string.activity_type)}",
+            "${LocalContext.current.getString(R.string.activity_type)} ${state.selectedMarker?.description ?: LocalContext.current.getString(R.string.activity_type)}",
             style = MaterialTheme.typography.bodyLarge)
       }
     }
@@ -79,7 +80,7 @@ fun InformationSheet(
 // Composable asking user for permissions to access location
 // @param viewModel: the viewmodel that will be updated with the permission status
 @Composable
-private fun ManagePermissions(viewModel: MapViewModel = hiltViewModel()) {
+private fun ManagePermissions(updatePermission: (Boolean) -> Unit) {
   // Permission for geo-location
   val requestPermissionLauncher =
       rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -87,15 +88,15 @@ private fun ManagePermissions(viewModel: MapViewModel = hiltViewModel()) {
         when {
           permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
             // Precise location access granted.
-            viewModel.updatePermission(true)
+            updatePermission(true)
           }
           permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
             // Only approximate location access granted.
-            viewModel.updatePermission(false) // this is not enough for google map to work properly
+            updatePermission(false) // this is not enough for google map to work properly
           }
           else -> {
             // No location access granted.
-            viewModel.updatePermission(false)
+            updatePermission(false)
           }
         }
       }
@@ -112,17 +113,27 @@ private fun ManagePermissions(viewModel: MapViewModel = hiltViewModel()) {
 // @param viewModel: the viewmodel that will be used to fetch the activities and update the map
 @SuppressLint("RestrictedApi")
 @Composable
-fun MapScreen(viewModel: MapViewModel = hiltViewModel()) {
+fun MapScreen(
+    state: MapState,
+    updatePermission: (Boolean) -> Unit,
+    initialPosition: LatLng,
+    initialZoom: Float,
+    updateMarkers: (LatLng, Double) -> Unit,
+    updateSelectedMarker: (Marker) -> Unit,
+    clearSelectedItinerary: () -> Unit,
+    selectedZoom: Float,
+    updateSelectedItinerary: (Long) -> Unit,
+) {
 
   // Initialise the map, otherwise the icon functionality won't work
   MapsInitializer.initialize(getApplicationContext())
 
   // Ask for permissions to determine what view to display
-  ManagePermissions(viewModel)
+  ManagePermissions(updatePermission)
 
   // camera that goes to the initial position and can be moved by the user
   val cameraPositionState = rememberCameraPositionState {
-    position = CameraPosition.fromLatLngZoom(viewModel.initialPosition, viewModel.initialZoom)
+    position = CameraPosition.fromLatLngZoom(initialPosition, initialZoom)
   }
 
   // State used to manage the sheet (close it and open it)
@@ -130,9 +141,9 @@ fun MapScreen(viewModel: MapViewModel = hiltViewModel()) {
   var isSheetOpen by rememberSaveable { mutableStateOf(false) }
 
   InformationSheet(
-      viewModel = viewModel,
       sheetState = sheetState,
       isSheetOpen = isSheetOpen,
+      state = state,
       onDismissRequest = { isSheetOpen = false })
 
   LaunchedEffect(cameraPositionState.isMoving) {
@@ -151,15 +162,24 @@ fun MapScreen(viewModel: MapViewModel = hiltViewModel()) {
       val rad = SphericalUtil.computeDistanceBetween(centerLocation, topLeftLocation)
 
       // update the markers based on the new center and radius
-      viewModel.updateMarkers(centerLocation, rad)
+      updateMarkers(centerLocation, rad)
     }
   }
 
   // LaunchedEffect will draw the markers directly without a need to trigger the camera movement
-  LaunchedEffect(Unit) { viewModel.updateMarkers(cameraPositionState.position.target, 5000.0) }
+  LaunchedEffect(Unit) { updateMarkers(cameraPositionState.position.target, 5000.0) }
 
   // draw the map
-  GoogleMapComposable(viewModel, cameraPositionState) { isSheetOpen = true }
+  GoogleMapComposable(
+      cameraPositionState,
+      state,
+      updateMarkers,
+      updateSelectedMarker,
+      clearSelectedItinerary,
+      selectedZoom,
+      updateSelectedItinerary) {
+        isSheetOpen = true
+      }
 }
 
 // Composable that displays the Google Map
@@ -168,14 +188,19 @@ fun MapScreen(viewModel: MapViewModel = hiltViewModel()) {
 // @param updateSheet: function to update the sheet state (close it)
 @Composable
 private fun GoogleMapComposable(
-    viewModel: MapViewModel = hiltViewModel(),
     cameraPositionState: CameraPositionState,
+    state: MapState,
+    updateMarkers: (LatLng, Double) -> Unit,
+    updateSelectedMarker: (Marker) -> Unit,
+    clearSelectedItinerary: () -> Unit,
+    selectedZoom: Float,
+    updateSelectedItinerary: (Long) -> Unit,
     updateSheet: () -> Unit,
 ) {
   GoogleMap(
       modifier = Modifier.fillMaxSize(),
-      properties = viewModel.state.properties,
-      uiSettings = viewModel.state.uiSettings,
+      properties = state.properties,
+      uiSettings = state.uiSettings,
       cameraPositionState = cameraPositionState,
       onMapLoaded = {
         val centerLocation = cameraPositionState.position.target
@@ -183,7 +208,7 @@ private fun GoogleMapComposable(
             cameraPositionState.projection?.visibleRegion?.farLeft
                 ?: cameraPositionState.position.target
         val rad = SphericalUtil.computeDistanceBetween(centerLocation, topLeftLocation)
-        viewModel.updateMarkers(centerLocation, rad)
+        updateMarkers(centerLocation, rad)
       },
   ) {
 
@@ -191,7 +216,7 @@ private fun GoogleMapComposable(
     // recomposition if I do it and cannot figure out why)
 
     // display all the classical markers fetched by the viewmodel
-    viewModel.state.markerList.forEach { marker ->
+    state.markerList.forEach { marker ->
       Marker(
           state = MarkerState(position = marker.position),
           title = marker.name,
@@ -199,19 +224,19 @@ private fun GoogleMapComposable(
           snippet = marker.description,
           onClick = {
             updateSheet()
-            viewModel.updateSelectedMarker(marker)
-            viewModel.clearSelectedItinerary()
+            updateSelectedMarker(marker)
+            clearSelectedItinerary()
             // camera moves to the marker when clicked
             cameraPositionState.move(
                 CameraUpdateFactory.newCameraPosition(
-                    CameraPosition.fromLatLngZoom(marker.position, viewModel.selectedZoom)))
+                    CameraPosition.fromLatLngZoom(marker.position, selectedZoom)))
 
             true
           },
       )
     }
 
-    viewModel.state.itineraryStartMarkers.forEach { marker ->
+    state.itineraryStartMarkers.forEach { marker ->
       Marker(
           state = MarkerState(position = marker.position),
           title = marker.name,
@@ -219,18 +244,18 @@ private fun GoogleMapComposable(
           snippet = marker.description,
           onClick = {
             updateSheet()
-            viewModel.updateSelectedMarker(marker)
-            viewModel.updateSelectedItinerary(marker.id)
+            updateSelectedMarker(marker)
+            updateSelectedItinerary(marker.id)
             // camera moves to the marker when clicked
             cameraPositionState.move(
                 CameraUpdateFactory.newCameraPosition(
-                    CameraPosition.fromLatLngZoom(marker.position, viewModel.selectedZoom)))
+                    CameraPosition.fromLatLngZoom(marker.position, selectedZoom)))
             true
           })
     }
 
     // display the itinerary if it is selected
-    viewModel.state.selectedItinerary?.let {
+    state.selectedItinerary?.let {
       Polyline(
           points = it.points,
           width = 10f,

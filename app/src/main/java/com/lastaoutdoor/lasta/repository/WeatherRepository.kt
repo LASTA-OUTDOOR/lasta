@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.repository.api
+package com.lastaoutdoor.lasta.repository
 
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 
