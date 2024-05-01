@@ -101,12 +101,12 @@ constructor(private val preferences: PreferencesRepository, private val userDB: 
   fun flipFavorite(favoriteId: String) {
     viewModelScope.launch {
       if (favorites.first().contains(favoriteId)) {
-        val newFavorites = favorites.first().toMutableList()
+        val newFavorites = favorites.first().filter { it.isNotEmpty() }.toMutableList()
         newFavorites.remove(favoriteId)
         userDB.removeFavorite(userId.first(), favoriteId)
         preferences.updateFavorites(newFavorites)
       } else {
-        val newFavorites = favorites.first().toMutableList()
+        val newFavorites = favorites.first().filter { it.isNotEmpty() }.toMutableList()
         newFavorites.add(favoriteId)
         userDB.addFavorite(userId.first(), favoriteId)
         preferences.updateFavorites(newFavorites)

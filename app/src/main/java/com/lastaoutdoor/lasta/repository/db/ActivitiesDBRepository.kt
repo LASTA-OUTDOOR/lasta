@@ -12,6 +12,8 @@ interface ActivitiesDBRepository {
 
   suspend fun getActivityByOSMId(osmId: Long): Activity
 
+  suspend fun getActivitiesByIds(activityIds: List<String>): List<Activity>
+
   suspend fun getActivitiesByOSMIds(osmIds: List<Long>, onlyKnown: Boolean): List<Activity>
 
   suspend fun updateActivity(activity: Activity)

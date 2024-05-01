@@ -1,6 +1,7 @@
 package com.lastaoutdoor.lasta.data.db
 
 import android.content.Context
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.Activity
@@ -55,6 +56,59 @@ constructor(context: Context, database: FirebaseFirestore) : ActivitiesDBReposit
 
   override suspend fun getActivityByOSMId(osmId: Long): Activity {
     TODO("Not yet implemented")
+  }
+
+  override suspend fun getActivitiesByIds(activityIds: List<String>): List<Activity> {
+    val activities = ArrayList<Activity>()
+    if (activityIds.last().isEmpty()) return activities
+    val query = activitiesCollection.whereIn(FieldPath.documentId(), activityIds).get().await()
+    if (!query.isEmpty) {
+      val documents = query.documents
+      for (document in documents) {
+        val startPositionMap = document.get("startPosition") as Map<String, Double>
+        val startPosition =
+            Position(
+                startPositionMap.getOrDefault("lat", 0.0),
+                startPositionMap.getOrDefault("lon", 0.0))
+        val id = document.id
+        val osmId = document.getLong("osmId")!!
+        val activityType = document.getString("activityType")!!
+        val name = document.getString("name")!!
+
+        val rating = document.getDouble("rating")!!.toFloat()
+        val numRatings = document.getLong("numRatings")!!.toInt()
+        val ratingsMap = document.get("ratings") as List<HashMap<String, Any>>
+        val ratings =
+            ratingsMap.map {
+              Rating(it["userId"] as String, it["comment"] as String, it["rating"] as Int)
+            }
+        val difficulty = Difficulty.valueOf(document.getString("difficulty")!!)
+        val activityImageUrl = document.getString("activityImageUrl")!!
+        val climbingStyle = ClimbingStyle.valueOf(document.getString("climbingStyle")!!)
+        val elevationTotal = document.getDouble("elevationTotal")!!.toFloat()
+        val from = document.getString("from")!!
+        val to = document.getString("to")!!
+        val distance = document.getDouble("distance")!!.toFloat()
+        activities.add(
+            Activity(
+                id,
+                osmId,
+                ActivityType.valueOf(activityType),
+                name,
+                startPosition,
+                rating,
+                numRatings,
+                ratings,
+                difficulty,
+                activityImageUrl,
+                climbingStyle,
+                elevationTotal,
+                from,
+                to,
+                distance))
+      }
+    }
+    return activities
   }
 
   override suspend fun getActivitiesByOSMIds(

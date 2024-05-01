@@ -9,6 +9,7 @@ import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.api.NodeWay
+import com.lastaoutdoor.lasta.models.api.OSMData
 import com.lastaoutdoor.lasta.models.api.Relation
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
 import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
@@ -68,7 +69,16 @@ constructor(
                 repository.getBikingRoutesInfo(
                     rad.toInt(), centerLocation.latitude, centerLocation.longitude)
           }
-      val osmData = (response as Response.Success).data ?: emptyList()
+      val osmData = when (response) {
+        is Response.Failure -> {
+          response.e.printStackTrace()
+          return@launch
+        }
+        is Response.Success -> {response.data ?: emptyList()}
+        is Response.Loading -> {
+          emptyList<OSMData>()
+        }
+      }
       activities.value = ArrayList()
       activityIds.value = ArrayList()
       osmData.map { point ->

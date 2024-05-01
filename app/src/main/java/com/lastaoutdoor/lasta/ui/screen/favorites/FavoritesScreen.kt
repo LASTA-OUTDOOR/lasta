@@ -1,37 +1,35 @@
 package com.lastaoutdoor.lasta.ui.screen.favorites
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.window.Dialog
-import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
-import com.lastaoutdoor.lasta.ui.components.WeatherReport
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.unit.dp
+import com.google.android.gms.maps.model.LatLng
+import com.lastaoutdoor.lasta.models.activity.Activity
+import com.lastaoutdoor.lasta.ui.screen.discover.ActivitiesDisplay
 
 @Composable
-fun FavoritesScreen(navigateToMoreInfo: () -> Unit, weather: WeatherResponse) {
-  val displayWeather = remember { mutableStateOf(false) }
-  if (displayWeather.value) {
-    Dialog({ displayWeather.value = false }) { WeatherReport(weather) }
+fun FavoritesScreen(
+    activities: List<Activity>,
+    centerPoint: LatLng,
+    favorites: List<String>,
+    changeActivityToDisplay: (Activity) -> Unit,
+    flipFavorite: (String) -> Unit,
+    navigateToMoreInfo: () -> Unit
+) {
+  LazyColumn(modifier = Modifier.testTag("discoveryScreen")) {
+    item {
+      Spacer(modifier = Modifier.height(8.dp))
+      ActivitiesDisplay(
+          activities,
+          centerPoint,
+          favorites,
+          changeActivityToDisplay,
+          flipFavorite,
+          navigateToMoreInfo)
+    }
   }
-
-  Column(
-      modifier = Modifier.fillMaxSize(),
-      verticalArrangement = Arrangement.Center,
-      horizontalAlignment = Alignment.CenterHorizontally) {
-        Button(onClick = { navigateToMoreInfo() }) {
-          Text(text = LocalContext.current.getString(R.string.more_info))
-        }
-        Button(onClick = { displayWeather.value = true }) {
-          Text(text = LocalContext.current.getString(R.string.weather_report))
-        }
-      }
 }
