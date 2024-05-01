@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,17 +38,31 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.ui.theme.AccentGreen
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
+import kotlin.reflect.KFunction1
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FilterScreen(navigateBack: () -> Unit) {
+fun FilterScreen(
+    prefActivity: ActivityType, levels: UserActivitiesLevel, selectedActivityType: StateFlow<ActivityType>, setSelectedActivityType: (ActivityType) -> Unit, navigateBack: () -> Unit) {
   var fromDistance by remember { mutableStateOf(0) }
   var toDistance by remember { mutableStateOf(1000) }
 
+    var activities = ActivityType.values()
+    var initialSelectedActivityType = selectedActivityType.collectAsState().value
+    var selectedActivity by remember { mutableStateOf(initialSelectedActivityType)}
+    var selectedIndex by remember { mutableStateOf(activities.indexOf(selectedActivity)) }
+
+  var initialLevels by remember { mutableStateOf(levels) }
+
   Column(
-      modifier = Modifier.fillMaxSize().padding(16.dp),
+      modifier = Modifier
+          .fillMaxSize()
+          .padding(16.dp),
       horizontalAlignment = Alignment.CenterHorizontally) {
 
         // return button to go back to the discovery screen
@@ -65,12 +80,13 @@ fun FilterScreen(navigateBack: () -> Unit) {
         Text(
             text = stringResource(id = R.string.filter_activity_type),
             style = TextStyle(fontSize = 20.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
-        val activityTypes = listOf(ActivityType.HIKING, ActivityType.CLIMBING, ActivityType.BIKING)
         Row(verticalAlignment = Alignment.CenterVertically) {
-          activityTypes.forEach { activityType ->
+          activities.forEachIndexed { index, activityType ->
             RadioButton(
-                selected = false, // TODO: Bind this to actual data
-                onClick = { /*TODO*/})
+                selected = index == selectedIndex,
+                onClick = {
+                    selectedIndex = index
+                })
             Text(text = activityType.toString())
           }
         }
@@ -149,10 +165,13 @@ fun FilterScreen(navigateBack: () -> Unit) {
         // Apply the filter options
         ElevatedButton(
             onClick = {
-              // todo: save the filter options to be applied to the discovery screen
+                setSelectedActivityType(activities[selectedIndex])
               navigateBack()
             },
-            modifier = Modifier.width(305.dp).height(48.dp).testTag("applyFilterOptionsButton"),
+            modifier = Modifier
+                .width(305.dp)
+                .height(48.dp)
+                .testTag("applyFilterOptionsButton"),
             colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
               Text(
                   LocalContext.current.getString(R.string.apply),

@@ -15,6 +15,8 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.Language
+import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
+import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.screen.discover.DiscoverScreen
 import com.lastaoutdoor.lasta.ui.screen.discover.FilterScreen
@@ -132,7 +134,18 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
         navController.navigateUp()
       }
     }
-    composable(DestinationRoute.Filter.route) { FilterScreen { navController.popBackStack() } }
+    composable(DestinationRoute.Filter.route) {entry ->
+        val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
+        val prefActivity = preferencesViewModel.prefActivity.collectAsState(initial = ActivityType.HIKING).value
+        val levels = preferencesViewModel.levels.collectAsState(initial = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)).value
+        val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
+        FilterScreen (
+            prefActivity,
+            levels,
+            discoverScreenViewModel.selectedActivityType,
+            discoverScreenViewModel::setSelectedActivityType,
+        ) { navController.popBackStack() }
+    }
 
     composable(
         DestinationRoute.Conversation.route + "/{userId}",

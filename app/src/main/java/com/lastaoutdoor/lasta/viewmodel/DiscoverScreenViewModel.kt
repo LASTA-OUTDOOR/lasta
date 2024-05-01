@@ -7,22 +7,29 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.Activity
+import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.activity.BikingActivity
 import com.lastaoutdoor.lasta.models.activity.ClimbingActivity
 import com.lastaoutdoor.lasta.models.activity.HikingActivity
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
+import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class DiscoverScreenViewModel @Inject constructor(private val repository: ActivityRepository) :
+class DiscoverScreenViewModel @Inject constructor(private val repository: ActivityRepository, private val preferencesRepository: PreferencesRepository) :
     ViewModel() {
 
   val activities = mutableStateOf<ArrayList<Activity>>(ArrayList())
+
+  private val _selectedActivityType = MutableStateFlow(ActivityType.CLIMBING)
+  val selectedActivityType: StateFlow<ActivityType> = _selectedActivityType
 
   private val _screen = MutableStateFlow(DiscoverDisplayType.LIST)
   val screen: StateFlow<DiscoverDisplayType> = _screen
@@ -42,7 +49,10 @@ class DiscoverScreenViewModel @Inject constructor(private val repository: Activi
   val selectedLocality: StateFlow<Pair<String, LatLng>> = _selectedLocality
 
   init {
-    fetchClimbingActivities()
+      viewModelScope.launch {
+          _selectedActivityType.value = preferencesRepository.userPreferencesFlow.map { it.user.prefActivity }.first()
+          fetchClimbingActivities()
+      }
   }
 
   fun fetchClimbingActivities(
@@ -114,6 +124,15 @@ class DiscoverScreenViewModel @Inject constructor(private val repository: Activi
   // Set the selected locality
   fun setSelectedLocality(locality: Pair<String, LatLng>) {
     _selectedLocality.value = locality
+  }
+
+  fun setSelectedActivityType(activityType: ActivityType) {
+    _selectedActivityType.value = activityType
+    when (activityType) {
+      ActivityType.CLIMBING -> fetchClimbingActivities(range.value, selectedLocality.value.second)
+      ActivityType.HIKING -> fetchHikingActivities(range.value, selectedLocality.value.second)
+      ActivityType.BIKING -> fetchBikingActivities(range.value, selectedLocality.value.second)
+    }
   }
 }
 
