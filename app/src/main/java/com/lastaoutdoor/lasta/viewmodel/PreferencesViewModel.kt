@@ -9,13 +9,17 @@ import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
+import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class PreferencesViewModel @Inject constructor(private val preferences: PreferencesRepository) :
+class PreferencesViewModel
+@Inject
+constructor(private val preferences: PreferencesRepository, private val userDB: UserDBRepository) :
     ViewModel() {
   // Decompose UserPreferences into individual properties available as Flows
   val isLoggedIn = preferences.userPreferencesFlow.map { it.isLoggedIn }.asLiveData()
@@ -47,19 +51,31 @@ class PreferencesViewModel @Inject constructor(private val preferences: Preferen
   }
 
   fun updateDescription(description: String) {
-    viewModelScope.launch { preferences.updateDescription(description) }
+    viewModelScope.launch {
+      preferences.updateDescription(description)
+      userDB.updateField(userId.first(), "description", description)
+    }
   }
 
   fun updateLanguage(language: Language) {
-    viewModelScope.launch { preferences.updateLanguage(language) }
+    viewModelScope.launch {
+      preferences.updateLanguage(language)
+      userDB.updateField(userId.first(), "language", language)
+    }
   }
 
   fun updatePrefActivity(activityType: ActivityType) {
-    viewModelScope.launch { preferences.updatePrefActivity(activityType) }
+    viewModelScope.launch {
+      preferences.updatePrefActivity(activityType)
+      userDB.updateField(userId.first(), "prefActivity", activityType)
+    }
   }
 
   fun updateActivityLevels(userActivitiesLevel: UserActivitiesLevel) {
-    viewModelScope.launch { preferences.updateActivityLevels(userActivitiesLevel) }
+    viewModelScope.launch {
+      preferences.updateActivityLevels(userActivitiesLevel)
+      userDB.updateField(userId.first(), "levels", userActivitiesLevel)
+    }
   }
 
   fun updateClimbingLevel(level: UserLevel) {

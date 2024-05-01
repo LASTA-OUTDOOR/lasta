@@ -33,11 +33,7 @@ fun SettingsScreen(
   val isHiking = prefActivity == ActivityType.HIKING
   var selectedSport = isHiking
 
-  TopBarLogo(logoPainterId = R.drawable.arrow_back) {
-    // preferencesViewModel.updateLanguage(selectedLanguage)
-    // database.updateFieldInUser(authViewModel.user!!.userId, "language", selectedLanguage)
-    navigateBack()
-  }
+  TopBarLogo(logoPainterId = R.drawable.arrow_back) { navigateBack() }
 
   Column(
       modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp, vertical = 120.dp),
@@ -70,7 +66,7 @@ fun SettingsScreen(
                     selectedLanguage = newLanguage
                     updateLanguage(newLanguage)
                   },
-                  toStr = { it.name },
+                  toStr = { it.toString() },
                   fieldText = LocalContext.current.getString(R.string.languague))
             }
 
@@ -88,30 +84,8 @@ fun SettingsScreen(
             horizontalArrangement = Arrangement.SpaceEvenly) {
               Button(
                   onClick = {
-                    selectedSport = true
-                    updatePrefActivity(ActivityType.HIKING)
-                    // database.updateFieldInUser(authViewModel.user!!.userId, "prefSport",
-                    // "Hiking")
-                  },
-                  modifier = Modifier.padding(16.dp),
-                  colors =
-                      if (selectedSport) {
-                        ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary)
-                      } else {
-                        ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onSecondary)
-                      }) {
-                    Text(text = LocalContext.current.getString(R.string.hiking))
-                  }
-              Button(
-                  onClick = {
                     selectedSport = false
                     updatePrefActivity(ActivityType.CLIMBING)
-                    // database.updateFieldInUser(authViewModel.user!!.userId, "prefSport",
-                    // "Climbing")
                   },
                   modifier = Modifier.padding(16.dp),
                   colors =
@@ -125,6 +99,24 @@ fun SettingsScreen(
                             contentColor = MaterialTheme.colorScheme.onSecondary)
                       }) {
                     Text(text = LocalContext.current.getString(R.string.climbing))
+                  }
+              Button(
+                  onClick = {
+                    selectedSport = true
+                    updatePrefActivity(ActivityType.HIKING)
+                  },
+                  modifier = Modifier.padding(16.dp),
+                  colors =
+                      if (selectedSport) {
+                        ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary)
+                      } else {
+                        ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onSecondary)
+                      }) {
+                    Text(text = LocalContext.current.getString(R.string.hiking))
                   }
             }
 

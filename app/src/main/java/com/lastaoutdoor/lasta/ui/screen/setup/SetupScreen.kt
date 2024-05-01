@@ -24,8 +24,8 @@ import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun SetupScreen(
-    userId: String,
-    updateFieldInUser: (String, String, String) -> Unit,
+    language: Language,
+    prefActivity: ActivityType,
     updateLanguage: (Language) -> Unit,
     updatePrefActivity: (ActivityType) -> Unit,
     navigateToMain: () -> Unit,
@@ -33,12 +33,12 @@ fun SetupScreen(
 
   val languages = Language.values()
 
-  var selectedLanguage by remember { mutableStateOf(languages[0]) }
+  var selectedLanguage by remember { mutableStateOf(language) }
   val outdoorActivities =
       listOf(
-          LocalContext.current.getString(R.string.hiking),
-          LocalContext.current.getString(R.string.climbing))
-  var isHikingSelected by remember { mutableStateOf(true) }
+          LocalContext.current.getString(R.string.climbing),
+          LocalContext.current.getString(R.string.hiking))
+  var selectedPrefActivity by remember { mutableStateOf(prefActivity == ActivityType.HIKING) }
 
   Column(
       modifier = Modifier.fillMaxSize().padding(horizontal = 30.dp, vertical = 190.dp),
@@ -87,25 +87,10 @@ fun SetupScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly) {
               Button(
-                  onClick = { isHikingSelected = true },
+                  onClick = { selectedPrefActivity = false },
                   modifier = Modifier.padding(16.dp),
                   colors =
-                      if (isHikingSelected) {
-                        ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary)
-                      } else {
-                        ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onSecondary)
-                      }) {
-                    Text(text = outdoorActivities[0])
-                  }
-              Button(
-                  onClick = { isHikingSelected = false },
-                  modifier = Modifier.padding(16.dp),
-                  colors =
-                      if (!isHikingSelected) {
+                      if (!selectedPrefActivity) {
                         ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
                             contentColor = MaterialTheme.colorScheme.onPrimary)
@@ -116,6 +101,21 @@ fun SetupScreen(
                       }) {
                     Text(text = outdoorActivities[1])
                   }
+              Button(
+                  onClick = { selectedPrefActivity = true },
+                  modifier = Modifier.padding(16.dp),
+                  colors =
+                      if (selectedPrefActivity) {
+                        ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary)
+                      } else {
+                        ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onSecondary)
+                      }) {
+                    Text(text = outdoorActivities[0])
+                  }
             }
 
         Spacer(modifier = Modifier.height(40.dp))
@@ -123,11 +123,9 @@ fun SetupScreen(
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
           Button(
               onClick = {
-                updateFieldInUser(userId, "language", selectedLanguage.name)
                 updateLanguage(selectedLanguage)
                 val prefActivity =
-                    if (isHikingSelected) ActivityType.HIKING else ActivityType.CLIMBING
-                updateFieldInUser(userId, "prefActivity", prefActivity.name)
+                    if (selectedPrefActivity) ActivityType.HIKING else ActivityType.CLIMBING
                 updatePrefActivity(prefActivity)
                 navigateToMain()
               },
