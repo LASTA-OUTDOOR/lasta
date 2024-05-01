@@ -45,6 +45,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
 import com.lastaoutdoor.lasta.ui.components.SearchBarComponent
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
@@ -52,6 +53,7 @@ import com.lastaoutdoor.lasta.ui.screen.discover.components.ModalUpperSheet
 import com.lastaoutdoor.lasta.ui.screen.discover.components.RangeSearchComposable
 import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
 import com.lastaoutdoor.lasta.viewmodel.DiscoverDisplayType
+import com.lastaoutdoor.lasta.viewmodel.MapState
 
 @Composable
 fun DiscoverScreen(
@@ -66,7 +68,16 @@ fun DiscoverScreen(
     setSelectedLocality: (Pair<String, LatLng>) -> Unit,
     navigateToFilter: () -> Unit,
     navigateToMoreInfo: () -> Unit,
-    changeActivityToDisplay: (Activity) -> Unit
+    changeActivityToDisplay: (Activity) -> Unit,
+    state: MapState,
+    updatePermission: (Boolean) -> Unit,
+    initialPosition: LatLng,
+    initialZoom: Float,
+    updateMarkers: (LatLng, Double) -> Unit,
+    updateSelectedMarker: (Marker) -> Unit,
+    clearSelectedItinerary: () -> Unit,
+    selectedZoom: Float,
+    updateSelectedItinerary: (Long) -> Unit,
 ) {
 
   var isRangePopup by rememberSaveable { mutableStateOf(false) }
@@ -106,7 +117,18 @@ fun DiscoverScreen(
     Column {
       HeaderComposable(
           screen, range, selectedLocality, setScreen, { isRangePopup = true }, navigateToFilter)
-      Box(modifier = Modifier.fillMaxHeight()) { MapScreen() }
+      Box(modifier = Modifier.fillMaxHeight()) {
+        MapScreen(
+            state,
+            updatePermission,
+            initialPosition,
+            initialZoom,
+            updateMarkers,
+            updateSelectedMarker,
+            clearSelectedItinerary,
+            selectedZoom,
+            updateSelectedItinerary)
+      }
     }
   }
 
