@@ -112,10 +112,16 @@ constructor(
               android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             // get current user id from the flow
             val userId = preferences.userPreferencesFlow.first().user.userId
-            val friendId = userDBRepo.getUserByEmail(email)?.userId ?: ""
-            // 2. send friend request
-            if (repository.sendFriendRequest(userId, friendId)) "Friend request sent"
-            else "Failed to send friend request"
+            val friendId = userDBRepo.getUserByEmail(email)?.userId
+            if (friendId == null) {
+              "The email address is not associated with any account"
+            } else if (userId == friendId) {
+              "You cannot add yourself as a friend"
+            } else {
+              // 2. send friend request
+              if (repository.sendFriendRequest(userId, friendId)) "Friend request sent"
+              else "Failed to send friend request"
+            }
           } else {
             "The email address is not valid"
           }

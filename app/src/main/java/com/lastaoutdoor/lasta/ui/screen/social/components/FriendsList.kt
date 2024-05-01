@@ -80,12 +80,11 @@ private fun FriendsCard(friend: UserModel, navToFriend: () -> Unit) {
               containerColor = MaterialTheme.colorScheme.surfaceVariant,
           ),
       modifier =
-      Modifier
-          .height(height = 100.dp)
-          .fillMaxWidth()
-          .padding(8.dp)
-          .testTag("Friend")
-          .clickable { navToFriend() }) {
+          Modifier.height(height = 100.dp)
+              .fillMaxWidth()
+              .padding(8.dp)
+              .testTag("Friend")
+              .clickable { navToFriend() }) {
         Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
 
           // Profile picture
@@ -100,22 +99,20 @@ private fun FriendsCard(friend: UserModel, navToFriend: () -> Unit) {
               contentDescription = "Profile Picture",
               contentScale = ContentScale.Crop,
               error = painterResource(R.drawable.default_profile_icon),
-              modifier = Modifier
-                  .clip(RoundedCornerShape(100.dp))
-                  .size(60.dp)
-                  .fillMaxHeight())
+              modifier = Modifier.clip(RoundedCornerShape(100.dp)).size(60.dp).fillMaxHeight())
 
           // Text information
           Column(modifier = Modifier.padding(8.dp)) {
             Text(text = friend.userName ?: "Name error", fontWeight = FontWeight.Bold)
-              //little easteregg
-              if (friend.userName == "Jérémy Doffey" || friend.userName == "Thimphou") {Text(text = "scrum loser")}
-              //display the user's sport preference
-              Row {
-                  Text(text = friend.levels.toString())
-                  Text(text = friend.prefActivity.toString())
-              }
-
+            // little easteregg
+            if (friend.userName == "Jérémy Doffey" || friend.userName == "Thimphou") {
+              Text(text = "scrum loser")
+            }
+            // display the user's sport preference
+            Row {
+              Text(text = friend.levels.toString())
+              Text(text = friend.prefActivity.toString())
+            }
           }
         }
       }
