@@ -30,6 +30,7 @@ import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 import com.lastaoutdoor.lasta.viewmodel.ConversationViewModel
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenViewModel
+import com.lastaoutdoor.lasta.viewmodel.MapViewModel
 import com.lastaoutdoor.lasta.viewmodel.MoreInfoScreenViewModel
 import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 import com.lastaoutdoor.lasta.viewmodel.ProfileScreenViewModel
@@ -41,12 +42,16 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
     composable(DestinationRoute.Discover.route) { entry ->
       val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
-
+      val mapViewModel: MapViewModel = entry.sharedViewModel(navController)
       val activities = discoverScreenViewModel.activities.value
       val screen = discoverScreenViewModel.screen.collectAsState().value
       val range = discoverScreenViewModel.range.collectAsState().value
       val localities = discoverScreenViewModel.localities
       val selectedLocality = discoverScreenViewModel.selectedLocality.collectAsState().value
+      val mapState = mapViewModel.state.collectAsState().value
+      val initialZoom = mapViewModel.initialZoom
+      val initialPosition = mapViewModel.initialPosition
+      val selectedZoom = mapViewModel.selectedZoom
 
       DiscoverScreen(
           activities,
@@ -60,7 +65,16 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           discoverScreenViewModel::setSelectedLocality,
           { navController.navigate(DestinationRoute.Filter.route) },
           { navController.navigate(DestinationRoute.MoreInfo.route) },
-          moreInfoScreenViewModel::changeActivityToDisplay)
+          moreInfoScreenViewModel::changeActivityToDisplay,
+          mapState,
+          mapViewModel::updatePermission,
+          initialPosition,
+          initialZoom,
+          mapViewModel::updateMarkers,
+          mapViewModel::updateSelectedMarker,
+          mapViewModel::clearSelectedItinerary,
+          selectedZoom,
+          mapViewModel::updateSelectedItinerary)
     }
     composable(DestinationRoute.Favorites.route) { entry ->
       val weatherViewModel: WeatherViewModel = hiltViewModel(entry)

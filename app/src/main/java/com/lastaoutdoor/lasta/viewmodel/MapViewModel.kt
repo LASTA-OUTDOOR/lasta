@@ -1,7 +1,6 @@
 package com.lastaoutdoor.lasta.viewmodel
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,6 +13,8 @@ import com.lastaoutdoor.lasta.repository.api.ActivityRepository
 import com.lastaoutdoor.lasta.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -21,7 +22,8 @@ class MapViewModel @Inject constructor(private val activityRepository: ActivityR
     ViewModel() {
 
   // this is used to store the state of the map and modify it
-  var state by mutableStateOf(MapState())
+  var _state = MutableStateFlow(MapState())
+  val state: StateFlow<MapState> = _state
 
   // if the user has not agreed to share his location, the map will be centered on Lausanne
   val initialPosition = LatLng(46.519962, 6.633597)
@@ -34,23 +36,23 @@ class MapViewModel @Inject constructor(private val activityRepository: ActivityR
 
   // Changes the map properties depending on the permission
   fun updatePermission(value: Boolean) {
-    state.uiSettings = state.uiSettings.copy(myLocationButtonEnabled = value)
-    state.properties = state.properties.copy(isMyLocationEnabled = value)
+    state.value.uiSettings = state.value.uiSettings.copy(myLocationButtonEnabled = value)
+    state.value.properties = state.value.properties.copy(isMyLocationEnabled = value)
   }
 
   // Update which marker is currently selected
   fun updateSelectedMarker(marker: Marker) {
-    state.selectedMarker = marker
+    state.value.selectedMarker = marker
   }
 
   // Update the selected itinerary which will draw it on the map
   fun updateSelectedItinerary(relId: Long) {
-    state.selectedItinerary = state.itineraryMap[relId]
+    state.value.selectedItinerary = state.value.itineraryMap[relId]
   }
 
   // Clear the selected itinerary
   fun clearSelectedItinerary() {
-    state.selectedItinerary = null
+    state.value.selectedItinerary = null
   }
 
   // Calls the API to fetch climbing activities and returns the list of markers to display
@@ -79,7 +81,7 @@ class MapViewModel @Inject constructor(private val activityRepository: ActivityR
         climbingMarkers.add(marker)
       }
 
-      state.markerList = climbingMarkers.toList()
+      state.value.markerList = climbingMarkers.toList()
     }
   }
 
