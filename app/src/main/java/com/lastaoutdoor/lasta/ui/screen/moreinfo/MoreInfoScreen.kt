@@ -39,8 +39,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.models.activity.Activity
-import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
 import com.lastaoutdoor.lasta.models.map.Marker
+import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
 import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
 import com.lastaoutdoor.lasta.ui.theme.Black
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
@@ -62,7 +62,6 @@ fun MoreInfoScreen(
     selectedZoom: Float,
     updateSelectedItinerary: (Long) -> Unit,
     goToMarker: (Activity) -> Marker,
-    navigateBack: () -> Unit,
     weather: WeatherResponse?,
     navigateBack: () -> Unit
 ) {
@@ -75,7 +74,9 @@ fun MoreInfoScreen(
         item { TopBar(navigateBack) }
         // displays activity title and duration
         item { ActivityTitleZone(activityToDisplay) }
-        item { WeatherReportBig(weather, true) }// displays activity difficulty, ration and view on map button
+        item {
+          WeatherReportBig(weather, true)
+        } // displays activity difficulty, ration and view on map button
         item { MiddleZone(activityToDisplay, processDiffText, isMapDisplayed) }
         // filled with a spacer for the moment but will contain address + community
       }

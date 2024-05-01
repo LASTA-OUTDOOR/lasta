@@ -2,6 +2,7 @@ package com.lastaoutdoor.lasta.ui.screen.moreinfo
 
 import android.annotation.SuppressLint
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -13,6 +14,7 @@ import com.lastaoutdoor.lasta.models.activity.ClimbingActivity
 import com.lastaoutdoor.lasta.ui.MainActivity
 import com.lastaoutdoor.lasta.viewmodel.MapViewModel
 import com.lastaoutdoor.lasta.viewmodel.MoreInfoScreenViewModel
+import com.lastaoutdoor.lasta.viewmodel.WeatherViewModel
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -37,7 +39,8 @@ class MoreInfoScreenTest {
       val mapViewModel: MapViewModel = hiltViewModel()
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = hiltViewModel()
       val activity = ClimbingActivity("", 0)
-
+      val weatherViewModel: WeatherViewModel = hiltViewModel()
+      val weather = weatherViewModel.weather.observeAsState().value
       mapViewModel.updatePermission(true)
       MoreInfoScreen(
           activity,
@@ -52,9 +55,9 @@ class MoreInfoScreenTest {
           mapViewModel.selectedZoom,
           mapViewModel::updateSelectedItinerary,
           moreInfoScreenViewModel::goToMarker,
-      ) {
-        navController.navigateUp()
-      }
+          weather) {
+            navController.navigateUp()
+          }
     }
   }
 
@@ -82,8 +85,5 @@ class MoreInfoScreenTest {
   @Test
   fun moreInfoMapIsDisplayed() {
     composeRule.onNodeWithTag("viewOnMapButton").performClick()
-
-
-
   }
 }

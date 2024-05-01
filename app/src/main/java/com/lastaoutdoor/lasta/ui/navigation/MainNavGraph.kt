@@ -151,6 +151,8 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val initialZoom = mapViewModel.initialZoom
       val initialPosition = mapViewModel.initialPosition
       val selectedZoom = mapViewModel.selectedZoom
+      val weatherViewModel: WeatherViewModel = hiltViewModel(entry)
+      val weather = weatherViewModel.weather.observeAsState().value
       MoreInfoScreen(
           activityToDisplay,
           moreInfoScreenViewModel::processDiffText,
@@ -164,12 +166,9 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           selectedZoom,
           mapViewModel::updateSelectedItinerary,
           moreInfoScreenViewModel::goToMarker,
-      ) {
-      val weatherViewModel: WeatherViewModel = hiltViewModel(entry)
-      val weather = weatherViewModel.weather.observeAsState().value
-      MoreInfoScreen(activityToDisplay, moreInfoScreenViewModel::processDiffText, weather) {
-        navController.navigateUp()
-      }
+          weather) {
+            navController.navigateUp()
+          }
     }
     composable(DestinationRoute.Filter.route) { FilterScreen { navController.popBackStack() } }
 

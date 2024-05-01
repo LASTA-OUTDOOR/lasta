@@ -41,7 +41,7 @@ class MoreInfoScreenViewModel @Inject constructor() : ViewModel() {
       ActivityType.CLIMBING ->
           ClimbingMarker(
               activity.name,
-              LatLng(46.55, 6.549 /*activity.startPosition.lat,activity.startPosition.lon*/),
+              LatLng(activity.startPosition.lat, activity.startPosition.lon),
               "",
               R.drawable.climbing_icon)
       ActivityType.HIKING ->
