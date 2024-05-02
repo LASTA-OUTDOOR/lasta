@@ -1,5 +1,6 @@
 package com.lastaoutdoor.lasta.ui.navigation
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -34,6 +35,7 @@ import com.lastaoutdoor.lasta.viewmodel.ProfileScreenViewModel
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 import com.lastaoutdoor.lasta.viewmodel.WeatherViewModel
 
+@SuppressLint("StateFlowValueCalledInComposition")
 fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
   navigation(startDestination = DestinationRoute.Discover.route, route = BaseRoute.Main.route) {
     composable(DestinationRoute.Discover.route) { entry ->
@@ -178,17 +180,15 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
     }
     composable(DestinationRoute.FriendProfile.route + "/{friendId}") { entry ->
       val profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(entry)
-      val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
 
       // Update the user to display
-      println("FriendProfileScreen: ${entry.arguments?.getString("friendId")}")
       profileScreenViewModel.updateUser(entry.arguments?.getString("friendId") ?: "")
 
       val activities by profileScreenViewModel.filteredActivities.collectAsState()
       val timeFrame by profileScreenViewModel.timeFrame.collectAsState()
       val sport by profileScreenViewModel.sport.collectAsState()
       val isCurrentUser by profileScreenViewModel.isCurrentUser.collectAsState()
-      val user = preferencesViewModel.user.collectAsState(initial = UserModel("")).value
+      val user = profileScreenViewModel.user.value
 
       FriendProfileScreen(
           activities = activities,
@@ -196,7 +196,6 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           sport = sport,
           isCurrentUser = isCurrentUser,
           user = user,
-          updateDescription = preferencesViewModel::updateDescription,
           setSport = profileScreenViewModel::setSport,
           setTimeFrame = profileScreenViewModel::setTimeFrame,
           navigateToSettings = { navController.navigate(DestinationRoute.Settings.route) },

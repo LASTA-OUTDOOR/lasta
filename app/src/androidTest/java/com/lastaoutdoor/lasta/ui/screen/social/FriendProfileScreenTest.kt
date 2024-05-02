@@ -1,8 +1,14 @@
 package com.lastaoutdoor.lasta.ui.screen.social
 
+import androidx.activity.compose.setContent
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithTag
 import com.lastaoutdoor.lasta.di.AppModule
+import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.MainActivity
+import com.lastaoutdoor.lasta.utils.TimeFrame
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -25,12 +31,21 @@ class FriendProfileScreenTest {
     hiltRule.inject()
   }
 
-  // Test that a friend profile screen with null model is displayed
+  // Test that a friend profile screen with no activities is displayed
   @Test
   fun friendProfileScreenIsDisplayed() {
-    // composeRule.onNodeWithTag("FriendProfileScreen").assertIsNotDisplayed()
+    composeRule.activity.setContent {
+      FriendProfileScreen(
+          activities = emptyList(),
+          timeFrame = TimeFrame.ALL,
+          sport = ActivityType.BIKING,
+          isCurrentUser = false,
+          user = UserModel("1"),
+          setSport = {},
+          setTimeFrame = {},
+          navigateToSettings = {},
+          onBack = {})
+    }
+    composeRule.onNodeWithTag("FriendProfileHeader").assertIsDisplayed()
   }
-
-  // Test that a friend profile screen with a friend model is displayed
-  @Test fun friendProfileScreenWithModelIsDisplayed() {}
 }

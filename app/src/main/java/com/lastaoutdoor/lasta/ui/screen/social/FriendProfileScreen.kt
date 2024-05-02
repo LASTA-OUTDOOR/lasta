@@ -21,7 +21,6 @@ fun FriendProfileScreen(
     sport: ActivityType,
     isCurrentUser: Boolean,
     user: UserModel,
-    updateDescription: (String) -> Unit,
     setSport: (ActivityType) -> Unit,
     setTimeFrame: (TimeFrame) -> Unit,
     navigateToSettings: () -> Unit,
@@ -35,7 +34,7 @@ fun FriendProfileScreen(
       sport = sport,
       isCurrentUser = isCurrentUser,
       user = user,
-      updateDescription = updateDescription,
+      updateDescription = {}, // will never be used
       setSport = setSport,
       setTimeFrame = setTimeFrame,
   ) {
