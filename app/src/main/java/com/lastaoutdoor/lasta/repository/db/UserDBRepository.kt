@@ -2,14 +2,11 @@ package com.lastaoutdoor.lasta.repository.db
 
 import com.lastaoutdoor.lasta.models.user.UserModel
 
-/**
- * Repository for handling user data in the database.
- */
+/** Repository for handling user data in the database. */
 interface UserDBRepository {
 
   /**
-   * Updates the user data in the database.
-   * If the user does not exist, it will also be created.
+   * Updates the user data in the database. If the user does not exist, it will also be created.
    *
    * @param user the user data to update
    */

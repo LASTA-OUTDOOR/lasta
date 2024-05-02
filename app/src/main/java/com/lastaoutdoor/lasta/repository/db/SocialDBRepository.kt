@@ -4,9 +4,7 @@ import com.lastaoutdoor.lasta.models.social.ConversationModel
 import com.lastaoutdoor.lasta.models.user.UserActivity
 import com.lastaoutdoor.lasta.models.user.UserModel
 
-/**
- * This interface provides methods for interacting with social data.
- */
+/** This interface provides methods for interacting with social data. */
 interface SocialDBRepository {
 
   /**
@@ -32,7 +30,6 @@ interface SocialDBRepository {
    * @param days the number of days to look back
    */
   suspend fun getLatestFriendActivities(userId: String, days: Int): List<UserActivity>
-
 
   /**
    * Returns the conversation between the user with the given ID and the friend with the given ID.

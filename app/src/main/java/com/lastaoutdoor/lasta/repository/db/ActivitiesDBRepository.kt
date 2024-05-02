@@ -3,9 +3,7 @@ package com.lastaoutdoor.lasta.repository.db
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.api.Position
 
-/**
- * Repository for activities in the database.
- */
+/** Repository for activities in the database. */
 interface ActivitiesDBRepository {
 
   /**
