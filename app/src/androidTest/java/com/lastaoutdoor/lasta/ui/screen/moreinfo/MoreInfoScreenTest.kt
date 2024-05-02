@@ -30,7 +30,7 @@ class MoreInfoScreenTest {
     hiltRule.inject()
     composeRule.activity.setContent {
       val fakeActivity = Activity("", 0L)
-      MoreInfoScreen(fakeActivity, { "" }, null, {})
+      MoreInfoScreen(fakeActivity, null, {})
     }
   }
 
