@@ -189,7 +189,7 @@ fun TopBar(navigateBack: () -> Unit) {
 // Logo of the top bar
 @Composable
 fun TopBarLogo(logoPainterId: Int, f: () -> Unit) {
-  IconButton(onClick = { f() }) {
+  IconButton(onClick = { f() }, modifier = Modifier.testTag("TopBarLogoTag")) {
     Icon(
         painter = painterResource(id = logoPainterId),
         contentDescription = "Top Bar logo",

@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -47,7 +48,10 @@ fun SettingsScreen(
   }
 
   Column(
-      modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp, vertical = 40.dp),
+      modifier =
+          Modifier.fillMaxSize()
+              .padding(horizontal = 20.dp, vertical = 40.dp)
+              .testTag("settingsScreen"),
       verticalArrangement = Arrangement.SpaceEvenly) {
 
         // Title "Settings"
@@ -56,7 +60,7 @@ fun SettingsScreen(
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.displayLarge,
             color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag("settingsTitle"),
             textAlign = TextAlign.Center)
 
         Column(
@@ -79,7 +83,8 @@ fun SettingsScreen(
                           updateLanguage(newLanguage)
                         },
                         toStr = { it.toString() },
-                        fieldText = LocalContext.current.getString(R.string.languague))
+                        fieldText = LocalContext.current.getString(R.string.languague),
+                        modifier = Modifier.testTag("settingsLanguage"))
                   }
 
               Column(
@@ -96,8 +101,14 @@ fun SettingsScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween) {
                           for (activity in ActivityType.values()) {
+                            val tag =
+                                when (activity) {
+                                  ActivityType.CLIMBING -> "settingsClimbing"
+                                  ActivityType.HIKING -> "settingsHiking"
+                                  ActivityType.BIKING -> "settingsBiking"
+                                }
                             Button(
-                                modifier = Modifier.padding(1.dp),
+                                modifier = Modifier.padding(1.dp).testTag(tag),
                                 onClick = {
                                   selectedActivity = activity
                                   updatePrefActivity(activity)
@@ -144,7 +155,8 @@ fun SettingsScreen(
                                 updateClimbingLevel(newLevel)
                               },
                               toStr = { it.toString() },
-                              fieldText = LocalContext.current.getString(R.string.sport_level))
+                              fieldText = LocalContext.current.getString(R.string.sport_level),
+                              modifier = Modifier.testTag("settingsCLIMBINGLevel"))
                         }
 
                     Column(
@@ -164,7 +176,8 @@ fun SettingsScreen(
                                 updateHikingLevel(newLevel)
                               },
                               toStr = { it.toString() },
-                              fieldText = LocalContext.current.getString(R.string.sport_level))
+                              fieldText = LocalContext.current.getString(R.string.sport_level),
+                              modifier = Modifier.testTag("settingsHIKINGLevel"))
                         }
                   }
               Spacer(modifier = Modifier.height(10.dp))
@@ -187,17 +200,21 @@ fun SettingsScreen(
                           updateBikingLevel(newLevel)
                         },
                         toStr = { it.toString() },
-                        fieldText = LocalContext.current.getString(R.string.sport_level))
+                        fieldText = LocalContext.current.getString(R.string.sport_level),
+                        modifier = Modifier.testTag("settingsBIKINGLevel"))
                   }
             }
 
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
           Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-            Button(onClick = { signOutAndNavigate() }) {
-              Text(text = LocalContext.current.getString(R.string.sign_out))
-            }
+            Button(
+                onClick = { signOutAndNavigate() },
+                modifier = Modifier.testTag("settingsSignOut")) {
+                  Text(text = LocalContext.current.getString(R.string.sign_out))
+                }
 
             Button(
+                modifier = Modifier.testTag("settingsDeleteAccount"),
                 onClick = { signOutAndNavigate() },
                 colors =
                     ButtonDefaults.buttonColors(

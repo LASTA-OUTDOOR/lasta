@@ -217,30 +217,29 @@ fun SetupScreen(
                         }
                   }
 
-              Box(
-                  contentAlignment = Alignment.Center) {
-                    Button(
-                        modifier = Modifier.testTag("setupFinishButton"),
-                        onClick = {
-                          updateFieldInUser(userId, "language", selectedLanguage.name)
-                          updateLanguage(selectedLanguage)
-                          updateFieldInUser(userId, "prefActivity", prefActivity.name)
-                          updatePrefActivity(selectedActivity)
+              Box(contentAlignment = Alignment.Center) {
+                Button(
+                    modifier = Modifier.testTag("setupFinishButton"),
+                    onClick = {
+                      updateFieldInUser(userId, "language", selectedLanguage.name)
+                      updateLanguage(selectedLanguage)
+                      updateFieldInUser(userId, "prefActivity", prefActivity.name)
+                      updatePrefActivity(selectedActivity)
 
-                          // Database calls for the levels
-                          // Create hashmap with the levels
-                          val levelsMap =
-                              hashMapOf(
-                                  "climbingLevel" to selectedClimbingLevel.name,
-                                  "hikingLevel" to selectedHikingLevel.name,
-                                  "bikingLevel" to selectedBikingLevel.name)
-                          updateFieldInUser(userId, "levels", levelsMap)
-                          navigateToMain()
-                        },
-                    ) {
-                      Text(text = LocalContext.current.getString(R.string.finish))
-                    }
-                  }
+                      // Database calls for the levels
+                      // Create hashmap with the levels
+                      val levelsMap =
+                          hashMapOf(
+                              "climbingLevel" to selectedClimbingLevel.name,
+                              "hikingLevel" to selectedHikingLevel.name,
+                              "bikingLevel" to selectedBikingLevel.name)
+                      updateFieldInUser(userId, "levels", levelsMap)
+                      navigateToMain()
+                    },
+                ) {
+                  Text(text = LocalContext.current.getString(R.string.finish))
+                }
+              }
             }
       }
 }
