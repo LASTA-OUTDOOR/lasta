@@ -13,7 +13,6 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.lastaoutdoor.lasta.data.api.weather.Main
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.Language
 import com.lastaoutdoor.lasta.models.user.UserModel
@@ -88,6 +87,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
     composable(DestinationRoute.Socials.route) { entry ->
       val socialViewModel: SocialViewModel = entry.sharedViewModel(navController)
       val isConnected = socialViewModel.isConnected.collectAsState().value
+
       SocialScreen(
           socialViewModel.hasFriendRequest,
           socialViewModel.topButton,

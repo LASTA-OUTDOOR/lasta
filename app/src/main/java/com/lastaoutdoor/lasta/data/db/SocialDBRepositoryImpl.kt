@@ -7,9 +7,13 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.social.ConversationModel
 import com.lastaoutdoor.lasta.models.social.MessageModel
+import com.lastaoutdoor.lasta.models.user.Language
+import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserActivity
+import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
 import javax.inject.Inject
@@ -25,14 +29,44 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
 
   override suspend fun getFriends(friendIds: List<String>): List<UserModel> {
     val friends: ArrayList<UserModel> = ArrayList()
-    if (friendIds.size == 1) return friends
+    // Because when the friends list is super empty, the first element is an empty string
+    if (friendIds.first().isEmpty()) return friends
     val friendsQuery = userCollection.whereIn(FieldPath.documentId(), friendIds).get().await()
     if (!friendsQuery.isEmpty) {
       for (friend in friendsQuery.documents) {
-        val friendModel = friend.toObject(UserModel::class.java)
-        if (friendModel != null) {
-          friends.add(friendModel)
-        }
+        val senderId = friend.id
+        val senderUserName = friend.getString("userName")!!
+        val senderEmail = friend.getString("email")!!
+        val senderDescription = friend.getString("description")!!
+        val senderProfilePictureUrl = friend.getString("profilePictureUrl")!!
+        val senderLanguage = friend.getString("language")!!
+        val senderLanguagetoLanguage = Language.valueOf(senderLanguage)
+        val prefActivity = friend.getString("prefActivity")!!
+        val senderPrefActivity = ActivityType.valueOf(prefActivity)
+        val levels = friend.get("levels") as HashMap<String, String> ?: HashMap()
+        val senderLevels =
+            UserActivitiesLevel(
+                climbingLevel = UserLevel.valueOf(levels["climbingLevel"] ?: "BEGINNER"),
+                hikingLevel = UserLevel.valueOf(levels["hikingLevel"] ?: "BEGINNER"),
+                bikingLevel = UserLevel.valueOf(levels["bikingLevel"] ?: "BEGINNER"))
+        val senderFriendRequests = friend.get("friendRequests") as ArrayList<String>
+        val senderFriends = friend.get("friends") as ArrayList<String>
+        val senderFavorites = friend.get("favorites") as ArrayList<String>
+
+        val friendModel =
+            UserModel(
+                userId = senderId,
+                userName = senderUserName,
+                email = senderEmail,
+                profilePictureUrl = senderProfilePictureUrl,
+                description = senderDescription,
+                language = senderLanguagetoLanguage,
+                prefActivity = senderPrefActivity,
+                levels = senderLevels,
+                friends = senderFriends,
+                friendRequests = senderFriendRequests,
+                favorites = senderFavorites)
+        friends.add(friendModel)
       }
     }
 
@@ -48,10 +82,39 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
           userCollection.whereIn(FieldPath.documentId(), friendRequestIds).get().await()
       if (!friendRequestsQuery.isEmpty) {
         for (friendRequest in friendRequestsQuery.documents) {
-          val friendRequestModel = friendRequest.toObject(UserModel::class.java)
-          if (friendRequestModel != null) {
-            friendRequests.add(friendRequestModel)
-          }
+          val senderId = friendRequest.id
+          val senderUserName = friendRequest.getString("userName")!!
+          val senderEmail = friendRequest.getString("email")!!
+          val senderDescription = friendRequest.getString("description")!!
+          val senderProfilePictureUrl = friendRequest.getString("profilePictureUrl")!!
+          val senderLanguage = friendRequest.getString("language")!!
+          val senderLanguagetoLanguage = Language.valueOf(senderLanguage)
+          val prefActivity = friendRequest.getString("prefActivity")!!
+          val senderPrefActivity = ActivityType.valueOf(prefActivity)
+          val levels = friendRequest.get("levels") as HashMap<String, String>
+          val senderLevels =
+              UserActivitiesLevel(
+                  climbingLevel = UserLevel.valueOf(levels["climbingLevel"] ?: "BEGINNER"),
+                  hikingLevel = UserLevel.valueOf(levels["hikingLevel"] ?: "BEGINNER"),
+                  bikingLevel = UserLevel.valueOf(levels["bikingLevel"] ?: "BEGINNER"))
+          val senderFriendRequests = friendRequest.get("friendRequests") as ArrayList<String>
+          val senderFriends = friendRequest.get("friends") as ArrayList<String>
+          val senderFavorites = friendRequest.get("favorites") as ArrayList<String>
+
+          val friendRequestModel =
+              UserModel(
+                  userId = senderId,
+                  userName = senderUserName,
+                  email = senderEmail,
+                  profilePictureUrl = senderProfilePictureUrl,
+                  description = senderDescription,
+                  language = senderLanguagetoLanguage,
+                  prefActivity = senderPrefActivity,
+                  levels = senderLevels,
+                  friends = senderFriends,
+                  friendRequests = senderFriendRequests,
+                  favorites = senderFavorites)
+          friendRequests.add(friendRequestModel)
         }
       }
     }
@@ -118,19 +181,13 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
     return conversationsQuery.documents.mapNotNull { it.toObject(ConversationModel::class.java) }
   }
 
-  override suspend fun sendFriendRequest(userId: String, receiverId: String): Boolean {
-    var success = false
+  override suspend fun sendFriendRequest(userId: String, receiverId: String): Unit {
     // Create a reference to the user's document in the Firestore database
     val userDocumentRef = userCollection.document(receiverId)
 
     // Store the uid of the sender in the user's document in an array in case there are multiple
     // requests (This does not allow duplicates)
-    userDocumentRef
-        .update("friendRequests", FieldValue.arrayUnion(userId))
-        .addOnSuccessListener { success = true }
-        .addOnFailureListener { e -> e.printStackTrace() }
-
-    return success
+    userDocumentRef.update("friendRequests", FieldValue.arrayUnion(userId)).await()
   }
 
   override suspend fun acceptFriendRequest(source: String, requester: String) {
