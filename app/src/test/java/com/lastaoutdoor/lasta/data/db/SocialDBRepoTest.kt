@@ -198,7 +198,7 @@ class SocialDBRepoTest {
   fun `test getConversation`() = runBlocking {
     expectedConversation =
         ConversationModel(
-            listOf(UserModel("userId", "friend")),
+            listOf(UserModel("userId"), UserModel("friend")),
             listOf(
                 MessageModel(
                     from = UserModel("friend"), content = "coucou", timestamp = Timestamp(0, 0))),
@@ -238,9 +238,40 @@ class SocialDBRepoTest {
   @Test
   fun getAllConversation() {
     runBlocking {
-      every { documentSnapshot.get("members") } returns
-            arrayListOf("userId", "frienduserId")
-      expectedConversation = ConversationModel(listOf(), emptyList(), null)
+      every { documentSnapshot.exists() } returns true
+      every { documentSnapshot.getString("userName")!! } returns ""
+      every { documentSnapshot.getString("email")!! } returns ""
+      every { documentSnapshot.getString("description")!! } returns ""
+      every { documentSnapshot.getString("profilePictureUrl")!! } returns ""
+      every { documentSnapshot.getString("language")!! } returns Language.ENGLISH.name
+      every { documentSnapshot.getString("climbingLevel") } returns UserLevel.BEGINNER.name
+      every { documentSnapshot.getString("hikingLevel") } returns UserLevel.BEGINNER.name
+      every { documentSnapshot.getString("bikingLevel") } returns UserLevel.BEGINNER.name
+      every { documentSnapshot.get("friendRequests") } returns arrayListOf("friend")
+      every { documentSnapshot.get("friends") } returns ArrayList<String>()
+      every { documentSnapshot.get("favorites") } returns ArrayList<String>()
+      every { documentSnapshot.getString("prefActivity")!! } returns ActivityType.CLIMBING.name
+      every { collectionReference.document("userIduserId") } returns documentReference
+      every { documentSnapshot.get("members") } returns arrayListOf("userId", "frienduserId")
+      every { documentSnapshot.getId() } returns "userId"
+      every { documentSnapshot.getString("userName") } returns ""
+      expectedConversation =
+          ConversationModel(
+              members =
+                  listOf(
+                      UserModel(userId = "userId", friendRequests = listOf("friend")),
+                      UserModel(userId = "userId", friendRequests = listOf("friend"))),
+              messages =
+                  listOf(
+                      MessageModel(
+                          from = UserModel(userId = "userId", friendRequests = listOf("friend")),
+                          content = "coucou",
+                          timestamp = Timestamp(0, 0))),
+              lastMessage =
+                  MessageModel(
+                      from = UserModel(userId = "userId", friendRequests = listOf("friend")),
+                      content = "coucou",
+                      timestamp = Timestamp(0, 0)))
       every { collectionReference.whereArrayContains("members", "userId") } returns query
       every { documentSnapshot.toObject(ConversationModel::class.java) } returns
           expectedConversation
