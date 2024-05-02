@@ -29,7 +29,7 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
 
   override suspend fun getFriends(friendIds: List<String>): List<UserModel> {
     val friends: ArrayList<UserModel> = ArrayList()
-    // Because when the friends list is empty, the first element is an empty string
+    // Because when the friends list is super empty, the first element is an empty string
     if (friendIds.first().isEmpty()) return friends
     val friendsQuery = userCollection.whereIn(FieldPath.documentId(), friendIds).get().await()
     if (!friendsQuery.isEmpty) {
