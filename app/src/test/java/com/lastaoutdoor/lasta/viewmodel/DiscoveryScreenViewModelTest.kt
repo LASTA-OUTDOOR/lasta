@@ -1,70 +1,104 @@
 package com.lastaoutdoor.lasta.viewmodel
 
-class DiscoveryScreenViewModelTest {
+import com.google.android.gms.maps.model.LatLng
+import com.lastaoutdoor.lasta.models.activity.Activity
+import com.lastaoutdoor.lasta.utils.Response
+import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivityRepository
+import junit.framework.TestCase.assertEquals
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.junit.rules.TestWatcher
+import org.junit.runner.Description
 
-  /*private lateinit var viewModel: DiscoveryScreenViewModel
-  private val repository = MockRepository()
+@ExperimentalCoroutinesApi
+class MainDispatcherRule(val dispatcher: TestDispatcher = StandardTestDispatcher()) :
+    TestWatcher() {
+  @ExperimentalCoroutinesApi
+  override fun starting(description: Description?) = Dispatchers.setMain(dispatcher)
+
+  class DiscoveryScreenViewModelTest()
+
+  override fun finished(description: Description?) = Dispatchers.resetMain()
+}
+
+class DiscoveryScreenViewModelTest() {
+  @ExperimentalCoroutinesApi @get:Rule val mainDispatcherRule = MainDispatcherRule()
+
+  private lateinit var viewModel: DiscoverScreenViewModel
+  private var repo = FakeActivityRepository()
 
   @Before
   fun setUp() {
-    viewModel = DiscoveryScreenViewModel(repository)
+    repo.currResponse = Response.Success(null)
+
+    viewModel = DiscoverScreenViewModel(repo)
   }
 
-  private fun dummyNode(type: ActivityType, name: String, position: LatLng): NodeWay {
-    return NodeWay(
-        type.toString(),
-        0,
-        position.latitude,
-        position.longitude,
-        Position(position.latitude, position.longitude),
-        Tags(""))
-  }
-
+  @ExperimentalCoroutinesApi
   @Test
-  fun `fetchClimbingActivities should populate climbingActivities`() = runTest {
-    // Given
-    val centerLocation = LatLng(46.519962, 6.633597)
-    val rad = 10000.0
-    val climbingNodes =
-        listOf(
-            dummyNode(ActivityType.CLIMBING, "Climbing Node 1", centerLocation),
-            dummyNode(ActivityType.CLIMBING, "Climbing Node 2", centerLocation))
-    repository.addClimbingNode(climbingNodes[0])
-    repository.addClimbingNode(climbingNodes[1])
-
-    val method: Method =
-        DiscoveryScreenViewModel::class
-            .java
-            .getDeclaredMethod("fetchClimbingActivities", Double::class.java, LatLng::class.java)
-    method.isAccessible = true
-    method.invoke(viewModel, rad, centerLocation)
-
-    // Then
-    assertEquals(climbingNodes.size, viewModel.climbingActivities.value.size)
+  fun fetchClimbingActivities() {
+    runBlocking {
+      viewModel.fetchClimbingActivities()
+      assertEquals(viewModel.activities.value, emptyList<Activity>())
+    }
   }
 
+  @ExperimentalCoroutinesApi
   @Test
-  fun `fetchClimbingActivities with no arguments should populate climbingActivities`() =
-      runBlocking {
-        // Given
-        val centerLocation = LatLng(46.519962, 6.633597)
-        val rad = 10000.0
-        val climbingNodes =
-            listOf(
-                dummyNode(ActivityType.CLIMBING, "Climbing Node 1", centerLocation),
-                dummyNode(ActivityType.CLIMBING, "Climbing Node 2", centerLocation))
-        repository.addClimbingNode(climbingNodes[0])
-        repository.addClimbingNode(climbingNodes[1])
+  fun fetchHikingActivities() {
+    runBlocking {
+      viewModel.fetchHikingActivities()
+      assertEquals(viewModel.activities.value, emptyList<Activity>())
+    }
+  }
 
-        val method: Method =
-            DiscoveryScreenViewModel::class
-                .java
-                .getDeclaredMethod(
-                    "fetchClimbingActivities", Double::class.java, LatLng::class.java)
-        method.isAccessible = true
-        method.invoke(viewModel, rad, centerLocation)
+  @ExperimentalCoroutinesApi
+  @Test
+  fun fetchBikingActivities() {
+    runBlocking {
+      viewModel.fetchBikingActivities()
+      assertEquals(viewModel.activities.value, emptyList<Activity>())
+    }
+  }
 
-        // Then
-        assertEquals(climbingNodes.size, viewModel.climbingActivities.value.size)
-      }*/
+  @ExperimentalCoroutinesApi
+  @Test
+  fun setScreen() {
+    runBlocking {
+      viewModel.setScreen(DiscoverDisplayType.LIST)
+      assertEquals(viewModel.screen.value, DiscoverDisplayType.LIST)
+    }
+  }
+
+  @ExperimentalCoroutinesApi
+  @Test
+  fun setLoc() {
+    runBlocking {
+      viewModel.setSelectedLocality(Pair("", LatLng(0.0, 0.0)))
+      assertEquals(viewModel.selectedLocality.value, Pair("", LatLng(0.0, 0.0)))
+    }
+  }
+
+  @ExperimentalCoroutinesApi
+  @Test
+  fun setRnage() {
+    runBlocking {
+      viewModel.setRange(0.0)
+      assertEquals(viewModel.range.value, 0.0)
+    }
+  }
+
+  @ExperimentalCoroutinesApi
+  @Test
+  fun get() {
+    runBlocking { assertEquals(viewModel.localities[0].first, "Ecublens") }
+  }
 }
