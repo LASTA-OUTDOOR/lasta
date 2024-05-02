@@ -105,14 +105,14 @@ fun Header(
     topButtonIcon: ImageVector,
     topButtonOnClick: () -> Unit,
     refreshFriendRequests: () -> Unit,
-    refreshFriends : () -> Unit,
+    refreshFriends: () -> Unit,
     navigateToNotifications: () -> Unit
 ) {
 
   // This will be called when the composable becomes visible
   LaunchedEffect(Unit) {
-      refreshFriendRequests()
-      refreshFriends()
+    refreshFriendRequests()
+    refreshFriends()
   }
 
   Row(

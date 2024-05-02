@@ -172,6 +172,7 @@ constructor(
 
   // Refresh the list of friends
   fun refreshMessages() {
+    println("refreshing messages")
     viewModelScope.launch { messages = repository.getAllConversations(user.userId) }
   }
 

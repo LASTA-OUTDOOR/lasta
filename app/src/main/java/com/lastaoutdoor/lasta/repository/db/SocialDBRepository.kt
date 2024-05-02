@@ -17,8 +17,8 @@ interface SocialDBRepository {
   // returns all the conversations of the user
 
   suspend fun getConversation(
-      userId: String,
-      friendId: String,
+      user: UserModel,
+      friend: UserModel,
       createNew: Boolean = true
   ): ConversationModel
 

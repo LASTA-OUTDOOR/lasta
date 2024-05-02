@@ -160,9 +160,12 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           ConversationScreen(
               conversation,
               conversationViewModel::updateConversation,
-              conversationViewModel.userId,
-              conversationViewModel.friendUserId,
+              conversationViewModel.user.value,
+              conversationViewModel.friend.value,
+              conversationViewModel.showSendMessageDialog,
               conversationViewModel::showSendMessageDialog,
+              conversationViewModel::hideSendMessageDialog,
+              conversationViewModel::send,
               navController::navigateUp)
         }
     composable(DestinationRoute.Notifications.route) { entry ->

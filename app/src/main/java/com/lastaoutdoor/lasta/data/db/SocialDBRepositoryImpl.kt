@@ -127,13 +127,15 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
   }
 
   override suspend fun getConversation(
-      userId: String,
-      friendId: String,
+      user: UserModel,
+      friend: UserModel,
       createNew: Boolean
   ): ConversationModel {
 
     // id is concatenation of userId and friendId, first is the smallest
-    val id = if (userId < friendId) userId + friendId else friendId + userId
+    val id =
+        if (user.userId < friend.userId) user.userId + friend.userId
+        else friend.userId + user.userId
 
     // Try to find a document in the Firestore database with the conversation ID
     val conversationDocumentRef = conversationCollection.document(id)
@@ -143,13 +145,15 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
     if (!document.exists() && createNew) {
       // store a conversation in the Firestore database
       val conversation =
-          hashMapOf("members" to listOf(userId, friendId), "messages" to emptyList<MessageModel>())
+          hashMapOf(
+              "members" to listOf(user.userId, friend.userId),
+              "messages" to emptyList<MessageModel>())
 
       // Store the conversation in the Firestore database
       conversationDocumentRef.set(conversation, SetOptions.merge())
 
       return ConversationModel(
-          members = listOf(userId, friendId), messages = emptyList(), lastMessage = null)
+          members = listOf(user, friend), messages = emptyList(), lastMessage = null)
     } else if (!document.exists()) {
       return ConversationModel(members = emptyList(), messages = emptyList(), lastMessage = null)
     }
@@ -161,7 +165,7 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
             ?.map {
               val message = it as HashMap<*, *>
               MessageModel(
-                  message["from"] as String,
+                  if (message["from"] == user.userId) user else friend,
                   message["content"] as String,
                   message["timestamp"] as Timestamp)
             }
@@ -169,16 +173,64 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
             ?.toCollection(ArrayList()) ?: ArrayList()
 
     return ConversationModel(
-        members = listOf(userId, friendId),
+        members = listOf(user, friend),
         messages = messages,
         lastMessage = if (messages.isEmpty()) null else messages.last())
   }
 
   override suspend fun getAllConversations(userId: String): List<ConversationModel> {
-
     val conversationsQuery =
         conversationCollection.whereArrayContains("members", userId).get().await()
-    return conversationsQuery.documents.mapNotNull { it.toObject(ConversationModel::class.java) }
+    println("conversationsQuery: ${conversationsQuery.documents}")
+    return conversationsQuery.documents.mapNotNull {
+      val members = it.get("members") as? List<String>
+      if (members != null) {
+        val friendId = members.first { it != userId }
+        val friend = userCollection.document(friendId).get().await()
+        val friendModel =
+            UserModel(
+                userId = friend.id,
+                userName = friend.getString("userName")!!,
+                email = friend.getString("email")!!,
+                profilePictureUrl = friend.getString("profilePictureUrl")!!,
+                description = friend.getString("description")!!,
+                language = Language.valueOf(friend.getString("language")!!),
+                prefActivity = ActivityType.valueOf(friend.getString("prefActivity")!!),
+                levels =
+                    UserActivitiesLevel(
+                        climbingLevel =
+                            UserLevel.valueOf(friend.getString("climbingLevel") ?: "BEGINNER"),
+                        hikingLevel =
+                            UserLevel.valueOf(friend.getString("hikingLevel") ?: "BEGINNER"),
+                        bikingLevel =
+                            UserLevel.valueOf(friend.getString("bikingLevel") ?: "BEGINNER")),
+                friends = friend.get("friends") as ArrayList<String>,
+                friendRequests = friend.get("friendRequests") as ArrayList<String>,
+                favorites = friend.get("favorites") as ArrayList<String>)
+        val user = userCollection.document(userId).get().await()
+        val userModel =
+            UserModel(
+                userId = user.id,
+                userName = user.getString("userName")!!,
+                email = user.getString("email")!!,
+                profilePictureUrl = user.getString("profilePictureUrl")!!,
+                description = user.getString("description")!!,
+                language = Language.valueOf(user.getString("language")!!),
+                prefActivity = ActivityType.valueOf(user.getString("prefActivity")!!),
+                levels =
+                    UserActivitiesLevel(
+                        climbingLevel =
+                            UserLevel.valueOf(user.getString("climbingLevel") ?: "BEGINNER"),
+                        hikingLevel =
+                            UserLevel.valueOf(user.getString("hikingLevel") ?: "BEGINNER"),
+                        bikingLevel =
+                            UserLevel.valueOf(user.getString("bikingLevel") ?: "BEGINNER")),
+                friends = user.get("friends") as ArrayList<String>,
+                friendRequests = user.get("friendRequests") as ArrayList<String>,
+                favorites = user.get("favorites") as ArrayList<String>)
+        getConversation(userModel, friendModel, false)
+      } else null
+    }
   }
 
   override suspend fun sendFriendRequest(userId: String, receiverId: String): Unit {
@@ -217,6 +269,7 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
 
   override suspend fun sendMessage(userId: String, friendUserId: String, message: String) {
     if (message.isEmpty() || userId.isEmpty() || friendUserId.isEmpty()) return
+    println("userId: $userId, friendUserId: $friendUserId, message: $message")
 
     // Create a reference to the conversation document in the Firestore database
     val id = if (userId < friendUserId) userId + friendUserId else friendUserId + userId
