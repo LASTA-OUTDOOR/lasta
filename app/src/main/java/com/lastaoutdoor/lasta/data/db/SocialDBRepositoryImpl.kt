@@ -16,9 +16,9 @@ import com.lastaoutdoor.lasta.models.user.UserActivity
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.tasks.await
 
 @Singleton
 class SocialDBRepositoryImpl @Inject constructor(context: Context, database: FirebaseFirestore) :
@@ -29,6 +29,8 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
 
   override suspend fun getFriends(friendIds: List<String>): List<UserModel> {
     val friends: ArrayList<UserModel> = ArrayList()
+    // Because when the friends list is empty, the first element is an empty string
+    if (friendIds.size == 1 && friendIds[0] == "") return friends
     val friendsQuery = userCollection.whereIn(FieldPath.documentId(), friendIds).get().await()
     if (!friendsQuery.isEmpty) {
       for (friend in friendsQuery.documents) {
