@@ -15,6 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -107,7 +108,7 @@ fun Header(
 ) {
 
   // This will be called when the composable becomes visible
-  // LaunchedEffect(Unit) { refreshFriendRequests() }
+  LaunchedEffect(Unit) { refreshFriendRequests() }
 
   Row(
       modifier = Modifier.fillMaxWidth().testTag("Header"),

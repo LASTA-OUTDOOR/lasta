@@ -31,7 +31,7 @@ class FakeSocialRepository : SocialDBRepository {
     TODO("Not yet implemented")
   }
 
-  override suspend fun sendFriendRequest(userId: String, receiverId: String): Boolean {
+  override suspend fun sendFriendRequest(userId: String, receiverId: String): Unit {
     TODO("Not yet implemented")
   }
 

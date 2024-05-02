@@ -100,6 +100,13 @@
     <string name = "add_fr">Add a friend</string>
     <string name = "fr_email_add">Enter a friend\'s email address to send a friend request</string>
     <string name = "community">Community</string>
+    <string name = "no_account">The email address is not associated with any account</string>
+    <string name = "no_fr">You are already friends with this user</string>
+    <string name = "fr_req_sent">Friend request sent</string>
+    <string name = "no_fr_yourself">You cannot add yourself as a friend</string>
+    <string name = "no_fr_twice">You already sent a friend request to this user</string>
+    <string name = "inv_email">The email address is not valid</string>
+
     <!--Weather Report-->
     <string name = "weather_report">Weather Report</string>
     <string name = "current_weather">Current Weather</string>
