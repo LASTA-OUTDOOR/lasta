@@ -7,7 +7,6 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.models.activity.Activity
-import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.ui.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -28,8 +27,8 @@ class MoreInfoScreenTest {
   fun setUp() {
     hiltRule.inject()
     composeRule.activity.setContent {
-      val fakeActivity = Activity("",0L)
-      MoreInfoScreen(fakeActivity,{""},null,{})
+      val fakeActivity = Activity("", 0L)
+      MoreInfoScreen(fakeActivity, { "" }, null, {})
     }
   }
 
