@@ -92,7 +92,7 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
           val senderLanguagetoLanguage = Language.valueOf(senderLanguage)
           val prefActivity = friendRequest.getString("prefActivity")!!
           val senderPrefActivity = ActivityType.valueOf(prefActivity)
-          val levels = friendRequest.get("levels") as HashMap<String, String>
+          val levels = friendRequest.get("levels") as HashMap<String, String> ?: HashMap()
           val senderLevels =
               UserActivitiesLevel(
                   climbingLevel = UserLevel.valueOf(levels["climbingLevel"] ?: "BEGINNER"),
