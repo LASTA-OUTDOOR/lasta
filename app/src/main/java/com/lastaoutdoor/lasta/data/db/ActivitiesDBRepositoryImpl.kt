@@ -24,12 +24,8 @@ constructor(context: Context, database: FirebaseFirestore) : ActivitiesDBReposit
       database.collection(context.getString(R.string.activities_db_name))
 
   override suspend fun addActivityIfNonExisting(activity: Activity): Boolean {
-    println(activity.osmId)
-    val query = activitiesCollection.whereEqualTo("osmId", activity.osmId)
-    val querySnapshot = query.get()
-    println(querySnapshot.isComplete)
-    val result = querySnapshot.await()
-    if (!result.isEmpty) return false
+    val query = activitiesCollection.whereEqualTo("osmId", activity.osmId).get().await()
+    if (!query.isEmpty) return false
     val activityData =
         hashMapOf(
             "osmId" to activity.osmId,
@@ -55,16 +51,12 @@ constructor(context: Context, database: FirebaseFirestore) : ActivitiesDBReposit
     return true
   }
 
-  override suspend fun getActivityById(activityId: String): Activity {
+  override suspend fun getActivityById(activityId: String): Activity? {
     val document = activitiesCollection.document(activityId).get().await()
     if (document.exists()) {
       return convertDocumentToActivity(document)
     }
-    return Activity("", 0)
-  }
-
-  override suspend fun getActivityByOSMId(osmId: Long): Activity {
-    TODO("Not yet implemented")
+    return null
   }
 
   override suspend fun getActivitiesByIds(activityIds: List<String>): List<Activity> {
@@ -85,6 +77,7 @@ constructor(context: Context, database: FirebaseFirestore) : ActivitiesDBReposit
       onlyKnown: Boolean
   ): List<Activity> {
     val activities = ArrayList<Activity>()
+    if (osmIds.isEmpty()) return activities
     val query = activitiesCollection.whereIn("osmId", osmIds).get().await()
     if (!query.isEmpty) {
       val documents = query.documents
@@ -99,10 +92,6 @@ constructor(context: Context, database: FirebaseFirestore) : ActivitiesDBReposit
     return activities
   }
 
-  override suspend fun updateActivity(activity: Activity) {
-    TODO("Not yet implemented")
-  }
-
   override suspend fun updateStartPosition(activityId: String, position: Position) {
     val document = activitiesCollection.document(activityId)
     document
@@ -110,50 +99,36 @@ constructor(context: Context, database: FirebaseFirestore) : ActivitiesDBReposit
         .await()
   }
 
-  override suspend fun addRating(activity: Activity, rating: Rating) {
-    TODO("Not yet implemented")
-  }
-
-  override suspend fun deleteRating(activity: Activity, userId: String) {
-    TODO("Not yet implemented")
-  }
-
-  override suspend fun updateDifficulty(activity: Activity, difficulty: Difficulty) {
-    TODO("Not yet implemented")
-  }
-
-  override suspend fun updateImageUrl(activity: Activity, imageUrl: String) {
-    TODO("Not yet implemented")
-  }
-
   private fun convertDocumentToActivity(document: DocumentSnapshot): Activity {
-    val startPositionMap = document.get("startPosition") as Map<String, Double>
+    val startPositionMap: Map<String, Double> =
+        (document.get("startPosition") ?: HashMap<String, Double>()) as Map<String, Double>
     val startPosition =
         Position(
             startPositionMap.getOrDefault("lat", 0.0), startPositionMap.getOrDefault("lon", 0.0))
     val id = document.id
-    val osmId = document.getLong("osmId")!!
-    val activityType = document.getString("activityType")!!
-    val name = document.getString("name")!!
+    val osmId = document.getLong("osmId") ?: 0
+    val activityType = ActivityType.valueOf(document.getString("activityType") ?: "CLIMBING")
+    val name = document.getString("name") ?: ""
 
-    val rating = document.getDouble("rating")!!.toFloat()
-    val numRatings = document.getLong("numRatings")!!.toInt()
-    val ratingsMap = document.get("ratings") as List<HashMap<String, Any>>
+    val rating = (document.getDouble("rating") ?: 5).toFloat()
+    val numRatings = (document.getLong("numRatings") ?: 1).toInt()
+    val ratingsMap: List<Map<String, Any>> =
+        (document.get("ratings") ?: emptyList<Map<String, Any>>()) as List<Map<String, Any>>
     val ratings =
         ratingsMap.map {
           Rating(it["userId"] as String, it["comment"] as String, it["rating"] as Int)
         }
-    val difficulty = Difficulty.valueOf(document.getString("difficulty")!!)
-    val activityImageUrl = document.getString("activityImageUrl")!!
-    val climbingStyle = ClimbingStyle.valueOf(document.getString("climbingStyle")!!)
-    val elevationTotal = document.getDouble("elevationTotal")!!.toFloat()
-    val from = document.getString("from")!!
-    val to = document.getString("to")!!
-    val distance = document.getDouble("distance")!!.toFloat()
+    val difficulty = Difficulty.valueOf(document.getString("difficulty") ?: "EASY")
+    val activityImageUrl = document.getString("activityImageUrl") ?: ""
+    val climbingStyle = ClimbingStyle.valueOf(document.getString("climbingStyle") ?: "OUTDOOR")
+    val elevationTotal = (document.getDouble("elevationTotal") ?: 0).toFloat()
+    val from = document.getString("from") ?: ""
+    val to = document.getString("to") ?: ""
+    val distance = (document.getDouble("distance") ?: 0).toFloat()
     return Activity(
         id,
         osmId,
-        ActivityType.valueOf(activityType),
+        activityType,
         name,
         startPosition,
         rating,
