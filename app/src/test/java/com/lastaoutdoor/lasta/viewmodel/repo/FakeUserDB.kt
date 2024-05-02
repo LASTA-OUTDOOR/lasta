@@ -9,7 +9,7 @@ class FakeUserDB : UserDBRepository {
   override fun updateUser(user: UserModel) {}
 
   override suspend fun getUserById(userId: String): UserModel? {
-    return fakeUserModel
+    return UserModel(userId = userId)
   }
 
   override suspend fun getUserByEmail(email: String): UserModel? {

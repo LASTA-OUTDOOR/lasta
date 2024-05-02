@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 
 class FakePreferencesRepository(override val userPreferencesFlow: Flow<UserPreferences>) :
     PreferencesRepository {
+
   override suspend fun updateIsLoggedIn(isLoggedIn: Boolean) {
     TODO("Not yet implemented")
   }
