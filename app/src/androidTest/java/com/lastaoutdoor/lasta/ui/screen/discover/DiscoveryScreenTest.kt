@@ -50,7 +50,8 @@ class DiscoverScreenTest {
             selectedLocality = "Ecublens" to LatLng(46.519962, 6.633597),
             setScreen = { screenType = it },
             updatePopup = { popUp = true },
-            navigateToFilter = { navigateFilter = true })
+            navigateToFilter = { navigateFilter = true },
+            weather = null)
       }
     }
 
@@ -160,6 +161,7 @@ class DiscoverScreenTest {
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
             changeActivityToDisplay = {},
+            weather = null,
             state = MapState(),
             updatePermission = {},
             initialPosition = LatLng(46.519962, 6.633597),
