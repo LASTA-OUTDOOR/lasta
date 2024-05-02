@@ -44,7 +44,7 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
         val senderLanguagetoLanguage = Language.valueOf(senderLanguage)
         val prefActivity = friend.getString("prefActivity")!!
         val senderPrefActivity = ActivityType.valueOf(prefActivity)
-        val levels = friend.get("levels") as HashMap<String, String> ?: HashMap()
+        val levels = friend.get("levels") as HashMap<String, String>
         val senderLevels =
             UserActivitiesLevel(
                 climbingLevel = UserLevel.valueOf(levels["climbingLevel"] ?: "BEGINNER"),
@@ -160,7 +160,7 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
     val messages: ArrayList<MessageModel> =
         (document.get("messages") as? ArrayList<*>)
             ?.map {
-              val message = it as HashMap<String, Any>
+              val message = it as HashMap<*, *>
               MessageModel(
                   message["from"] as String,
                   message["content"] as String,
