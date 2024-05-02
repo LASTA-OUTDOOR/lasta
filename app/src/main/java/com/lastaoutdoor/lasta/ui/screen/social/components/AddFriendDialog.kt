@@ -13,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,14 +39,14 @@ fun AddFriendDialog(
     requestFriend: (String) -> Unit
 ) {
 
-  // Reset the feedback message
-  clearFriendRequestFeedback()
+  // Reset the feedback message on launched effect
+  LaunchedEffect(Unit) { clearFriendRequestFeedback() }
 
   Dialog(
       onDismissRequest = { hideAddFriendDialog() },
       properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)) {
         Card(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier.fillMaxWidth().padding(16.dp).testTag("AddFriendDialog"),
             shape = RoundedCornerShape(16.dp),
         ) {
           Text(

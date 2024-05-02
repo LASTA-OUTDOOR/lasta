@@ -20,7 +20,7 @@ fun FavoritesScreen(
     flipFavorite: (String) -> Unit,
     navigateToMoreInfo: () -> Unit
 ) {
-  LazyColumn(modifier = Modifier.testTag("discoveryScreen")) {
+  LazyColumn {
     item {
       Spacer(modifier = Modifier.height(8.dp))
       ActivitiesDisplay(

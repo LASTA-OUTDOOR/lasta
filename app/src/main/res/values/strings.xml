@@ -67,7 +67,7 @@
     <string name = "select_languague">Select your language: </string>
     <string name = "languague">Language: </string>
     <string name = "select_fav_activity">Select your favorite outdoor activity:</string>
-    <string name = "save">Save</string>
+    <string name = "finish">Finish</string>
     <string name="setup_title">Settings</string>
     <!--Map-->
     <string name="activity_type">Activity Type</string>
@@ -100,6 +100,13 @@
     <string name = "add_fr">Add a friend</string>
     <string name = "fr_email_add">Enter a friend\'s email address to send a friend request</string>
     <string name = "community">Community</string>
+    <string name = "no_account">The email address is not associated with any account</string>
+    <string name = "no_fr">You are already friends with this user</string>
+    <string name = "fr_req_sent">Friend request sent</string>
+    <string name = "no_fr_yourself">You cannot add yourself as a friend</string>
+    <string name = "no_fr_twice">You already sent a friend request to this user</string>
+    <string name = "inv_email">The email address is not valid</string>
+
     <!--Weather Report-->
     <string name = "weather_report">Weather Report</string>
     <string name = "current_weather">Current Weather</string>
@@ -107,6 +114,8 @@
     <string name = "temperature">Temperature</string>
     <string name = "descr_w">Description</string>
     <string name = "wind_speed">Wind speed</string>
+    <string name = "humidity">Humidity</string>
+    <string name = "no_loc">"Weather report not available ! Allow us to use your location and try again if you want this service "</string>
 
     <string name="add_friend_title">Add a friend</string>
     <string name="select_friend">Select a friend</string>
@@ -116,4 +125,5 @@
     <!--Settings-->
     <string name = "Account_settings">Settings</string>
     <string name= "delete_account">Delete Account</string>
+    <string name="sport_level">Level:</string>
 </resources>

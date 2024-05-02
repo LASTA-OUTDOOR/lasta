@@ -57,9 +57,8 @@ interface SocialDBRepository {
    *
    * @param userId the ID of the user
    * @param receiverId the ID of the receiver
-   * @return true if the friend request is sent successfully, false otherwise
    */
-  suspend fun sendFriendRequest(userId: String, receiverId: String): Boolean
+  suspend fun sendFriendRequest(userId: String, receiverId: String)
 
   /**
    * Accepts a friend request from the source with the given ID to the requester with the given ID.

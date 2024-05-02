@@ -54,7 +54,7 @@ fun FriendsActivityCard(activity: UserActivity) {
           CardDefaults.cardColors(
               containerColor = MaterialTheme.colorScheme.surfaceVariant,
           ),
-      modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("Activity")) {
+      modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("FriendActivityCard")) {
         Column(modifier = Modifier.padding(8.dp)) {
           Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
             Text(

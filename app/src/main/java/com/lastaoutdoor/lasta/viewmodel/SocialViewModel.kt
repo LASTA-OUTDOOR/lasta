@@ -1,5 +1,6 @@
 package com.lastaoutdoor.lasta.viewmodel
 
+import android.content.Context
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.runtime.getValue
@@ -8,6 +9,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.social.ConversationModel
 import com.lastaoutdoor.lasta.models.user.UserActivity
 import com.lastaoutdoor.lasta.models.user.UserModel
@@ -17,6 +19,7 @@ import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import com.lastaoutdoor.lasta.utils.ConnectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -28,6 +31,7 @@ import kotlinx.coroutines.launch
 class SocialViewModel
 @Inject
 constructor(
+    @ApplicationContext private val context: Context,
     val repository: SocialDBRepository,
     private val userDBRepo: UserDBRepository,
     connectionRepo: ConnectivityRepository,
@@ -80,7 +84,7 @@ constructor(
 
   init {
     viewModelScope.launch {
-      user = preferences.userPreferencesFlow.first().user
+      preferences.userPreferencesFlow.collect { user = it.user }
       refreshFriends()
       refreshFriendRequests()
       refreshMessages()
@@ -112,12 +116,21 @@ constructor(
               android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             // get current user id from the flow
             val userId = preferences.userPreferencesFlow.first().user.userId
-            val friendId = userDBRepo.getUserByEmail(email)?.userId ?: ""
-            // 2. send friend request
-            if (repository.sendFriendRequest(userId, friendId)) "Friend request sent"
-            else "Failed to send friend request"
+            val friendId = userDBRepo.getUserByEmail(email)?.userId
+            if (friendId == null) {
+              context.getString(R.string.no_account)
+            } else if (userId == friendId) {
+              context.getString(R.string.no_fr_yourself)
+            } else if (friendRequests.any { it.userId == friendId }) {
+              context.getString(R.string.no_fr_twice)
+            } else if (friends.any { it.userId == friendId }) {
+              context.getString(R.string.no_fr)
+            } else {
+              repository.sendFriendRequest(userId, friendId)
+              context.getString(R.string.fr_req_sent)
+            }
           } else {
-            "The email address is not valid"
+            context.getString(R.string.inv_email)
           }
     }
   }
@@ -125,8 +138,9 @@ constructor(
   fun acceptFriend(friend: UserModel) {
     viewModelScope.launch {
       repository.acceptFriendRequest(user.userId, friend.userId)
-      // update the list of friends
       refreshFriendRequests()
+      // update the list of friends
+      refreshFriends()
     }
   }
 
@@ -149,7 +163,11 @@ constructor(
 
   // Refresh the list of friends
   fun refreshFriends() {
-    viewModelScope.launch { friends = repository.getFriends(user.friends) }
+    viewModelScope.launch {
+      val userModel = userDBRepo.getUserById(user.userId)
+      preferences.updateFriends(userModel?.friends ?: emptyList())
+      friends = repository.getFriends(userModel?.friends ?: emptyList())
+    }
   }
 
   // Refresh the list of friends
