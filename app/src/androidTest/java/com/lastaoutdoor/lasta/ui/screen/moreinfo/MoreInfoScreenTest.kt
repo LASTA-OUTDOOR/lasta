@@ -5,21 +5,14 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
-import androidx.activity.compose.setContent
-import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithContentDescription
-import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.performClick
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.models.activity.Activity
-import com.lastaoutdoor.lasta.ui.MainActivity
-import dagger.hilt.android.testing.HiltAndroidRule
 import com.lastaoutdoor.lasta.models.activity.ClimbingActivity
 import com.lastaoutdoor.lasta.ui.MainActivity
 import com.lastaoutdoor.lasta.viewmodel.MapViewModel
@@ -94,7 +87,6 @@ class MoreInfoScreenTest {
     composeRule.onNodeWithTag("MoreInfoActivityTypeComposable").assertIsDisplayed()
     composeRule.onNodeWithTag("MoreInfoActivityTypeComposable").performClick()
   }
-
 
   @Test
   fun moreInfoMapIsDisplayed() {
