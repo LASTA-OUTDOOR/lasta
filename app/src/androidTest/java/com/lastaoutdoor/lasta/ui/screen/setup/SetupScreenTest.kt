@@ -24,243 +24,243 @@ import org.junit.Test
 @UninstallModules(AppModule::class, NetworkModule::class)
 class SetupScreenTest {
 
-    @get:Rule(order = 0) val hiltRule = HiltAndroidRule(this)
+  @get:Rule(order = 0) val hiltRule = HiltAndroidRule(this)
 
-    @get:Rule(order = 1) val composeRule = createAndroidComposeRule<MainActivity>()
+  @get:Rule(order = 1) val composeRule = createAndroidComposeRule<MainActivity>()
 
-    // Set up the test
-    @Before
-    fun setUp() {
-        hiltRule.inject()
+  // Set up the test
+  @Before
+  fun setUp() {
+    hiltRule.inject()
+  }
+
+  @Test
+  fun setupScreen_isDisplayed() {
+    var userId = "123"
+    var language = Language.ENGLISH
+    var prefActivity = ActivityType.HIKING
+    var levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
+
+    composeRule.activity.setContent {
+      SetupScreen(
+          userId,
+          language,
+          prefActivity,
+          levels,
+          { _, _, _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          {})
     }
+    composeRule.onNodeWithTag("setupScreen").assertIsDisplayed()
+    composeRule.onNodeWithTag("setupTitle").assertIsDisplayed()
+  }
 
-    @Test
-    fun setupScreen_isDisplayed() {
-        var userId = "123"
-        var language = Language.ENGLISH
-        var prefActivity = ActivityType.HIKING
-        var levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
+  @Test
+  fun setupScreen_changeLanguage() {
+    var userId = "123"
+    var language = Language.ENGLISH
+    var prefActivity = ActivityType.HIKING
+    var levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
 
-        composeRule.activity.setContent {
-            SetupScreen(
-                userId,
-                language,
-                prefActivity,
-                levels,
-                { _, _, _ -> },
-                { _ -> },
-                { _ -> },
-                { _ -> },
-                { _ -> },
-                { _ -> },
-                {})
-        }
-        composeRule.onNodeWithTag("setupScreen").assertIsDisplayed()
-        composeRule.onNodeWithTag("setupTitle").assertIsDisplayed()
+    composeRule.activity.setContent {
+      SetupScreen(
+          userId,
+          language,
+          prefActivity,
+          levels,
+          { _, _, _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          {})
     }
+    composeRule.onNodeWithTag("setupLanguage").assertIsDisplayed()
+    composeRule.onNodeWithTag("setupLanguage").performClick()
+    composeRule.onNodeWithText("French").performClick()
+    composeRule.onNodeWithTag("setupLanguage").assertIsDisplayed()
+  }
 
-    @Test
-    fun setupScreen_changeLanguage() {
-        var userId = "123"
-        var language = Language.ENGLISH
-        var prefActivity = ActivityType.HIKING
-        var levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
+  @Test
+  fun setupScreen_changeToClimbing() {
+    var userId = "123"
+    var language = Language.ENGLISH
+    var prefActivity = ActivityType.HIKING
+    var levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
 
-        composeRule.activity.setContent {
-            SetupScreen(
-                userId,
-                language,
-                prefActivity,
-                levels,
-                { _, _, _ -> },
-                { _ -> },
-                { _ -> },
-                { _ -> },
-                { _ -> },
-                { _ -> },
-                {})
-        }
-        composeRule.onNodeWithTag("setupLanguage").assertIsDisplayed()
-        composeRule.onNodeWithTag("setupLanguage").performClick()
-        composeRule.onNodeWithText("French").performClick()
-        composeRule.onNodeWithTag("setupLanguage").assertIsDisplayed()
+    composeRule.activity.setContent {
+      SetupScreen(
+          userId,
+          language,
+          prefActivity,
+          levels,
+          { _, _, _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          {})
     }
+    composeRule.onNodeWithTag("setupClimbing").assertIsDisplayed()
+    composeRule.onNodeWithTag("setupClimbing").performClick()
+  }
 
-    @Test
-    fun setupScreen_changeToClimbing() {
-        var userId = "123"
-        var language = Language.ENGLISH
-        var prefActivity = ActivityType.HIKING
-        var levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
+  @Test
+  fun setupScreen_changeToHiking() {
+    var userId = "123"
+    var language = Language.ENGLISH
+    var prefActivity = ActivityType.HIKING
+    var levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
 
-        composeRule.activity.setContent {
-            SetupScreen(
-                userId,
-                language,
-                prefActivity,
-                levels,
-                { _, _, _ -> },
-                { _ -> },
-                { _ -> },
-                { _ -> },
-                { _ -> },
-                { _ -> },
-                {})
-        }
-        composeRule.onNodeWithTag("setupClimbing").assertIsDisplayed()
-        composeRule.onNodeWithTag("setupClimbing").performClick()
+    composeRule.activity.setContent {
+      SetupScreen(
+          userId,
+          language,
+          prefActivity,
+          levels,
+          { _, _, _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          {})
     }
+    composeRule.onNodeWithTag("setupHiking").assertIsDisplayed()
+    composeRule.onNodeWithTag("setupHiking").performClick()
+    composeRule.onNodeWithTag("setupHiking").assertIsDisplayed()
+  }
 
-    @Test
-    fun setupScreen_changeToHiking() {
-        var userId = "123"
-        var language = Language.ENGLISH
-        var prefActivity = ActivityType.HIKING
-        var levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
+  @Test
+  fun setupScreen_changeToBiking() {
+    var userId = "123"
+    var language = Language.ENGLISH
+    var prefActivity = ActivityType.HIKING
+    var levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
 
-        composeRule.activity.setContent {
-            SetupScreen(
-                userId,
-                language,
-                prefActivity,
-                levels,
-                { _, _, _ -> },
-                { _ -> },
-                { _ -> },
-                { _ -> },
-                { _ -> },
-                { _ -> },
-                {})
-        }
-        composeRule.onNodeWithTag("setupHiking").assertIsDisplayed()
-        composeRule.onNodeWithTag("setupHiking").performClick()
-        composeRule.onNodeWithTag("setupHiking").assertIsDisplayed()
+    composeRule.activity.setContent {
+      SetupScreen(
+          userId,
+          language,
+          prefActivity,
+          levels,
+          { _, _, _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          {})
     }
+    composeRule.onNodeWithTag("setupBiking").assertIsDisplayed()
+    composeRule.onNodeWithTag("setupBiking").performClick()
+  }
 
-    @Test
-    fun setupScreen_changeToBiking() {
-        var userId = "123"
-        var language = Language.ENGLISH
-        var prefActivity = ActivityType.HIKING
-        var levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
+  @Test
+  fun setupScreen_changeHikingLevel() {
+    var userId = "123"
+    var language = Language.ENGLISH
+    var prefActivity = ActivityType.HIKING
+    var levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
 
-        composeRule.activity.setContent {
-            SetupScreen(
-                userId,
-                language,
-                prefActivity,
-                levels,
-                { _, _, _ -> },
-                { _ -> },
-                { _ -> },
-                { _ -> },
-                { _ -> },
-                { _ -> },
-                {})
-        }
-        composeRule.onNodeWithTag("setupBiking").assertIsDisplayed()
-        composeRule.onNodeWithTag("setupBiking").performClick()
+    composeRule.activity.setContent {
+      SetupScreen(
+          userId,
+          language,
+          prefActivity,
+          levels,
+          { _, _, _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          {})
     }
+    composeRule.onNodeWithTag("setupHIKINGLevel").assertIsDisplayed()
+    composeRule.onNodeWithTag("setupHIKINGLevel").performClick()
+    composeRule.onNodeWithText("Intermediate").performClick()
+  }
 
-    @Test
-    fun setupScreen_changeHikingLevel() {
-        var userId = "123"
-        var language = Language.ENGLISH
-        var prefActivity = ActivityType.HIKING
-        var levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
+  @Test
+  fun setupScreen_changeClimbingLevel() {
+    var userId = "123"
+    var language = Language.ENGLISH
+    var prefActivity = ActivityType.HIKING
+    var levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
 
-        composeRule.activity.setContent {
-            SetupScreen(
-                userId,
-                language,
-                prefActivity,
-                levels,
-                { _, _, _ -> },
-                { _ -> },
-                { _ -> },
-                { _ -> },
-                { _ -> },
-                { _ -> },
-                {})
-        }
-        composeRule.onNodeWithTag("setupHIKINGLevel").assertIsDisplayed()
-        composeRule.onNodeWithTag("setupHIKINGLevel").performClick()
-        composeRule.onNodeWithText("Intermediate").performClick()
+    composeRule.activity.setContent {
+      SetupScreen(
+          userId,
+          language,
+          prefActivity,
+          levels,
+          { _, _, _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          {})
     }
+    composeRule.onNodeWithTag("setupCLIMBINGLevel").assertIsDisplayed()
+    composeRule.onNodeWithTag("setupCLIMBINGLevel").performClick()
+    composeRule.onNodeWithText("Intermediate").performClick()
+  }
 
-    @Test
-    fun setupScreen_changeClimbingLevel() {
-        var userId = "123"
-        var language = Language.ENGLISH
-        var prefActivity = ActivityType.HIKING
-        var levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
+  @Test
+  fun setupScreen_changeBikingLevel() {
+    var userId = "123"
+    var language = Language.ENGLISH
+    var prefActivity = ActivityType.HIKING
+    var levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
 
-        composeRule.activity.setContent {
-            SetupScreen(
-                userId,
-                language,
-                prefActivity,
-                levels,
-                { _, _, _ -> },
-                { _ -> },
-                { _ -> },
-                { _ -> },
-                { _ -> },
-                { _ -> },
-                {})
-        }
-        composeRule.onNodeWithTag("setupCLIMBINGLevel").assertIsDisplayed()
-        composeRule.onNodeWithTag("setupCLIMBINGLevel").performClick()
-        composeRule.onNodeWithText("Intermediate").performClick()
+    composeRule.activity.setContent {
+      SetupScreen(
+          userId,
+          language,
+          prefActivity,
+          levels,
+          { _, _, _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          {})
     }
+    composeRule.onNodeWithTag("setupBikingLevel").assertIsDisplayed()
+    composeRule.onNodeWithTag("setupBikingLevel").performClick()
+    composeRule.onNodeWithText("Intermediate").performClick()
+  }
 
-    @Test
-    fun setupScreen_changeBikingLevel() {
-        var userId = "123"
-        var language = Language.ENGLISH
-        var prefActivity = ActivityType.HIKING
-        var levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
+  @Test
+  fun setupScreen_finishButton() {
+    var userId = "123"
+    var language = Language.ENGLISH
+    var prefActivity = ActivityType.HIKING
+    var levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
 
-        composeRule.activity.setContent {
-            SetupScreen(
-                userId,
-                language,
-                prefActivity,
-                levels,
-                { _, _, _ -> },
-                { _ -> },
-                { _ -> },
-                { _ -> },
-                { _ -> },
-                { _ -> },
-                {})
-        }
-        composeRule.onNodeWithTag("setupBikingLevel").assertIsDisplayed()
-        composeRule.onNodeWithTag("setupBikingLevel").performClick()
-        composeRule.onNodeWithText("Intermediate").performClick()
+    composeRule.activity.setContent {
+      SetupScreen(
+          userId,
+          language,
+          prefActivity,
+          levels,
+          { _, _, _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          {})
     }
-
-    @Test
-    fun setupScreen_finishButton() {
-        var userId = "123"
-        var language = Language.ENGLISH
-        var prefActivity = ActivityType.HIKING
-        var levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
-
-        composeRule.activity.setContent {
-            SetupScreen(
-                userId,
-                language,
-                prefActivity,
-                levels,
-                { _, _, _ -> },
-                { _ -> },
-                { _ -> },
-                { _ -> },
-                { _ -> },
-                { _ -> },
-                {})
-        }
-        composeRule.onNodeWithTag("setupFinishButton").performClick()
-    }
+    composeRule.onNodeWithTag("setupFinishButton").performClick()
+  }
 }
