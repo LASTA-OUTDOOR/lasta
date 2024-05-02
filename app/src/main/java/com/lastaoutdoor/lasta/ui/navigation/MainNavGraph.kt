@@ -148,9 +148,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val activityToDisplay = moreInfoScreenViewModel.activityToDisplay.value
       val weatherViewModel: WeatherViewModel = hiltViewModel(entry)
       val weather = weatherViewModel.weather.observeAsState().value
-      MoreInfoScreen(activityToDisplay, moreInfoScreenViewModel::processDiffText, weather) {
-        navController.navigateUp()
-      }
+      MoreInfoScreen(activityToDisplay, weather) { navController.navigateUp() }
     }
     composable(DestinationRoute.Filter.route) { FilterScreen { navController.popBackStack() } }
 

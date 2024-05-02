@@ -42,7 +42,6 @@ import com.lastaoutdoor.lasta.ui.theme.YellowDifficulty
 @Composable
 fun MoreInfoScreen(
     activityToDisplay: Activity,
-    processDiffText: (Activity) -> String,
     weather: WeatherResponse?,
     navigateBack: () -> Unit
 ) {
@@ -52,10 +51,10 @@ fun MoreInfoScreen(
       // contains the top icon buttons
       item { TopBar(navigateBack) }
       // displays activity title and duration
-      item { ActivityTitleZone(activityToDisplay, processDiffText) }
+      item { ActivityTitleZone(activityToDisplay) }
       item { WeatherReportBig(weather, true) }
       // displays activity difficulty, ration and view on map button
-      item { MiddleZone(activityToDisplay, processDiffText) }
+      item { MiddleZone(activityToDisplay) }
       // filled with a spacer for the moment but will contain address + community
     }
     StartButton()
@@ -89,7 +88,7 @@ fun StartButton() {
 // Displays the difficulty and rating of the activity on the left and a button to view the activity
 // on the map on the right
 @Composable
-fun MiddleZone(activityToDisplay: Activity, processDiffText: (Activity) -> String) {
+fun MiddleZone(activityToDisplay: Activity) {
   Row(modifier = Modifier.fillMaxWidth().testTag("MoreInfoMiddleZone")) {
     DiffAndRating(activityToDisplay)
     Spacer(Modifier.weight(1f))
@@ -220,13 +219,13 @@ fun TopBarLogo(logoPainterId: Int, f: () -> Unit) {
 
 // Displays the title of the activity, its type and its duration
 @Composable
-fun ActivityTitleZone(activityToDisplay: Activity, processDiffText: (Activity) -> String) {
+fun ActivityTitleZone(activityToDisplay: Activity) {
   Row { ElevatedActivityType(activityToDisplay) }
   Row {
     ActivityPicture()
     ActivityTitleText(activityToDisplay)
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
-      ElevatedDifficultyDisplay(diff = processDiffText(activityToDisplay))
+      ElevatedDifficultyDisplay(diff = activityToDisplay.difficulty.toString())
     }
   }
 }
