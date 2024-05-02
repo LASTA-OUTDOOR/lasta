@@ -30,6 +30,7 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
   override suspend fun getFriends(friendIds: List<String>): List<UserModel> {
     val friends: ArrayList<UserModel> = ArrayList()
     // Because when the friends list is super empty, the first element is an empty string
+    if (friendIds.isEmpty()) return friends
     if (friendIds.first().isEmpty()) return friends
     val friendsQuery = userCollection.whereIn(FieldPath.documentId(), friendIds).get().await()
     if (!friendsQuery.isEmpty) {
@@ -159,7 +160,7 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
     val messages: ArrayList<MessageModel> =
         (document.get("messages") as? ArrayList<*>)
             ?.map {
-              val message = it as HashMap<*, *>
+              val message = it as HashMap<String, Any>
               MessageModel(
                   message["from"] as String,
                   message["content"] as String,
