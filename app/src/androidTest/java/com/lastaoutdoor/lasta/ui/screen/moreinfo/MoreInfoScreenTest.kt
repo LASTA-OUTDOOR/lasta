@@ -9,7 +9,17 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
+import androidx.activity.compose.setContent
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
+import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.di.AppModule
+import com.lastaoutdoor.lasta.models.activity.Activity
+import com.lastaoutdoor.lasta.ui.MainActivity
+import dagger.hilt.android.testing.HiltAndroidRule
 import com.lastaoutdoor.lasta.models.activity.ClimbingActivity
 import com.lastaoutdoor.lasta.ui.MainActivity
 import com.lastaoutdoor.lasta.viewmodel.MapViewModel
@@ -35,6 +45,8 @@ class MoreInfoScreenTest {
   fun setUp() {
     hiltRule.inject()
     composeRule.activity.setContent {
+      val fakeActivity = Activity("", 0L)
+      MoreInfoScreen(fakeActivity, null, {})
       val navController = rememberNavController()
       val mapViewModel: MapViewModel = hiltViewModel()
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = hiltViewModel()
@@ -65,6 +77,7 @@ class MoreInfoScreenTest {
   @Test
   fun topBar_isDisplayed() {
     composeRule.onNodeWithTag("Top Bar").assertIsDisplayed()
+    composeRule.onNodeWithContentDescription("Top Bar logo ${R.drawable.download_button}")
   }
 
   // Test that the more info screen is displayed
@@ -78,9 +91,10 @@ class MoreInfoScreenTest {
     // Check that middle zone is displayed
     composeRule.onNodeWithTag("MoreInfoMiddleZone").assertIsDisplayed()
     // Check that activity title zone is displayed
-    // composeRule.onNodeWithTag("MoreInfoActivityTitleZone").assertIsDisplayed()
     composeRule.onNodeWithTag("MoreInfoActivityTypeComposable").assertIsDisplayed()
+    composeRule.onNodeWithTag("MoreInfoActivityTypeComposable").performClick()
   }
+
 
   @Test
   fun moreInfoMapIsDisplayed() {
