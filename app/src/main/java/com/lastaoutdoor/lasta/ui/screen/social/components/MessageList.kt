@@ -88,7 +88,7 @@ fun MessageCard(
           Modifier.height(height = 100.dp)
               .fillMaxWidth()
               .padding(8.dp)
-              .testTag("Message")
+              .testTag("MessageCard")
               .clickable { navigateToConversation(friend) }) {
         Column(modifier = Modifier.padding(8.dp)) {
           /*Row(

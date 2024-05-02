@@ -61,7 +61,7 @@ fun SocialScreen(
     navigateToConversation: (String) -> Unit,
     navigateToFriendProfile: (String) -> Unit
 ) {
-  Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+  Column(modifier = Modifier.fillMaxSize().padding(16.dp).testTag("SocialScreen")) {
 
     // Page title and button
     Header(
@@ -111,7 +111,7 @@ fun Header(
   LaunchedEffect(Unit) { refreshFriendRequests() }
 
   Row(
-      modifier = Modifier.fillMaxWidth().testTag("Header"),
+      modifier = Modifier.fillMaxWidth().testTag("SocialScreenHeader"),
       horizontalArrangement = Arrangement.SpaceBetween) {
         Text(
             text = LocalContext.current.getString(R.string.community),

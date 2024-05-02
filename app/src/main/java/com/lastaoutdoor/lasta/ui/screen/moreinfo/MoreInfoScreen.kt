@@ -18,6 +18,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -208,12 +209,14 @@ fun TopBar(navigateBack: () -> Unit) {
 
 // Logo of the top bar
 @Composable
-fun TopBarLogo(logoPainterId: Int, f: () -> Unit) {
+fun TopBarLogo(logoPainterId: Int, isFriendProf: Boolean = false, f: () -> Unit) {
   IconButton(onClick = { f() }) {
     Icon(
         painter = painterResource(id = logoPainterId),
         contentDescription = "Top Bar logo $logoPainterId",
-        modifier = Modifier.width(26.dp).height(26.dp))
+        modifier = Modifier.width(26.dp).height(26.dp),
+        // put to white if bool else put to default color
+        tint = if (isFriendProf) Color.White else MaterialTheme.colorScheme.onSurface)
   }
 }
 
