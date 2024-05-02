@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -92,7 +93,7 @@ fun BarGraph(
   // height of horizontal line over x-axis scale
   val horizontalLineHeight = 5.dp
 
-  Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopStart) {
+  Box(modifier = Modifier.fillMaxWidth().testTag("BarBox"), contentAlignment = Alignment.TopStart) {
 
     // y-axis scale and horizontal dotted lines on graph indicating y-axis scale
     Column(
@@ -134,7 +135,7 @@ fun BarGraph(
                 .height(height + xAxisScaleHeight),
         contentAlignment = BottomCenter) {
           Row(
-              modifier = Modifier.width(width - yAxisTextWidth),
+              modifier = Modifier.width(width - yAxisTextWidth).testTag("BarRow"),
               verticalAlignment = Alignment.Top,
               horizontalArrangement = barArrangement) {
 
@@ -199,7 +200,7 @@ fun BarGraph(
 
           // horizontal line on x-axis below the graph
           Column(
-              modifier = Modifier.fillMaxWidth().background(Color.Transparent),
+              modifier = Modifier.fillMaxWidth().background(Color.Transparent).testTag("BarCol"),
               horizontalAlignment = CenterHorizontally) {
                 Box(
                     modifier =

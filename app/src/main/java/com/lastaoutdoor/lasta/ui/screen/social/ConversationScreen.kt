@@ -48,7 +48,7 @@ fun ConversationScreen(
     SeparatorComponent()
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().testTag("ConversationScreen"),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start) {
           LazyColumn(modifier = Modifier.fillMaxWidth().fillMaxSize(0.8f)) {
@@ -88,7 +88,7 @@ fun ConversationScreen(
 @Composable
 fun Header(backCallBack: () -> Unit, friendName: String) {
   Row(
-      modifier = Modifier.fillMaxWidth().padding(16.dp).testTag("Header"),
+      modifier = Modifier.fillMaxWidth().padding(16.dp).testTag("ConversationScreenHeader"),
       horizontalArrangement = Arrangement.Start,
       verticalAlignment = Alignment.CenterVertically) {
         // back button

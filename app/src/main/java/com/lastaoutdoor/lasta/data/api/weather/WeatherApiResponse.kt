@@ -11,6 +11,12 @@ data class WeatherResponse(
 
 data class Wind(@SerializedName("speed") val speed: Double)
 
-data class Main(@SerializedName("temp") val temp: Double)
+data class Main(
+    @SerializedName("temp") val temp: Double,
+    @SerializedName("humidity") val hum: Double
+)
 
-data class Weather(@SerializedName("description") val description: String)
+data class Weather(
+    @SerializedName("description") val description: String,
+    @SerializedName("icon") val icon: String
+)

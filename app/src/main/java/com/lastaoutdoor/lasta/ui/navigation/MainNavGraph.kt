@@ -1,11 +1,9 @@
 package com.lastaoutdoor.lasta.ui.navigation
 
-import androidx.compose.runtime.LaunchedEffect
+import android.annotation.SuppressLint
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -32,23 +30,31 @@ import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 import com.lastaoutdoor.lasta.viewmodel.ConversationViewModel
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenViewModel
+import com.lastaoutdoor.lasta.viewmodel.MapViewModel
 import com.lastaoutdoor.lasta.viewmodel.MoreInfoScreenViewModel
 import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 import com.lastaoutdoor.lasta.viewmodel.ProfileScreenViewModel
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 import com.lastaoutdoor.lasta.viewmodel.WeatherViewModel
 
+@SuppressLint("StateFlowValueCalledInComposition")
 fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
   navigation(startDestination = DestinationRoute.Discover.route, route = BaseRoute.Main.route) {
     composable(DestinationRoute.Discover.route) { entry ->
       val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
-
+      val mapViewModel: MapViewModel = entry.sharedViewModel(navController)
       val activities = discoverScreenViewModel.activities.value
       val screen = discoverScreenViewModel.screen.collectAsState().value
       val range = discoverScreenViewModel.range.collectAsState().value
       val localities = discoverScreenViewModel.localities
       val selectedLocality = discoverScreenViewModel.selectedLocality.collectAsState().value
+      val weatherViewModel: WeatherViewModel = hiltViewModel(entry)
+      val weather = weatherViewModel.weather.observeAsState().value
+      val mapState = mapViewModel.state.collectAsState().value
+      val initialZoom = mapViewModel.initialZoom
+      val initialPosition = mapViewModel.initialPosition
+      val selectedZoom = mapViewModel.selectedZoom
 
       DiscoverScreen(
           activities,
@@ -62,16 +68,27 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           discoverScreenViewModel::setSelectedLocality,
           { navController.navigate(DestinationRoute.Filter.route) },
           { navController.navigate(DestinationRoute.MoreInfo.route) },
-          moreInfoScreenViewModel::changeActivityToDisplay)
+          moreInfoScreenViewModel::changeActivityToDisplay,
+          weather,
+          mapState,
+          mapViewModel::updatePermission,
+          initialPosition,
+          initialZoom,
+          mapViewModel::updateMarkers,
+          mapViewModel::updateSelectedMarker,
+          mapViewModel::clearSelectedItinerary,
+          selectedZoom,
+          mapViewModel::updateSelectedItinerary)
     }
     composable(DestinationRoute.Favorites.route) { entry ->
       val weatherViewModel: WeatherViewModel = hiltViewModel(entry)
-      val weather = weatherViewModel.weather.observeAsState().value ?: return@composable
+      val weather = weatherViewModel.weather.observeAsState().value
       FavoritesScreen({ navController.navigate(DestinationRoute.MoreInfo.route) }, weather)
     }
     composable(DestinationRoute.Socials.route) { entry ->
       val socialViewModel: SocialViewModel = entry.sharedViewModel(navController)
       val isConnected = socialViewModel.isConnected.collectAsState().value
+
       SocialScreen(
           socialViewModel.hasFriendRequest,
           socialViewModel.topButton,
@@ -101,7 +118,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
             navController.navigate(DestinationRoute.Conversation.route + "/$userId")
           },
           { userId: String ->
-            navController.navigate(DestinationRoute.Conversation.route + "/$userId")
+            navController.navigate(DestinationRoute.FriendProfile.route + "/$userId")
           },
       )
     }
@@ -130,9 +147,9 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
     composable(DestinationRoute.MoreInfo.route) { entry ->
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
       val activityToDisplay = moreInfoScreenViewModel.activityToDisplay.value
-      MoreInfoScreen(activityToDisplay, moreInfoScreenViewModel::processDiffText) {
-        navController.navigateUp()
-      }
+      val weatherViewModel: WeatherViewModel = hiltViewModel(entry)
+      val weather = weatherViewModel.weather.observeAsState().value
+      MoreInfoScreen(activityToDisplay, weather) { navController.navigateUp() }
     }
     composable(DestinationRoute.Filter.route) { entry ->
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
@@ -173,35 +190,51 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
             navController.navigateUp()
           }
     }
-    composable(
-        DestinationRoute.FriendProfile.route + "/{friendId}",
-        arguments = listOf(navArgument("friendId") { type = NavType.StringType })) { entry ->
-          val socialViewModel: SocialViewModel = entry.sharedViewModel(navController)
-          socialViewModel.refreshFriends()
-          val friendId = entry.arguments?.getString("friendId") ?: ""
-          val defaultUserModel: UserModel = UserModel(friendId)
+    composable(DestinationRoute.FriendProfile.route + "/{friendId}") { entry ->
+      val profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(entry)
 
-          // Create a state for the UserModel with a default value
-          val friendUserModel = remember { mutableStateOf(defaultUserModel) }
+      // Update the user to display
+      profileScreenViewModel.updateUser(entry.arguments?.getString("friendId") ?: "")
 
-          // Update the state when the list is updated
-          LaunchedEffect(socialViewModel.friends) {
-            friendUserModel.value =
-                socialViewModel.friends.firstOrNull { it.userId == friendId } ?: defaultUserModel
-          }
-          FriendProfileScreen(friendUserModel.value, navController::navigateUp)
-        }
+      val activities by profileScreenViewModel.filteredActivities.collectAsState()
+      val timeFrame by profileScreenViewModel.timeFrame.collectAsState()
+      val sport by profileScreenViewModel.sport.collectAsState()
+      val isCurrentUser by profileScreenViewModel.isCurrentUser.collectAsState()
+      val user = profileScreenViewModel.user.value
+
+      FriendProfileScreen(
+          activities = activities,
+          timeFrame = timeFrame,
+          sport = sport,
+          isCurrentUser = isCurrentUser,
+          user = user,
+          setSport = profileScreenViewModel::setSport,
+          setTimeFrame = profileScreenViewModel::setTimeFrame,
+          navigateToSettings = { navController.navigate(DestinationRoute.Settings.route) },
+          onBack = { navController.navigateUp() })
+    }
 
     composable(DestinationRoute.Settings.route) { entry ->
       val authViewModel: AuthViewModel = hiltViewModel()
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
       val language = preferencesViewModel.language.collectAsState(initial = Language.ENGLISH).value
       val prefActivity = preferencesViewModel.prefActivity.collectAsState(ActivityType.HIKING).value
+      val levels =
+          preferencesViewModel.levels
+              .collectAsState(
+                  initial =
+                      UserActivitiesLevel(
+                          UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER))
+              .value
       SettingsScreen(
           language,
           prefActivity,
+          levels,
           preferencesViewModel::updateLanguage,
           preferencesViewModel::updatePrefActivity,
+          preferencesViewModel::updateClimbingLevel,
+          preferencesViewModel::updateHikingLevel,
+          preferencesViewModel::updateBikingLevel,
           { navController.navigateUp() },
           {
             preferencesViewModel.clearPreferences()

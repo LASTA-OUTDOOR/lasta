@@ -15,6 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -60,7 +61,7 @@ fun SocialScreen(
     navigateToConversation: (String) -> Unit,
     navigateToFriendProfile: (String) -> Unit
 ) {
-  Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+  Column(modifier = Modifier.fillMaxSize().padding(16.dp).testTag("SocialScreen")) {
 
     // Page title and button
     Header(
@@ -107,10 +108,10 @@ fun Header(
 ) {
 
   // This will be called when the composable becomes visible
-  // LaunchedEffect(Unit) { refreshFriendRequests() }
+  LaunchedEffect(Unit) { refreshFriendRequests() }
 
   Row(
-      modifier = Modifier.fillMaxWidth().testTag("Header"),
+      modifier = Modifier.fillMaxWidth().testTag("SocialScreenHeader"),
       horizontalArrangement = Arrangement.SpaceBetween) {
         Text(
             text = LocalContext.current.getString(R.string.community),
