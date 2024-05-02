@@ -41,5 +41,6 @@ class LoadingScreenTest {
       LoadingScreen(isLoggedIn = true, navigateWhenLoggedIn = {}) {}
     }
     composeRule.onNodeWithTag("LoadingScreen").assertIsDisplayed()
+    composeRule.onNodeWithTag("LoadingScreen").assertIsDisplayed()
   }
 }
