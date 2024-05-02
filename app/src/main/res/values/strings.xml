@@ -118,4 +118,5 @@
     <!--Settings-->
     <string name = "Account_settings">Settings</string>
     <string name= "delete_account">Delete Account</string>
+    <string name="sport_level">Level:</string>
 </resources>

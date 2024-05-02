@@ -27,9 +27,9 @@
     <string name="pitches">Seillängen</string>
     <string name="time">Zeit</string>
     <string name="elevation">Höhe</string>
-    <string name="select_languague">Wählen Sie Ihre Sprache</string>
+    <string name="select_languague">Wählen Sie Ihre Sprache :</string>
     <string name="languague">Sprache:</string>
-    <string name="select_fav_activity">Wählen Sie Ihre Lieblingsaktivität</string>
+    <string name="select_fav_activity">Wählen Sie Ihre Lieblingsaktivität :</string>
     <string name="save">Speichern</string>
     <string name="setup_title">Einstellungen</string>
     <string name="activity_type">Aktivitätstyp</string>
@@ -87,4 +87,5 @@
     <string name="delete_account">Konto löschen</string>
     <string name="tab_favorites">Favoriten</string>
     <string name="tab_socials">Freunde</string>
+    <string name="sport_level">Niveau:</string>
 </resources>
