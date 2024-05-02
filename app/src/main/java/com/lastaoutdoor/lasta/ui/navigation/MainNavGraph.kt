@@ -13,6 +13,8 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.Language
+import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
+import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.screen.discover.DiscoverScreen
 import com.lastaoutdoor.lasta.ui.screen.discover.FilterScreen
@@ -205,11 +207,22 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
       val language = preferencesViewModel.language.collectAsState(initial = Language.ENGLISH).value
       val prefActivity = preferencesViewModel.prefActivity.collectAsState(ActivityType.HIKING).value
+      val levels =
+          preferencesViewModel.levels
+              .collectAsState(
+                  initial =
+                      UserActivitiesLevel(
+                          UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER))
+              .value
       SettingsScreen(
           language,
           prefActivity,
+          levels,
           preferencesViewModel::updateLanguage,
           preferencesViewModel::updatePrefActivity,
+          preferencesViewModel::updateClimbingLevel,
+          preferencesViewModel::updateHikingLevel,
+          preferencesViewModel::updateBikingLevel,
           { navController.navigateUp() },
           {
             preferencesViewModel.clearPreferences()
