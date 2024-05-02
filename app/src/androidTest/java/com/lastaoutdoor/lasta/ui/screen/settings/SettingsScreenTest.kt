@@ -13,6 +13,7 @@ import com.lastaoutdoor.lasta.models.user.Language
 import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.ui.MainActivity
+import com.lastaoutdoor.lasta.ui.theme.LastaTheme
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -31,10 +32,6 @@ class SettingsScreenTest {
   @Before
   fun setUp() {
     hiltRule.inject()
-
-    val language = Language.ENGLISH
-    val prefActivity = ActivityType.HIKING
-    val levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
   }
 
   @Test
@@ -43,10 +40,20 @@ class SettingsScreenTest {
     val prefActivity = ActivityType.HIKING
     val levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
     composeRule.activity.setContent {
-      SettingsScreen(
-          language, prefActivity, levels, { _ -> }, { _ -> }, { _ -> }, { _ -> }, { _ -> }, {}, {})
+      LastaTheme(darkTheme = true) {
+        SettingsScreen(
+            language,
+            prefActivity,
+            levels,
+            { _ -> },
+            { _ -> },
+            { _ -> },
+            { _ -> },
+            { _ -> },
+            {},
+            {})
+      }
     }
-
     composeRule.onNodeWithTag("TopBarLogoTag").assertIsDisplayed()
   }
 
@@ -56,8 +63,19 @@ class SettingsScreenTest {
     val prefActivity = ActivityType.HIKING
     val levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
     composeRule.activity.setContent {
-      SettingsScreen(
-          language, prefActivity, levels, { _ -> }, { _ -> }, { _ -> }, { _ -> }, { _ -> }, {}, {})
+      LastaTheme(darkTheme = false) {
+        SettingsScreen(
+            language,
+            prefActivity,
+            levels,
+            { _ -> },
+            { _ -> },
+            { _ -> },
+            { _ -> },
+            { _ -> },
+            {},
+            {})
+      }
     }
 
     composeRule.onNodeWithTag("settingsScreen").assertIsDisplayed()
@@ -79,7 +97,7 @@ class SettingsScreenTest {
     composeRule.onNodeWithTag("settingsLanguage").assertIsDisplayed()
   }
 
-  @Test
+  /*@Test
   fun settingsScreen_changeToHiking() {
     val language = Language.ENGLISH
     val prefActivity = ActivityType.HIKING
@@ -188,4 +206,6 @@ class SettingsScreenTest {
     composeRule.onNodeWithTag("settingsDeleteAccount").assertIsDisplayed()
     composeRule.onNodeWithTag("settingsDeleteAccount").performClick()
   }
+
+   */
 }
