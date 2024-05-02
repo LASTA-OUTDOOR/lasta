@@ -51,14 +51,13 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
       val language = Language.valueOf(user.getString("language") ?: Language.ENGLISH.name)
       val prefActivity =
           ActivityType.valueOf(user.getString("prefActivity") ?: ActivityType.CLIMBING.name)
+      val levelsMap = (user.get("levels") ?: HashMap<String, String>()) as Map<String, String>
       val levels =
           UserActivitiesLevel(
               climbingLevel =
-                  UserLevel.valueOf(user.getString("climbingLevel") ?: UserLevel.BEGINNER.name),
-              hikingLevel =
-                  UserLevel.valueOf(user.getString("hikingLevel") ?: UserLevel.BEGINNER.name),
-              bikingLevel =
-                  UserLevel.valueOf(user.getString("bikingLevel") ?: UserLevel.BEGINNER.name))
+                  UserLevel.valueOf(levelsMap["climbingLevel"] ?: UserLevel.BEGINNER.name),
+              hikingLevel = UserLevel.valueOf(levelsMap["hikingLevel"] ?: UserLevel.BEGINNER.name),
+              bikingLevel = UserLevel.valueOf(levelsMap["bikingLevel"] ?: UserLevel.BEGINNER.name))
       val friends = (user.get("friends") ?: emptyList<String>()) as List<String>
       val friendRequests = (user.get("friendRequests") ?: emptyList<String>()) as List<String>
       val favorites = (user.get("favorites") ?: emptyList<String>()) as List<String>
@@ -88,14 +87,13 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
       val language = Language.valueOf(user.getString("language") ?: Language.ENGLISH.name)
       val prefActivity =
           ActivityType.valueOf(user.getString("prefActivity") ?: ActivityType.CLIMBING.name)
+      val levelsMap = (user.get("levels") ?: HashMap<String, String>()) as Map<String, String>
       val levels =
           UserActivitiesLevel(
               climbingLevel =
-                  UserLevel.valueOf(user.getString("climbingLevel") ?: UserLevel.BEGINNER.name),
-              hikingLevel =
-                  UserLevel.valueOf(user.getString("hikingLevel") ?: UserLevel.BEGINNER.name),
-              bikingLevel =
-                  UserLevel.valueOf(user.getString("bikingLevel") ?: UserLevel.BEGINNER.name))
+                  UserLevel.valueOf(levelsMap["climbingLevel"] ?: UserLevel.BEGINNER.name),
+              hikingLevel = UserLevel.valueOf(levelsMap["hikingLevel"] ?: UserLevel.BEGINNER.name),
+              bikingLevel = UserLevel.valueOf(levelsMap["bikingLevel"] ?: UserLevel.BEGINNER.name))
       val friends = (user.get("friends") ?: emptyList<String>()) as List<String>
       val friendRequests = (user.get("friendRequests") ?: emptyList<String>()) as List<String>
       val favorites = (user.get("favorites") ?: emptyList<String>()) as List<String>

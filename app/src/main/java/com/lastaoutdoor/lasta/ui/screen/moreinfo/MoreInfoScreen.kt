@@ -34,8 +34,8 @@ import androidx.compose.ui.unit.sp
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.models.activity.Activity
-import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
 import com.lastaoutdoor.lasta.models.activity.Difficulty
+import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
 import com.lastaoutdoor.lasta.ui.theme.Black
 import com.lastaoutdoor.lasta.ui.theme.GreenDifficulty
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue

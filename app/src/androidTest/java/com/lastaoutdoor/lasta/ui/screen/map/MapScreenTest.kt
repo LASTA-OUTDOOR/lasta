@@ -11,7 +11,6 @@ import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import com.lastaoutdoor.lasta.di.AppModule
-import com.lastaoutdoor.lasta.models.map.ClimbingMarker
 import com.lastaoutdoor.lasta.ui.MainActivity
 import com.lastaoutdoor.lasta.viewmodel.MapState
 import dagger.hilt.android.testing.HiltAndroidRule

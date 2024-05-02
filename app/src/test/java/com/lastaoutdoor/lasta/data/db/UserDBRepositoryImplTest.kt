@@ -101,9 +101,9 @@ class UserDBRepositoryImplTest {
     every { documentSnapshot.getString("description") } returns "description"
     every { documentSnapshot.getString("language") } returns "ENGLISH"
     every { documentSnapshot.getString("prefActivity") } returns "CLIMBING"
-    every { documentSnapshot.getString("climbingLevel") } returns "BEGINNER"
-    every { documentSnapshot.getString("hikingLevel") } returns "BEGINNER"
-    every { documentSnapshot.getString("bikingLevel") } returns "BEGINNER"
+    every { documentSnapshot.get("levels") } returns
+        hashMapOf(
+            "climbingLevel" to "BEGINNER", "hikingLevel" to "BEGINNER", "bikingLevel" to "BEGINNER")
     every { documentSnapshot.get("friends") } returns emptyList<String>()
     every { documentSnapshot.get("friendRequests") } returns emptyList<String>()
     every { documentSnapshot.get("favorites") } returns emptyList<String>()
@@ -161,9 +161,9 @@ class UserDBRepositoryImplTest {
     every { documentSnapshot.getString("description") } returns "description"
     every { documentSnapshot.getString("language") } returns "ENGLISH"
     every { documentSnapshot.getString("prefActivity") } returns "CLIMBING"
-    every { documentSnapshot.getString("climbingLevel") } returns "BEGINNER"
-    every { documentSnapshot.getString("hikingLevel") } returns "BEGINNER"
-    every { documentSnapshot.getString("bikingLevel") } returns "BEGINNER"
+    every { documentSnapshot.get("levels") } returns
+        hashMapOf(
+            "climbingLevel" to "BEGINNER", "hikingLevel" to "BEGINNER", "bikingLevel" to "BEGINNER")
     every { documentSnapshot.get("friends") } returns emptyList<String>()
     every { documentSnapshot.get("friendRequests") } returns emptyList<String>()
     every { documentSnapshot.get("favorites") } returns emptyList<String>()

@@ -79,15 +79,42 @@ constructor(private val preferences: PreferencesRepository, private val userDB: 
   }
 
   fun updateClimbingLevel(level: UserLevel) {
-    viewModelScope.launch { preferences.updateClimbingLevel(level) }
+    viewModelScope.launch {
+      preferences.updateClimbingLevel(level)
+      userDB.updateField(
+          userId.first(),
+          "levels",
+          hashMapOf(
+              "climbingLevel" to level.name,
+              "hikingLevel" to levels.first().hikingLevel.name,
+              "bikingLevel" to levels.first().bikingLevel.name))
+    }
   }
 
   fun updateHikingLevel(level: UserLevel) {
-    viewModelScope.launch { preferences.updateHikingLevel(level) }
+    viewModelScope.launch {
+      preferences.updateHikingLevel(level)
+      userDB.updateField(
+          userId.first(),
+          "levels",
+          hashMapOf(
+              "climbingLevel" to levels.first().climbingLevel.name,
+              "hikingLevel" to level.name,
+              "bikingLevel" to levels.first().bikingLevel.name))
+    }
   }
 
   fun updateBikingLevel(level: UserLevel) {
-    viewModelScope.launch { preferences.updateBikingLevel(level) }
+    viewModelScope.launch {
+      preferences.updateBikingLevel(level)
+      userDB.updateField(
+          userId.first(),
+          "levels",
+          hashMapOf(
+              "climbingLevel" to levels.first().climbingLevel.name,
+              "hikingLevel" to levels.first().hikingLevel.name,
+              "bikingLevel" to level.name))
+    }
   }
 
   fun updateFriends(friends: List<String>) {

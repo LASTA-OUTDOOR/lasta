@@ -1,11 +1,8 @@
 package com.lastaoutdoor.lasta.ui.navigation
 
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -32,8 +29,8 @@ import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 import com.lastaoutdoor.lasta.viewmodel.ConversationViewModel
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenViewModel
-import com.lastaoutdoor.lasta.viewmodel.MapViewModel
 import com.lastaoutdoor.lasta.viewmodel.FavoritesScreenViewModel
+import com.lastaoutdoor.lasta.viewmodel.MapViewModel
 import com.lastaoutdoor.lasta.viewmodel.MoreInfoScreenViewModel
 import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 import com.lastaoutdoor.lasta.viewmodel.ProfileScreenViewModel
@@ -208,7 +205,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val timeFrame by profileScreenViewModel.timeFrame.collectAsState()
       val sport by profileScreenViewModel.sport.collectAsState()
       val isCurrentUser by profileScreenViewModel.isCurrentUser.collectAsState()
-      val user = profileScreenViewModel.user.value
+      val user = profileScreenViewModel.user.collectAsState().value
 
       FriendProfileScreen(
           activities = activities,

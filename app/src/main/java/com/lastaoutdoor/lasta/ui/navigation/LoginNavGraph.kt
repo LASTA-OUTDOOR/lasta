@@ -61,7 +61,6 @@ fun NavGraphBuilder.addLoginNavGraph(navController: NavHostController) {
           prefActivity = prefActivity,
           levels = levels,
           userId = userId,
-          updateFieldInUser = authViewModel::updateFieldInUser,
           updateLanguage = preferencesViewModel::updateLanguage,
           updatePrefActivity = preferencesViewModel::updatePrefActivity,
           updateClimbingLevel = preferencesViewModel::updateClimbingLevel,
