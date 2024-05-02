@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.social.ConversationModel
 import com.lastaoutdoor.lasta.models.user.UserActivity
 import com.lastaoutdoor.lasta.models.user.UserModel
@@ -114,16 +115,19 @@ constructor(
             val userId = preferences.userPreferencesFlow.first().user.userId
             val friendId = userDBRepo.getUserByEmail(email)?.userId
             if (friendId == null) {
-              "The email address is not associated with any account"
+              R.string.no_account.toString()
             } else if (userId == friendId) {
-              "You cannot add yourself as a friend"
+              R.string.no_fr_yourself.toString()
+            } else if (friendRequests.any { it.userId == friendId }) {
+              R.string.no_fr_twice.toString()
+            } else if (friends.any { it.userId == friendId }) {
+              R.string.no_fr.toString()
             } else {
-              // 2. send friend request
-              if (repository.sendFriendRequest(userId, friendId)) "Friend request sent"
-              else "Failed to send friend request"
+              repository.sendFriendRequest(userId, friendId)
+              R.string.fr_req_sent.toString()
             }
           } else {
-            "The email address is not valid"
+            R.string.inv_email.toString()
           }
     }
   }

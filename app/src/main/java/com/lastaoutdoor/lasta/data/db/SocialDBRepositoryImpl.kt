@@ -181,15 +181,13 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
     return conversationsQuery.documents.mapNotNull { it.toObject(ConversationModel::class.java) }
   }
 
-  override suspend fun sendFriendRequest(userId: String, receiverId: String): Boolean {
-    var success = true
+  override suspend fun sendFriendRequest(userId: String, receiverId: String): Unit {
     // Create a reference to the user's document in the Firestore database
     val userDocumentRef = userCollection.document(receiverId)
 
     // Store the uid of the sender in the user's document in an array in case there are multiple
     // requests (This does not allow duplicates)
     userDocumentRef.update("friendRequests", FieldValue.arrayUnion(userId)).await()
-    return success
   }
 
   override suspend fun acceptFriendRequest(source: String, requester: String) {
