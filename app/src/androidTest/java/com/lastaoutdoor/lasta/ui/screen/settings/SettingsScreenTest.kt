@@ -35,26 +35,44 @@ class SettingsScreenTest {
     val language = Language.ENGLISH
     val prefActivity = ActivityType.HIKING
     val levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
-
-    composeRule.activity.setContent {
-      SettingsScreen(
-          language, prefActivity, levels, { _ -> }, { _ -> }, { _ -> }, { _ -> }, { _ -> }, {}, {})
-    }
   }
 
   @Test
   fun settingsScreenTopBar_isDisplayed() {
+    val language = Language.ENGLISH
+    val prefActivity = ActivityType.HIKING
+    val levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
+    composeRule.activity.setContent {
+      SettingsScreen(
+          language, prefActivity, levels, { _ -> }, { _ -> }, { _ -> }, { _ -> }, { _ -> }, {}, {})
+    }
+
     composeRule.onNodeWithTag("TopBarLogoTag").assertIsDisplayed()
   }
 
   @Test
   fun settingsScreen_isDisplayed() {
+    val language = Language.ENGLISH
+    val prefActivity = ActivityType.HIKING
+    val levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
+    composeRule.activity.setContent {
+      SettingsScreen(
+          language, prefActivity, levels, { _ -> }, { _ -> }, { _ -> }, { _ -> }, { _ -> }, {}, {})
+    }
+
     composeRule.onNodeWithTag("settingsScreen").assertIsDisplayed()
     composeRule.onNodeWithTag("settingsTitle").assertIsDisplayed()
   }
 
   @Test
   fun settingsScreen_changeLanguage() {
+    val language = Language.ENGLISH
+    val prefActivity = ActivityType.HIKING
+    val levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
+    composeRule.activity.setContent {
+      SettingsScreen(
+          language, prefActivity, levels, { _ -> }, { _ -> }, { _ -> }, { _ -> }, { _ -> }, {}, {})
+    }
     composeRule.onNodeWithTag("settingsLanguage").assertIsDisplayed()
     composeRule.onNodeWithTag("settingsLanguage").performClick()
     composeRule.onNodeWithText("French").performClick()
@@ -63,6 +81,13 @@ class SettingsScreenTest {
 
   @Test
   fun settingsScreen_changeToHiking() {
+    val language = Language.ENGLISH
+    val prefActivity = ActivityType.HIKING
+    val levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
+    composeRule.activity.setContent {
+      SettingsScreen(
+          language, prefActivity, levels, { _ -> }, { _ -> }, { _ -> }, { _ -> }, { _ -> }, {}, {})
+    }
     composeRule.onNodeWithTag("settingsHiking").assertIsDisplayed()
     composeRule.onNodeWithTag("settingsHiking").performClick()
     composeRule.onNodeWithTag("settingsHiking").assertIsDisplayed()
@@ -70,6 +95,13 @@ class SettingsScreenTest {
 
   @Test
   fun settingsScreen_changeToClimbing() {
+    val language = Language.ENGLISH
+    val prefActivity = ActivityType.HIKING
+    val levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
+    composeRule.activity.setContent {
+      SettingsScreen(
+          language, prefActivity, levels, { _ -> }, { _ -> }, { _ -> }, { _ -> }, { _ -> }, {}, {})
+    }
     composeRule.onNodeWithTag("settingsClimbing").assertIsDisplayed()
     composeRule.onNodeWithTag("settingsClimbing").performClick()
     composeRule.onNodeWithTag("settingsClimbing").assertIsDisplayed()
@@ -77,6 +109,13 @@ class SettingsScreenTest {
 
   @Test
   fun settingsScreen_changeToBiking() {
+    val language = Language.ENGLISH
+    val prefActivity = ActivityType.HIKING
+    val levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
+    composeRule.activity.setContent {
+      SettingsScreen(
+          language, prefActivity, levels, { _ -> }, { _ -> }, { _ -> }, { _ -> }, { _ -> }, {}, {})
+    }
     composeRule.onNodeWithTag("settingsBiking").assertIsDisplayed()
     composeRule.onNodeWithTag("settingsBiking").performClick()
     composeRule.onNodeWithTag("settingsBiking").assertIsDisplayed()
@@ -84,6 +123,13 @@ class SettingsScreenTest {
 
   @Test
   fun settingsScreen_changeHikingLevel() {
+    val language = Language.ENGLISH
+    val prefActivity = ActivityType.HIKING
+    val levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
+    composeRule.activity.setContent {
+      SettingsScreen(
+          language, prefActivity, levels, { _ -> }, { _ -> }, { _ -> }, { _ -> }, { _ -> }, {}, {})
+    }
     composeRule.onNodeWithTag("settingsHIKINGLevel").assertIsDisplayed()
     composeRule.onNodeWithTag("settingsHIKINGLevel").performClick()
     composeRule.onNodeWithText("Intermediate").performClick()
@@ -91,6 +137,13 @@ class SettingsScreenTest {
 
   @Test
   fun settingsScreen_changeClimbingLevel() {
+    val language = Language.ENGLISH
+    val prefActivity = ActivityType.HIKING
+    val levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
+    composeRule.activity.setContent {
+      SettingsScreen(
+          language, prefActivity, levels, { _ -> }, { _ -> }, { _ -> }, { _ -> }, { _ -> }, {}, {})
+    }
     composeRule.onNodeWithTag("settingsCLIMBINGLevel").assertIsDisplayed()
     composeRule.onNodeWithTag("settingsCLIMBINGLevel").performClick()
     composeRule.onNodeWithText("Intermediate").performClick()
@@ -98,6 +151,13 @@ class SettingsScreenTest {
 
   @Test
   fun settingsScreen_changeBikingLevel() {
+    val language = Language.ENGLISH
+    val prefActivity = ActivityType.HIKING
+    val levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
+    composeRule.activity.setContent {
+      SettingsScreen(
+          language, prefActivity, levels, { _ -> }, { _ -> }, { _ -> }, { _ -> }, { _ -> }, {}, {})
+    }
     composeRule.onNodeWithTag("settingsBIKINGLevel").assertIsDisplayed()
     composeRule.onNodeWithTag("settingsBIKINGLevel").performClick()
     composeRule.onNodeWithText("Intermediate").performClick()
@@ -105,12 +165,26 @@ class SettingsScreenTest {
 
   @Test
   fun settingsScreen_signOut() {
+    val language = Language.ENGLISH
+    val prefActivity = ActivityType.HIKING
+    val levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
+    composeRule.activity.setContent {
+      SettingsScreen(
+          language, prefActivity, levels, { _ -> }, { _ -> }, { _ -> }, { _ -> }, { _ -> }, {}, {})
+    }
     composeRule.onNodeWithTag("settingsSignOut").assertIsDisplayed()
     composeRule.onNodeWithTag("settingsSignOut").performClick()
   }
 
   @Test
   fun settingsScreen_deleteAccount() {
+    val language = Language.ENGLISH
+    val prefActivity = ActivityType.HIKING
+    val levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
+    composeRule.activity.setContent {
+      SettingsScreen(
+          language, prefActivity, levels, { _ -> }, { _ -> }, { _ -> }, { _ -> }, { _ -> }, {}, {})
+    }
     composeRule.onNodeWithTag("settingsDeleteAccount").assertIsDisplayed()
     composeRule.onNodeWithTag("settingsDeleteAccount").performClick()
   }
