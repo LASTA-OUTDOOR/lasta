@@ -17,12 +17,12 @@ import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import com.lastaoutdoor.lasta.utils.ConnectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class SocialViewModel
@@ -155,12 +155,11 @@ constructor(
   }
 
   // Refresh the list of friends
-   fun refreshFriends() {
+  fun refreshFriends() {
     viewModelScope.launch {
       val userModel = userDBRepo.getUserById(user.userId)
       preferences.updateFriends(userModel?.friends ?: emptyList())
       friends = repository.getFriends(userModel?.friends ?: emptyList())
-
     }
   }
 

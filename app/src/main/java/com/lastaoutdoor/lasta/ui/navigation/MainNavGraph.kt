@@ -87,7 +87,8 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
     composable(DestinationRoute.Socials.route) { entry ->
       val socialViewModel: SocialViewModel = entry.sharedViewModel(navController)
       val isConnected = socialViewModel.isConnected.collectAsState().value
-        SocialScreen(
+
+      SocialScreen(
           socialViewModel.hasFriendRequest,
           socialViewModel.topButton,
           socialViewModel.topButtonIcon,
