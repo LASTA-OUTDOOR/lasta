@@ -115,13 +115,8 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
   }
 
   override suspend fun updateField(userId: String, field: String, value: Any) {
-    // Create a reference to the document with the user's UID
     val userDocumentRef = userCollection.document(userId)
-
-    // Create a data map with the field and value
     val data = hashMapOf(field to value)
-
-    // Update the field in the document
     userDocumentRef.update(data as Map<String, Any>).await()
   }
 
