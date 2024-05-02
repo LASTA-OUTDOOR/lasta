@@ -12,8 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
@@ -43,7 +43,6 @@ import com.lastaoutdoor.lasta.ui.theme.YellowDifficulty
 @Composable
 fun MoreInfoScreen(
     activityToDisplay: Activity,
-    processDiffText: (Activity) -> String,
     weather: WeatherResponse?,
     navigateBack: () -> Unit
 ) {
@@ -56,7 +55,7 @@ fun MoreInfoScreen(
       item { ActivityTitleZone(activityToDisplay) }
       item { WeatherReportBig(weather, true) }
       // displays activity difficulty, ration and view on map button
-      item { MiddleZone(activityToDisplay, processDiffText) }
+      item { MiddleZone(activityToDisplay) }
       // filled with a spacer for the moment but will contain address + community
     }
     StartButton()
@@ -90,9 +89,9 @@ fun StartButton() {
 // Displays the difficulty and rating of the activity on the left and a button to view the activity
 // on the map on the right
 @Composable
-fun MiddleZone(activityToDisplay: Activity, processDiffText: (Activity) -> String) {
+fun MiddleZone(activityToDisplay: Activity) {
   Row(modifier = Modifier.fillMaxWidth().testTag("MoreInfoMiddleZone")) {
-    DiffAndRating(activityToDisplay, processDiffText)
+    DiffAndRating(activityToDisplay)
     Spacer(Modifier.weight(1f))
     ViewOnMapButton()
   }
@@ -124,34 +123,55 @@ fun ViewOnMapButton() {
 
 // Displays the difficulty and rating of the activity
 @Composable
-fun DiffAndRating(activityToDisplay: Activity, processDiffText: (Activity) -> String) {
+fun DiffAndRating(activityToDisplay: Activity) {
   Column(modifier = Modifier.padding(vertical = 5.dp)) {
-    ElevatedDifficultyDisplay(diff = processDiffText(activityToDisplay))
-    /*Not implemented yet so a hard-coded value is returned*/
-    RatingDisplay(4.3)
+    RatingDisplay(activityToDisplay.rating, activityToDisplay.numRatings)
   }
 }
 
 // Displays the rating of the activity
 @Composable
-fun RatingDisplay(rating: Double) {
-  Row(modifier = Modifier.padding(vertical = 30.dp)) {
-    Icon(
-        imageVector = Icons.Filled.Star,
-        contentDescription = "Rating Star",
-        tint = PrimaryBlue,
-    )
-    Text(
-        modifier = Modifier.padding(vertical = 2.dp, horizontal = 2.dp),
-        text = rating.toString(),
-        style =
-            TextStyle(
-                fontSize = 16.sp,
-                lineHeight = 24.sp,
-                fontWeight = FontWeight(500),
-                letterSpacing = 0.15.sp,
-            ))
-  }
+fun RatingDisplay(rating: Float, numRating: Int) {
+  Row(
+      modifier = Modifier.padding(vertical = 30.dp),
+      verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            modifier = Modifier.padding(vertical = 2.dp, horizontal = 2.dp),
+            text = rating.toString(),
+            style =
+                TextStyle(
+                    fontSize = 16.sp,
+                    lineHeight = 24.sp,
+                    fontWeight = FontWeight(500),
+                    letterSpacing = 0.15.sp,
+                ))
+        for (i in 1..5) {
+          // computes the correct star filling to use and then generate it
+          val id =
+              if (rating >= i) R.drawable.filled_star
+              else if (rating >= (i - 0.5)) R.drawable.semifilled_star else R.drawable.empty_star
+          Star(id)
+        }
+        Text(
+            modifier = Modifier.padding(vertical = 2.dp, horizontal = 2.dp),
+            text = "($numRating)",
+            style =
+                TextStyle(
+                    fontSize = 16.sp,
+                    lineHeight = 24.sp,
+                    fontWeight = FontWeight(500),
+                    letterSpacing = 0.15.sp,
+                ))
+      }
+}
+
+@Composable
+fun Star(iconId: Int) {
+  Icon(
+      painter = painterResource(iconId),
+      contentDescription = "Rating Star",
+      tint = PrimaryBlue,
+      modifier = Modifier.width(17.dp).height(16.dp))
 }
 
 // Displays the difficulty of the activity
@@ -193,7 +213,7 @@ fun TopBarLogo(logoPainterId: Int, isFriendProf: Boolean = false, f: () -> Unit)
   IconButton(onClick = { f() }) {
     Icon(
         painter = painterResource(id = logoPainterId),
-        contentDescription = "Top Bar logo",
+        contentDescription = "Top Bar logo $logoPainterId",
         modifier = Modifier.width(26.dp).height(26.dp),
         // put to white if bool else put to default color
         tint = if (isFriendProf) Color.White else MaterialTheme.colorScheme.onSurface)
@@ -207,6 +227,9 @@ fun ActivityTitleZone(activityToDisplay: Activity) {
   Row {
     ActivityPicture()
     ActivityTitleText(activityToDisplay)
+    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
+      ElevatedDifficultyDisplay(diff = activityToDisplay.difficulty.toString())
+    }
   }
 }
 
