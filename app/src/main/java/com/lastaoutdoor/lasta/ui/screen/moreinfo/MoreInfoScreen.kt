@@ -125,8 +125,7 @@ fun ViewOnMapButton() {
 @Composable
 fun DiffAndRating(activityToDisplay: Activity) {
   Column(modifier = Modifier.padding(vertical = 5.dp)) {
-    // RatingDisplay(activityToDisplay.rating,activityToDisplay.numRatings)
-    RatingDisplay(3.5f, 12)
+    RatingDisplay(activityToDisplay.rating, activityToDisplay.numRatings)
   }
 }
 
@@ -214,7 +213,7 @@ fun TopBarLogo(logoPainterId: Int, f: () -> Unit) {
   IconButton(onClick = { f() }) {
     Icon(
         painter = painterResource(id = logoPainterId),
-        contentDescription = "Top Bar logo",
+        contentDescription = "Top Bar logo $logoPainterId",
         modifier = Modifier.width(26.dp).height(26.dp))
   }
 }
