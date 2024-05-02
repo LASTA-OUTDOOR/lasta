@@ -30,6 +30,7 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
   override suspend fun getFriends(friendIds: List<String>): List<UserModel> {
     val friends: ArrayList<UserModel> = ArrayList()
     // Because when the friends list is super empty, the first element is an empty string
+    if (friendIds.isEmpty()) return friends
     if (friendIds.first().isEmpty()) return friends
     val friendsQuery = userCollection.whereIn(FieldPath.documentId(), friendIds).get().await()
     if (!friendsQuery.isEmpty) {
@@ -43,12 +44,12 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
         val senderLanguagetoLanguage = Language.valueOf(senderLanguage)
         val prefActivity = friend.getString("prefActivity")!!
         val senderPrefActivity = ActivityType.valueOf(prefActivity)
-        val levels = friend.get("levels") as HashMap<String, String> ?: HashMap()
+        val levels = friend.get("levels") as HashMap<*, *>
         val senderLevels =
             UserActivitiesLevel(
-                climbingLevel = UserLevel.valueOf(levels["climbingLevel"] ?: "BEGINNER"),
-                hikingLevel = UserLevel.valueOf(levels["hikingLevel"] ?: "BEGINNER"),
-                bikingLevel = UserLevel.valueOf(levels["bikingLevel"] ?: "BEGINNER"))
+                climbingLevel = UserLevel.valueOf(levels["climbingLevel"] as String? ?: "BEGINNER"),
+                hikingLevel = UserLevel.valueOf(levels["hikingLevel"] as String? ?: "BEGINNER"),
+                bikingLevel = UserLevel.valueOf(levels["bikingLevel"] as String? ?: "BEGINNER"))
         val senderFriendRequests = friend.get("friendRequests") as ArrayList<String>
         val senderFriends = friend.get("friends") as ArrayList<String>
         val senderFavorites = friend.get("favorites") as ArrayList<String>
@@ -91,12 +92,13 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
           val senderLanguagetoLanguage = Language.valueOf(senderLanguage)
           val prefActivity = friendRequest.getString("prefActivity")!!
           val senderPrefActivity = ActivityType.valueOf(prefActivity)
-          val levels = friendRequest.get("levels") as HashMap<String, String>
+          val levels = friendRequest.get("levels") as HashMap<*, *>
           val senderLevels =
               UserActivitiesLevel(
-                  climbingLevel = UserLevel.valueOf(levels["climbingLevel"] ?: "BEGINNER"),
-                  hikingLevel = UserLevel.valueOf(levels["hikingLevel"] ?: "BEGINNER"),
-                  bikingLevel = UserLevel.valueOf(levels["bikingLevel"] ?: "BEGINNER"))
+                  climbingLevel =
+                      UserLevel.valueOf(levels["climbingLevel"] as String? ?: "BEGINNER"),
+                  hikingLevel = UserLevel.valueOf(levels["hikingLevel"] as String? ?: "BEGINNER"),
+                  bikingLevel = UserLevel.valueOf(levels["bikingLevel"] as String? ?: "BEGINNER"))
           val senderFriendRequests = friendRequest.get("friendRequests") as ArrayList<String>
           val senderFriends = friendRequest.get("friends") as ArrayList<String>
           val senderFavorites = friendRequest.get("favorites") as ArrayList<String>

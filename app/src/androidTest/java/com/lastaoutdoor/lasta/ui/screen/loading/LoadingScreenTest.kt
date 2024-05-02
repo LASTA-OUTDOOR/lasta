@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.ui.screen.login.components
+package com.lastaoutdoor.lasta.ui.screen.loading
 
 import androidx.activity.compose.setContent
 import androidx.compose.ui.test.assertIsDisplayed
@@ -15,37 +15,32 @@ import org.junit.Test
 
 @HiltAndroidTest
 @UninstallModules(AppModule::class)
-class LoginContentTest {
+class LoadingScreenTest {
   // Allow Hilt to inject dependencies
   @get:Rule(order = 0) val hiltRule = HiltAndroidRule(this)
 
   // Create a compose rule
   @get:Rule(order = 1) val composeRule = createAndroidComposeRule<MainActivity>()
-  // Set up the test
+
   @Before
   fun setUp() {
     hiltRule.inject()
-    composeRule.activity.setContent { LoginContent {} }
-  }
-
-  // Test if discovery screen is displayed
-  @Test
-  fun loginContent_isDisplayed() {
-    composeRule.onNodeWithTag("loginScreen").assertIsDisplayed()
+    composeRule.activity.setContent {
+      LoadingScreen(isLoggedIn = null, navigateWhenLoggedIn = {}) {}
+    }
   }
 
   @Test
-  fun logo_isDisplayed() {
-    composeRule.onNodeWithTag("loginLogo").assertIsDisplayed()
-  }
-
-  @Test
-  fun appname_isDisplayed() {
-    composeRule.onNodeWithTag("appName").assertIsDisplayed()
-  }
-
-  @Test
-  fun button_isDisplayed() {
-    composeRule.onNodeWithTag("loginButton").assertIsDisplayed()
+  fun loadingScreen_isdisplayed() {
+    composeRule.onNodeWithTag("LoadingScreen").assertIsDisplayed()
+    composeRule.activity.setContent {
+      LoadingScreen(isLoggedIn = false, navigateWhenLoggedIn = {}) {}
+    }
+    composeRule.onNodeWithTag("LoadingScreen").assertIsDisplayed()
+    composeRule.activity.setContent {
+      LoadingScreen(isLoggedIn = true, navigateWhenLoggedIn = {}) {}
+    }
+    composeRule.onNodeWithTag("LoadingScreen").assertIsDisplayed()
+    composeRule.onNodeWithTag("LoadingScreen").assertIsDisplayed()
   }
 }

@@ -16,7 +16,6 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.GoogleAuthProvider
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.screen.login.components.LoginContent
-import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 
 @Composable
 fun LoginScreen(
@@ -28,8 +27,7 @@ fun LoginScreen(
     oneTapClient: SignInClient,
     updatePreferencesOnLogin: (UserModel) -> Unit,
     navigateToSetup: () -> Unit,
-    navigateToMain: () -> Unit,
-    authViewModel: AuthViewModel
+    navigateToMain: () -> Unit
 ) {
   val launcher =
       rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
