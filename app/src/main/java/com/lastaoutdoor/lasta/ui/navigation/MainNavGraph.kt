@@ -38,7 +38,7 @@ import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
   navigation(startDestination = DestinationRoute.Discover.route, route = BaseRoute.Main.route) {
     composable(DestinationRoute.Discover.route) { entry ->
-      val discoverScreenViewModel: DiscoverScreenViewModel = entry.sharedViewModel(navController)
+      val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
 
@@ -68,7 +68,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           moreInfoScreenViewModel::changeActivityToDisplay)
     }
     composable(DestinationRoute.Favorites.route) { entry ->
-      val discoverScreenViewModel: DiscoverScreenViewModel = entry.sharedViewModel(navController)
+      val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
       val favoritesScreenViewModel: FavoritesScreenViewModel = hiltViewModel(entry)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
