@@ -31,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -41,8 +42,10 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.map.MapItinerary
@@ -50,6 +53,8 @@ import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
 import com.lastaoutdoor.lasta.ui.components.SearchBarComponent
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
+import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
+import com.lastaoutdoor.lasta.ui.components.WeatherReportSmall
 import com.lastaoutdoor.lasta.ui.screen.discover.components.ModalUpperSheet
 import com.lastaoutdoor.lasta.ui.screen.discover.components.RangeSearchComposable
 import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
@@ -70,6 +75,7 @@ fun DiscoverScreen(
     navigateToFilter: () -> Unit,
     navigateToMoreInfo: () -> Unit,
     changeActivityToDisplay: (Activity) -> Unit,
+    weather: WeatherResponse?,
     state: MapState,
     updatePermission: (Boolean) -> Unit,
     initialPosition: LatLng,
@@ -109,7 +115,8 @@ fun DiscoverScreen(
                 selectedLocality,
                 setScreen,
                 { isRangePopup = true },
-                navigateToFilter)
+                navigateToFilter,
+                weather)
           }
 
           item {
@@ -120,7 +127,13 @@ fun DiscoverScreen(
   } else if (screen == DiscoverDisplayType.MAP) {
     Column {
       HeaderComposable(
-          screen, range, selectedLocality, setScreen, { isRangePopup = true }, navigateToFilter)
+          screen,
+          range,
+          selectedLocality,
+          setScreen,
+          { isRangePopup = true },
+          navigateToFilter,
+          weather)
       Box(modifier = Modifier.fillMaxHeight().testTag("mapScreenDiscover")) {
         MapScreen(
             state,
@@ -150,10 +163,16 @@ fun HeaderComposable(
     selectedLocality: Pair<String, LatLng>,
     setScreen: (DiscoverDisplayType) -> Unit,
     updatePopup: () -> Unit,
-    navigateToFilter: () -> Unit
+    navigateToFilter: () -> Unit,
+    weather: WeatherResponse?
 ) {
   val iconSize = 48.dp // Adjust icon size as needed
-
+  val displayWeather = remember { mutableStateOf(false) }
+  if (displayWeather.value) {
+    Dialog(onDismissRequest = { displayWeather.value = false }) {
+      Surface { WeatherReportBig(weather = weather, displayWind = false) }
+    }
+  }
   Surface(
       modifier = Modifier.fillMaxWidth().testTag("header"),
       color = MaterialTheme.colorScheme.background,
@@ -185,6 +204,9 @@ fun HeaderComposable(
                           "${LocalContext.current.getString(R.string.less_than)} ${(range / 1000).toInt()} km ${LocalContext.current.getString(R.string.around_you)}",
                       style = MaterialTheme.typography.bodySmall,
                       modifier = Modifier.testTag("rangeText"))
+                }
+                Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
+                  WeatherReportSmall(weather) { displayWeather.value = true }
                 }
               }
 

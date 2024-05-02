@@ -24,12 +24,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.utils.ConnectionState
 
@@ -47,7 +47,6 @@ fun FriendsList(
 ) {
 
   LaunchedEffect(Unit) { refreshFriends() }
-
   when {
     isConnected == ConnectionState.OFFLINE -> {
       ConnectionMissing()
@@ -74,7 +73,7 @@ fun FriendsList(
 }
 
 @Composable
-private fun FriendsCard(friend: UserModel, navToFriend: () -> Unit) {
+fun FriendsCard(friend: UserModel, navToFriend: () -> Unit) {
   Card(
       colors =
           CardDefaults.cardColors(
@@ -84,7 +83,7 @@ private fun FriendsCard(friend: UserModel, navToFriend: () -> Unit) {
           Modifier.height(height = 100.dp)
               .fillMaxWidth()
               .padding(8.dp)
-              .testTag("Friend")
+              .testTag("FriendCard")
               .clickable { navToFriend() }) {
         Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
 
@@ -105,8 +104,24 @@ private fun FriendsCard(friend: UserModel, navToFriend: () -> Unit) {
           // Text information
           Column(modifier = Modifier.padding(8.dp)) {
             Text(text = friend.userName ?: "Name error", fontWeight = FontWeight.Bold)
-            Text(
-                text = "Bio no yet implemented, but will be here", overflow = TextOverflow.Ellipsis)
+            // little easteregg
+            if (friend.userName == "Jérémy Doffey" || friend.userName == "Thimphou") {
+              Text(text = "scrum angel uwu")
+            }
+            // display the user's sport preference
+            Row(modifier = Modifier.testTag("FriendPrefActivity")) {
+              Text(text = friend.prefActivity.toString() + " - ")
+              // print the level of the levels index of prefActivity
+              if (friend.prefActivity == ActivityType.HIKING) {
+                Text(text = friend.levels.hikingLevel.toString())
+              } else if (friend.prefActivity == ActivityType.CLIMBING) {
+                Text(text = friend.levels.climbingLevel.toString())
+              } else if (friend.prefActivity == ActivityType.BIKING) {
+                Text(text = friend.levels.bikingLevel.toString())
+              }
+
+              Text(text = " - " + friend.language.toString())
+            }
           }
         }
       }

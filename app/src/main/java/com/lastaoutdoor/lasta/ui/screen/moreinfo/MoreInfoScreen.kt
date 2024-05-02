@@ -18,6 +18,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,7 +32,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.models.activity.Activity
+import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
 import com.lastaoutdoor.lasta.ui.theme.Black
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
 import com.lastaoutdoor.lasta.ui.theme.YellowDifficulty
@@ -41,7 +44,8 @@ import com.lastaoutdoor.lasta.ui.theme.YellowDifficulty
 fun MoreInfoScreen(
     activityToDisplay: Activity,
     processDiffText: (Activity) -> String,
-    navigateBack: () -> Unit,
+    weather: WeatherResponse?,
+    navigateBack: () -> Unit
 ) {
   Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoComposable")) {
     LazyColumn(modifier = Modifier.weight(1f).padding(8.dp)) {
@@ -50,6 +54,7 @@ fun MoreInfoScreen(
       item { TopBar(navigateBack) }
       // displays activity title and duration
       item { ActivityTitleZone(activityToDisplay) }
+      item { WeatherReportBig(weather, true) }
       // displays activity difficulty, ration and view on map button
       item { MiddleZone(activityToDisplay, processDiffText) }
       // filled with a spacer for the moment but will contain address + community
@@ -184,12 +189,14 @@ fun TopBar(navigateBack: () -> Unit) {
 
 // Logo of the top bar
 @Composable
-fun TopBarLogo(logoPainterId: Int, f: () -> Unit) {
+fun TopBarLogo(logoPainterId: Int, isFriendProf: Boolean = false, f: () -> Unit) {
   IconButton(onClick = { f() }) {
     Icon(
         painter = painterResource(id = logoPainterId),
         contentDescription = "Top Bar logo",
-        modifier = Modifier.width(26.dp).height(26.dp))
+        modifier = Modifier.width(26.dp).height(26.dp),
+        // put to white if bool else put to default color
+        tint = if (isFriendProf) Color.White else MaterialTheme.colorScheme.onSurface)
   }
 }
 

@@ -68,7 +68,9 @@
     <string name = "temperature">Température</string>
     <string name = "descr_w">Description</string>
     <string name = "wind_speed">Vitesse du vent</string>
-    <string name="no_friend_activities">Pas d\'acitivités récentes…  Ajoutes des amis pour en voir plus !</string>
+    <string name = "humidity">Humidité</string>
+    <string name = "no_loc">Bulletin météo indisponible ! Autorisez cette application à utiliser votre localisation et réessayez.</string>
+    <string name="no_friend_activities">Pas d\'activités récentes…  Ajoute des amis pour en voir plus !</string>
     <string name="add_friend_title">Ajouter un amis</string>
     <string name="select_friend">Choisis un amis</string>
     <string name="show_completed_activities">Afficher vos activités terminées</string>
@@ -85,4 +87,10 @@
     <string name="delete_account">Supprimer compte</string>
     <string name="tab_favorites">Favoris</string>
     <string name="tab_socials">Amis</string>
+    <string name="no_account">" L'adresse e-mail n'est associée à aucun compte"</string>
+    <string name="no_fr">" Vous êtes déjà amis avec cet utilisateur"</string>
+    <string name="fr_req_sent">Demande d\'ami envoyée</string>
+    <string name="no_fr_yourself">Vous ne pouvez pas vous ajouter vous-même comme ami</string>
+    <string name="no_fr_twice">Vous avez déjà envoyé une demande d\'ami à cet utilisateur</string>
+    <string name="inv_email">L\'adresse e-mail n\'est pas valide</string>
 </resources>

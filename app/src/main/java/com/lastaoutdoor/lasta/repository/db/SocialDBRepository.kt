@@ -26,7 +26,7 @@ interface SocialDBRepository {
 
   // sends a friend request to the user with the given email, returns true if the request was sent
   // successfully
-  suspend fun sendFriendRequest(userId: String, receiverId: String): Boolean
+  suspend fun sendFriendRequest(userId: String, receiverId: String)
 
   // accept a friend request
   suspend fun acceptFriendRequest(source: String, requester: String)
