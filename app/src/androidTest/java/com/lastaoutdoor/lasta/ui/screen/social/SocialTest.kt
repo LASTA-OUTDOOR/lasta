@@ -13,6 +13,7 @@ import com.google.firebase.Timestamp
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.models.social.ConversationModel
 import com.lastaoutdoor.lasta.models.social.MessageModel
+import com.lastaoutdoor.lasta.models.user.ClimbingUserActivity
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.MainActivity
 import com.lastaoutdoor.lasta.ui.screen.social.components.MessageMissing
@@ -273,5 +274,60 @@ class SocialTest {
     // go to messages tab
     composeRule.onNodeWithTag("TabNumber2").performClick()
     composeRule.onNodeWithTag("ConnectionMissing").assertIsDisplayed()
+  }
+
+  // test friend with activity list
+  @Test
+  fun friend_with_activity_list_works() {
+    val showTopButton: (ImageVector, () -> Unit) -> Unit = { _, _ ->
+      // This is a fake function, so we do nothing here.
+    }
+    val topButtonIcon = mutableStateOf(Icons.Filled.Email)
+    // Set the content to the social screen
+    composeRule.activity.setContent {
+      SocialScreen(
+          hasFriendRequests = true,
+          topButton = true,
+          topButtonIcon = topButtonIcon.value,
+          topButtonOnClick = { /*TODO*/},
+          refreshFriendRequests = { /*TODO*/},
+          navigateToNotifications = { /*TODO*/},
+          isConnedted = ConnectionState.CONNECTED,
+          friends =
+              List(1) {
+                UserModel(
+                    "1",
+                    "John",
+                    "Doe",
+                    "",
+                )
+              },
+          messages = emptyList(),
+          latestFriendActivities = listOf(ClimbingUserActivity(1)),
+          addFriendDialog = true,
+          friendRequestFeedback = "Hi!",
+          isDisplayedFriendPicker = true,
+          refreshMessages = { /*TODO*/},
+          clearFriendRequestFeedback = { /*TODO*/},
+          hideAddFriendDialog = { /*TODO*/},
+          requestFriend = { /*TODO*/},
+          refreshFriends = { /*TODO*/},
+          showTopButton = showTopButton,
+          hideTopButton = { /*TODO*/},
+          displayAddFriendDialog = { /*TODO*/},
+          displayFriendPicker = { /*TODO*/},
+          hideFriendPicker = { /*TODO*/},
+          changeDisplayFriendPicker = { /*TODO*/},
+          navigateToConversation = { /*TODO*/},
+      ) {
+        // This is a fake function, so we do nothing here.
+      }
+    }
+    composeRule.onNodeWithTag("SocialScreen").assertIsDisplayed()
+    // Header (title)
+    composeRule.onNodeWithTag("SocialScreenHeader").assertIsDisplayed()
+    // go to messages tab
+    composeRule.onNodeWithTag("TabNumber0").performClick()
+    composeRule.onNodeWithTag("FriendActivityCard").assertIsDisplayed()
   }
 }

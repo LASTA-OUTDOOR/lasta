@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.screen.moreinfo.TopBarLogo
@@ -21,7 +22,9 @@ fun NotificationsScreen(
 ) {
   Column {
     // Top Bar
-    Row(modifier = Modifier.fillMaxWidth()) { TopBarLogo(R.drawable.arrow_back) { navigateBack() } }
+    Row(modifier = Modifier.fillMaxWidth().testTag("NotificationsScreen")) {
+      TopBarLogo(R.drawable.arrow_back) { navigateBack() }
+    }
     FriendsRequestList(isConnected, friendRequests, acceptFriend, declineFriend)
   }
 }
