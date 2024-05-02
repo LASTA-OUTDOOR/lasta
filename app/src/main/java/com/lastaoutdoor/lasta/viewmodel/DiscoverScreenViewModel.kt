@@ -204,7 +204,7 @@ class DiscoverScreenViewModel @Inject constructor(private val repository: Activi
     _selectedMarker.value = null
   }
 
-   private fun showHikingItinerary(id: Long) {
+  private fun showHikingItinerary(id: Long) {
     viewModelScope.launch {
       val response = repository.getHikingRouteById(id)
       val itinerary = (response as Response.Success).data
