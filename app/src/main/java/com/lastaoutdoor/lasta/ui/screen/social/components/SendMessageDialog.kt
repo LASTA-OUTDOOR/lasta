@@ -35,7 +35,7 @@ fun SendMessageDialog(hideDialog: () -> Unit, send: (String) -> Unit) {
       onDismissRequest = { hideDialog() },
       properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)) {
         Card(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier.fillMaxWidth().padding(16.dp).testTag("SendMessageDialog"),
             shape = RoundedCornerShape(16.dp),
         ) {
           Text(
@@ -65,7 +65,7 @@ private fun SendMessageForm(send: (String) -> Unit, hideDialog: () -> Unit) {
       value = text,
       onValueChange = { text = it },
       label = { Text(LocalContext.current.getString(R.string.your_message)) },
-      modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("MessageTextField"),
+      modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("SendMessageForm"),
       keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
       keyboardActions =
           KeyboardActions(
@@ -82,7 +82,7 @@ private fun SendMessageForm(send: (String) -> Unit, hideDialog: () -> Unit) {
         send.invoke(text)
         hideDialog()
       },
-      modifier = Modifier.testTag("SendButton")) {
+      modifier = Modifier.testTag("SendMessageButton")) {
         Text(LocalContext.current.getString(R.string.send_message))
       }
 }
