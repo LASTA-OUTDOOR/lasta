@@ -16,9 +16,9 @@ import com.lastaoutdoor.lasta.models.user.UserActivity
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.tasks.await
 
 @Singleton
 class SocialDBRepositoryImpl @Inject constructor(context: Context, database: FirebaseFirestore) :
@@ -181,7 +181,6 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
   override suspend fun getAllConversations(userId: String): List<ConversationModel> {
     val conversationsQuery =
         conversationCollection.whereArrayContains("members", userId).get().await()
-    println("conversationsQuery: ${conversationsQuery.documents}")
     return conversationsQuery.documents.mapNotNull {
       val members = it.get("members") as? List<String>
       if (members != null) {
@@ -269,7 +268,6 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
 
   override suspend fun sendMessage(userId: String, friendUserId: String, message: String) {
     if (message.isEmpty() || userId.isEmpty() || friendUserId.isEmpty()) return
-    println("userId: $userId, friendUserId: $friendUserId, message: $message")
 
     // Create a reference to the conversation document in the Firestore database
     val id = if (userId < friendUserId) userId + friendUserId else friendUserId + userId

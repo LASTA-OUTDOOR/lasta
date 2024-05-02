@@ -55,7 +55,6 @@ fun LoginScreen(
 
   LaunchedEffect(key1 = authViewModel.user) {
     authViewModel.user?.let {
-      println("Hello")
       updatePreferencesOnLogin(it)
       if (isSignUp) {
         navigateToSetup()
