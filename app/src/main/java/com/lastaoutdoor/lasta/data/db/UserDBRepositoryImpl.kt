@@ -38,11 +38,7 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
             "friends" to user.friends,
             "friendRequests" to user.friendRequests,
             "favorites" to user.favorites)
-    userCollection
-        .document(user.userId)
-        .set(userData, SetOptions.merge())
-        .addOnSuccessListener { /* TODO */}
-        .addOnFailureListener { e -> e.printStackTrace() }
+    userCollection.document(user.userId).set(userData, SetOptions.merge())
   }
 
   override suspend fun getUserById(userId: String): UserModel? {

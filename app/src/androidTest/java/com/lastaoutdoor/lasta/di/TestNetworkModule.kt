@@ -45,92 +45,92 @@ object TestNetworkModule {
   @Provides
   @Named("signInRequest")
   fun provideSignInRequest(@ApplicationContext context: Context): BeginSignInRequest =
-    BeginSignInRequest.builder()
-      .setGoogleIdTokenRequestOptions(
-        BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-          .setSupported(true)
-          .setFilterByAuthorizedAccounts(true)
-          .setServerClientId(context.getString(R.string.web_client_id))
-          .build())
-      .setAutoSelectEnabled(false)
-      .build()
+      BeginSignInRequest.builder()
+          .setGoogleIdTokenRequestOptions(
+              BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                  .setSupported(true)
+                  .setFilterByAuthorizedAccounts(true)
+                  .setServerClientId(context.getString(R.string.web_client_id))
+                  .build())
+          .setAutoSelectEnabled(false)
+          .build()
 
   @Provides
   @Named("signUpRequest")
   fun provideSignUpRequest(@ApplicationContext context: Context): BeginSignInRequest =
-    BeginSignInRequest.builder()
-      .setGoogleIdTokenRequestOptions(
-        BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-          .setSupported(true)
-          .setFilterByAuthorizedAccounts(false)
-          .setServerClientId(context.getString(R.string.web_client_id))
-          .build())
-      .build()
+      BeginSignInRequest.builder()
+          .setGoogleIdTokenRequestOptions(
+              BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                  .setSupported(true)
+                  .setFilterByAuthorizedAccounts(false)
+                  .setServerClientId(context.getString(R.string.web_client_id))
+                  .build())
+          .build()
 
   @Singleton
   @Provides
   fun provideOSMAPIService(@ApplicationContext context: Context): OSMApiService =
-    Retrofit.Builder()
-      .baseUrl(context.getString(R.string.osm_base_url))
-      .addConverterFactory(GsonConverterFactory.create())
-      .build()
-      .create(OSMApiService::class.java)
+      Retrofit.Builder()
+          .baseUrl(context.getString(R.string.osm_base_url))
+          .addConverterFactory(GsonConverterFactory.create())
+          .build()
+          .create(OSMApiService::class.java)
 
   @Singleton
   @Provides
   fun provideWeatherAPIService(@ApplicationContext context: Context): WeatherApiService =
-    Retrofit.Builder()
-      .baseUrl(context.getString(R.string.weather_api_url))
-      .addConverterFactory(GsonConverterFactory.create())
-      .build()
-      .create(WeatherApiService::class.java)
+      Retrofit.Builder()
+          .baseUrl(context.getString(R.string.weather_api_url))
+          .addConverterFactory(GsonConverterFactory.create())
+          .build()
+          .create(WeatherApiService::class.java)
 
   @Singleton
   @Provides
   fun provideActivitiesRepository(osmApiService: OSMApiService): ActivityRepository =
-    ActivityRepositoryImpl(osmApiService)
+      ActivityRepositoryImpl(osmApiService)
 
   @Singleton
   @Provides
   fun provideWeatherRepository(weatherApiService: WeatherApiService): WeatherRepository =
-    WeatherRepositoryImpl(weatherApiService)
+      WeatherRepositoryImpl(weatherApiService)
 
   @Singleton
   @Provides
   fun provideAuthRepository(
-    auth: FirebaseAuth,
-    oneTapClient: SignInClient,
-    @Named("signInRequest") signInRequest: BeginSignInRequest,
-    @Named("signUpRequest") signUpRequest: BeginSignInRequest,
-    userDBRepository: UserDBRepository
+      auth: FirebaseAuth,
+      oneTapClient: SignInClient,
+      @Named("signInRequest") signInRequest: BeginSignInRequest,
+      @Named("signUpRequest") signUpRequest: BeginSignInRequest,
+      userDBRepository: UserDBRepository
   ): AuthRepository =
-    AuthRepositoryImpl(auth, oneTapClient, signInRequest, signUpRequest, userDBRepository)
+      AuthRepositoryImpl(auth, oneTapClient, signInRequest, signUpRequest, userDBRepository)
 
   @Singleton
   @Provides
   fun provideUserDBRepository(
-    @ApplicationContext context: Context,
-    firestore: FirebaseFirestore
+      @ApplicationContext context: Context,
+      firestore: FirebaseFirestore
   ): UserDBRepository = UserDBRepositoryImpl(context, firestore)
 
   @Singleton
   @Provides
   fun provideActivitiesDBRepository(
-    @ApplicationContext context: Context,
-    firestore: FirebaseFirestore
+      @ApplicationContext context: Context,
+      firestore: FirebaseFirestore
   ): ActivitiesDBRepository = ActivitiesDBRepositoryImpl(context, firestore)
 
   @Singleton
   @Provides
   fun provideUserActivitiesDBRepository(
-    @ApplicationContext context: Context,
-    firestore: FirebaseFirestore
+      @ApplicationContext context: Context,
+      firestore: FirebaseFirestore
   ): UserActivitiesDBRepository = UserActivitiesDBRepositoryImpl(context, firestore)
 
   @Singleton
   @Provides
   fun provideSocialDBRepository(
-    @ApplicationContext context: Context,
-    firestore: FirebaseFirestore
+      @ApplicationContext context: Context,
+      firestore: FirebaseFirestore
   ): SocialDBRepository = SocialDBRepositoryImpl(context, firestore)
 }

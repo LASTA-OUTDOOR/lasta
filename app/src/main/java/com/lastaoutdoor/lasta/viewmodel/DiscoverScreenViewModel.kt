@@ -69,16 +69,19 @@ constructor(
                 repository.getBikingRoutesInfo(
                     rad.toInt(), centerLocation.latitude, centerLocation.longitude)
           }
-      val osmData = when (response) {
-        is Response.Failure -> {
-          response.e.printStackTrace()
-          return@launch
-        }
-        is Response.Success -> {response.data ?: emptyList()}
-        is Response.Loading -> {
-          emptyList<OSMData>()
-        }
-      }
+      val osmData =
+          when (response) {
+            is Response.Failure -> {
+              response.e.printStackTrace()
+              return@launch
+            }
+            is Response.Success -> {
+              response.data ?: emptyList()
+            }
+            is Response.Loading -> {
+              emptyList<OSMData>()
+            }
+          }
       activities.value = ArrayList()
       activityIds.value = ArrayList()
       osmData.map { point ->

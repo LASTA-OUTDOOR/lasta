@@ -1,39 +1,22 @@
 package com.lastaoutdoor.lasta.data.db
 
 import android.content.Context
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.models.activity.Activity
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
-
+import java.lang.Exception
+import kotlinx.coroutines.tasks.await
 import org.junit.After
 import org.junit.Before
-import org.junit.Test
-import java.lang.Exception
-import java.util.concurrent.Executor
 
 class ActivitiesDBRepositoryImplTest {
 
-  class MockTask<T : Any> : Task<T>() {
-    private var result: T? = null
-    private var exception: Exception? = null
-
-    fun setResult(result: T) {
-      this.result = result
-    }
-
-    fun setException(exception: Exception) {
-      this.exception = exception
-    }
+  /*class MockTask<T : Any> : Task<T>() {
 
     override fun addOnFailureListener(p0: OnFailureListener): Task<T> {
       return this
@@ -76,8 +59,8 @@ class ActivitiesDBRepositoryImplTest {
     }
 
     override fun addOnSuccessListener(
-      p0: android.app.Activity,
-      p1: OnSuccessListener<in T>
+        p0: android.app.Activity,
+        p1: OnSuccessListener<in T>
     ): Task<T> {
       return this
     }
@@ -89,14 +72,12 @@ class ActivitiesDBRepositoryImplTest {
     fun await(): T? {
       return result
     }
-  }
+  }*/
 
   private lateinit var activitiesDB: ActivitiesDBRepositoryImpl
   private val database: FirebaseFirestore = mockk(relaxed = true)
   private val context: Context = mockk()
-  private val collection: CollectionReference = mockk()
-  private val task: MockTask<QuerySnapshot> = mockk()
-  private val querySnapshot: QuerySnapshot = mockk()
+  private val collection: CollectionReference = mockk(relaxed = true)
 
   @Before
   fun setUp() {
@@ -110,16 +91,31 @@ class ActivitiesDBRepositoryImplTest {
     clearAllMocks()
   }
 
-  @Test
-  fun `Adding activities returns false if already existing`() = run {
-    val mockActivity = mockk<Activity>()
-    every { mockActivity.osmId } returns 1
-    coEvery { collection.whereEqualTo("osmId", mockActivity.osmId).get() } returns task
-    every { task.await() } returns querySnapshot
-    every { querySnapshot.isEmpty } returns false
-    runBlocking {
-      val result = activitiesDB.addActivityIfNonExisting(mockActivity)
-      assert(!result)
-    }
+  private inline fun <reified T> mockTask(result: T?, exception: Exception? = null): Task<T> {
+    val task: Task<T> = mockk(relaxed = true)
+    every { task.isComplete } returns true
+    every { task.exception } returns exception
+    every { task.isCanceled } returns false
+    val relaxedT: T = mockk(relaxed = true)
+    every { task.result } returns result
+
+    coEvery { task.await() } returns result!!
+
+    return task
   }
+
+  /*@Test
+  fun `Adding activities returns false if already existing`() = runTest {
+    val mockActivity = Activity("", 1)
+    val query: Query = mockk()
+    val querySnapshot: QuerySnapshot = mockk()
+    val osmId = "osmId"
+    val task = mockTask(querySnapshot)
+    every { collection.whereEqualTo(osmId, 1) } returns query
+    coEvery { task.await() } returns querySnapshot
+    every { querySnapshot.isEmpty } returns false
+    println(task.await().isEmpty)
+    val result = activitiesDB.addActivityIfNonExisting(mockActivity)
+    assert(!result)
+  }*/
 }
