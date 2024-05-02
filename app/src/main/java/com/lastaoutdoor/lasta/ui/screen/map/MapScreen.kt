@@ -8,6 +8,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -22,6 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
@@ -39,9 +41,9 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.models.map.MapItinerary
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.viewmodel.MapState
-import kotlinx.coroutines.launch
 
 // Called after a click on a pointer on the map
 // @param viewModel: the viewmodel
@@ -53,27 +55,27 @@ import kotlinx.coroutines.launch
 fun InformationSheet(
     sheetState: SheetState,
     isSheetOpen: Boolean,
-    state: MapState,
+    selectedMarker: Marker?,
     onDismissRequest: () -> Unit
 ) {
 
-  // We use the rememberSaveable to keep the state of the sheet (whether it is open or not)
+  // We use the rememberSavable to keep the state of the sheet (whether it is open or not)
   if (isSheetOpen) {
     ModalBottomSheet(
         onDismissRequest = { onDismissRequest() },
         sheetState = sheetState,
-        modifier = Modifier.fillMaxSize().testTag("bottomSheet"),
-    ) {
-      Column(modifier = Modifier.padding(16.dp)) {
-        Text(
-            modifier = Modifier.testTag("bottomSheetTitle"),
-            text = state.selectedMarker?.name ?: "No name",
-            style = MaterialTheme.typography.headlineLarge)
-        Text(
-            "${LocalContext.current.getString(R.string.activity_type)} ${state.selectedMarker?.description ?: LocalContext.current.getString(R.string.activity_type)}",
-            style = MaterialTheme.typography.bodyLarge)
-      }
-    }
+        modifier = Modifier.fillMaxWidth().testTag("bottomSheet"),
+        scrimColor = Color.Transparent) {
+          Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                modifier = Modifier.testTag("bottomSheetTitle"),
+                text = selectedMarker?.name ?: "No name",
+                style = MaterialTheme.typography.headlineLarge)
+            Text(
+                "${LocalContext.current.getString(R.string.activity_type)} ${selectedMarker?.description ?: LocalContext.current.getString(R.string.activity_type)}",
+                style = MaterialTheme.typography.bodyLarge)
+          }
+        }
   }
 }
 
@@ -111,6 +113,7 @@ private fun ManagePermissions(updatePermission: (Boolean) -> Unit) {
 // This composable shows a map provided by Google Maps and will be used to show the activities and
 // interact with them
 // @param viewModel: the viewmodel that will be used to fetch the activities and update the map
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("RestrictedApi")
 @Composable
 fun MapScreen(
@@ -122,7 +125,10 @@ fun MapScreen(
     updateSelectedMarker: (Marker) -> Unit,
     clearSelectedItinerary: () -> Unit,
     selectedZoom: Float,
-    updateSelectedItinerary: (Long) -> Unit,
+    selectedMarker: Marker?,
+    selectedItinerary: MapItinerary?,
+    markerList: List<Marker>,
+    clearSelectedMarker: () -> Unit
 ) {
 
   // Initialise the map, otherwise the icon functionality won't work
@@ -143,7 +149,7 @@ fun MapScreen(
   InformationSheet(
       sheetState = sheetState,
       isSheetOpen = isSheetOpen,
-      state = state,
+      selectedMarker = selectedMarker,
       onDismissRequest = { isSheetOpen = false })
 
   LaunchedEffect(cameraPositionState.isMoving) {
@@ -175,11 +181,13 @@ fun MapScreen(
       state,
       updateMarkers,
       updateSelectedMarker,
-      clearSelectedItinerary,
       selectedZoom,
-      updateSelectedItinerary) {
-        isSheetOpen = true
-      }
+      { isSheetOpen = true },
+      selectedItinerary,
+      markerList,
+      selectedMarker,
+      clearSelectedItinerary,
+      clearSelectedMarker)
 }
 
 // Composable that displays the Google Map
@@ -192,13 +200,17 @@ private fun GoogleMapComposable(
     state: MapState,
     updateMarkers: (LatLng, Double) -> Unit,
     updateSelectedMarker: (Marker) -> Unit,
-    clearSelectedItinerary: () -> Unit,
     selectedZoom: Float,
-    updateSelectedItinerary: (Long) -> Unit,
     updateSheet: () -> Unit,
+    selectedItinerary: MapItinerary?,
+    markerList: List<Marker>,
+    selectedMarker: Marker?,
+    clearSelectedItinerary: () -> Unit,
+    clearSelectedMarker: () -> Unit
 ) {
+
   GoogleMap(
-      modifier = Modifier.fillMaxSize(),
+      modifier = Modifier.fillMaxSize().testTag("googleMap"),
       properties = state.properties,
       uiSettings = state.uiSettings,
       cameraPositionState = cameraPositionState,
@@ -212,53 +224,35 @@ private fun GoogleMapComposable(
       },
   ) {
 
-    // TODO: find a working way to get these part out of the composable. (It blocks the
-    // recomposition if I do it and cannot figure out why)
-
-    // display all the classical markers fetched by the viewmodel
-    state.markerList.forEach { marker ->
-      Marker(
-          state = MarkerState(position = marker.position),
-          title = marker.name,
-          icon = BitmapDescriptorFactory.fromResource(marker.icon),
-          snippet = marker.description,
-          onClick = {
-            updateSheet()
-            updateSelectedMarker(marker)
-            clearSelectedItinerary()
-            // camera moves to the marker when clicked
-            cameraPositionState.move(
-                CameraUpdateFactory.newCameraPosition(
-                    CameraPosition.fromLatLngZoom(marker.position, selectedZoom)))
-
-            true
-          },
+    // display the itinerary if it is selected
+    if (selectedItinerary != null) {
+      Polyline(
+          points = selectedItinerary.points,
+          width = 6f,
       )
     }
 
-    state.itineraryStartMarkers.forEach { marker ->
+    // display all the classical markers fetched by the viewmodel
+    markerList.forEach { marker ->
       Marker(
           state = MarkerState(position = marker.position),
           title = marker.name,
           icon = BitmapDescriptorFactory.fromResource(marker.icon),
           snippet = marker.description,
           onClick = {
-            updateSheet()
-            updateSelectedMarker(marker)
-            updateSelectedItinerary(marker.id)
-            // camera moves to the marker when clicked
-            cameraPositionState.move(
-                CameraUpdateFactory.newCameraPosition(
-                    CameraPosition.fromLatLngZoom(marker.position, selectedZoom)))
+            if (selectedMarker == null || selectedMarker.id != marker.id) {
+              updateSelectedMarker(marker)
+              updateSheet()
+              // camera moves to the marker when clicked
+              cameraPositionState.move(
+                  CameraUpdateFactory.newCameraPosition(
+                      CameraPosition.fromLatLngZoom(marker.position, selectedZoom)))
+            } else {
+              clearSelectedItinerary()
+              clearSelectedMarker()
+            }
             true
-          })
-    }
-
-    // display the itinerary if it is selected
-    state.selectedItinerary?.let {
-      Polyline(
-          points = it.points,
-          width = 10f,
+          },
       )
     }
   }

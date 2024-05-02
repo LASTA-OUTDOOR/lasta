@@ -1,70 +1,33 @@
 package com.lastaoutdoor.lasta.viewmodel
 
+import com.google.android.gms.maps.model.LatLng
+import com.lastaoutdoor.lasta.repository.api.ActivityRepository
+import io.mockk.mockk
+import junit.framework.TestCase.assertEquals
+import org.junit.Before
+import org.junit.Test
+
 class DiscoveryScreenViewModelTest {
 
-  /*private lateinit var viewModel: DiscoveryScreenViewModel
-  private val repository = MockRepository()
+  private lateinit var viewModel: DiscoverScreenViewModel
+  private val repository = mockk<ActivityRepository>()
 
   @Before
   fun setUp() {
-    viewModel = DiscoveryScreenViewModel(repository)
-  }
-
-  private fun dummyNode(type: ActivityType, name: String, position: LatLng): NodeWay {
-    return NodeWay(
-        type.toString(),
-        0,
-        position.latitude,
-        position.longitude,
-        Position(position.latitude, position.longitude),
-        Tags(""))
+    viewModel = DiscoverScreenViewModel(repository)
   }
 
   @Test
-  fun `fetchClimbingActivities should populate climbingActivities`() = runTest {
-    // Given
-    val centerLocation = LatLng(46.519962, 6.633597)
-    val rad = 10000.0
-    val climbingNodes =
+  fun testInitialValues() {
+    assertEquals(viewModel.activities.value.isEmpty(), false) // Check initial activities
+    assertEquals(viewModel.screen.value, DiscoverDisplayType.LIST)
+    assertEquals(viewModel.range.value, 10000.0)
+    assertEquals(
+        viewModel.localities,
         listOf(
-            dummyNode(ActivityType.CLIMBING, "Climbing Node 1", centerLocation),
-            dummyNode(ActivityType.CLIMBING, "Climbing Node 2", centerLocation))
-    repository.addClimbingNode(climbingNodes[0])
-    repository.addClimbingNode(climbingNodes[1])
-
-    val method: Method =
-        DiscoveryScreenViewModel::class
-            .java
-            .getDeclaredMethod("fetchClimbingActivities", Double::class.java, LatLng::class.java)
-    method.isAccessible = true
-    method.invoke(viewModel, rad, centerLocation)
-
-    // Then
-    assertEquals(climbingNodes.size, viewModel.climbingActivities.value.size)
+            "Ecublens" to LatLng(46.519962, 6.633597),
+            "Geneva" to LatLng(46.2043907, 6.1431577),
+            "Payerne" to LatLng(46.834190, 6.928969),
+            "Matterhorn" to LatLng(45.980537, 7.641618)))
   }
-
-  @Test
-  fun `fetchClimbingActivities with no arguments should populate climbingActivities`() =
-      runBlocking {
-        // Given
-        val centerLocation = LatLng(46.519962, 6.633597)
-        val rad = 10000.0
-        val climbingNodes =
-            listOf(
-                dummyNode(ActivityType.CLIMBING, "Climbing Node 1", centerLocation),
-                dummyNode(ActivityType.CLIMBING, "Climbing Node 2", centerLocation))
-        repository.addClimbingNode(climbingNodes[0])
-        repository.addClimbingNode(climbingNodes[1])
-
-        val method: Method =
-            DiscoveryScreenViewModel::class
-                .java
-                .getDeclaredMethod(
-                    "fetchClimbingActivities", Double::class.java, LatLng::class.java)
-        method.isAccessible = true
-        method.invoke(viewModel, rad, centerLocation)
-
-        // Then
-        assertEquals(climbingNodes.size, viewModel.climbingActivities.value.size)
-      }*/
 }
