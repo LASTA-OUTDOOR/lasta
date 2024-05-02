@@ -4,6 +4,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.Language
@@ -13,6 +15,7 @@ import com.lastaoutdoor.lasta.ui.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import kotlinx.coroutines.delay
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -54,5 +57,59 @@ class SetupScreenTest {
   @Test
   fun setupScreen_isDisplayed() {
     composeRule.onNodeWithTag("setupScreen").assertIsDisplayed()
+    composeRule.onNodeWithTag("setupTitle").assertIsDisplayed()
+  }
+
+  @Test
+  fun setupScreen_changeLanguage() {
+    composeRule.onNodeWithTag("setupLanguage").assertIsDisplayed()
+    composeRule.onNodeWithTag("setupLanguage").performClick()
+    composeRule.onNodeWithText("French").performClick()
+    composeRule.onNodeWithTag("setupLanguage").assertIsDisplayed()
+  }
+
+  @Test
+  fun setupScreen_changeToClimbing() {
+    composeRule.onNodeWithTag("setupClimbing").assertIsDisplayed()
+    composeRule.onNodeWithTag("setupClimbing").performClick()
+  }
+
+  @Test
+  fun setupScreen_changeToHiking() {
+    composeRule.onNodeWithTag("setupHiking").assertIsDisplayed()
+    composeRule.onNodeWithTag("setupHiking").performClick()
+    composeRule.onNodeWithTag("setupHiking").assertIsDisplayed()
+  }
+
+  @Test
+  fun setupScreen_changeToBiking() {
+    composeRule.onNodeWithTag("setupBiking").assertIsDisplayed()
+    composeRule.onNodeWithTag("setupBiking").performClick()
+  }
+
+  @Test
+  fun setupScreen_changeHikingLevel() {
+    composeRule.onNodeWithTag("setupHIKINGLevel").assertIsDisplayed()
+    composeRule.onNodeWithTag("setupHIKINGLevel").performClick()
+    composeRule.onNodeWithText("Intermediate").performClick()
+  }
+
+  @Test
+  fun setupScreen_changeClimbingLevel() {
+    composeRule.onNodeWithTag("setupCLIMBINGLevel").assertIsDisplayed()
+    composeRule.onNodeWithTag("setupCLIMBINGLevel").performClick()
+    composeRule.onNodeWithText("Intermediate").performClick()
+  }
+
+  @Test
+  fun setupScreen_changeBikingLevel() {
+    composeRule.onNodeWithTag("setupBikingLevel").assertIsDisplayed()
+    composeRule.onNodeWithTag("setupBikingLevel").performClick()
+    composeRule.onNodeWithText("Intermediate").performClick()
+  }
+
+  @Test
+  fun setupScreen_finishButton() {
+    composeRule.onNodeWithTag("setupFinishButton").performClick()
   }
 }

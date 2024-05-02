@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.ActivityType
@@ -22,7 +21,6 @@ import com.lastaoutdoor.lasta.models.user.Language
 import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
-import com.lastaoutdoor.lasta.ui.theme.LastaTheme
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
@@ -58,13 +56,15 @@ fun SetupScreen(
       verticalArrangement = Arrangement.SpaceEvenly) {
 
         // Title "Settings"
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-          Text(
-              text = LocalContext.current.getString(R.string.setup_title),
-              fontWeight = FontWeight.Bold,
-              style = MaterialTheme.typography.displayLarge,
-              color = MaterialTheme.colorScheme.onBackground)
-        }
+        Row(
+            modifier = Modifier.fillMaxWidth().testTag("setupTitle"),
+            horizontalArrangement = Arrangement.Center) {
+              Text(
+                  text = LocalContext.current.getString(R.string.setup_title),
+                  fontWeight = FontWeight.Bold,
+                  style = MaterialTheme.typography.displayLarge,
+                  color = MaterialTheme.colorScheme.onBackground)
+            }
         Column(
             modifier = Modifier.fillMaxWidth().padding(vertical = 30.dp),
             verticalArrangement = Arrangement.SpaceBetween) {
@@ -84,7 +84,8 @@ fun SetupScreen(
                           updateLanguage(it)
                         },
                         Language::toString,
-                        fieldText = LocalContext.current.getString(R.string.languague))
+                        fieldText = LocalContext.current.getString(R.string.languague),
+                        modifier = Modifier.testTag("setupLanguage"))
                   }
 
               Column(
@@ -112,7 +113,7 @@ fun SetupScreen(
                                 selectedActivity = ActivityType.CLIMBING
                                 updatePrefActivity(ActivityType.CLIMBING)
                               },
-                              modifier = Modifier.padding(1.dp),
+                              modifier = Modifier.padding(1.dp).testTag("setupClimbing"),
                               colors =
                                   ButtonDefaults.buttonColors(
                                       containerColor =
@@ -127,7 +128,7 @@ fun SetupScreen(
                                 selectedActivity = ActivityType.HIKING
                                 updatePrefActivity(ActivityType.HIKING)
                               },
-                              modifier = Modifier.padding(1.dp),
+                              modifier = Modifier.padding(1.dp).testTag("setupHiking"),
                               colors =
                                   ButtonDefaults.buttonColors(
                                       containerColor =
@@ -142,7 +143,7 @@ fun SetupScreen(
                                 selectedActivity = ActivityType.BIKING
                                 updatePrefActivity(ActivityType.BIKING)
                               },
-                              modifier = Modifier.padding(1.dp),
+                              modifier = Modifier.padding(1.dp).testTag("setupBiking"),
                               colors =
                                   ButtonDefaults.buttonColors(
                                       containerColor =
@@ -163,11 +164,8 @@ fun SetupScreen(
                           for (activity in twoFirstActivities) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                               var stringResource =
-                                  when (activity) {
-                                    ActivityType.CLIMBING -> R.string.climbing
-                                    ActivityType.HIKING -> R.string.hiking
-                                    else -> R.string.biking
-                                  }
+                                  if (activity == ActivityType.CLIMBING) R.string.climbing
+                                  else R.string.hiking
                               Text(
                                   color = MaterialTheme.colorScheme.primary,
                                   fontWeight = FontWeight.Bold,
@@ -177,26 +175,20 @@ fun SetupScreen(
                               DropDownMenuComponent(
                                   items = UserLevel.values().toList(),
                                   selectedItem =
-                                      when (activity) {
-                                        ActivityType.CLIMBING -> selectedClimbingLevel
-                                        ActivityType.HIKING -> selectedHikingLevel
-                                        else -> selectedBikingLevel
-                                      },
+                                      if (activity == ActivityType.CLIMBING) selectedClimbingLevel
+                                      else selectedHikingLevel,
                                   onItemSelected = { newLevel: UserLevel ->
-                                    when (activity) {
-                                      ActivityType.CLIMBING -> {
-                                        selectedClimbingLevel = newLevel
-                                        updateClimbingLevel(newLevel)
-                                      }
-                                      ActivityType.HIKING -> {
-                                        selectedHikingLevel = newLevel
-                                        updateHikingLevel(newLevel)
-                                      }
-                                      else -> selectedBikingLevel = newLevel
+                                    if (activity == ActivityType.CLIMBING) {
+                                      selectedClimbingLevel = newLevel
+                                      updateClimbingLevel(newLevel)
+                                    } else {
+                                      selectedHikingLevel = newLevel
+                                      updateHikingLevel(newLevel)
                                     }
                                   },
                                   toStr = { it.toString() },
-                                  fieldText = LocalContext.current.getString(R.string.sport_level))
+                                  fieldText = LocalContext.current.getString(R.string.sport_level),
+                                  modifier = Modifier.testTag("setup${activity.name}Level"))
                             }
                           }
                         }
@@ -220,52 +212,35 @@ fun SetupScreen(
                                 updateBikingLevel(newLevel)
                               },
                               toStr = { it.toString() },
-                              fieldText = LocalContext.current.getString(R.string.sport_level))
+                              fieldText = LocalContext.current.getString(R.string.sport_level),
+                              modifier = Modifier.testTag("setupBikingLevel"))
                         }
                   }
 
-              Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                Button(
-                    onClick = {
-                      updateFieldInUser(userId, "language", selectedLanguage.name)
-                      updateLanguage(selectedLanguage)
-                      updateFieldInUser(userId, "prefActivity", prefActivity.name)
-                      updatePrefActivity(selectedActivity)
+              Box(
+                  contentAlignment = Alignment.Center) {
+                    Button(
+                        modifier = Modifier.testTag("setupFinishButton"),
+                        onClick = {
+                          updateFieldInUser(userId, "language", selectedLanguage.name)
+                          updateLanguage(selectedLanguage)
+                          updateFieldInUser(userId, "prefActivity", prefActivity.name)
+                          updatePrefActivity(selectedActivity)
 
-                      // Database calls for the levels
-                      // Create hashmap with the levels
-                      val levelsMap =
-                          hashMapOf(
-                              "climbingLevel" to selectedClimbingLevel.name,
-                              "hikingLevel" to selectedHikingLevel.name,
-                              "bikingLevel" to selectedBikingLevel.name)
-                      updateFieldInUser(userId, "levels", levelsMap)
-                      navigateToMain()
-                    },
-                ) {
-                  Text(text = LocalContext.current.getString(R.string.finish))
-                }
-              }
+                          // Database calls for the levels
+                          // Create hashmap with the levels
+                          val levelsMap =
+                              hashMapOf(
+                                  "climbingLevel" to selectedClimbingLevel.name,
+                                  "hikingLevel" to selectedHikingLevel.name,
+                                  "bikingLevel" to selectedBikingLevel.name)
+                          updateFieldInUser(userId, "levels", levelsMap)
+                          navigateToMain()
+                        },
+                    ) {
+                      Text(text = LocalContext.current.getString(R.string.finish))
+                    }
+                  }
             }
       }
-}
-
-@Preview
-@Composable
-fun SetupScreenPreview() {
-  LastaTheme {
-    SetupScreen(
-        language = Language.ENGLISH,
-        prefActivity = ActivityType.CLIMBING,
-        levels =
-            UserActivitiesLevel(UserLevel.ADVANCED, UserLevel.INTERMEDIATE, UserLevel.BEGINNER),
-        userId = "123",
-        updateFieldInUser = { _, _, _ -> },
-        updateLanguage = {},
-        updatePrefActivity = {},
-        updateClimbingLevel = {},
-        updateHikingLevel = {},
-        updateBikingLevel = {},
-        navigateToMain = {})
-  }
 }
