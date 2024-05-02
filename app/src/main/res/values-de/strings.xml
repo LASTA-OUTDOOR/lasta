@@ -30,7 +30,7 @@
     <string name="select_languague">Wählen Sie Ihre Sprache :</string>
     <string name="languague">Sprache:</string>
     <string name="select_fav_activity">Wählen Sie Ihre Lieblingsaktivität :</string>
-    <string name="save">Speichern</string>
+    <string name="finish">Beenden</string>
     <string name="setup_title">Einstellungen</string>
     <string name="activity_type">Aktivitätstyp</string>
     <string name="not_specified">nicht angegeben</string>

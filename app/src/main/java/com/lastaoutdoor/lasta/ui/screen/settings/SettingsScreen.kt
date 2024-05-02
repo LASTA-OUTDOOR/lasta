@@ -37,8 +37,8 @@ fun SettingsScreen(
   var selectedActivity = prefActivity
 
   var climbingLevel = levels.climbingLevel
-    var hikingLevel = levels.hikingLevel
-    var bikingLevel = levels.bikingLevel
+  var hikingLevel = levels.hikingLevel
+  var bikingLevel = levels.bikingLevel
 
   TopBarLogo(logoPainterId = R.drawable.arrow_back) {
     // preferencesViewModel.updateLanguage(selectedLanguage)
@@ -47,9 +47,7 @@ fun SettingsScreen(
   }
 
   Column(
-      modifier = Modifier
-          .fillMaxSize()
-          .padding(horizontal = 20.dp, vertical = 40.dp),
+      modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp, vertical = 40.dp),
       verticalArrangement = Arrangement.SpaceEvenly) {
 
         // Title "Settings"
@@ -62,127 +60,136 @@ fun SettingsScreen(
             textAlign = TextAlign.Center)
 
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 35.dp),
+            modifier = Modifier.fillMaxWidth().padding(vertical = 35.dp),
             verticalArrangement = Arrangement.SpaceBetween) {
-        // Language selection
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween) {
-              Text(
-                  text = LocalContext.current.getString(R.string.select_languague),
-                  style = MaterialTheme.typography.headlineMedium,
-                  color = MaterialTheme.colorScheme.onBackground)
-              DropDownMenuComponent(
-                  items = Language.values().toList(),
-                  selectedItem = selectedLanguage,
-                  onItemSelected = { newLanguage: Language ->
-                    selectedLanguage = newLanguage
-                    updateLanguage(newLanguage)
-                  },
-                  toStr = { it.toString()},
-                  fieldText = LocalContext.current.getString(R.string.languague))
-            }
+              // Language selection
+              Row(
+                  modifier = Modifier.fillMaxWidth(),
+                  verticalAlignment = Alignment.CenterVertically,
+                  horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(
+                        text = LocalContext.current.getString(R.string.select_languague),
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = MaterialTheme.colorScheme.onBackground)
+                    DropDownMenuComponent(
+                        items = Language.values().toList(),
+                        selectedItem = selectedLanguage,
+                        onItemSelected = { newLanguage: Language ->
+                          selectedLanguage = newLanguage
+                          updateLanguage(newLanguage)
+                        },
+                        toStr = { it.toString() },
+                        fieldText = LocalContext.current.getString(R.string.languague))
+                  }
 
-      Column(modifier = Modifier
-          .fillMaxWidth()
-          .padding(vertical = 30.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        // Outdoor activity selection
-        Text(
-            text = LocalContext.current.getString(R.string.select_fav_activity),
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onBackground)
+              Column(
+                  modifier = Modifier.fillMaxWidth().padding(vertical = 30.dp),
+                  horizontalAlignment = Alignment.CenterHorizontally) {
+                    // Outdoor activity selection
+                    Text(
+                        text = LocalContext.current.getString(R.string.select_fav_activity),
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = MaterialTheme.colorScheme.onBackground)
 
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween) {
+                          for (activity in ActivityType.values()) {
+                            Button(
+                                modifier = Modifier.padding(1.dp),
+                                onClick = {
+                                  selectedActivity = activity
+                                  updatePrefActivity(activity)
+                                },
+                                colors =
+                                    ButtonDefaults.buttonColors(
+                                        containerColor =
+                                            if (selectedActivity == activity)
+                                                MaterialTheme.colorScheme.primary
+                                            else MaterialTheme.colorScheme.secondaryContainer,
+                                        contentColor = MaterialTheme.colorScheme.onPrimary)) {
+                                  val sport =
+                                      when (activity) {
+                                        ActivityType.CLIMBING ->
+                                            LocalContext.current.getString(R.string.climbing)
+                                        ActivityType.HIKING ->
+                                            LocalContext.current.getString(R.string.hiking)
+                                        ActivityType.BIKING ->
+                                            LocalContext.current.getString(R.string.biking)
+                                      }
+                                  Text(text = sport)
+                                }
+                          }
+                        }
+                  }
+              Row(
+                  modifier = Modifier.fillMaxWidth(),
+                  horizontalArrangement = Arrangement.SpaceEvenly) {
+                    // First two dropdown menus in the first row
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.weight(1f)) {
+                          Text(
+                              text = LocalContext.current.getString(R.string.climbing),
+                              color = MaterialTheme.colorScheme.primary,
+                              fontWeight = FontWeight.Bold,
+                              style = MaterialTheme.typography.headlineMedium)
+                          Spacer(modifier = Modifier.height(8.dp))
+                          DropDownMenuComponent(
+                              items = UserLevel.values().toList(),
+                              selectedItem = climbingLevel,
+                              onItemSelected = { newLevel: UserLevel ->
+                                climbingLevel = newLevel
+                                updateClimbingLevel(newLevel)
+                              },
+                              toStr = { it.toString() },
+                              fieldText = LocalContext.current.getString(R.string.sport_level))
+                        }
 
-      Row(
-          modifier = Modifier.fillMaxWidth(),
-          verticalAlignment = Alignment.CenterVertically,
-          horizontalArrangement = Arrangement.SpaceBetween
-      ) {
-        for (activity in ActivityType.values()) {
-            Button(modifier = Modifier.padding(1.dp),
-                onClick = {
-                selectedActivity = activity
-                updatePrefActivity(activity)
-              },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (selectedActivity == activity) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                )) {
-              val sport = when (activity) {
-                ActivityType.CLIMBING -> LocalContext.current.getString(R.string.climbing)
-                ActivityType.HIKING -> LocalContext.current.getString(R.string.hiking)
-                ActivityType.BIKING -> LocalContext.current.getString(R.string.biking)
-              }
-              Text(text = sport)
-            }
-        }
-        }
-      }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                // First two dropdown menus in the first row
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(text = LocalContext.current.getString(R.string.climbing), color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.headlineMedium)
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.weight(1f)) {
+                          Text(
+                              text = LocalContext.current.getString(R.string.hiking),
+                              color = MaterialTheme.colorScheme.primary,
+                              fontWeight = FontWeight.Bold,
+                              style = MaterialTheme.typography.headlineMedium)
+                          Spacer(modifier = Modifier.height(8.dp))
+                          DropDownMenuComponent(
+                              items = UserLevel.values().toList(),
+                              selectedItem = hikingLevel,
+                              onItemSelected = { newLevel: UserLevel ->
+                                hikingLevel = newLevel
+                                updateHikingLevel(newLevel)
+                              },
+                              toStr = { it.toString() },
+                              fieldText = LocalContext.current.getString(R.string.sport_level))
+                        }
+                  }
+              Spacer(modifier = Modifier.height(10.dp))
+
+              // Third dropdown menu in the second row
+              Column(
+                  horizontalAlignment = Alignment.CenterHorizontally,
+                  modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = LocalContext.current.getString(R.string.biking),
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.headlineMedium)
                     Spacer(modifier = Modifier.height(8.dp))
                     DropDownMenuComponent(
                         items = UserLevel.values().toList(),
-                        selectedItem = climbingLevel,
+                        selectedItem = bikingLevel,
                         onItemSelected = { newLevel: UserLevel ->
-                            climbingLevel = newLevel
-                            updateClimbingLevel(newLevel)
+                          bikingLevel = newLevel
+                          updateBikingLevel(newLevel)
                         },
                         toStr = { it.toString() },
-                        fieldText = LocalContext.current.getString(R.string.sport_level)
-                    )
-                }
-
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(text = LocalContext.current.getString(R.string.hiking), color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.headlineMedium)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    DropDownMenuComponent(
-                        items = UserLevel.values().toList(),
-                        selectedItem = hikingLevel,
-                        onItemSelected = { newLevel: UserLevel ->
-                            hikingLevel = newLevel
-                            updateHikingLevel(newLevel)
-                        },
-                        toStr = { it.toString() },
-                        fieldText = LocalContext.current.getString(R.string.sport_level)
-                    )
-                }
+                        fieldText = LocalContext.current.getString(R.string.sport_level))
+                  }
             }
-            Spacer(modifier = Modifier.height(10.dp))
-
-            // Third dropdown menu in the second row
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = LocalContext.current.getString(R.string.biking), color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.headlineMedium)
-                Spacer(modifier = Modifier.height(8.dp))
-                DropDownMenuComponent(
-                    items = UserLevel.values().toList(),
-                    selectedItem = bikingLevel,
-                    onItemSelected = { newLevel: UserLevel ->
-                        bikingLevel = newLevel
-                        updateBikingLevel(newLevel)
-                    },
-                    toStr = { it.toString() },
-                    fieldText = LocalContext.current.getString(R.string.sport_level)
-                )
-            }
-        }
 
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
           Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {

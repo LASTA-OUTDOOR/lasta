@@ -205,7 +205,13 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
       val language = preferencesViewModel.language.collectAsState(initial = Language.ENGLISH).value
       val prefActivity = preferencesViewModel.prefActivity.collectAsState(ActivityType.HIKING).value
-      val levels = preferencesViewModel.levels.collectAsState(initial = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)).value
+      val levels =
+          preferencesViewModel.levels
+              .collectAsState(
+                  initial =
+                      UserActivitiesLevel(
+                          UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER))
+              .value
       SettingsScreen(
           language,
           prefActivity,
@@ -213,8 +219,8 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           preferencesViewModel::updateLanguage,
           preferencesViewModel::updatePrefActivity,
           preferencesViewModel::updateClimbingLevel,
-            preferencesViewModel::updateHikingLevel,
-            preferencesViewModel::updateBikingLevel,
+          preferencesViewModel::updateHikingLevel,
+          preferencesViewModel::updateBikingLevel,
           { navController.navigateUp() },
           {
             preferencesViewModel.clearPreferences()
