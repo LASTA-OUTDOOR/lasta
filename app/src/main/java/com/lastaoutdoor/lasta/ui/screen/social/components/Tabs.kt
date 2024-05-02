@@ -13,8 +13,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.social.ConversationModel
@@ -60,6 +62,7 @@ fun TabMenu(
         Tab(
             selected = state == index,
             onClick = { state = index },
+            modifier = Modifier.testTag("TabNumber$index"),
             text = { Text(text = title, maxLines = 2, overflow = TextOverflow.Ellipsis) })
       }
     }

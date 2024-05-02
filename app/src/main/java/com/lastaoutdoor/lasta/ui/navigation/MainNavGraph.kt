@@ -1,11 +1,8 @@
 package com.lastaoutdoor.lasta.ui.navigation
 
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -117,7 +114,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
             navController.navigate(DestinationRoute.Conversation.route + "/$userId")
           },
           { userId: String ->
-            navController.navigate(DestinationRoute.Conversation.route + "/$userId")
+            navController.navigate(DestinationRoute.FriendProfile.route + "/$userId")
           },
       )
     }
@@ -179,24 +176,32 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
             navController.navigateUp()
           }
     }
-    composable(
-        DestinationRoute.FriendProfile.route + "/{friendId}",
-        arguments = listOf(navArgument("friendId") { type = NavType.StringType })) { entry ->
-          val socialViewModel: SocialViewModel = entry.sharedViewModel(navController)
-          socialViewModel.refreshFriends()
-          val friendId = entry.arguments?.getString("friendId") ?: ""
-          val defaultUserModel: UserModel = UserModel(friendId)
+    composable(DestinationRoute.FriendProfile.route + "/{friendId}") { entry ->
+      val profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(entry)
+      val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
 
-          // Create a state for the UserModel with a default value
-          val friendUserModel = remember { mutableStateOf(defaultUserModel) }
+      // Update the user to display
+      println("FriendProfileScreen: ${entry.arguments?.getString("friendId")}")
+      profileScreenViewModel.updateUser(entry.arguments?.getString("friendId") ?: "")
 
-          // Update the state when the list is updated
-          LaunchedEffect(socialViewModel.friends) {
-            friendUserModel.value =
-                socialViewModel.friends.firstOrNull { it.userId == friendId } ?: defaultUserModel
-          }
-          FriendProfileScreen(friendUserModel.value, navController::navigateUp)
-        }
+      val activities by profileScreenViewModel.filteredActivities.collectAsState()
+      val timeFrame by profileScreenViewModel.timeFrame.collectAsState()
+      val sport by profileScreenViewModel.sport.collectAsState()
+      val isCurrentUser by profileScreenViewModel.isCurrentUser.collectAsState()
+      val user = preferencesViewModel.user.collectAsState(initial = UserModel("")).value
+
+      FriendProfileScreen(
+          activities = activities,
+          timeFrame = timeFrame,
+          sport = sport,
+          isCurrentUser = isCurrentUser,
+          user = user,
+          updateDescription = preferencesViewModel::updateDescription,
+          setSport = profileScreenViewModel::setSport,
+          setTimeFrame = profileScreenViewModel::setTimeFrame,
+          navigateToSettings = { navController.navigate(DestinationRoute.Settings.route) },
+          onBack = { navController.navigateUp() })
+    }
 
     composable(DestinationRoute.Settings.route) { entry ->
       val authViewModel: AuthViewModel = hiltViewModel()
