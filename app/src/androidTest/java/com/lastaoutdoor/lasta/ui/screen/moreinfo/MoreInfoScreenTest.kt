@@ -39,7 +39,7 @@ class MoreInfoScreenTest {
     hiltRule.inject()
     composeRule.activity.setContent {
       val fakeActivity = Activity("", 0L)
-      MoreInfoScreen(fakeActivity, null, {})
+
       val navController = rememberNavController()
       val mapViewModel: MapViewModel = hiltViewModel()
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = hiltViewModel()
