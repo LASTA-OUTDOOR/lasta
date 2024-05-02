@@ -37,7 +37,7 @@ enum class BottomBarTab(
       DestinationRoute.Socials.route,
       Icons.Filled.Face,
       Icons.Outlined.Face,
-      true),
+      false),
   PROFILE(
       R.string.tab_profile,
       DestinationRoute.Profile.route,
