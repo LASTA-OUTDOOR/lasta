@@ -62,8 +62,9 @@ class DiscoveryScreenViewModelTest() {
   @Before
   fun setUp() {
     repository = mockk(relaxed = true)
+    prefRepo = FakePreferencesRepository()
     activitiesDB = FakeActivitiesDBRepository()
-    viewModel = DiscoverScreenViewModel(repository, prefRepo,activitiesDB)
+    viewModel = DiscoverScreenViewModel(repository, prefRepo, activitiesDB)
     repo.currResponse = Response.Success(null)
   }
 

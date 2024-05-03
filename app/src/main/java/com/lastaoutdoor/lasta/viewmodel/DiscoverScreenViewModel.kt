@@ -1,7 +1,6 @@
 package com.lastaoutdoor.lasta.viewmodel
 
 import android.content.Context
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
@@ -39,10 +38,8 @@ constructor(
   private val _activities = MutableStateFlow<ArrayList<Activity>>(ArrayList())
   val activities: StateFlow<List<Activity>> = _activities
 
-
-
   private val _activityIds = MutableStateFlow<ArrayList<Long>>(ArrayList())
-    val activityIds: StateFlow<List<Long>> = _activityIds
+  val activityIds: StateFlow<List<Long>> = _activityIds
 
   private val _selectedActivityType = MutableStateFlow(ActivityType.CLIMBING)
   val selectedActivityType: StateFlow<ActivityType> = _selectedActivityType
@@ -182,7 +179,7 @@ constructor(
         }
       }
       _activities.value =
-          activitiesDB.getActivitiesByOSMIds(activityIds.value, true) as ArrayList<Activity>
+          activitiesDB.getActivitiesByOSMIds(activityIds.value, false) as ArrayList<Activity>
       _markerList.value = activitiesToMarkers(activities.value)
     }
   }

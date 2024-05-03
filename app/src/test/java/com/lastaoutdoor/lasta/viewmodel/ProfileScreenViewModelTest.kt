@@ -3,14 +3,12 @@ package com.lastaoutdoor.lasta.viewmodel
 import com.lastaoutdoor.lasta.models.user.ClimbingUserActivity
 import com.lastaoutdoor.lasta.models.user.UserActivity
 import com.lastaoutdoor.lasta.models.user.UserModel
-import com.lastaoutdoor.lasta.models.user.UserPreferences
 import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserActivityRepo
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserDB
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
@@ -22,12 +20,11 @@ import org.junit.Test
 
 class ProfileScreenViewModelTest {
   @ExperimentalCoroutinesApi @get:Rule val mainDispatcherRule = MainDispatcherRule()
-  private val flow = flowOf(UserPreferences(true))
   private lateinit var viewModel: ProfileScreenViewModel
   private val tm: com.lastaoutdoor.lasta.data.time.TimeProvider =
       mockk("TimeProvider", relaxed = true)
   private val userDb = FakeUserDB()
-  private val prefDB = FakePreferencesRepository(flow)
+  private val prefDB = FakePreferencesRepository()
   private val userActDb = FakeUserActivityRepo()
 
   @Before
