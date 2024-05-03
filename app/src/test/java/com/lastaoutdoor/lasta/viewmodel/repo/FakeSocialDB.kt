@@ -9,8 +9,9 @@ import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
 class FakeSocialDB() : SocialDBRepository {
   val fakeUserModel = UserModel(userId = "id")
   val fakeActivity = ClimbingUserActivity()
-  val fakeMSG = MessageModel("moi", "toi", Timestamp(0, 0))
-  val fakeConfModel = ConversationModel(listOf("moi", "toi"), listOf(fakeMSG), fakeMSG)
+  val fakeMSG = MessageModel(UserModel("moi"), "toi", Timestamp(0, 0))
+  val fakeConfModel =
+      ConversationModel(listOf(UserModel("moi"), UserModel("toi")), listOf(fakeMSG), fakeMSG)
 
   override suspend fun getFriends(friendIds: List<String>): List<UserModel> {
     return listOf(fakeUserModel)
@@ -25,8 +26,8 @@ class FakeSocialDB() : SocialDBRepository {
   }
 
   override suspend fun getConversation(
-      userId: String,
-      friendId: String,
+      user: UserModel,
+      friend: UserModel,
       createNew: Boolean
   ): ConversationModel {
     return fakeConfModel

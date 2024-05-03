@@ -4,6 +4,7 @@ import FakeSocialDB
 import com.lastaoutdoor.lasta.models.user.UserPreferences
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeConnectivityviewRepo
 import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
+import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserDB
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
@@ -21,13 +22,15 @@ class ConversationViewModelTest {
   private val flow = flowOf(UserPreferences(true))
   private lateinit var viewModel: ConversationViewModel
   private var fakeSocialDB = FakeSocialDB()
+  private var fakeUserDB = FakeUserDB()
   private var fakePreferencesRepository = FakePreferencesRepository(flow)
   private var fakeConnectivityViewRepo = FakeConnectivityviewRepo()
 
   @Before
   fun setUp() {
     viewModel =
-        ConversationViewModel(fakeSocialDB, fakeConnectivityViewRepo, fakePreferencesRepository)
+        ConversationViewModel(
+            fakeUserDB, fakeSocialDB, fakeConnectivityViewRepo, fakePreferencesRepository)
   }
 
   @ExperimentalCoroutinesApi val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()

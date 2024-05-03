@@ -65,7 +65,7 @@ class SocialViewModelTest {
   @ExperimentalCoroutinesApi
   @Test
   fun vm() {
-    assertEquals(repoDB.fakeMSG, MessageModel("moi", "toi", Timestamp(0, 0)))
+    assertEquals(repoDB.fakeMSG, MessageModel(UserModel("moi"), "toi", Timestamp(0, 0)))
   }
 
   @ExperimentalCoroutinesApi
@@ -101,7 +101,7 @@ class SocialViewModelTest {
     viewModel.friendRequests
     viewModel.latestFriendActivities
 
-    assertEquals(repoDB.fakeMSG, MessageModel("moi", "toi", Timestamp(0, 0)))
+    assertEquals(repoDB.fakeMSG, MessageModel(UserModel("moi"), "toi", Timestamp(0, 0)))
   }
 
   @ExperimentalCoroutinesApi
