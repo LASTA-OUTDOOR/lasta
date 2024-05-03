@@ -13,56 +13,58 @@ class FakePreferencesRepository(override val userPreferencesFlow: Flow<UserPrefe
     PreferencesRepository {
 
   override suspend fun updateIsLoggedIn(isLoggedIn: Boolean) {
-    TODO("Not yet implemented")
+
   }
 
   override suspend fun updateUserInfo(userModel: UserModel) {
-    TODO("Not yet implemented")
+
   }
 
   override suspend fun updateDescription(description: String) {
-    TODO("Not yet implemented")
+
   }
 
   override suspend fun updateLanguage(language: Language) {
-    TODO("Not yet implemented")
+
   }
 
   override suspend fun updatePrefActivity(activityType: ActivityType) {
-    TODO("Not yet implemented")
+
   }
 
   override suspend fun updateActivityLevels(userActivitiesLevel: UserActivitiesLevel) {
-    TODO("Not yet implemented")
+
   }
 
   override suspend fun updateClimbingLevel(level: UserLevel) {
-    TODO("Not yet implemented")
+
   }
 
   override suspend fun updateHikingLevel(level: UserLevel) {
-    TODO("Not yet implemented")
+
   }
 
   override suspend fun updateBikingLevel(level: UserLevel) {
-    TODO("Not yet implemented")
+
   }
 
-  override suspend fun updateFriends(friends: List<String>) {}
+  override suspend fun updateFriends(friends: List<String>) {
+
+  }
 
   override suspend fun updateFriendRequests(friendRequests: List<String>) {
-    TODO("Not yet implemented")
+
   }
 
   override suspend fun updateFavorites(favorites: List<String>) {
-    TODO("Not yet implemented")
+
   }
 
   override suspend fun updateDownloadedActivities(downloadedActivities: List<String>) {
-    TODO("Not yet implemented")
+
   }
 
   override suspend fun clearPreferences() {
-    TODO("Not yet implemented")
+
   }
 }
