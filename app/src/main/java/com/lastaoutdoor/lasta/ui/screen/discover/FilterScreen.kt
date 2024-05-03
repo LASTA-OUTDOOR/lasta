@@ -66,7 +66,7 @@ fun FilterScreen(
   var selectedIndex by remember { mutableIntStateOf(activities.indexOf(selectedActivity)) }
 
   var initialSelectedLevels = selectedLevels.collectAsState().value
-  var selectedLevels by remember { mutableStateOf(initialSelectedLevels) }
+  var selectedLevels = initialSelectedLevels
 
   var activitiesLevelArray = arrayOf(
       selectedLevels.climbingLevel,
