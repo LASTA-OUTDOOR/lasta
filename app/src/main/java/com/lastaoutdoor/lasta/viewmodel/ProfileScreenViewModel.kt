@@ -140,7 +140,7 @@ constructor(
    *
    * @param user The new user.
    */
-  private fun updateUser(user: UserModel) {
+  fun updateUser(user: UserModel) {
     if (user != _user.value) {
       _user.value = user
       fetchUserActivities()

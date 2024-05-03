@@ -112,7 +112,10 @@ class DiscoverScreenTest {
                         emptyList(),
                         difficulty = Difficulty.EASY,
                         activityImageUrl = "")),
+            centerPoint = LatLng(46.519962, 6.633597),
+            favorites = emptyList(),
             changeActivityToDisplay = {},
+            flipFavorite = {},
             navigateToMoreInfo = {})
       }
     }
@@ -147,6 +150,8 @@ class DiscoverScreenTest {
                         activityImageUrl = "")),
             screen = screenType,
             range = 5000.0,
+            centerPoint = LatLng(46.519962, 6.633597),
+            favorites = emptyList(),
             localities =
                 listOf(
                     "Ecublens" to LatLng(46.519962, 6.633597),
@@ -158,6 +163,7 @@ class DiscoverScreenTest {
             setScreen = { screenType = it },
             setRange = {},
             setSelectedLocality = {},
+            flipFavorite = {},
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
             changeActivityToDisplay = {},

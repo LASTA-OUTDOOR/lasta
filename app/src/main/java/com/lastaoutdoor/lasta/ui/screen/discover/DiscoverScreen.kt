@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
@@ -44,6 +45,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.SphericalUtil
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.models.activity.Activity
@@ -66,12 +68,15 @@ fun DiscoverScreen(
     activities: List<Activity>,
     screen: DiscoverDisplayType,
     range: Double,
+    centerPoint: LatLng,
+    favorites: List<String>,
     localities: List<Pair<String, LatLng>>,
     selectedLocality: Pair<String, LatLng>,
     fetchActivities: (Double, LatLng) -> Unit,
     setScreen: (DiscoverDisplayType) -> Unit,
     setRange: (Double) -> Unit,
     setSelectedLocality: (Pair<String, LatLng>) -> Unit,
+    flipFavorite: (String) -> Unit,
     navigateToFilter: () -> Unit,
     navigateToMoreInfo: () -> Unit,
     changeActivityToDisplay: (Activity) -> Unit,
@@ -121,7 +126,13 @@ fun DiscoverScreen(
 
           item {
             Spacer(modifier = Modifier.height(8.dp))
-            ActivitiesDisplay(activities, changeActivityToDisplay, navigateToMoreInfo)
+            ActivitiesDisplay(
+                activities,
+                centerPoint,
+                favorites,
+                changeActivityToDisplay,
+                flipFavorite,
+                navigateToMoreInfo)
           }
         }
   } else if (screen == DiscoverDisplayType.MAP) {
@@ -273,10 +284,18 @@ fun HeaderComposable(
 @Composable
 fun ActivitiesDisplay(
     activities: List<Activity>,
+    centerPoint: LatLng,
+    favorites: List<String>,
     changeActivityToDisplay: (Activity) -> Unit,
+    flipFavorite: (String) -> Unit,
     navigateToMoreInfo: () -> Unit
 ) {
-  for (a in activities) {
+  val distances =
+      activities.map {
+        SphericalUtil.computeDistanceBetween(
+            centerPoint, LatLng(it.startPosition.lat, it.startPosition.lon))
+      }
+  for (a in activities.sortedBy { distances[activities.indexOf(it)] }) {
     Card(
         modifier =
             Modifier.fillMaxWidth()
@@ -314,11 +333,13 @@ fun ActivitiesDisplay(
                   }
 
               IconButton(
-                  onClick = { /*TODO*/ /* changed to this when favorite Icons.Filled.Favorite*/},
+                  onClick = { flipFavorite(a.activityId) },
                   modifier = Modifier.size(24.dp).testTag("${a.activityId}favoriteButton")) {
                     Icon(
-                        Icons.Filled.FavoriteBorder,
-                        contentDescription = "favorite button",
+                        imageVector =
+                            if (favorites.contains(a.activityId)) Icons.Filled.Favorite
+                            else Icons.Filled.FavoriteBorder,
+                        contentDescription = "Favorite Button",
                         modifier = Modifier.size(24.dp))
                   }
             }
@@ -340,12 +361,14 @@ fun ActivitiesDisplay(
                   imageVector = Icons.Default.Star,
                   contentDescription = "Rating",
                   tint = MaterialTheme.colorScheme.primary)
-              Text(text = "? ${LocalContext.current.getString(R.string.popularity)}")
+              Text(text = "${a.rating} (${a.numRatings})")
               Spacer(modifier = Modifier.width(8.dp))
-              Text(text = "Difficulty: ${LocalContext.current.getString(R.string.difficulty)}")
+              Text(text = "Difficulty: ${a.difficulty}")
               Spacer(modifier = Modifier.width(16.dp))
               // Distance from the user's location, NOT THE LENGTH OF THE ACTIVITY!!!
-              Text(text = "? km")
+              Text(
+                  text =
+                      "${String.format("%.1f", SphericalUtil.computeDistanceBetween(centerPoint, LatLng(a.startPosition.lat, a.startPosition.lon)) / 1000)} km")
             }
       }
     }

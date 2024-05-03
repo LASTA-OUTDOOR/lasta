@@ -53,7 +53,6 @@ fun LoginScreen(
 
   LaunchedEffect(key1 = user) {
     user?.let {
-      println("Hello")
       updatePreferencesOnLogin(it)
       if (isSignUp) {
         navigateToSetup()

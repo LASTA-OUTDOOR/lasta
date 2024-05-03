@@ -7,6 +7,7 @@ import com.lastaoutdoor.lasta.models.api.Tags
 import com.lastaoutdoor.lasta.models.map.MapItinerary
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
+import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
 import com.lastaoutdoor.lasta.utils.Response
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -32,16 +33,18 @@ class DiscoveryScreenViewModelTest {
 
   private lateinit var viewModel: DiscoverScreenViewModel
   private lateinit var repository: ActivityRepository
+  private lateinit var activitiesDB: ActivitiesDBRepository
 
   @Before
   fun setUp() {
     repository = mockk(relaxed = true)
-    viewModel = DiscoverScreenViewModel(repository)
+    activitiesDB = mockk(relaxed = true)
+    viewModel = DiscoverScreenViewModel(repository, activitiesDB)
   }
 
   @Test
   fun testInitialValues() {
-    assertEquals(viewModel.activities.value.isEmpty(), false) // Check initial activities
+    assertEquals(viewModel.activities.value.isEmpty(), true) // Check initial activities
     assertEquals(viewModel.screen.value, DiscoverDisplayType.LIST)
     assertEquals(viewModel.range.value, 10000.0)
     assertEquals(
