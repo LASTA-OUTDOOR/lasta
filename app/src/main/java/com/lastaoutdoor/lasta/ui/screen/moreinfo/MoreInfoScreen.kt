@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
@@ -22,10 +20,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,9 +36,9 @@ import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.models.activity.Activity
-import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.models.map.MapItinerary
+import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
 import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
 import com.lastaoutdoor.lasta.ui.theme.Black
@@ -56,7 +52,6 @@ import com.lastaoutdoor.lasta.viewmodel.MapState
 @Composable
 fun MoreInfoScreen(
     activityToDisplay: Activity,
-    processDiffText: (Activity) -> String,
     state: MapState,
     updatePermission: (Boolean) -> Unit,
     initialPosition: LatLng,
@@ -65,14 +60,11 @@ fun MoreInfoScreen(
     updateSelectedMarker: (Marker?) -> Unit,
     clearSelectedItinerary: () -> Unit,
     selectedZoom: Float,
-    updateSelectedItinerary: (Long) -> Unit,
     goToMarker: (Activity) -> Marker,
     weather: WeatherResponse?,
-    navigateBack: () -> Unit,
     markerList: List<Marker>,
-    selectedItenary : MapItinerary,
-    clearSelectedMarker : () -> Unit
-
+    selectedItenary: MapItinerary?,
+    navigateBack: () -> Unit,
 ) {
   var isMapDisplayed = remember { mutableStateOf(false) }
   if (!isMapDisplayed.value) {
@@ -86,14 +78,14 @@ fun MoreInfoScreen(
         item {
           WeatherReportBig(weather, true)
         } // displays activity difficulty, ration and view on map button
-        item { MiddleZone(activityToDisplay, processDiffText, isMapDisplayed) }
+        item { MiddleZone(activityToDisplay, isMapDisplayed) }
         // filled with a spacer for the moment but will contain address + community
       }
       StartButton()
     }
   } else {
     Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoMap")) {
-      val a = goToMarker(activityToDisplay)
+      val marker = goToMarker(activityToDisplay)
       TopBar(navigateBack)
       MapScreen(
           state,
@@ -104,17 +96,13 @@ fun MoreInfoScreen(
           updateSelectedMarker,
           clearSelectedItinerary,
           selectedZoom,
-          a,
+          marker,
           selectedItenary,
           markerList,
-
-
-
-
-          ) {
-
-          clearSelectedItinerary()
+      ) {
+        clearSelectedItinerary()
       }
+      updateSelectedMarker(marker)
     }
   }
 }
@@ -146,11 +134,7 @@ fun StartButton() {
 // Displays the difficulty and rating of the activity on the left and a button to view the activity
 // on the map on the right
 @Composable
-fun MiddleZone(
-    activityToDisplay: Activity,
-    processDiffText: (Activity) -> String,
-    isMapDisplayed: MutableState<Boolean>
-) {
+fun MiddleZone(activityToDisplay: Activity, isMapDisplayed: MutableState<Boolean>) {
   Row(modifier = Modifier.fillMaxWidth().testTag("MoreInfoMiddleZone")) {
     DiffAndRating(activityToDisplay)
     Spacer(Modifier.weight(1f))
@@ -277,7 +261,7 @@ fun TopBar(navigateBack: () -> Unit) {
 // Logo of the top bar
 @Composable
 fun TopBarLogo(logoPainterId: Int, isFriendProf: Boolean = false, f: () -> Unit) {
-  IconButton(onClick = { f() }) {
+  IconButton(modifier = Modifier.testTag("TopBarLogo"), onClick = { f() }) {
     Icon(
         painter = painterResource(id = logoPainterId),
         contentDescription = "Top Bar logo $logoPainterId",

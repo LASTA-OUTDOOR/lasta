@@ -54,7 +54,7 @@ class SettingsScreenTest {
             {})
       }
     }
-    composeRule.onNodeWithTag("TopBarLogoTag").assertIsDisplayed()
+    composeRule.onNodeWithTag("TopBarLogo").assertIsDisplayed()
   }
 
   @Test

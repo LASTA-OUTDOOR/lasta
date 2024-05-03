@@ -1,17 +1,14 @@
 package com.lastaoutdoor.lasta.viewmodel
 
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.lastaoutdoor.lasta.R
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.maps.model.LatLng
+import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.activity.Difficulty
-import com.lastaoutdoor.lasta.models.map.ClimbingMarker
-import com.lastaoutdoor.lasta.models.map.HikingMarker
+import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
 import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
 import com.lastaoutdoor.lasta.utils.Response
@@ -64,29 +61,13 @@ constructor(
     }
   }
 
-  fun goToMarker(activity: Activity): com.lastaoutdoor.lasta.models.map.Marker {
-    return when (activity.activityType) {
-      ActivityType.CLIMBING ->
-          ClimbingMarker(
-              activity.name,
-              LatLng(activity.startPosition.lat, activity.startPosition.lon),
-              "",
-              R.drawable.climbing_icon)
-      ActivityType.HIKING ->
-          HikingMarker(
-              activity.name,
-              LatLng(activity.startPosition.lat, activity.startPosition.lon),
-              "",
-              R.drawable.hiking_icon,
-              activity.osmId)
-      ActivityType.BIKING ->
-          HikingMarker(
-              activity.name,
-              LatLng(activity.startPosition.lat, activity.startPosition.lon),
-              "",
-              R.drawable.hiking_icon,
-              activity.osmId,
-              ActivityType.BIKING)
-    }
+  fun goToMarker(activity: Activity): Marker {
+    return Marker(
+        activity.osmId,
+        activity.name,
+        LatLng(activity.startPosition.lat, activity.startPosition.lon),
+        "",
+        R.drawable.climbing_icon,
+        activity.activityType)
   }
 }

@@ -168,29 +168,32 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
     }
 
     composable(DestinationRoute.MoreInfo.route) { entry ->
+      val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
       val activityToDisplay = moreInfoScreenViewModel.activityToDisplay.value
-      val mapViewModel: MapViewModel = entry.sharedViewModel(navController)
-      val mapState = mapViewModel.state.collectAsState().value
-      val initialZoom = mapViewModel.initialZoom
-      val initialPosition = mapViewModel.initialPosition
-      val selectedZoom = mapViewModel.selectedZoom
       val weatherViewModel: WeatherViewModel = hiltViewModel(entry)
       val weather = weatherViewModel.weather.observeAsState().value
+      val mapState = discoverScreenViewModel.mapState.collectAsState().value
+      val initialZoom = discoverScreenViewModel.initialZoom
+      val initialPosition = discoverScreenViewModel.initialPosition
+      val selectedZoom = discoverScreenViewModel.selectedZoom
+      val selectedMarker = discoverScreenViewModel.selectedMarker.collectAsState().value
+      val selectedItinerary = discoverScreenViewModel.selectedItinerary.collectAsState().value
+      val markerList = discoverScreenViewModel.markerList.collectAsState().value
       MoreInfoScreen(
           activityToDisplay,
-          moreInfoScreenViewModel::processDiffText,
           mapState,
-          mapViewModel::updatePermission,
+          discoverScreenViewModel::updatePermission,
           initialPosition,
           initialZoom,
-          mapViewModel::updateMarkers,
-          mapViewModel::updateSelectedMarker,
-          mapViewModel::clearSelectedItinerary,
+          discoverScreenViewModel::updateMarkers,
+          discoverScreenViewModel::updateSelectedMarker,
+          discoverScreenViewModel::clearSelectedItinerary,
           selectedZoom,
-          mapViewModel::updateSelectedItinerary,
           moreInfoScreenViewModel::goToMarker,
-          weather) {
+          weather,
+          markerList,
+          selectedItinerary) {
             navController.navigateUp()
           }
     }

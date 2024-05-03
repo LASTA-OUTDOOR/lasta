@@ -219,8 +219,7 @@ private fun GoogleMapComposable(
 
           cameraPositionState.move(
               CameraUpdateFactory.newCameraPosition(
-                  CameraPosition.fromLatLngZoom(
-                      state.selectedMarker.value!!.position, selectedZoom)))
+                  CameraPosition.fromLatLngZoom(selectedMarker.position, selectedZoom)))
           updateSheet()
 
           // updateSelectedMarker(null)

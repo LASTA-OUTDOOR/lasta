@@ -2,22 +2,19 @@ package com.lastaoutdoor.lasta.ui.screen.moreinfo
 
 import android.annotation.SuppressLint
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.models.activity.Activity
-import com.lastaoutdoor.lasta.models.activity.ClimbingActivity
+import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.ui.MainActivity
-import com.lastaoutdoor.lasta.viewmodel.MapViewModel
-import com.lastaoutdoor.lasta.viewmodel.MoreInfoScreenViewModel
-import com.lastaoutdoor.lasta.viewmodel.WeatherViewModel
+import com.lastaoutdoor.lasta.viewmodel.MapState
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -39,30 +36,22 @@ class MoreInfoScreenTest {
     hiltRule.inject()
     composeRule.activity.setContent {
       val fakeActivity = Activity("", 0L)
-
-      val navController = rememberNavController()
-      val mapViewModel: MapViewModel = hiltViewModel()
-      val moreInfoScreenViewModel: MoreInfoScreenViewModel = hiltViewModel()
-      val activity = ClimbingActivity("", 0)
-      val weatherViewModel: WeatherViewModel = hiltViewModel()
-      val weather = weatherViewModel.weather.observeAsState().value
-      mapViewModel.updatePermission(true)
+      val fakeMapState = MapState()
       MoreInfoScreen(
-          activity,
-          moreInfoScreenViewModel::processDiffText,
-          mapViewModel.state.value,
-          mapViewModel::updatePermission,
-          mapViewModel.initialPosition,
-          mapViewModel.initialZoom,
-          mapViewModel::updateMarkers,
-          mapViewModel::updateSelectedMarker,
-          mapViewModel::clearSelectedItinerary,
-          mapViewModel.selectedZoom,
-          mapViewModel::updateSelectedItinerary,
-          moreInfoScreenViewModel::goToMarker,
-          weather) {
-            navController.navigateUp()
-          }
+          fakeActivity,
+          fakeMapState,
+          {},
+          LatLng(0.0, 0.0),
+          0f,
+          { _, _ -> },
+          {},
+          {},
+          0f,
+          { a: Activity -> Marker(0L, "", LatLng(0.0, 0.0), "", 0, ActivityType.CLIMBING) },
+          null,
+          emptyList(),
+          null,
+          {})
     }
   }
 
