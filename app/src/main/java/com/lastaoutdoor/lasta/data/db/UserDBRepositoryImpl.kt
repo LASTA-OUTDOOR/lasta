@@ -1,6 +1,7 @@
 package com.lastaoutdoor.lasta.data.db
 
 import android.content.Context
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.lastaoutdoor.lasta.R
@@ -37,11 +38,7 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
             "friends" to user.friends,
             "friendRequests" to user.friendRequests,
             "favorites" to user.favorites)
-    userCollection
-        .document(user.userId)
-        .set(userData, SetOptions.merge())
-        .addOnSuccessListener { /* TODO */}
-        .addOnFailureListener { e -> e.printStackTrace() }
+    userCollection.document(user.userId).set(userData, SetOptions.merge())
   }
 
   override suspend fun getUserById(userId: String): UserModel? {
@@ -54,14 +51,13 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
       val language = Language.valueOf(user.getString("language") ?: Language.ENGLISH.name)
       val prefActivity =
           ActivityType.valueOf(user.getString("prefActivity") ?: ActivityType.CLIMBING.name)
+      val levelsMap = (user.get("levels") ?: HashMap<String, String>()) as Map<String, String>
       val levels =
           UserActivitiesLevel(
               climbingLevel =
-                  UserLevel.valueOf(user.getString("climbingLevel") ?: UserLevel.BEGINNER.name),
-              hikingLevel =
-                  UserLevel.valueOf(user.getString("hikingLevel") ?: UserLevel.BEGINNER.name),
-              bikingLevel =
-                  UserLevel.valueOf(user.getString("bikingLevel") ?: UserLevel.BEGINNER.name))
+                  UserLevel.valueOf(levelsMap["climbingLevel"] ?: UserLevel.BEGINNER.name),
+              hikingLevel = UserLevel.valueOf(levelsMap["hikingLevel"] ?: UserLevel.BEGINNER.name),
+              bikingLevel = UserLevel.valueOf(levelsMap["bikingLevel"] ?: UserLevel.BEGINNER.name))
       val friends = (user.get("friends") ?: emptyList<String>()) as List<String>
       val friendRequests = (user.get("friendRequests") ?: emptyList<String>()) as List<String>
       val favorites = (user.get("favorites") ?: emptyList<String>()) as List<String>
@@ -91,14 +87,13 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
       val language = Language.valueOf(user.getString("language") ?: Language.ENGLISH.name)
       val prefActivity =
           ActivityType.valueOf(user.getString("prefActivity") ?: ActivityType.CLIMBING.name)
+      val levelsMap = (user.get("levels") ?: HashMap<String, String>()) as Map<String, String>
       val levels =
           UserActivitiesLevel(
               climbingLevel =
-                  UserLevel.valueOf(user.getString("climbingLevel") ?: UserLevel.BEGINNER.name),
-              hikingLevel =
-                  UserLevel.valueOf(user.getString("hikingLevel") ?: UserLevel.BEGINNER.name),
-              bikingLevel =
-                  UserLevel.valueOf(user.getString("bikingLevel") ?: UserLevel.BEGINNER.name))
+                  UserLevel.valueOf(levelsMap["climbingLevel"] ?: UserLevel.BEGINNER.name),
+              hikingLevel = UserLevel.valueOf(levelsMap["hikingLevel"] ?: UserLevel.BEGINNER.name),
+              bikingLevel = UserLevel.valueOf(levelsMap["bikingLevel"] ?: UserLevel.BEGINNER.name))
       val friends = (user.get("friends") ?: emptyList<String>()) as List<String>
       val friendRequests = (user.get("friendRequests") ?: emptyList<String>()) as List<String>
       val favorites = (user.get("favorites") ?: emptyList<String>()) as List<String>
@@ -118,13 +113,18 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
   }
 
   override suspend fun updateField(userId: String, field: String, value: Any) {
-    // Create a reference to the document with the user's UID
     val userDocumentRef = userCollection.document(userId)
-
-    // Create a data map with the field and value
     val data = hashMapOf(field to value)
-
-    // Update the field in the document
     userDocumentRef.update(data as Map<String, Any>).await()
+  }
+
+  override suspend fun addFavorite(userId: String, activityId: String) {
+    val userDocumentRef = userCollection.document(userId)
+    userDocumentRef.update("favorites", FieldValue.arrayUnion(activityId)).await()
+  }
+
+  override suspend fun removeFavorite(userId: String, activityId: String) {
+    val userDocumentRef = userCollection.document(userId)
+    userDocumentRef.update("favorites", FieldValue.arrayRemove(activityId)).await()
   }
 }

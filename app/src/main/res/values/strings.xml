@@ -67,7 +67,7 @@
     <string name = "select_languague">Select your language: </string>
     <string name = "languague">Language: </string>
     <string name = "select_fav_activity">Select your favorite outdoor activity:</string>
-    <string name = "save">Save</string>
+    <string name = "finish">Finish</string>
     <string name="setup_title">Settings</string>
     <!--Map-->
     <string name="activity_type">Activity Type</string>
@@ -125,4 +125,5 @@
     <!--Settings-->
     <string name = "Account_settings">Settings</string>
     <string name= "delete_account">Delete Account</string>
+    <string name="sport_level">Level:</string>
 </resources>
