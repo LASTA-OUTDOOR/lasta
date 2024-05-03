@@ -1,6 +1,5 @@
 package com.lastaoutdoor.lasta.data.db
 
-import UserActivitiesRepositoryImplTest
 import android.content.Context
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseUser
