@@ -44,7 +44,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
-      val activities = discoverScreenViewModel.activities.value
+      val activities = discoverScreenViewModel.activities.collectAsState().value
       val screen = discoverScreenViewModel.screen.collectAsState().value
       val range = discoverScreenViewModel.range.collectAsState().value
       val centerPoint = discoverScreenViewModel.selectedLocality.collectAsState().value.second
@@ -197,7 +197,19 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
             navController.navigateUp()
           }
     }
-    composable(DestinationRoute.Filter.route) { FilterScreen { navController.popBackStack() } }
+    composable(DestinationRoute.Filter.route) { entry ->
+      val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
+      val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
+
+      FilterScreen(
+          discoverScreenViewModel.selectedLevels,
+          discoverScreenViewModel::setSelectedLevels,
+          discoverScreenViewModel.selectedActivityType,
+          discoverScreenViewModel::setSelectedActivityType,
+      ) {
+        navController.popBackStack()
+      }
+    }
 
     composable(
         DestinationRoute.Conversation.route + "/{userId}",

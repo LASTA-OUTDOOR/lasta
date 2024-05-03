@@ -1,7 +1,6 @@
 package com.lastaoutdoor.lasta.viewmodel
 
 import android.content.Context
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
@@ -13,13 +12,18 @@ import com.lastaoutdoor.lasta.models.api.OSMData
 import com.lastaoutdoor.lasta.models.api.Relation
 import com.lastaoutdoor.lasta.models.map.MapItinerary
 import com.lastaoutdoor.lasta.models.map.Marker
+import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
+import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
+import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
 import com.lastaoutdoor.lasta.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -27,11 +31,23 @@ class DiscoverScreenViewModel
 @Inject
 constructor(
     private val repository: ActivityRepository,
+    private val preferencesRepository: PreferencesRepository,
     private val activitiesDB: ActivitiesDBRepository
 ) : ViewModel() {
 
-  val activities = mutableStateOf<ArrayList<Activity>>(ArrayList())
-  val activityIds = mutableStateOf<ArrayList<Long>>(ArrayList())
+  private val _activities = MutableStateFlow<ArrayList<Activity>>(ArrayList())
+  val activities: StateFlow<List<Activity>> = _activities
+
+  private val _activityIds = MutableStateFlow<ArrayList<Long>>(ArrayList())
+  val activityIds: StateFlow<List<Long>> = _activityIds
+
+  private val _selectedActivityType = MutableStateFlow(ActivityType.CLIMBING)
+  val selectedActivityType: StateFlow<ActivityType> = _selectedActivityType
+
+  private val _selectedLevels =
+      MutableStateFlow(
+          UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER))
+  val selectedLevels: StateFlow<UserActivitiesLevel> = _selectedLevels
 
   private var _mapState = MutableStateFlow(MapState())
   val mapState: StateFlow<MapState> = _mapState
@@ -64,9 +80,6 @@ constructor(
   private val _selectedMarker = MutableStateFlow<Marker?>(null)
   val selectedMarker: StateFlow<Marker?> = _selectedMarker
 
-  private val _selectedActivityType = MutableStateFlow(ActivityType.BIKING)
-  val selectedActivityType: StateFlow<ActivityType> = _selectedActivityType
-
   // List of localities with their LatLng coordinates
   val localities =
       listOf(
@@ -79,7 +92,14 @@ constructor(
   val selectedLocality: StateFlow<Pair<String, LatLng>> = _selectedLocality
 
   init {
-    fetchActivities()
+    viewModelScope.launch {
+      _selectedActivityType.value =
+          preferencesRepository.userPreferencesFlow.map { it.user.prefActivity }.first()
+
+      _selectedLevels.value =
+          preferencesRepository.userPreferencesFlow.map { it.user.levels }.first()
+      fetchActivities()
+    }
   }
 
   private fun activitiesToMarkers(activities: List<Activity>): List<Marker> {
@@ -121,20 +141,19 @@ constructor(
               emptyList<OSMData>()
             }
           }
-      print("OSM DATA: $osmData")
-      activities.value = ArrayList()
-      activityIds.value = ArrayList()
+      _activities.value = ArrayList()
+      _activityIds.value = ArrayList()
       osmData.map { point ->
         when (_selectedActivityType.value) {
           ActivityType.CLIMBING -> {
             val castedPoint = point as NodeWay
-            activityIds.value.add(castedPoint.id)
+            _activityIds.value.add(castedPoint.id)
             activitiesDB.addActivityIfNonExisting(
                 Activity("", point.id, ActivityType.CLIMBING, point.tags.name))
           }
           ActivityType.HIKING -> {
             val castedPoint = point as Relation
-            activityIds.value.add(castedPoint.id)
+            _activityIds.value.add(castedPoint.id)
             activitiesDB.addActivityIfNonExisting(
                 Activity(
                     "",
@@ -146,7 +165,7 @@ constructor(
           }
           ActivityType.BIKING -> {
             val castedPoint = point as Relation
-            activityIds.value.add(castedPoint.id)
+            _activityIds.value.add(castedPoint.id)
             activitiesDB.addActivityIfNonExisting(
                 Activity(
                     "",
@@ -159,8 +178,8 @@ constructor(
           }
         }
       }
-      activities.value =
-          activitiesDB.getActivitiesByOSMIds(activityIds.value, true) as ArrayList<Activity>
+      _activities.value =
+          activitiesDB.getActivitiesByOSMIds(activityIds.value, false) as ArrayList<Activity>
       _markerList.value = activitiesToMarkers(activities.value)
     }
   }
@@ -177,6 +196,14 @@ constructor(
   // Set the selected locality
   fun setSelectedLocality(locality: Pair<String, LatLng>) {
     _selectedLocality.value = locality
+  }
+
+  fun setSelectedActivityType(activityType: ActivityType) {
+    _selectedActivityType.value = activityType
+  }
+
+  fun setSelectedLevels(levels: UserActivitiesLevel) {
+    _selectedLevels.value = levels
   }
 
   fun updatePermission(value: Boolean) {

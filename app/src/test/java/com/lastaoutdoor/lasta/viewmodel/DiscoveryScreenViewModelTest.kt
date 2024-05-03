@@ -8,6 +8,7 @@ import com.lastaoutdoor.lasta.repository.api.ActivityRepository
 import com.lastaoutdoor.lasta.utils.Response
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivitiesDBRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivityRepository
+import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.Dispatchers
@@ -43,6 +44,7 @@ class DiscoveryScreenViewModelTest() {
   private lateinit var viewModel: DiscoverScreenViewModel
   private lateinit var repository: ActivityRepository
   private lateinit var activitiesDB: FakeActivitiesDBRepository
+  private lateinit var prefRepo: FakePreferencesRepository
 
   @ExperimentalCoroutinesApi
   @Before
@@ -60,11 +62,10 @@ class DiscoveryScreenViewModelTest() {
   @Before
   fun setUp() {
     repository = mockk(relaxed = true)
+    prefRepo = FakePreferencesRepository()
     activitiesDB = FakeActivitiesDBRepository()
-    viewModel = DiscoverScreenViewModel(repository, activitiesDB)
+    viewModel = DiscoverScreenViewModel(repository, prefRepo, activitiesDB)
     repo.currResponse = Response.Success(null)
-
-    viewModel = DiscoverScreenViewModel(repo, mockk())
   }
 
   @ExperimentalCoroutinesApi

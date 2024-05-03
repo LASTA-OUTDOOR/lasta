@@ -8,9 +8,11 @@ import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.models.user.UserPreferences
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
-class FakePreferencesRepository(override val userPreferencesFlow: Flow<UserPreferences>) :
-    PreferencesRepository {
+class FakePreferencesRepository() : PreferencesRepository {
+
+  override val userPreferencesFlow: Flow<UserPreferences> = flow { emit(UserPreferences(true)) }
 
   override suspend fun updateIsLoggedIn(isLoggedIn: Boolean) {}
 

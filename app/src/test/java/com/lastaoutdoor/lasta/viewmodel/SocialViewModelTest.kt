@@ -6,14 +6,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.google.firebase.Timestamp
 import com.lastaoutdoor.lasta.models.social.MessageModel
 import com.lastaoutdoor.lasta.models.user.UserModel
-import com.lastaoutdoor.lasta.models.user.UserPreferences
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeConnectivityviewRepo
 import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserDB
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.TestDispatcher
@@ -43,14 +41,13 @@ class MainCoroutineRule(private val dispatcher: TestDispatcher = StandardTestDis
 
 class SocialViewModelTest {
   @ExperimentalCoroutinesApi @get:Rule val mainDispatcherRule = MainDispatcherRule()
-  private val flow = flowOf(UserPreferences(true))
 
   private val repoDB = FakeSocialDB()
   private val userDB = FakeUserDB()
   private val connectRepo = FakeConnectivityviewRepo()
   private val context: Context = mockk()
   private lateinit var viewModel: SocialViewModel
-  @OptIn(ExperimentalCoroutinesApi::class) private val prefRepo = FakePreferencesRepository(flow)
+  private val prefRepo = FakePreferencesRepository()
 
   // Mock the user preferences flow
 
