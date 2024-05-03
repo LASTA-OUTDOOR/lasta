@@ -7,6 +7,7 @@ import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.models.user.UserPreferences
 import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
+import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserDB
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
@@ -23,7 +24,8 @@ class PreferencesViewModelTest {
     @ExperimentalCoroutinesApi val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
     private val flow = flowOf(UserPreferences(true))
     val db = FakePreferencesRepository(flow)
-    val vm = PreferencesViewModel(db)
+    val db2 = FakeUserDB()
+    val vm = PreferencesViewModel(db,db2)
     @ExperimentalCoroutinesApi
     @Before
     fun setupDispatcher() {
@@ -45,7 +47,7 @@ class PreferencesViewModelTest {
         vm.updateClimbingLevel(userLevel)
         vm.updateHikingLevel(userLevel)
         vm.updateDescription("")
-        vm.updateFavorites(listOf(""))
+
         vm.updateActivityLevels(UserActivitiesLevel(UserLevel.BEGINNER,UserLevel.BEGINNER,UserLevel.BEGINNER))
         vm.updateFriendRequests(listOf(""))
         vm.updateDownloadedActivities(listOf(""))

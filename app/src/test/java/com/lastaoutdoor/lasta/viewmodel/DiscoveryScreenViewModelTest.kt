@@ -4,6 +4,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.utils.Response
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivityRepository
+import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -35,36 +36,23 @@ class DiscoveryScreenViewModelTest() {
   private lateinit var viewModel: DiscoverScreenViewModel
   private var repo = FakeActivityRepository()
 
+
   @Before
   fun setUp() {
     repo.currResponse = Response.Success(null)
 
-    viewModel = DiscoverScreenViewModel(repo)
+    viewModel = DiscoverScreenViewModel(repo, mockk())
   }
 
-  @ExperimentalCoroutinesApi
-  @Test
-  fun fetchClimbingActivities() {
-    runBlocking {
-      viewModel.fetchClimbingActivities()
-      assertEquals(viewModel.activities.value, emptyList<Activity>())
-    }
-  }
 
-  @ExperimentalCoroutinesApi
-  @Test
-  fun fetchHikingActivities() {
-    runBlocking {
-      viewModel.fetchHikingActivities()
-      assertEquals(viewModel.activities.value, emptyList<Activity>())
-    }
-  }
+
+
 
   @ExperimentalCoroutinesApi
   @Test
   fun fetchBikingActivities() {
     runBlocking {
-      viewModel.fetchBikingActivities()
+      viewModel.fetchActivities()
       assertEquals(viewModel.activities.value, emptyList<Activity>())
     }
   }
