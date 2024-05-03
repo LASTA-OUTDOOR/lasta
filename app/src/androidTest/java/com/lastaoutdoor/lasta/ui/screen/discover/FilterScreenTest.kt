@@ -1,8 +1,6 @@
 package com.lastaoutdoor.lasta.ui.screen.discover
 
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -24,32 +22,30 @@ import org.junit.Test
 @UninstallModules(AppModule::class)
 class FilterScreenTest {
 
-    @get:Rule(order = 0) val hiltRule = HiltAndroidRule(this)
+  @get:Rule(order = 0) val hiltRule = HiltAndroidRule(this)
 
-    @get:Rule(order = 1) val composeRule = createAndroidComposeRule<MainActivity>()
+  @get:Rule(order = 1) val composeRule = createAndroidComposeRule<MainActivity>()
 
-    @Before
-    fun setUp() {
-        hiltRule.inject()
+  @Before
+  fun setUp() {
+    hiltRule.inject()
 
-        var selectedActivityType: StateFlow<ActivityType> = MutableStateFlow(ActivityType.CLIMBING)
-        var setSelectedActivityType: (ActivityType) -> Unit = {
-            selectedActivityType = MutableStateFlow(it)
-        }
-        composeRule.activity.setContent {
-            FilterScreen(
-                selectedActivityType = selectedActivityType,
-                setSelectedActivityType = setSelectedActivityType
-            ) {
-
-            }
-        }
-
+    var selectedActivityType: StateFlow<ActivityType> = MutableStateFlow(ActivityType.CLIMBING)
+    var selectedLevels =
+        MutableStateFlow(
+            UserActivitiesLevel(UserLevel.INTERMEDIATE, UserLevel.ADVANCED, UserLevel.ADVANCED))
+    composeRule.activity.setContent {
+      FilterScreen(
+          selectedActivityType = selectedActivityType,
+          setSelectedActivityType = {},
+          selectedLevels = selectedLevels,
+          setSelectedLevels = {},
+      ) {}
     }
+  }
 
-    @Test
-    fun filterScreen_isDisplayed() {
-        composeRule.onNodeWithTag("filterScreen").assertIsDisplayed()
-    }
-
+  @Test
+  fun filterScreen_isDisplayed() {
+    composeRule.onNodeWithTag("filterScreen").assertIsDisplayed()
+  }
 }

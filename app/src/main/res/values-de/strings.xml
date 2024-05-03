@@ -41,7 +41,7 @@
     <string name="search">Suchen :</string>
     <string name="select_dist_radius">Wählen Sie den Suchradius aus :</string>
     <string name="use_curr_loc">Meinen aktuellen Standort verwenden</string>
-    <string name="apply">Anwenden</string>
+    <string name="apply">Anwenden - Zu implementieren</string>
     <string name="activity_title">Activitättitel</string>
     <string name="friend">Freunde</string>
     <string name="no_friend">Sie haben noch keine Freundschaftsanfrage</string>

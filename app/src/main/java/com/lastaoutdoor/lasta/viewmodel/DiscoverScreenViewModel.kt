@@ -7,10 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.Activity
+import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.api.NodeWay
 import com.lastaoutdoor.lasta.models.api.OSMData
 import com.lastaoutdoor.lasta.models.api.Relation
-import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
@@ -26,9 +26,13 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class DiscoverScreenViewModel @Inject constructor(private val repository: ActivityRepository,
-    private val preferencesRepository: PreferencesRepository, private val activitiesDB: ActivitiesDBRepository) :
-    ViewModel() {
+class DiscoverScreenViewModel
+@Inject
+constructor(
+    private val repository: ActivityRepository,
+    private val preferencesRepository: PreferencesRepository,
+    private val activitiesDB: ActivitiesDBRepository
+) : ViewModel() {
 
   val activities = mutableStateOf<ArrayList<Activity>>(ArrayList())
   val activityIds = mutableStateOf<ArrayList<Long>>(ArrayList())
@@ -36,7 +40,9 @@ class DiscoverScreenViewModel @Inject constructor(private val repository: Activi
   private val _selectedActivityType = MutableStateFlow(ActivityType.CLIMBING)
   val selectedActivityType: StateFlow<ActivityType> = _selectedActivityType
 
-  private val _selectedLevels = MutableStateFlow(UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER))
+  private val _selectedLevels =
+      MutableStateFlow(
+          UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER))
   val selectedLevels: StateFlow<UserActivitiesLevel> = _selectedLevels
 
   private val _screen = MutableStateFlow(DiscoverDisplayType.LIST)
@@ -61,8 +67,9 @@ class DiscoverScreenViewModel @Inject constructor(private val repository: Activi
       _selectedActivityType.value =
           preferencesRepository.userPreferencesFlow.map { it.user.prefActivity }.first()
 
-        _selectedLevels.value = preferencesRepository.userPreferencesFlow.map { it.user.levels }.first()
-        fetchActivities()
+      _selectedLevels.value =
+          preferencesRepository.userPreferencesFlow.map { it.user.levels }.first()
+      fetchActivities()
     }
   }
 
@@ -151,7 +158,6 @@ class DiscoverScreenViewModel @Inject constructor(private val repository: Activi
 
   fun setSelectedActivityType(activityType: ActivityType) {
     _selectedActivityType.value = activityType
-    fetchActivities()
   }
 
   fun setSelectedLevels(levels: UserActivitiesLevel) {

@@ -24,7 +24,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -68,11 +67,14 @@ fun FilterScreen(
   var initialSelectedLevels = selectedLevels.collectAsState().value
   var selectedLevels = initialSelectedLevels
 
-  var activitiesLevelArray = arrayOf(
-      selectedLevels.climbingLevel,
-        selectedLevels.hikingLevel,
-        selectedLevels.bikingLevel,
-  )
+  var activitiesLevelArray =
+      arrayOf(
+          selectedLevels.climbingLevel,
+          selectedLevels.hikingLevel,
+          selectedLevels.bikingLevel,
+      )
+
+  var checkedBox by remember { mutableStateOf(true) }
 
   fun userLevelToDifficultyLevel(userLevel: UserLevel): String {
     return when (userLevel) {
@@ -83,10 +85,7 @@ fun FilterScreen(
   }
 
   Column(
-      modifier = Modifier
-          .fillMaxSize()
-          .padding(16.dp)
-          .testTag("filterScreen"),
+      modifier = Modifier.fillMaxSize().padding(16.dp).testTag("filterScreen"),
       horizontalAlignment = Alignment.CenterHorizontally) {
 
         // return button to go back to the discovery screen
@@ -124,12 +123,12 @@ fun FilterScreen(
             RadioButton(
                 selected = activitiesLevelArray[selectedIndex] == levelItem,
                 onClick = {
-                    activitiesLevelArray[selectedIndex] = levelItem
-                    setSelectedLevels(
-                        UserActivitiesLevel(
-                            climbingLevel = activitiesLevelArray[0],
-                            hikingLevel = activitiesLevelArray[1],
-                            bikingLevel = activitiesLevelArray[2]))
+                  activitiesLevelArray[selectedIndex] = levelItem
+                  setSelectedLevels(
+                      UserActivitiesLevel(
+                          climbingLevel = activitiesLevelArray[0],
+                          hikingLevel = activitiesLevelArray[1],
+                          bikingLevel = activitiesLevelArray[2]))
                 })
             Text(text = userLevelToDifficultyLevel(levelItem))
           }
@@ -142,8 +141,8 @@ fun FilterScreen(
         // Enable the user to see or not his/her completed activities
         Row(verticalAlignment = Alignment.CenterVertically) {
           Checkbox(
-              checked = false, // TODO: Bind this to your actual data
-              onCheckedChange = { /*TODO*/},
+              checked = checkedBox,
+              onCheckedChange = { checkedBox = it },
               colors =
                   CheckboxDefaults.colors(uncheckedColor = AccentGreen, checkedColor = AccentGreen))
           Text(
@@ -194,10 +193,7 @@ fun FilterScreen(
               setSelectedActivityType(activities[selectedIndex])
               navigateBack()
             },
-            modifier = Modifier
-                .width(305.dp)
-                .height(48.dp)
-                .testTag("applyFilterOptionsButton"),
+            modifier = Modifier.width(305.dp).height(48.dp).testTag("applyFilterOptionsButton"),
             colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
               Text(
                   LocalContext.current.getString(R.string.apply),
