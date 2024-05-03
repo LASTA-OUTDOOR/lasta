@@ -10,9 +10,11 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.di.AppModule
+import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.ui.MainActivity
-import com.lastaoutdoor.lasta.viewmodel.MapState
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -40,13 +42,12 @@ class MapScreenTest {
   @OptIn(ExperimentalMaterial3Api::class)
   @Test
   fun bottomSheetTestInitial() {
-
     composeRule.activity.setContent {
       val sheetState = rememberModalBottomSheetState()
       InformationSheet(
           sheetState = sheetState,
           isSheetOpen = isSheetOpen,
-          MapState(),
+          Marker(1, "Test Marker", LatLng(0.0, 0.0), "Test description", 2, ActivityType.HIKING),
           onDismissRequest = { isSheetOpen = false })
     }
 
@@ -56,36 +57,3 @@ class MapScreenTest {
     isSheetOpen = false
   }
 }
-
-/*
-  @OptIn(ExperimentalMaterial3Api::class)
-  @Test
-  fun bottomSheetTestDismiss() {
-
-    isSheetOpen = true
-
-    composeRule.activity.setContent {
-      val viewModel: MapViewModel = hiltViewModel()
-
-      viewModel.state.selectedMarker =
-          ClimbingMarker("Test marker", LatLng(0.0, 0.0), "Test description", 1)
-
-      Column {
-        Text("Other content")
-
-        val sheetState = rememberModalBottomSheetState()
-
-        InformationSheet(
-            sheetState = sheetState,
-            isSheetOpen = isSheetOpen,
-            onDismissRequest = { isSheetOpen = false })
-      }
-    }
-    composeRule.onNodeWithTag("bottomSheet").assertIsDisplayed()
-    composeRule.onNodeWithText("Test marker").assertIsDisplayed()
-    Espresso.pressBack()
-    composeRule.onNodeWithTag("bottomSheet").assertIsNotDisplayed()
-  }
-}
-
-*/

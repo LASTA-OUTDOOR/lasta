@@ -31,7 +31,6 @@ import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 import com.lastaoutdoor.lasta.viewmodel.ConversationViewModel
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenViewModel
 import com.lastaoutdoor.lasta.viewmodel.FavoritesScreenViewModel
-import com.lastaoutdoor.lasta.viewmodel.MapViewModel
 import com.lastaoutdoor.lasta.viewmodel.MoreInfoScreenViewModel
 import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 import com.lastaoutdoor.lasta.viewmodel.ProfileScreenViewModel
@@ -44,7 +43,6 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
     composable(DestinationRoute.Discover.route) { entry ->
       val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
-      val mapViewModel: MapViewModel = entry.sharedViewModel(navController)
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
       val activities = discoverScreenViewModel.activities.value
       val screen = discoverScreenViewModel.screen.collectAsState().value
@@ -53,12 +51,15 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val localities = discoverScreenViewModel.localities
       val selectedLocality = discoverScreenViewModel.selectedLocality.collectAsState().value
       val favorites = preferencesViewModel.favorites.collectAsState(initial = emptyList()).value
+      val mapState = discoverScreenViewModel.mapState.collectAsState().value
+      val initialZoom = discoverScreenViewModel.initialZoom
+      val initialPosition = discoverScreenViewModel.initialPosition
+      val selectedZoom = discoverScreenViewModel.selectedZoom
+      val selectedMarker = discoverScreenViewModel.selectedMarker.collectAsState().value
+      val selectedItinerary = discoverScreenViewModel.selectedItinerary.collectAsState().value
+      val markerList = discoverScreenViewModel.markerList.collectAsState().value
       val weatherViewModel: WeatherViewModel = hiltViewModel(entry)
       val weather = weatherViewModel.weather.observeAsState().value
-      val mapState = mapViewModel.state.collectAsState().value
-      val initialZoom = mapViewModel.initialZoom
-      val initialPosition = mapViewModel.initialPosition
-      val selectedZoom = mapViewModel.selectedZoom
 
       DiscoverScreen(
           activities,
@@ -78,14 +79,17 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           moreInfoScreenViewModel::changeActivityToDisplay,
           weather,
           mapState,
-          mapViewModel::updatePermission,
+          discoverScreenViewModel::updatePermission,
           initialPosition,
           initialZoom,
-          mapViewModel::updateMarkers,
-          mapViewModel::updateSelectedMarker,
-          mapViewModel::clearSelectedItinerary,
+          discoverScreenViewModel::updateMarkers,
+          discoverScreenViewModel::updateSelectedMarker,
+          discoverScreenViewModel::clearSelectedItinerary,
           selectedZoom,
-          mapViewModel::updateSelectedItinerary)
+          selectedMarker,
+          selectedItinerary,
+          markerList,
+          discoverScreenViewModel::clearSelectedMarker)
     }
     composable(DestinationRoute.Favorites.route) { entry ->
       val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
