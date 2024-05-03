@@ -62,12 +62,18 @@ constructor(
   }
 
   fun goToMarker(activity: Activity): Marker {
+    val icon =
+        when (activity.activityType) {
+          ActivityType.CLIMBING -> R.drawable.climbing_icon
+          ActivityType.HIKING -> R.drawable.hiking_icon
+          ActivityType.BIKING -> R.drawable.hiking_icon
+        }
     return Marker(
         activity.osmId,
         activity.name,
         LatLng(activity.startPosition.lat, activity.startPosition.lon),
         "",
-        R.drawable.climbing_icon,
+        icon,
         activity.activityType)
   }
 }
