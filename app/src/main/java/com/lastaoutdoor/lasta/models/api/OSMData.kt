@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.lastaoutdoor.lasta.models.activity.Activity
 
 data class Tags(
-    @SerializedName("name") val name: String,
+    @SerializedName("name") val name: String = "",
     @SerializedName("sport") val sport: String = "",
     @SerializedName("route") val route: String = "",
     @SerializedName("from") val from: String = "",

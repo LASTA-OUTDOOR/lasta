@@ -39,8 +39,8 @@ interface SocialDBRepository {
    * @param createNew whether to create a new conversation if it doesn't exist
    */
   suspend fun getConversation(
-      userId: String,
-      friendId: String,
+      user: UserModel,
+      friend: UserModel,
       createNew: Boolean = true
   ): ConversationModel
 

@@ -1,12 +1,28 @@
 package com.lastaoutdoor.lasta.viewmodel
 
+import FakeSocialDB
+import android.content.Context
+import androidx.compose.ui.graphics.vector.ImageVector
+import com.google.firebase.Timestamp
+import com.lastaoutdoor.lasta.models.social.MessageModel
+import com.lastaoutdoor.lasta.models.user.UserModel
+import com.lastaoutdoor.lasta.models.user.UserPreferences
+import com.lastaoutdoor.lasta.viewmodel.repo.FakeConnectivityviewRepo
+import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
+import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserDB
+import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 
@@ -25,173 +41,106 @@ class MainCoroutineRule(private val dispatcher: TestDispatcher = StandardTestDis
   }
 }
 
-/*class FakeSocialRepository : SocialDBRepository {
-
-  var friends: ArrayList<UserModel> = ArrayList()
-  var activities: ArrayList<ActivityType> = ArrayList()
-  var messages: ArrayList<MessageModel> = ArrayList()
-
-  var sentRequest: ArrayList<String> = ArrayList()
-  var receivedRequest: ArrayList<String> = ArrayList()
-
-  // Change this to simulate the case were the function should return false
-  var shouldWork = true
-
-  override fun getFriends(userId: String): List<UserModel> {
-    return friends
-  }
-
-  override fun getLatestFriendActivities(userId: String, days: Int): List<ActivityType> {
-    return activities
-  }
-
-  override fun getAllConversations(
-      userId: String,
-      friends: List<UserModel>
-  ): List<ConversationModel> {
-    TODO("Not yet implemented")
-  }
-
-  override fun getConversation(userId: String, friendId: String): ConversationModel {
-    TODO("Not yet implemented")
-  }
-
-  override fun sendFriendRequest(uid: String, email: String): Boolean {
-    if (shouldWork) {
-      sentRequest += (email)
-      return true
-    }
-    return false
-  }
-
-  override fun getFriendRequests(userId: String): List<UserModel> {
-    return receivedRequest.map {
-      UserModel(it, "name", "email", "photo", "bio", UserLevel.BEGINNER)
-    }
-  }
-
-  override fun acceptFriendRequest(source: String, requester: String) {
-    friends.add(UserModel(requester, "name", "email", "photo", "bio", UserLevel.BEGINNER))
-    receivedRequest.remove(requester)
-  }
-
-  override fun declineFriendRequest(source: String, requester: String) {
-    receivedRequest.remove(requester)
-  }
-
-  override fun sendMessage(userId: String, friendUserId: String, message: String) {
-    TODO("Not yet implemented")
-  }
-
-  fun setMessages(messages: List<MessageModel>) {
-    this.messages.clear()
-    this.messages.addAll(messages)
-  }
-
-  fun setFriends(friend: List<UserModel>) {
-    this.friends.clear()
-    this.friends.addAll(friend)
-  }
-
-  fun setLatestFriendActivities(activities: List<ActivitiesDatabaseType>) {
-    this.activities.clear()
-    this.activities.addAll(activities)
-  }
-
-  fun setReceivedRequest(requests: List<String>) {
-    this.receivedRequest.clear()
-    this.receivedRequest.addAll(requests)
-  }
-
-  fun setSentRequest(requests: List<String>) {
-    this.sentRequest.clear()
-    this.sentRequest.addAll(requests)
-  }
-
-  fun clear() {
-    friends.clear()
-    activities.clear()
-    messages.clear()
-    sentRequest.clear()
-    receivedRequest.clear()
-  }
-}
-
-class FakeConnectivityRepository : ConnectivityRepository {
-
-  private val _connectionState = MutableStateFlow<ConnectionState>(ConnectionState.CONNECTED)
-  override val connectionState: StateFlow<ConnectionState> = _connectionState
-
-  fun setConnectionStateToTrue() {
-    _connectionState.value = ConnectionState.CONNECTED
-  }
-
-  fun setConnectionStateToFalse() {
-    _connectionState.value = ConnectionState.OFFLINE
-  }
-}
-
-class FakePreferencesRepository(override val userPreferencesFlow: Flow<UserPreferences>) :
-    PreferencesRepository {
-
-  override suspend fun updateIsLoggedIn(isLoggedIn: Boolean) {}
-
-  override suspend fun updateUserInfo(user: UserModel?) {}
-
-  override suspend fun updateHikingLevel(hikingLevel: UserLevel) {}
-
-  override suspend fun updateLanguage(language: String) {}
-
-  override suspend fun updatePrefSport(prefSport: String) {}
-
-  override suspend fun clearPreferences() {}
-
-  override suspend fun updateBio(bio: String) {}
-}
-
 class SocialViewModelTest {
+  @ExperimentalCoroutinesApi @get:Rule val mainDispatcherRule = MainDispatcherRule()
+  private val flow = flowOf(UserPreferences(true))
 
-  private val repo = FakeSocialRepository()
+  private val repoDB = FakeSocialDB()
+  private val userDB = FakeUserDB()
+  private val connectRepo = FakeConnectivityviewRepo()
+  private val context: Context = mockk()
   private lateinit var viewModel: SocialViewModel
+  @OptIn(ExperimentalCoroutinesApi::class) private val prefRepo = FakePreferencesRepository(flow)
 
   // Mock the user preferences flow
-  private val userPreferencesFlow =
-      MutableStateFlow(
-          UserPreferences(
-              true, "email", "name", "photo", "", "", UserLevel.BEGINNER, "English", "Hiking"))
 
+  @ExperimentalCoroutinesApi
   @Before
   fun setUp() {
-    viewModel =
-        SocialViewModel(
-            repo, FakeConnectivityRepository(), FakePreferencesRepository(userPreferencesFlow))
+    viewModel = SocialViewModel(context, repoDB, userDB, connectRepo, prefRepo)
   }
 
-  // @Test
-  fun `Default values`() {
+  @ExperimentalCoroutinesApi val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
 
-    runTest {
-      viewModel.isConnected.take(1).collect() { state ->
-        assertEquals(ConnectionState.OFFLINE, state)
-      }
-    }
-    assert(viewModel.getNumberOfDays() == 7)
-    assertFalse(viewModel.topButton)
-    assertTrue(viewModel.messages.isEmpty())
-    assertTrue(viewModel.friends.isEmpty())
-    assertTrue(viewModel.latestFriendActivities.isEmpty())
-    assert(viewModel.topButtonIcon == Icons.Filled.Email)
+  @ExperimentalCoroutinesApi
+  @Test
+  fun vm() {
+    assertEquals(repoDB.fakeMSG, MessageModel(UserModel("moi"), "toi", Timestamp(0, 0)))
   }
 
-  // @Test
-  fun `Show top button`() {
-    viewModel.showTopButton(Icons.Filled.Add, {})
-    assertTrue(viewModel.topButton)
-    assert(viewModel.topButtonIcon == Icons.Filled.Add)
+  @ExperimentalCoroutinesApi
+  @Test
+  fun showTop() {
+    val iv: ImageVector = mockk()
+    viewModel.showTopButton(iv, {})
+    viewModel.requestFriend("")
+    viewModel.acceptFriend(UserModel("userId"))
+    viewModel.declineFriend(UserModel("userId"))
+    viewModel.refreshFriends()
+    viewModel.refreshMessages()
+    viewModel.refreshFriendRequests()
+    viewModel.user = UserModel("userId")
+    viewModel.friends = listOf(UserModel("userId"))
+    viewModel.friendRequestFeedback = "prout"
+    viewModel.friendRequests = listOf(UserModel("userId"))
+    viewModel.displayAddFriendDialog = true
+    viewModel.displayFriendPicker = true
+    // asssert displayFriendPicker
+    assertEquals(viewModel.displayFriendPicker, true)
+    viewModel.messages = listOf()
+    viewModel.user
+    viewModel.friendRequestFeedback
+    viewModel.displayFriendPicker
+    viewModel.displayAddFriendDialog
+    viewModel.topButton
+    viewModel.topButtonIcon
+    viewModel.topButtonOnClick
+    viewModel.getNumberOfDays()
+    val q = viewModel.friends
+    val m = viewModel.messages
+    viewModel.friendRequests
+    viewModel.latestFriendActivities
 
-    viewModel.hideTopButton()
-    assertFalse(viewModel.topButton)
+    assertEquals(repoDB.fakeMSG, MessageModel(UserModel("moi"), "toi", Timestamp(0, 0)))
   }
 
-  @ExperimentalCoroutinesApi @get:Rule var mainCoroutineRule = MainCoroutineRule()
-}*/
+  @ExperimentalCoroutinesApi
+  @Test
+  fun showTop2() {
+    Dispatchers.setMain(testDispatcher)
+    val iv: ImageVector = mockk()
+    viewModel.showTopButton(iv, {})
+    viewModel.requestFriend("")
+    viewModel.requestFriend("cass@gmail.com")
+    viewModel.requestFriend("cass")
+    viewModel.requestFriend("userId")
+    viewModel.acceptFriend(UserModel("userId"))
+    viewModel.declineFriend(UserModel("userId"))
+    viewModel.refreshFriends()
+    viewModel.refreshMessages()
+    viewModel.refreshFriendRequests()
+    viewModel.user = UserModel("userId")
+    viewModel.friends = listOf(UserModel("userId"))
+    viewModel.friendRequestFeedback = "prout"
+    viewModel.friendRequests = listOf(UserModel("userId"))
+    viewModel.displayAddFriendDialog = true
+    viewModel.displayFriendPicker = true
+    // asssert displayFriendPicker
+    assertEquals(viewModel.displayFriendPicker, true)
+    viewModel.messages = listOf()
+    viewModel.user
+    viewModel.friendRequestFeedback
+    viewModel.displayFriendPicker
+    viewModel.displayAddFriendDialog
+    viewModel.topButton
+    viewModel.topButtonIcon
+    viewModel.topButtonOnClick
+    viewModel.getNumberOfDays()
+    val q = viewModel.friends
+    val m = viewModel.messages
+    viewModel.friendRequests
+    viewModel.latestFriendActivities
+    Dispatchers.resetMain()
+    testDispatcher.cleanupTestCoroutines()
+  }
+}

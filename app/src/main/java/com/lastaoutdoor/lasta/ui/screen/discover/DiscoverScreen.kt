@@ -50,6 +50,7 @@ import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.map.MapItinerary
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
 import com.lastaoutdoor.lasta.ui.components.SearchBarComponent
@@ -85,10 +86,13 @@ fun DiscoverScreen(
     initialPosition: LatLng,
     initialZoom: Float,
     updateMarkers: (LatLng, Double) -> Unit,
-    updateSelectedMarker: (Marker) -> Unit,
+    updateSelectedMarker: (Marker?) -> Unit,
     clearSelectedItinerary: () -> Unit,
     selectedZoom: Float,
-    updateSelectedItinerary: (Long) -> Unit
+    selectedMarker: Marker?,
+    selectedItinerary: MapItinerary?,
+    markerList: List<Marker>,
+    clearSelectedMarker: () -> Unit
 ) {
 
   var isRangePopup by rememberSaveable { mutableStateOf(false) }
@@ -141,7 +145,7 @@ fun DiscoverScreen(
           { isRangePopup = true },
           navigateToFilter,
           weather)
-      Box(modifier = Modifier.fillMaxHeight()) {
+      Box(modifier = Modifier.fillMaxHeight().testTag("mapScreenDiscover")) {
         MapScreen(
             state,
             updatePermission,
@@ -151,7 +155,10 @@ fun DiscoverScreen(
             updateSelectedMarker,
             clearSelectedItinerary,
             selectedZoom,
-            updateSelectedItinerary)
+            selectedMarker,
+            selectedItinerary,
+            markerList,
+            clearSelectedMarker)
       }
     }
   }
@@ -178,7 +185,7 @@ fun HeaderComposable(
     }
   }
   Surface(
-      modifier = Modifier.fillMaxWidth(),
+      modifier = Modifier.fillMaxWidth().testTag("header"),
       color = MaterialTheme.colorScheme.background,
       shadowElevation = 3.dp) {
         Column {
@@ -188,22 +195,26 @@ fun HeaderComposable(
               verticalAlignment = Alignment.CenterVertically) {
                 Column {
                   Row {
-                    Text(text = selectedLocality.first, style = MaterialTheme.typography.bodyMedium)
+                    Text(
+                        text = selectedLocality.first,
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.testTag("locationText"))
 
                     IconButton(
                         onClick = updatePopup,
-                        modifier = Modifier.size(24.dp).testTag("listSearchOptionsEnableButton")) {
+                        modifier = Modifier.size(24.dp).testTag("locationButton")) {
                           Icon(
                               Icons.Outlined.KeyboardArrowDown,
-                              contentDescription = "Filter",
-                              modifier = Modifier.size(24.dp))
+                              contentDescription = "Location button",
+                              modifier = Modifier.size(24.dp).testTag("locationIcon"))
                         }
                   }
 
                   Text(
                       text =
                           "${LocalContext.current.getString(R.string.less_than)} ${(range / 1000).toInt()} km ${LocalContext.current.getString(R.string.around_you)}",
-                      style = MaterialTheme.typography.bodySmall)
+                      style = MaterialTheme.typography.bodySmall,
+                      modifier = Modifier.testTag("rangeText"))
                 }
                 Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
                   WeatherReportSmall(weather) { displayWeather.value = true }
@@ -212,30 +223,39 @@ fun HeaderComposable(
 
           // Search bar with toggle buttons
           Row(
-              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+              modifier =
+                  Modifier.fillMaxWidth()
+                      .padding(horizontal = 16.dp, vertical = 8.dp)
+                      .testTag("searchBar"),
               verticalAlignment = Alignment.CenterVertically) {
-                SearchBarComponent(Modifier.weight(1f), onSearch = { /*TODO*/})
+                SearchBarComponent(
+                    Modifier.weight(1f).testTag("searchBarComponent"), onSearch = { /*TODO*/})
                 Spacer(modifier = Modifier.width(8.dp))
-                IconButton(onClick = { navigateToFilter() }, modifier = Modifier.size(iconSize)) {
-                  Icon(
-                      painter = painterResource(id = R.drawable.filter_icon),
-                      contentDescription = "Filter",
-                      modifier = Modifier.size(24.dp))
-                }
+                IconButton(
+                    onClick = { navigateToFilter() },
+                    modifier = Modifier.size(iconSize).testTag("filterButton")) {
+                      Icon(
+                          painter = painterResource(id = R.drawable.filter_icon),
+                          contentDescription = "Filter button",
+                          modifier = Modifier.size(24.dp).testTag("filterIcon"))
+                    }
               }
           Row(
               modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
               verticalAlignment = Alignment.CenterVertically,
               horizontalArrangement = Arrangement.Center) {
-                val contex = LocalContext.current
+                val context = LocalContext.current
                 DisplaySelection(DiscoverDisplayType.values().toList(), screen, setScreen) {
-                  it.toStringCon(contex)
+                  it.toStringCon(context)
                 }
               }
 
           if (screen == DiscoverDisplayType.LIST) {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                modifier =
+                    Modifier.fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .testTag("sortingText"),
                 verticalAlignment = Alignment.CenterVertically) {
                   Text(
                       LocalContext.current.getString(R.string.filter_by),
@@ -246,13 +266,15 @@ fun HeaderComposable(
                       style = MaterialTheme.typography.bodyMedium,
                       color = MaterialTheme.colorScheme.primary)
 
-                  IconButton(onClick = { /*TODO*/}, modifier = Modifier.size(24.dp)) {
-                    Icon(
-                        Icons.Outlined.KeyboardArrowDown,
-                        contentDescription = "Filter",
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(24.dp))
-                  }
+                  IconButton(
+                      onClick = { /*TODO*/},
+                      modifier = Modifier.size(24.dp).testTag("sortingButton")) {
+                        Icon(
+                            Icons.Outlined.KeyboardArrowDown,
+                            contentDescription = "Ordering button",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(24.dp).testTag("sortingIcon"))
+                      }
                 }
           }
         }
@@ -283,7 +305,8 @@ fun ActivitiesDisplay(
                     onClick = {
                       changeActivityToDisplay(a)
                       navigateToMoreInfo()
-                    }),
+                    })
+                .testTag("${a.activityId}activityCard"),
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
     ) {
@@ -310,7 +333,8 @@ fun ActivitiesDisplay(
                   }
 
               IconButton(
-                  onClick = { flipFavorite(a.activityId) }, modifier = Modifier.size(24.dp)) {
+                  onClick = { flipFavorite(a.activityId) },
+                  modifier = Modifier.size(24.dp).testTag("${a.activityId}favoriteButton")) {
                     Icon(
                         imageVector =
                             if (favorites.contains(a.activityId)) Icons.Filled.Favorite

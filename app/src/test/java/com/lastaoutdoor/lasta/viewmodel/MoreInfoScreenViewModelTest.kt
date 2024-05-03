@@ -1,22 +1,76 @@
 package com.lastaoutdoor.lasta.viewmodel
 
-class MoreInfoScreenViewModelTest {
+import com.google.android.gms.maps.model.LatLng
+import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.models.activity.Activity
+import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.activity.Difficulty
+import com.lastaoutdoor.lasta.models.map.Marker
+import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivitiesDBRepository
+import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivityRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
+import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Before
+import org.junit.Test
 
-  /*@Test
+class MoreInfoScreenViewModelTest {
+  @ExperimentalCoroutinesApi val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
+
+  @ExperimentalCoroutinesApi
+  @Before
+  fun setupDispatcher() {
+    Dispatchers.setMain(testDispatcher)
+  }
+
+  @ExperimentalCoroutinesApi
+  @After
+  fun tearDownDispatcher() {
+    Dispatchers.resetMain()
+    testDispatcher.cleanupTestCoroutines()
+  }
+
+  @Test
   fun testFetchDiff() {
-    val moreInfoScreenViewModel: MoreInfoScreenViewModel = MoreInfoScreenViewModel()
+    val fakeDb = FakeActivityRepository()
+    val fk = FakeActivitiesDBRepository()
+    val moreInfoScreenViewModel: MoreInfoScreenViewModel = MoreInfoScreenViewModel(fakeDb, fk)
     val fakeActivity =
-        Activity(ActivityType.CLIMBING, Difficulty.EASY, 1.5f, "3 hours", "Test Title")
+        Activity("a", 10, activityType = ActivityType.CLIMBING, difficulty = Difficulty.EASY)
     val fakeActivity2 =
-        Activity(ActivityType.CLIMBING, Difficulty.NORMAL, 1.5f, "3 hours", "Test Title")
+        Activity("b", 10, activityType = ActivityType.HIKING, difficulty = Difficulty.NORMAL)
     val fakeActivity3 =
-        Activity(ActivityType.CLIMBING, Difficulty.NORMAL, 1.5f, "3 hours", "Test Title")
-    val fakeActivity4 =
-        Activity(ActivityType.CLIMBING, Difficulty.HARD, 1.5f, "3 hours", "Test Title")
-    TestCase.assertEquals("Easy", moreInfoScreenViewModel.processDiffText(fakeActivity))
-    TestCase.assertEquals("Medium", moreInfoScreenViewModel.processDiffText(fakeActivity2))
-    TestCase.assertEquals("Difficult", moreInfoScreenViewModel.processDiffText(fakeActivity3))
-    TestCase.assertEquals(
-        "No available difficulty", moreInfoScreenViewModel.processDiffText(fakeActivity4))
-  }*/
+        Activity("c", 10, activityType = ActivityType.BIKING, difficulty = Difficulty.HARD)
+
+    moreInfoScreenViewModel.activityToDisplay
+    moreInfoScreenViewModel.isMapDisplayed
+    moreInfoScreenViewModel.changeActivityToDisplay(fakeActivity)
+    moreInfoScreenViewModel.processDiffText(fakeActivity)
+  }
+
+  @Test
+  fun testMoreInfoMarker() {
+    val fakeDb = FakeActivityRepository()
+    val fk = FakeActivitiesDBRepository()
+    val moreInfoScreenViewModel: MoreInfoScreenViewModel = MoreInfoScreenViewModel(fakeDb, fk)
+    val fakeActivity =
+        Activity("a", 10, activityType = ActivityType.CLIMBING, difficulty = Difficulty.EASY)
+    val fakeActivity2 =
+        Activity("b", 10, activityType = ActivityType.HIKING, difficulty = Difficulty.NORMAL)
+    val fakeActivity3 =
+        Activity("c", 10, activityType = ActivityType.BIKING, difficulty = Difficulty.HARD)
+    assertEquals(
+        moreInfoScreenViewModel.goToMarker(fakeActivity),
+        Marker(10, "", LatLng(0.0, 0.0), "", R.drawable.climbing_icon, ActivityType.CLIMBING))
+    assertEquals(
+        moreInfoScreenViewModel.goToMarker(fakeActivity2),
+        Marker(10, "", LatLng(0.0, 0.0), "", R.drawable.hiking_icon, ActivityType.HIKING))
+    assertEquals(
+        moreInfoScreenViewModel.goToMarker(fakeActivity3),
+        Marker(10, "", LatLng(0.0, 0.0), "", R.drawable.hiking_icon, ActivityType.BIKING))
+  }
 }
