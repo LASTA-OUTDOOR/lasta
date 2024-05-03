@@ -68,13 +68,13 @@ fun FilterScreen(
   var initialSelectedLevels = selectedLevels.collectAsState().value
   var selectedLevels by remember { mutableStateOf(initialSelectedLevels) }
 
-  val activityLevelsMap = remember {
-      mapOf(
-          ActivityType.CLIMBING to selectedLevels.climbingLevel,
-          ActivityType.HIKING to selectedLevels.hikingLevel,
-          ActivityType.BIKING to selectedLevels.bikingLevel
-      )
-  }
+  val initialActivityLevel
+
+  var activitiesLevelArray = arrayOf(
+      selectedLevels.climbingLevel,
+        selectedLevels.hikingLevel,
+        selectedLevels.bikingLevel,
+  )
 
   fun userLevelToDifficultyLevel(userLevel: UserLevel): String {
     return when (userLevel) {
@@ -117,15 +117,17 @@ fun FilterScreen(
         HorizontalDivider(thickness = 2.dp, color = PrimaryBlue)
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Filter by difficulty level
         Text(
             text = stringResource(id = R.string.filter_difficulty_level),
             style = TextStyle(fontSize = 20.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
-        val selectedActivityLevels = activityLevelsMap[selectedActivity] ?: UserLevel.BEGINNER
         Row(verticalAlignment = Alignment.CenterVertically) {
           UserLevel.values().forEach { levelItem ->
             RadioButton(
-                selected = levelItem == selectedActivityLevels,
-                onClick = {/*TODO*/})
+                selected = levelItem == activitiesLevelArray[],
+                onClick = {
+                    activityLevelsMap[selectedActivity] = levelItem
+                })
             Text(text = userLevelToDifficultyLevel(levelItem))
           }
         }
