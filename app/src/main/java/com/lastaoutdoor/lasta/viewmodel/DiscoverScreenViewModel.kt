@@ -217,6 +217,11 @@ constructor(
     }
   }
 
+  fun updateActivityType(activityType: ActivityType) {
+    _selectedActivityType.value = activityType
+    fetchActivities()
+  }
+
   fun updateMarkers(centerLocation: LatLng, rad: Double) {
 
     // get all the climbing activities in the radius
