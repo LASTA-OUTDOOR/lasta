@@ -11,6 +11,8 @@ import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.api.NodeWay
 import com.lastaoutdoor.lasta.models.api.OSMData
 import com.lastaoutdoor.lasta.models.api.Relation
+import com.lastaoutdoor.lasta.models.map.MapItinerary
+import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
 import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
 import com.lastaoutdoor.lasta.utils.Response
@@ -31,11 +33,36 @@ constructor(
   val activities = mutableStateOf<ArrayList<Activity>>(ArrayList())
   val activityIds = mutableStateOf<ArrayList<Long>>(ArrayList())
 
+  private var _mapState = MutableStateFlow(MapState())
+  val mapState: StateFlow<MapState> = _mapState
+
   private val _screen = MutableStateFlow(DiscoverDisplayType.LIST)
   val screen: StateFlow<DiscoverDisplayType> = _screen
 
   private val _range = MutableStateFlow(10000.0)
   val range: StateFlow<Double> = _range
+  // if the user has not agreed to share his location, the map will be centered on Lausanne
+  val initialPosition = LatLng(46.519962, 6.633597)
+
+  // initial zoom level of the map
+  val initialZoom = 11f
+
+  // Zoom level when focusing on a marker
+  val selectedZoom = 13f
+
+  // Changes the map properties depending on the permission
+
+  // List of markers to display on the map
+  private val _markerList = MutableStateFlow<List<Marker>>(emptyList())
+  val markerList: StateFlow<List<Marker>> = _markerList
+
+  // Displayed itinerary
+  private val _selectedItinerary = MutableStateFlow<MapItinerary?>(null)
+  val selectedItinerary: StateFlow<MapItinerary?> = _selectedItinerary
+
+  // The marker displayed in the more info bottom sheet
+  private val _selectedMarker = MutableStateFlow<Marker?>(null)
+  val selectedMarker: StateFlow<Marker?> = _selectedMarker
 
   private val _selectedActivityType = MutableStateFlow(ActivityType.BIKING)
   val selectedActivityType: StateFlow<ActivityType> = _selectedActivityType
@@ -53,6 +80,18 @@ constructor(
 
   init {
     fetchActivities()
+  }
+
+  private fun activitiesToMarkers(activities: List<Activity>): List<Marker> {
+    return activities.map { activity ->
+      Marker(
+          activity.osmId,
+          activity.name,
+          LatLng(activity.startPosition.lat, activity.startPosition.lon),
+          "",
+          R.drawable.hiking_icon,
+          ActivityType.HIKING)
+    }
   }
 
   fun fetchActivities(rad: Double = 10000.0, centerLocation: LatLng = LatLng(46.519962, 6.633597)) {
@@ -82,6 +121,7 @@ constructor(
               emptyList<OSMData>()
             }
           }
+      print("OSM DATA: $osmData")
       activities.value = ArrayList()
       activityIds.value = ArrayList()
       osmData.map { point ->
@@ -120,7 +160,8 @@ constructor(
         }
       }
       activities.value =
-          activitiesDB.getActivitiesByOSMIds(activityIds.value, false) as ArrayList<Activity>
+          activitiesDB.getActivitiesByOSMIds(activityIds.value, true) as ArrayList<Activity>
+      _markerList.value = activitiesToMarkers(activities.value)
     }
   }
 
@@ -137,24 +178,67 @@ constructor(
   fun setSelectedLocality(locality: Pair<String, LatLng>) {
     _selectedLocality.value = locality
   }
+
+  fun updatePermission(value: Boolean) {
+    _mapState.value.uiSettings = _mapState.value.uiSettings.copy(myLocationButtonEnabled = value)
+    _mapState.value.properties = _mapState.value.properties.copy(isMyLocationEnabled = value)
+  }
+
+  // Update which marker is currently selected
+  fun updateSelectedMarker(marker: Marker) {
+    _selectedMarker.value = marker
+    showHikingItinerary(marker.id)
+  }
+
+  // Clear the selected itinerary
+  fun clearSelectedItinerary() {
+    _selectedItinerary.value = null
+  }
+
+  fun clearSelectedMarker() {
+    _selectedMarker.value = null
+  }
+
+  private fun showHikingItinerary(id: Long) {
+    viewModelScope.launch {
+      val response = repository.getHikingRouteById(id)
+      val itinerary = (response as Response.Success).data
+      val pointsList = mutableListOf<LatLng>()
+      itinerary?.ways?.forEach { way ->
+        val nodes = way.nodes ?: emptyList()
+        nodes.forEach { position -> pointsList.add(LatLng(position.lat, position.lon)) }
+      }
+      _selectedItinerary.value =
+          MapItinerary(
+              id,
+              itinerary?.tags?.name ?: "",
+              pointsList,
+          )
+    }
+  }
+
+  fun updateMarkers(centerLocation: LatLng, rad: Double) {
+
+    // get all the climbing activities in the radius
+    // fetchClimbingActivities(rad, centerLocation, activityRepository)
+
+    // get all the hiking activities in the radius (only displays first point of the itinerary)
+    // val hikingRelations = fetchHikingActivities(rad, centerLocation)
+    // getMarkersFromRelations(hikingRelations)
+
+    // Add the itineraries to a map -> can access them by relation id
+    // getItineraryFromRelations(hikingRelations)
+  }
 }
 
 enum class DiscoverDisplayType {
   LIST,
   MAP;
 
-  override fun toString(): String {
-    return name.lowercase().replaceFirstChar { it.uppercase() }
-  }
-
   fun toStringCon(con: Context): String {
     return when (this) {
       LIST -> con.getString(R.string.list)
       MAP -> con.getString(R.string.map)
     }
-  }
-
-  fun toStringConDisp(con: Context): (DiscoverDisplayType) -> String {
-    return { it -> it.toStringCon(con) }
   }
 }
