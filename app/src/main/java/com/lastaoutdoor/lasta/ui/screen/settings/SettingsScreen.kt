@@ -41,11 +41,7 @@ fun SettingsScreen(
   var hikingLevel = levels.hikingLevel
   var bikingLevel = levels.bikingLevel
 
-  TopBarLogo(logoPainterId = R.drawable.arrow_back) {
-    // preferencesViewModel.updateLanguage(selectedLanguage)
-    // database.updateFieldInUser(authViewModel.user!!.userId, "language", selectedLanguage)
-    navigateBack()
-  }
+  TopBarLogo(logoPainterId = R.drawable.arrow_back) { navigateBack() }
 
   Column(
       modifier =

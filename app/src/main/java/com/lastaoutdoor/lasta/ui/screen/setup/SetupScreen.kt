@@ -29,7 +29,6 @@ fun SetupScreen(
     language: Language,
     prefActivity: ActivityType,
     levels: UserActivitiesLevel,
-    updateFieldInUser: (String, String, Any) -> Unit,
     updateLanguage: (Language) -> Unit,
     updatePrefActivity: (ActivityType) -> Unit,
     updateClimbingLevel: (UserLevel) -> Unit,
@@ -220,22 +219,7 @@ fun SetupScreen(
               Box(contentAlignment = Alignment.Center) {
                 Button(
                     modifier = Modifier.testTag("setupFinishButton"),
-                    onClick = {
-                      updateFieldInUser(userId, "language", selectedLanguage.name)
-                      updateLanguage(selectedLanguage)
-                      updateFieldInUser(userId, "prefActivity", prefActivity.name)
-                      updatePrefActivity(selectedActivity)
-
-                      // Database calls for the levels
-                      // Create hashmap with the levels
-                      val levelsMap =
-                          hashMapOf(
-                              "climbingLevel" to selectedClimbingLevel.name,
-                              "hikingLevel" to selectedHikingLevel.name,
-                              "bikingLevel" to selectedBikingLevel.name)
-                      updateFieldInUser(userId, "levels", levelsMap)
-                      navigateToMain()
-                    },
+                    onClick = { navigateToMain() },
                 ) {
                   Text(text = LocalContext.current.getString(R.string.finish))
                 }

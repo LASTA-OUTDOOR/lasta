@@ -1,6 +1,7 @@
 package com.lastaoutdoor.lasta.ui.navigation
 
 import androidx.compose.runtime.collectAsState
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -18,7 +19,7 @@ import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 fun NavGraphBuilder.addLoginNavGraph(navController: NavHostController) {
   navigation(startDestination = DestinationRoute.SignIn.route, route = BaseRoute.Login.route) {
     composable(DestinationRoute.SignIn.route) { entry ->
-      val authViewModel: AuthViewModel = entry.sharedViewModel(navController)
+      val authViewModel: AuthViewModel = hiltViewModel(entry)
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
       val isSignUp = authViewModel.isSignUp.collectAsState(initial = false).value
       LoginScreen(
@@ -43,7 +44,6 @@ fun NavGraphBuilder.addLoginNavGraph(navController: NavHostController) {
           })
     }
     composable(DestinationRoute.Setup.route) { entry ->
-      val authViewModel: AuthViewModel = entry.sharedViewModel(navController)
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
       val userId = preferencesViewModel.userId.collectAsState(initial = "").value
       val language = preferencesViewModel.language.collectAsState(initial = Language.ENGLISH).value
@@ -61,7 +61,6 @@ fun NavGraphBuilder.addLoginNavGraph(navController: NavHostController) {
           prefActivity = prefActivity,
           levels = levels,
           userId = userId,
-          updateFieldInUser = authViewModel::updateFieldInUser,
           updateLanguage = preferencesViewModel::updateLanguage,
           updatePrefActivity = preferencesViewModel::updatePrefActivity,
           updateClimbingLevel = preferencesViewModel::updateClimbingLevel,

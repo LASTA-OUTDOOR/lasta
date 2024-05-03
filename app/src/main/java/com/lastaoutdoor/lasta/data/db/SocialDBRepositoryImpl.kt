@@ -234,7 +234,7 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
     }
   }
 
-  override suspend fun sendFriendRequest(userId: String, receiverId: String): Unit {
+  override suspend fun sendFriendRequest(userId: String, receiverId: String) {
     // Create a reference to the user's document in the Firestore database
     val userDocumentRef = userCollection.document(receiverId)
 
