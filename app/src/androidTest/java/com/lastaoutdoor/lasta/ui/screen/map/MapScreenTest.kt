@@ -42,6 +42,7 @@ class MapScreenTest {
   @OptIn(ExperimentalMaterial3Api::class)
   @Test
   fun bottomSheetTestInitial() {
+
     composeRule.activity.setContent {
       val sheetState = rememberModalBottomSheetState()
       InformationSheet(
@@ -56,4 +57,33 @@ class MapScreenTest {
     composeRule.onNodeWithTag("bottomSheet").assertIsDisplayed()
     isSheetOpen = false
   }
+
+  /*@OptIn(ExperimentalMaterial3Api::class)
+  @Test
+  fun bottomSheetTestDismiss() {
+
+    isSheetOpen = true
+
+    composeRule.activity.setContent {
+      val state = MapState()
+      state.selectedMarker.value =
+          ClimbingMarker("Test marker", LatLng(0.0, 0.0), "Test description", 1)
+
+      Column {
+        Text("Other content")
+
+        val sheetState = rememberModalBottomSheetState()
+
+        InformationSheet(
+            sheetState = sheetState,
+            isSheetOpen = isSheetOpen,
+            state,
+            onDismissRequest = { isSheetOpen = false })
+      }
+    }
+    composeRule.onNodeWithTag("bottomSheet").assertIsDisplayed()
+    composeRule.onNodeWithText("Test marker").assertIsDisplayed()
+    Espresso.pressBack()
+    composeRule.onNodeWithTag("bottomSheet").assertIsNotDisplayed()
+  }*/
 }

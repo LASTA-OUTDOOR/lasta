@@ -215,6 +215,15 @@ private fun GoogleMapComposable(
       uiSettings = state.uiSettings,
       cameraPositionState = cameraPositionState,
       onMapLoaded = {
+        if (selectedMarker != null) {
+
+          cameraPositionState.move(
+              CameraUpdateFactory.newCameraPosition(
+                  CameraPosition.fromLatLngZoom(selectedMarker.position, selectedZoom)))
+          updateSheet()
+
+          // updateSelectedMarker(null)
+        }
         val centerLocation = cameraPositionState.position.target
         val topLeftLocation =
             cameraPositionState.projection?.visibleRegion?.farLeft
