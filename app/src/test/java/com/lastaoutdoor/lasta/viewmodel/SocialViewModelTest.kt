@@ -15,10 +15,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -59,6 +60,8 @@ class SocialViewModelTest {
     viewModel = SocialViewModel(context, repoDB, userDB, connectRepo, prefRepo)
   }
 
+  @ExperimentalCoroutinesApi val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
+
   @ExperimentalCoroutinesApi
   @Test
   fun vm() {
@@ -82,6 +85,8 @@ class SocialViewModelTest {
     viewModel.friendRequests = listOf(UserModel("userId"))
     viewModel.displayAddFriendDialog = true
     viewModel.displayFriendPicker = true
+    // asssert displayFriendPicker
+    assertEquals(viewModel.displayFriendPicker, true)
     viewModel.messages = listOf()
     viewModel.user
     viewModel.friendRequestFeedback
@@ -97,5 +102,45 @@ class SocialViewModelTest {
     viewModel.latestFriendActivities
 
     assertEquals(repoDB.fakeMSG, MessageModel("moi", "toi", Timestamp(0, 0)))
+  }
+
+  @ExperimentalCoroutinesApi
+  @Test
+  fun showTop2() {
+    Dispatchers.setMain(testDispatcher)
+    val iv: ImageVector = mockk()
+    viewModel.showTopButton(iv, {})
+    viewModel.requestFriend("")
+    viewModel.requestFriend("cass@gmail.com")
+    viewModel.requestFriend("cass")
+    viewModel.requestFriend("userId")
+    viewModel.acceptFriend(UserModel("userId"))
+    viewModel.declineFriend(UserModel("userId"))
+    viewModel.refreshFriends()
+    viewModel.refreshMessages()
+    viewModel.refreshFriendRequests()
+    viewModel.user = UserModel("userId")
+    viewModel.friends = listOf(UserModel("userId"))
+    viewModel.friendRequestFeedback = "prout"
+    viewModel.friendRequests = listOf(UserModel("userId"))
+    viewModel.displayAddFriendDialog = true
+    viewModel.displayFriendPicker = true
+    // asssert displayFriendPicker
+    assertEquals(viewModel.displayFriendPicker, true)
+    viewModel.messages = listOf()
+    viewModel.user
+    viewModel.friendRequestFeedback
+    viewModel.displayFriendPicker
+    viewModel.displayAddFriendDialog
+    viewModel.topButton
+    viewModel.topButtonIcon
+    viewModel.topButtonOnClick
+    viewModel.getNumberOfDays()
+    val q = viewModel.friends
+    val m = viewModel.messages
+    viewModel.friendRequests
+    viewModel.latestFriendActivities
+    Dispatchers.resetMain()
+    testDispatcher.cleanupTestCoroutines()
   }
 }

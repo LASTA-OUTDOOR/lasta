@@ -13,7 +13,7 @@ class FakeUserDB : UserDBRepository {
   }
 
   override suspend fun getUserByEmail(email: String): UserModel? {
-    return fakeUserModel
+    return UserModel(userId = email)
   }
 
   override suspend fun updateField(userId: String, field: String, value: Any) {}

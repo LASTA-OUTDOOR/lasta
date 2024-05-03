@@ -48,9 +48,7 @@ class FakePreferencesRepository(override val userPreferencesFlow: Flow<UserPrefe
     TODO("Not yet implemented")
   }
 
-  override suspend fun updateFriends(friends: List<String>) {
-    TODO("Not yet implemented")
-  }
+  override suspend fun updateFriends(friends: List<String>) {}
 
   override suspend fun updateFriendRequests(friendRequests: List<String>) {
     TODO("Not yet implemented")
