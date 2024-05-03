@@ -68,8 +68,6 @@ fun FilterScreen(
   var initialSelectedLevels = selectedLevels.collectAsState().value
   var selectedLevels by remember { mutableStateOf(initialSelectedLevels) }
 
-  val initialActivityLevel
-
   var activitiesLevelArray = arrayOf(
       selectedLevels.climbingLevel,
         selectedLevels.hikingLevel,
@@ -124,9 +122,14 @@ fun FilterScreen(
         Row(verticalAlignment = Alignment.CenterVertically) {
           UserLevel.values().forEach { levelItem ->
             RadioButton(
-                selected = levelItem == activitiesLevelArray[],
+                selected = activitiesLevelArray[selectedIndex] == levelItem,
                 onClick = {
-                    activityLevelsMap[selectedActivity] = levelItem
+                    activitiesLevelArray[selectedIndex] = levelItem
+                    setSelectedLevels(
+                        UserActivitiesLevel(
+                            climbingLevel = activitiesLevelArray[0],
+                            hikingLevel = activitiesLevelArray[1],
+                            bikingLevel = activitiesLevelArray[2]))
                 })
             Text(text = userLevelToDifficultyLevel(levelItem))
           }

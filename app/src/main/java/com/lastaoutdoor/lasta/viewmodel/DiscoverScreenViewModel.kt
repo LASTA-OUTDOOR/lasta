@@ -7,14 +7,15 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.Activity
+import com.lastaoutdoor.lasta.models.api.NodeWay
+import com.lastaoutdoor.lasta.models.api.OSMData
+import com.lastaoutdoor.lasta.models.api.Relation
 import com.lastaoutdoor.lasta.models.activity.ActivityType
-import com.lastaoutdoor.lasta.models.activity.BikingActivity
-import com.lastaoutdoor.lasta.models.activity.ClimbingActivity
-import com.lastaoutdoor.lasta.models.activity.HikingActivity
 import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
+import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
 import com.lastaoutdoor.lasta.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -25,14 +26,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class DiscoverScreenViewModel
-@Inject
-constructor(
-    private val repository: ActivityRepository,
-    private val preferencesRepository: PreferencesRepository
-) : ViewModel() {
+class DiscoverScreenViewModel @Inject constructor(private val repository: ActivityRepository,
+    private val preferencesRepository: PreferencesRepository, private val activitiesDB: ActivitiesDBRepository) :
+    ViewModel() {
 
   val activities = mutableStateOf<ArrayList<Activity>>(ArrayList())
+  val activityIds = mutableStateOf<ArrayList<Long>>(ArrayList())
 
   private val _selectedActivityType = MutableStateFlow(ActivityType.CLIMBING)
   val selectedActivityType: StateFlow<ActivityType> = _selectedActivityType
@@ -63,64 +62,76 @@ constructor(
           preferencesRepository.userPreferencesFlow.map { it.user.prefActivity }.first()
 
         _selectedLevels.value = preferencesRepository.userPreferencesFlow.map { it.user.levels }.first()
-      fetchClimbingActivities()
+        fetchActivities()
     }
   }
 
-  fun fetchClimbingActivities(
-      rad: Double = 10000.0,
-      centerLocation: LatLng = LatLng(46.519962, 6.633597)
-  ) {
+  fun fetchActivities(rad: Double = 10000.0, centerLocation: LatLng = LatLng(46.519962, 6.633597)) {
     viewModelScope.launch {
       val response =
-          repository.getClimbingPointsInfo(
-              rad.toInt(), centerLocation.latitude, centerLocation.longitude)
-      val climbingPoints = (response as Response.Success).data ?: emptyList()
+          when (_selectedActivityType.value) {
+            ActivityType.CLIMBING ->
+                repository.getClimbingPointsInfo(
+                    rad.toInt(), centerLocation.latitude, centerLocation.longitude)
+            ActivityType.HIKING ->
+                repository.getHikingRoutesInfo(
+                    rad.toInt(), centerLocation.latitude, centerLocation.longitude)
+            ActivityType.BIKING ->
+                repository.getBikingRoutesInfo(
+                    rad.toInt(), centerLocation.latitude, centerLocation.longitude)
+          }
+      val osmData =
+          when (response) {
+            is Response.Failure -> {
+              response.e.printStackTrace()
+              return@launch
+            }
+            is Response.Success -> {
+              response.data ?: emptyList()
+            }
+            is Response.Loading -> {
+              emptyList<OSMData>()
+            }
+          }
       activities.value = ArrayList()
-      climbingPoints.forEach { point ->
-        activities.value.add(ClimbingActivity("", point.id, point.tags.name))
+      activityIds.value = ArrayList()
+      osmData.map { point ->
+        when (_selectedActivityType.value) {
+          ActivityType.CLIMBING -> {
+            val castedPoint = point as NodeWay
+            activityIds.value.add(castedPoint.id)
+            activitiesDB.addActivityIfNonExisting(
+                Activity("", point.id, ActivityType.CLIMBING, point.tags.name))
+          }
+          ActivityType.HIKING -> {
+            val castedPoint = point as Relation
+            activityIds.value.add(castedPoint.id)
+            activitiesDB.addActivityIfNonExisting(
+                Activity(
+                    "",
+                    point.id,
+                    ActivityType.HIKING,
+                    point.tags.name,
+                    from = point.tags.from,
+                    to = point.tags.to))
+          }
+          ActivityType.BIKING -> {
+            val castedPoint = point as Relation
+            activityIds.value.add(castedPoint.id)
+            activitiesDB.addActivityIfNonExisting(
+                Activity(
+                    "",
+                    point.id,
+                    ActivityType.BIKING,
+                    point.tags.name,
+                    from = point.tags.from,
+                    to = point.tags.to,
+                    distance = point.tags.distance.toFloat()))
+          }
+        }
       }
-    }
-  }
-
-  fun fetchHikingActivities(
-      rad: Double = 10000.0,
-      centerLocation: LatLng = LatLng(46.519962, 6.633597)
-  ) {
-    viewModelScope.launch {
-      val response =
-          repository.getHikingRoutesInfo(
-              rad.toInt(), centerLocation.latitude, centerLocation.longitude)
-      val hikingPoints = (response as Response.Success).data ?: emptyList()
-      activities.value = ArrayList()
-      hikingPoints.forEach { point ->
-        activities.value.add(
-            HikingActivity(
-                "", point.id, point.tags.name, from = point.tags.from, to = point.tags.to))
-      }
-    }
-  }
-
-  fun fetchBikingActivities(
-      rad: Double = 10000.0,
-      centerLocation: LatLng = LatLng(46.519962, 6.633597)
-  ) {
-    viewModelScope.launch {
-      val response =
-          repository.getBikingRoutesInfo(
-              rad.toInt(), centerLocation.latitude, centerLocation.longitude)
-      val hikingPoints = (response as Response.Success).data ?: emptyList()
-      activities.value = ArrayList()
-      hikingPoints.forEach { point ->
-        activities.value.add(
-            BikingActivity(
-                "",
-                point.id,
-                point.tags.name,
-                from = point.tags.from,
-                to = point.tags.to,
-                distance = point.tags.distance.toFloat()))
-      }
+      activities.value =
+          activitiesDB.getActivitiesByOSMIds(activityIds.value, false) as ArrayList<Activity>
     }
   }
 
@@ -140,11 +151,7 @@ constructor(
 
   fun setSelectedActivityType(activityType: ActivityType) {
     _selectedActivityType.value = activityType
-    when (activityType) {
-      ActivityType.CLIMBING -> fetchClimbingActivities(range.value, selectedLocality.value.second)
-      ActivityType.HIKING -> fetchHikingActivities(range.value, selectedLocality.value.second)
-      ActivityType.BIKING -> fetchBikingActivities(range.value, selectedLocality.value.second)
-    }
+    fetchActivities()
   }
 
   fun setSelectedLevels(levels: UserActivitiesLevel) {

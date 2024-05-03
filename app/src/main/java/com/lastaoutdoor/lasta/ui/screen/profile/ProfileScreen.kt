@@ -243,7 +243,7 @@ fun ChangeBio(
 
     ModalBottomSheet(
         onDismissRequest = { onDismissRequest() },
-        modifier = Modifier.fillMaxWidth().wrapContentHeight().testTag("")) {
+        modifier = Modifier.fillMaxWidth().wrapContentHeight().testTag("ProfileModal")) {
           Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
             Text("Bio" /* TODO : make this a xml string */)
             Spacer(modifier = Modifier.height(8.dp))
@@ -266,20 +266,22 @@ fun ChangeBio(
                         color = if (text.length == maxCharCount) Color.Red else Color.Gray)
                   }
                 },
-                modifier = Modifier.fillMaxWidth())
+                modifier = Modifier.fillMaxWidth().testTag("ProfileTextField"))
 
             Spacer(modifier = Modifier.height(16.dp))
-            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
-              Row {
-                Button(onClick = onDismissRequest) {
-                  Text("Cancel" /* TODO : make this a xml string */)
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxWidth().testTag("ProfileBox")) {
+                  Row {
+                    Button(onClick = onDismissRequest) {
+                      Text("Cancel" /* TODO : make this a xml string */)
+                    }
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Button(onClick = { onBioChange(text) }) {
+                      Text("Save" /* TODO : make this a xml string */)
+                    }
+                  }
                 }
-                Spacer(modifier = Modifier.width(16.dp))
-                Button(onClick = { onBioChange(text) }) {
-                  Text("Save" /* TODO : make this a xml string */)
-                }
-              }
-            }
           }
         }
   }
@@ -368,7 +370,9 @@ fun Chart(activities: List<UserActivity>, timeFrame: TimeFrame, sport: ActivityT
 
         when (sport) {
           ActivityType.HIKING -> {
-            Text(LocalContext.current.getString(R.string.hikes))
+            Text(
+                LocalContext.current.getString(R.string.hikes),
+                modifier = Modifier.testTag("TestHike"))
           }
           ActivityType.CLIMBING -> {
             Text(

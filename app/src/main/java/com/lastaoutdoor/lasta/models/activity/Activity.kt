@@ -2,92 +2,58 @@ package com.lastaoutdoor.lasta.models.activity
 
 import com.lastaoutdoor.lasta.models.api.Position
 
-open class Activity(
-    open val activityId: String,
-    open val osmId: Long,
+data class Activity(
+    val activityId: String,
+    val osmId: Long,
     val activityType: ActivityType = ActivityType.CLIMBING,
-    open val name: String = "",
-    open val startPosition: Position = Position(0.0, 0.0),
-    open val rating: Float = 0.0f,
-    open val numRatings: Int = 0,
-    open val ratings: List<Rating> = emptyList(),
-    open val difficulty: Difficulty = Difficulty.EASY,
-    open val activityImageUrl: String = "",
-)
-
-class ClimbingActivity(
-    override val activityId: String,
-    override val osmId: Long,
-    override val name: String = "",
-    override val startPosition: Position = Position(0.0, 0.0),
-    override val rating: Float = 0.0f,
-    override val numRatings: Int = 0,
-    override val ratings: List<Rating> = emptyList(),
-    override val difficulty: Difficulty = Difficulty.EASY,
-    override val activityImageUrl: String = "",
+    val name: String = "",
+    val startPosition: Position = Position(0.0, 0.0),
+    val rating: Float = 1.0f,
+    val numRatings: Int = 0,
+    val ratings: List<Rating> = emptyList(),
+    val difficulty: Difficulty = Difficulty.EASY,
+    val activityImageUrl: String = "",
     val climbingStyle: ClimbingStyle = ClimbingStyle.OUTDOOR,
-    val elevationTotal: Float = 0.0f
-) :
-    Activity(
-        activityId,
-        osmId,
-        ActivityType.CLIMBING,
-        name,
-        startPosition,
-        rating,
-        numRatings,
-        ratings,
-        difficulty,
-        activityImageUrl)
-
-class HikingActivity(
-    override val activityId: String,
-    override val osmId: Long,
-    override val name: String = "",
-    override val startPosition: Position = Position(0.0, 0.0),
-    override val rating: Float = 0.0f,
-    override val numRatings: Int = 0,
-    override val ratings: List<Rating> = emptyList(),
-    override val difficulty: Difficulty = Difficulty.EASY,
-    override val activityImageUrl: String = "",
+    val elevationTotal: Float = 0f,
     val from: String = "",
     val to: String = "",
-    val distance: Float = 0.0f
-) :
-    Activity(
+    val distance: Float = 0f
+) {
+  fun copy(activityId: String): Activity {
+    return Activity(
         activityId,
-        osmId,
-        ActivityType.HIKING,
-        name,
-        startPosition,
-        rating,
-        numRatings,
-        ratings,
-        difficulty,
-        activityImageUrl)
+        this.osmId,
+        this.activityType,
+        this.name,
+        this.startPosition,
+        this.rating,
+        this.numRatings,
+        this.ratings,
+        this.difficulty,
+        this.activityImageUrl,
+        this.climbingStyle,
+        this.elevationTotal,
+        this.from,
+        this.to,
+        this.distance)
+  }
 
-class BikingActivity(
-    override val activityId: String,
-    override val osmId: Long,
-    override val name: String = "",
-    override val startPosition: Position = Position(0.0, 0.0),
-    override val rating: Float = 0.0f,
-    override val numRatings: Int = 0,
-    override val ratings: List<Rating> = emptyList(),
-    override val difficulty: Difficulty = Difficulty.EASY,
-    override val activityImageUrl: String = "",
-    val from: String = "",
-    val to: String = "",
-    val distance: Float = 0.0f
-) :
-    Activity(
-        activityId,
-        osmId,
-        ActivityType.BIKING,
-        name,
+  fun copy(startPosition: Position): Activity {
+    return Activity(
+        this.activityId,
+        this.osmId,
+        this.activityType,
+        this.name,
         startPosition,
-        rating,
-        numRatings,
-        ratings,
-        difficulty,
-        activityImageUrl)
+        this.rating,
+        this.numRatings,
+        this.ratings,
+        this.difficulty,
+        this.activityImageUrl,
+        this.climbingStyle,
+        this.elevationTotal,
+        this.from,
+        this.to,
+        this.distance)
+  }
+}
