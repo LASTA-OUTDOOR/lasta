@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
@@ -21,6 +19,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,37 +32,78 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.Difficulty
+import com.lastaoutdoor.lasta.models.map.MapItinerary
+import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
+import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
 import com.lastaoutdoor.lasta.ui.theme.Black
 import com.lastaoutdoor.lasta.ui.theme.GreenDifficulty
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
 import com.lastaoutdoor.lasta.ui.theme.RedDifficulty
 import com.lastaoutdoor.lasta.ui.theme.YellowDifficulty
+import com.lastaoutdoor.lasta.viewmodel.MapState
 
 // MoreInfoScreen : displays all the information of an activity
 @Composable
 fun MoreInfoScreen(
     activityToDisplay: Activity,
+    state: MapState,
+    updatePermission: (Boolean) -> Unit,
+    initialPosition: LatLng,
+    initialZoom: Float,
+    updateMarkers: (LatLng, Double) -> Unit,
+    updateSelectedMarker: (Marker?) -> Unit,
+    clearSelectedItinerary: () -> Unit,
+    selectedZoom: Float,
+    goToMarker: (Activity) -> Marker,
     weather: WeatherResponse?,
-    navigateBack: () -> Unit
+    markerList: List<Marker>,
+    selectedItenary: MapItinerary?,
+    navigateBack: () -> Unit,
 ) {
-  Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoComposable")) {
-    LazyColumn(modifier = Modifier.weight(1f).padding(8.dp)) {
-      item { Spacer(modifier = Modifier.height(15.dp)) }
-      // contains the top icon buttons
-      item { TopBar(navigateBack) }
-      // displays activity title and duration
-      item { ActivityTitleZone(activityToDisplay) }
-      item { WeatherReportBig(weather, true) }
-      // displays activity difficulty, ration and view on map button
-      item { MiddleZone(activityToDisplay) }
-      // filled with a spacer for the moment but will contain address + community
+  var isMapDisplayed = remember { mutableStateOf(false) }
+  if (!isMapDisplayed.value) {
+    Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoComposable")) {
+      LazyColumn(modifier = Modifier.weight(1f).padding(8.dp)) {
+        item { Spacer(modifier = Modifier.height(15.dp)) }
+        // contains the top icon buttons
+        item { TopBar(navigateBack) }
+        // displays activity title and duration
+        item { ActivityTitleZone(activityToDisplay) }
+        item {
+          WeatherReportBig(weather, true)
+        } // displays activity difficulty, ration and view on map button
+        item { MiddleZone(activityToDisplay, isMapDisplayed) }
+        // filled with a spacer for the moment but will contain address + community
+      }
+      StartButton()
     }
-    StartButton()
+  } else {
+    Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoMap")) {
+      val marker = goToMarker(activityToDisplay)
+      TopBar(navigateBack)
+      MapScreen(
+          state,
+          updatePermission,
+          initialPosition,
+          initialZoom,
+          updateMarkers,
+          updateSelectedMarker,
+          clearSelectedItinerary,
+          selectedZoom,
+          marker,
+          selectedItenary,
+          markerList,
+      ) {
+        clearSelectedItinerary()
+      }
+      updateSelectedMarker(marker)
+    }
   }
 }
 
@@ -92,36 +134,36 @@ fun StartButton() {
 // Displays the difficulty and rating of the activity on the left and a button to view the activity
 // on the map on the right
 @Composable
-fun MiddleZone(activityToDisplay: Activity) {
+fun MiddleZone(activityToDisplay: Activity, isMapDisplayed: MutableState<Boolean>) {
   Row(modifier = Modifier.fillMaxWidth().testTag("MoreInfoMiddleZone")) {
     DiffAndRating(activityToDisplay)
     Spacer(Modifier.weight(1f))
-    ViewOnMapButton()
+    ViewOnMapButton(isMapDisplayed)
   }
 }
 
 // Button to view the activity on the map
 @Composable
-fun ViewOnMapButton() {
-  Column(modifier = Modifier.padding(vertical = 25.dp), horizontalAlignment = Alignment.End) {
-    ElevatedButton(
-        onClick = {
-          /** TODO : Go to map */
-        },
-        contentPadding = PaddingValues(all = 3.dp),
-        modifier = Modifier.width(130.dp).height(40.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
-          Text(
-              LocalContext.current.getString(R.string.on_map),
-              style =
-                  TextStyle(
-                      fontSize = 16.sp,
-                      lineHeight = 24.sp,
-                      fontWeight = FontWeight(500),
-                      letterSpacing = 0.15.sp,
-                  ))
-        }
-  }
+fun ViewOnMapButton(isMapDisplayed: MutableState<Boolean>) {
+  Column(
+      modifier = Modifier.padding(vertical = 25.dp).testTag("viewOnMapButton"),
+      horizontalAlignment = Alignment.End) {
+        ElevatedButton(
+            onClick = { isMapDisplayed.value = true },
+            contentPadding = PaddingValues(all = 3.dp),
+            modifier = Modifier.width(130.dp).height(40.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
+              Text(
+                  LocalContext.current.getString(R.string.on_map),
+                  style =
+                      TextStyle(
+                          fontSize = 16.sp,
+                          lineHeight = 24.sp,
+                          fontWeight = FontWeight(500),
+                          letterSpacing = 0.15.sp,
+                      ))
+            }
+      }
 }
 
 // Displays the difficulty and rating of the activity
@@ -219,7 +261,7 @@ fun TopBar(navigateBack: () -> Unit) {
 // Logo of the top bar
 @Composable
 fun TopBarLogo(logoPainterId: Int, isFriendProf: Boolean = false, f: () -> Unit) {
-  IconButton(onClick = { f() }, modifier = Modifier.testTag("TopBarLogoTag")) {
+  IconButton(modifier = Modifier.testTag("TopBarLogo"), onClick = { f() }) {
     Icon(
         painter = painterResource(id = logoPainterId),
         contentDescription = "Top Bar logo $logoPainterId",

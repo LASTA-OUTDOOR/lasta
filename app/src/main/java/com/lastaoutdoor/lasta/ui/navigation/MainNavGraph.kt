@@ -168,11 +168,34 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
     }
 
     composable(DestinationRoute.MoreInfo.route) { entry ->
+      val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
       val activityToDisplay = moreInfoScreenViewModel.activityToDisplay.value
       val weatherViewModel: WeatherViewModel = hiltViewModel(entry)
       val weather = weatherViewModel.weather.observeAsState().value
-      MoreInfoScreen(activityToDisplay, weather) { navController.navigateUp() }
+      val mapState = discoverScreenViewModel.mapState.collectAsState().value
+      val initialZoom = discoverScreenViewModel.initialZoom
+      val initialPosition = discoverScreenViewModel.initialPosition
+      val selectedZoom = discoverScreenViewModel.selectedZoom
+      val selectedMarker = discoverScreenViewModel.selectedMarker.collectAsState().value
+      val selectedItinerary = discoverScreenViewModel.selectedItinerary.collectAsState().value
+      val markerList = discoverScreenViewModel.markerList.collectAsState().value
+      MoreInfoScreen(
+          activityToDisplay,
+          mapState,
+          discoverScreenViewModel::updatePermission,
+          initialPosition,
+          initialZoom,
+          discoverScreenViewModel::updateMarkers,
+          discoverScreenViewModel::updateSelectedMarker,
+          discoverScreenViewModel::clearSelectedItinerary,
+          selectedZoom,
+          moreInfoScreenViewModel::goToMarker,
+          weather,
+          markerList,
+          selectedItinerary) {
+            navController.navigateUp()
+          }
     }
     composable(DestinationRoute.Filter.route) { FilterScreen { navController.popBackStack() } }
 

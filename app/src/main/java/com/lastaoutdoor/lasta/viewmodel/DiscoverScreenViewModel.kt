@@ -185,9 +185,9 @@ constructor(
   }
 
   // Update which marker is currently selected
-  fun updateSelectedMarker(marker: Marker) {
+  fun updateSelectedMarker(marker: Marker?) {
     _selectedMarker.value = marker
-    showHikingItinerary(marker.id)
+    showHikingItinerary(marker?.id ?: 0L)
   }
 
   // Clear the selected itinerary
