@@ -11,6 +11,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.data.MockTask
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.social.ConversationModel
 import com.lastaoutdoor.lasta.models.social.MessageModel
@@ -48,11 +49,11 @@ class SocialDBRepoTest {
 
   private val documentSnapshot: DocumentSnapshot = mockk()
   private lateinit var activitiesRepository: SocialDBRepositoryImpl
-  private val task: UserActivitiesRepositoryImplTest.mockTask<QuerySnapshot> = mockk()
-  private val task2: UserActivitiesRepositoryImplTest.mockTask<Void> = mockk()
-  private val task4: UserActivitiesRepositoryImplTest.mockTask<Void> = mockk()
+  private val task: MockTask<QuerySnapshot> = mockk()
+  private val task2: MockTask<Void> = mockk()
+  private val task4: MockTask<Void> = mockk()
 
-  private val task3: UserActivitiesRepositoryImplTest.mockTask<DocumentSnapshot> = mockk()
+  private val task3: MockTask<DocumentSnapshot> = mockk()
 
   private val l = listOf(documentSnapshot)
 

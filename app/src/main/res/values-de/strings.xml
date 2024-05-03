@@ -27,10 +27,10 @@
     <string name="pitches">Seillängen</string>
     <string name="time">Zeit</string>
     <string name="elevation">Höhe</string>
-    <string name="select_languague">Wählen Sie Ihre Sprache</string>
+    <string name="select_languague">Wählen Sie Ihre Sprache :</string>
     <string name="languague">Sprache:</string>
-    <string name="select_fav_activity">Wählen Sie Ihre Lieblingsaktivität</string>
-    <string name="save">Speichern</string>
+    <string name="select_fav_activity">Wählen Sie Ihre Lieblingsaktivität :</string>
+    <string name="finish">Beenden</string>
     <string name="setup_title">Einstellungen</string>
     <string name="activity_type">Aktivitätstyp</string>
     <string name="not_specified">nicht angegeben</string>
@@ -87,6 +87,7 @@
     <string name="delete_account">Konto löschen</string>
     <string name="tab_favorites">Favoriten</string>
     <string name="tab_socials">Freunde</string>
+    <string name="sport_level">Niveau:</string>
     <string name="no_account">Die E-Mail-Adresse ist nicht mit dem Wettbewerb verbunden</string>
     <string name="no_fr">" Sie sind bereits mit diesem Benutzer befreundet"</string>
     <string name="fr_req_sent">"Freundschaftsanfrage gesendet "</string>

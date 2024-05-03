@@ -67,10 +67,8 @@ constructor(
         } else {
           // This is a sign-in, retrieve user data from Firestore
           val dbUser = userDBRepo.getUserById(user.uid)
-          emit(Response.Success(UserModel(user)))
           if (dbUser != null) {
             val updatedUser = dbUser.copyUserWithFirebaseInfo(user)
-            userDBRepo.updateUser(updatedUser)
             emit(Response.Success(updatedUser))
           } else {
             emit(Response.Failure(NoSuchElementException("User data not found")))

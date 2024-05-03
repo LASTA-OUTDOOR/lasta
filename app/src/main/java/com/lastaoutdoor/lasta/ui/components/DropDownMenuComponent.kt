@@ -35,12 +35,13 @@ fun <T> DropDownMenuComponent(
     selectedItem: T, // The currently selected item from the ViewModel
     onItemSelected: (T) -> Unit, // Callback to invoke when an item is selected
     toStr: (T) -> String,
-    fieldText: String
+    fieldText: String,
+    modifier: Modifier = Modifier
 ) {
   var expanded by remember { mutableStateOf(false) }
 
   Column {
-    Row {
+    Row(modifier = modifier.clickable(onClick = { expanded = true })) {
       Text(
           fieldText,
           style = MaterialTheme.typography.headlineMedium,

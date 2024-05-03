@@ -33,5 +33,14 @@ class LoadingScreenTest {
   @Test
   fun loadingScreen_isdisplayed() {
     composeRule.onNodeWithTag("LoadingScreen").assertIsDisplayed()
+    composeRule.activity.setContent {
+      LoadingScreen(isLoggedIn = false, navigateWhenLoggedIn = {}) {}
+    }
+    composeRule.onNodeWithTag("LoadingScreen").assertIsDisplayed()
+    composeRule.activity.setContent {
+      LoadingScreen(isLoggedIn = true, navigateWhenLoggedIn = {}) {}
+    }
+    composeRule.onNodeWithTag("LoadingScreen").assertIsDisplayed()
+    composeRule.onNodeWithTag("LoadingScreen").assertIsDisplayed()
   }
 }

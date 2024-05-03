@@ -9,13 +9,17 @@ import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
+import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class PreferencesViewModel @Inject constructor(private val preferences: PreferencesRepository) :
+class PreferencesViewModel
+@Inject
+constructor(private val preferences: PreferencesRepository, private val userDB: UserDBRepository) :
     ViewModel() {
   // Decompose UserPreferences into individual properties available as Flows
   val isLoggedIn = preferences.userPreferencesFlow.map { it.isLoggedIn }.asLiveData()
@@ -47,31 +51,70 @@ class PreferencesViewModel @Inject constructor(private val preferences: Preferen
   }
 
   fun updateDescription(description: String) {
-    viewModelScope.launch { preferences.updateDescription(description) }
+    viewModelScope.launch {
+      preferences.updateDescription(description)
+      userDB.updateField(userId.first(), "description", description)
+    }
   }
 
   fun updateLanguage(language: Language) {
-    viewModelScope.launch { preferences.updateLanguage(language) }
+    viewModelScope.launch {
+      preferences.updateLanguage(language)
+      userDB.updateField(userId.first(), "language", language)
+    }
   }
 
   fun updatePrefActivity(activityType: ActivityType) {
-    viewModelScope.launch { preferences.updatePrefActivity(activityType) }
+    viewModelScope.launch {
+      preferences.updatePrefActivity(activityType)
+      userDB.updateField(userId.first(), "prefActivity", activityType)
+    }
   }
 
   fun updateActivityLevels(userActivitiesLevel: UserActivitiesLevel) {
-    viewModelScope.launch { preferences.updateActivityLevels(userActivitiesLevel) }
+    viewModelScope.launch {
+      preferences.updateActivityLevels(userActivitiesLevel)
+      userDB.updateField(userId.first(), "levels", userActivitiesLevel)
+    }
   }
 
   fun updateClimbingLevel(level: UserLevel) {
-    viewModelScope.launch { preferences.updateClimbingLevel(level) }
+    viewModelScope.launch {
+      preferences.updateClimbingLevel(level)
+      userDB.updateField(
+          userId.first(),
+          "levels",
+          hashMapOf(
+              "climbingLevel" to level.name,
+              "hikingLevel" to levels.first().hikingLevel.name,
+              "bikingLevel" to levels.first().bikingLevel.name))
+    }
   }
 
   fun updateHikingLevel(level: UserLevel) {
-    viewModelScope.launch { preferences.updateHikingLevel(level) }
+    viewModelScope.launch {
+      preferences.updateHikingLevel(level)
+      userDB.updateField(
+          userId.first(),
+          "levels",
+          hashMapOf(
+              "climbingLevel" to levels.first().climbingLevel.name,
+              "hikingLevel" to level.name,
+              "bikingLevel" to levels.first().bikingLevel.name))
+    }
   }
 
   fun updateBikingLevel(level: UserLevel) {
-    viewModelScope.launch { preferences.updateBikingLevel(level) }
+    viewModelScope.launch {
+      preferences.updateBikingLevel(level)
+      userDB.updateField(
+          userId.first(),
+          "levels",
+          hashMapOf(
+              "climbingLevel" to levels.first().climbingLevel.name,
+              "hikingLevel" to levels.first().hikingLevel.name,
+              "bikingLevel" to level.name))
+    }
   }
 
   fun updateFriends(friends: List<String>) {
@@ -82,8 +125,20 @@ class PreferencesViewModel @Inject constructor(private val preferences: Preferen
     viewModelScope.launch { preferences.updateFriendRequests(friendRequests) }
   }
 
-  fun updateFavorites(favorites: List<String>) {
-    viewModelScope.launch { preferences.updateFavorites(favorites) }
+  fun flipFavorite(favoriteId: String) {
+    viewModelScope.launch {
+      if (favorites.first().contains(favoriteId)) {
+        val newFavorites = favorites.first().filter { it.isNotEmpty() }.toMutableList()
+        newFavorites.remove(favoriteId)
+        userDB.removeFavorite(userId.first(), favoriteId)
+        preferences.updateFavorites(newFavorites)
+      } else {
+        val newFavorites = favorites.first().filter { it.isNotEmpty() }.toMutableList()
+        newFavorites.add(favoriteId)
+        userDB.addFavorite(userId.first(), favoriteId)
+        preferences.updateFavorites(newFavorites)
+      }
+    }
   }
 
   fun updateDownloadedActivities(downloadedActivities: List<String>) {
