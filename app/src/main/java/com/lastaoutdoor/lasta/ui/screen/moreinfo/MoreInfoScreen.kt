@@ -42,6 +42,7 @@ import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.models.activity.Difficulty
+import com.lastaoutdoor.lasta.models.map.MapItinerary
 import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
 import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
 import com.lastaoutdoor.lasta.ui.theme.Black
@@ -67,7 +68,11 @@ fun MoreInfoScreen(
     updateSelectedItinerary: (Long) -> Unit,
     goToMarker: (Activity) -> Marker,
     weather: WeatherResponse?,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    markerList: List<Marker>,
+    selectedItenary : MapItinerary,
+    clearSelectedMarker : () -> Unit
+
 ) {
   var isMapDisplayed = remember { mutableStateOf(false) }
   if (!isMapDisplayed.value) {
@@ -99,9 +104,17 @@ fun MoreInfoScreen(
           updateSelectedMarker,
           clearSelectedItinerary,
           selectedZoom,
-          updateSelectedItinerary)
-      clearSelectedItinerary()
-      updateSelectedMarker(a)
+          a,
+          selectedItenary,
+          markerList,
+
+
+
+
+          ) {
+
+          clearSelectedItinerary()
+      }
     }
   }
 }
