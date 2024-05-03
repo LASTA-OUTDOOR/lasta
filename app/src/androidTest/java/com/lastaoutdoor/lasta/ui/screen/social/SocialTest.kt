@@ -186,9 +186,9 @@ class SocialTest {
           messages =
               listOf(
                   ConversationModel(
-                      listOf("Jean", "Cassio"),
+                      listOf(UserModel("1"), UserModel("2")),
                       listOf(),
-                      MessageModel("Jean", "Hello Cassio", Timestamp(0, 0)))),
+                      MessageModel(UserModel("1"), "Hello Cassio", Timestamp(0, 0)))),
           latestFriendActivities = emptyList(),
           addFriendDialog = true,
           friendRequestFeedback = "Hi!",
@@ -245,9 +245,9 @@ class SocialTest {
           messages =
               listOf(
                   ConversationModel(
-                      listOf("Jean", "Cassio"),
+                      listOf(UserModel("1"), UserModel("2")),
                       listOf(),
-                      MessageModel("Jean", "Hello Cassio", Timestamp(0, 0)))),
+                      MessageModel(UserModel("1"), "Hello Cassio", Timestamp(0, 0)))),
           latestFriendActivities = emptyList(),
           addFriendDialog = true,
           friendRequestFeedback = "Hi!",

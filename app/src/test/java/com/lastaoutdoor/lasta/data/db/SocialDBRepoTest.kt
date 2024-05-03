@@ -22,7 +22,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import java.util.ArrayList
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -199,21 +198,25 @@ class SocialDBRepoTest {
   fun `test getConversation`() = runBlocking {
     expectedConversation =
         ConversationModel(
-            listOf("userId", "friend"),
-            listOf(MessageModel(from = "friend", content = "coucou", timestamp = Timestamp(0, 0))),
-            MessageModel(from = "friend", content = "coucou", timestamp = Timestamp(0, 0)))
+            listOf(UserModel("userId"), UserModel("friend")),
+            listOf(
+                MessageModel(
+                    from = UserModel("friend"), content = "coucou", timestamp = Timestamp(0, 0))),
+            MessageModel(
+                from = UserModel("friend"), content = "coucou", timestamp = Timestamp(0, 0)))
     every { documentSnapshot.exists() } returns true
 
-    val f = activitiesRepository.getConversation("userId", "friend")
+    val f = activitiesRepository.getConversation(UserModel("userId"), UserModel("friend"))
     assertEquals(expectedConversation, f)
   }
 
   @Test
   fun `test getConversationEmpty`() = runBlocking {
-    expectedConversation = ConversationModel(listOf("userId", "friend"), emptyList(), null)
+    expectedConversation =
+        ConversationModel(listOf(UserModel("userId"), UserModel("friend")), emptyList(), null)
     every { documentSnapshot.exists() } returns false
     every { documentReference.set(any(), any()) } returns mockk()
-    val f = activitiesRepository.getConversation("userId", "friend")
+    val f = activitiesRepository.getConversation(UserModel("userId"), UserModel("friend"))
 
     assertEquals(expectedConversation, f)
     coVerify { documentReference.set(any(), any()) }
@@ -224,16 +227,51 @@ class SocialDBRepoTest {
     expectedConversation = ConversationModel(listOf(), emptyList(), null)
     every { documentSnapshot.exists() } returns false
 
-    val f = activitiesRepository.getConversation("userId", "friend", createNew = false)
+    val f =
+        activitiesRepository.getConversation(
+            UserModel("userId"), UserModel("friend"), createNew = false)
 
     assertEquals(expectedConversation, f)
     // coVerify { documentReference.set(any(), any()) }
   }
 
   @Test
-  fun getAllConverstation() {
+  fun getAllConversation() {
     runBlocking {
-      expectedConversation = ConversationModel(listOf(), emptyList(), null)
+      every { documentSnapshot.exists() } returns true
+      every { documentSnapshot.getString("userName")!! } returns ""
+      every { documentSnapshot.getString("email")!! } returns ""
+      every { documentSnapshot.getString("description")!! } returns ""
+      every { documentSnapshot.getString("profilePictureUrl")!! } returns ""
+      every { documentSnapshot.getString("language")!! } returns Language.ENGLISH.name
+      every { documentSnapshot.getString("climbingLevel") } returns UserLevel.BEGINNER.name
+      every { documentSnapshot.getString("hikingLevel") } returns UserLevel.BEGINNER.name
+      every { documentSnapshot.getString("bikingLevel") } returns UserLevel.BEGINNER.name
+      every { documentSnapshot.get("friendRequests") } returns arrayListOf("friend")
+      every { documentSnapshot.get("friends") } returns ArrayList<String>()
+      every { documentSnapshot.get("favorites") } returns ArrayList<String>()
+      every { documentSnapshot.getString("prefActivity")!! } returns ActivityType.CLIMBING.name
+      every { collectionReference.document("userIduserId") } returns documentReference
+      every { documentSnapshot.get("members") } returns arrayListOf("userId", "frienduserId")
+      every { documentSnapshot.getId() } returns "userId"
+      every { documentSnapshot.getString("userName") } returns ""
+      expectedConversation =
+          ConversationModel(
+              members =
+                  listOf(
+                      UserModel(userId = "userId", friendRequests = listOf("friend")),
+                      UserModel(userId = "userId", friendRequests = listOf("friend"))),
+              messages =
+                  listOf(
+                      MessageModel(
+                          from = UserModel(userId = "userId", friendRequests = listOf("friend")),
+                          content = "coucou",
+                          timestamp = Timestamp(0, 0))),
+              lastMessage =
+                  MessageModel(
+                      from = UserModel(userId = "userId", friendRequests = listOf("friend")),
+                      content = "coucou",
+                      timestamp = Timestamp(0, 0)))
       every { collectionReference.whereArrayContains("members", "userId") } returns query
       every { documentSnapshot.toObject(ConversationModel::class.java) } returns
           expectedConversation

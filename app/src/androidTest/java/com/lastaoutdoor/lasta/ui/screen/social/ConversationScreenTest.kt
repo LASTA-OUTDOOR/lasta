@@ -9,6 +9,7 @@ import com.google.firebase.Timestamp
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.models.social.ConversationModel
 import com.lastaoutdoor.lasta.models.social.MessageModel
+import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -39,9 +40,12 @@ class ConversationScreenTest {
       ConversationScreen(
           conversationModel = null,
           refresh = {},
-          userId = "",
-          friendId = "",
+          user = UserModel("1"),
+          friend = UserModel("2"),
           showSendDialog = {},
+          showSendMessageDialog = true,
+          hideSendDialog = {},
+          send = {},
           navigateBack = {})
     }
     composeRule.onNodeWithTag("ConversationScreen").assertIsNotDisplayed()
@@ -54,13 +58,16 @@ class ConversationScreenTest {
       ConversationScreen(
           conversationModel =
               ConversationModel(
-                  members = listOf("1", "2"),
-                  messages = listOf(MessageModel("1", "2", Timestamp(0, 0))),
-                  lastMessage = MessageModel("2", "1", Timestamp(0, 0))),
+                  members = listOf(UserModel("1"), UserModel("2")),
+                  messages = listOf(MessageModel(UserModel("1"), "2", Timestamp(0, 0))),
+                  lastMessage = MessageModel(UserModel("2"), "1", Timestamp(0, 0))),
           refresh = {},
-          userId = "1",
-          friendId = "2",
+          user = UserModel("1"),
+          friend = UserModel("2"),
           showSendDialog = {},
+          showSendMessageDialog = true,
+          hideSendDialog = {},
+          send = {},
           navigateBack = {})
     }
     composeRule.onNodeWithTag("ConversationScreen").assertIsDisplayed()

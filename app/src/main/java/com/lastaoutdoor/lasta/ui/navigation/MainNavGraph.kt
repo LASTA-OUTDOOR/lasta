@@ -1,5 +1,6 @@
 package com.lastaoutdoor.lasta.ui.navigation
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -36,6 +37,7 @@ import com.lastaoutdoor.lasta.viewmodel.ProfileScreenViewModel
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
 import com.lastaoutdoor.lasta.viewmodel.WeatherViewModel
 
+@SuppressLint("StateFlowValueCalledInComposition")
 fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
   navigation(startDestination = DestinationRoute.Discover.route, route = BaseRoute.Main.route) {
     composable(DestinationRoute.Discover.route) { entry ->
@@ -183,9 +185,12 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           ConversationScreen(
               conversation,
               conversationViewModel::updateConversation,
-              conversationViewModel.userId,
-              conversationViewModel.friendUserId,
+              conversationViewModel.user.value,
+              conversationViewModel.friend.value,
+              conversationViewModel.showSendMessageDialog,
               conversationViewModel::showSendMessageDialog,
+              conversationViewModel::hideSendMessageDialog,
+              conversationViewModel::send,
               navController::navigateUp)
         }
     composable(DestinationRoute.Notifications.route) { entry ->
