@@ -2,7 +2,7 @@ package com.lastaoutdoor.lasta.viewmodel
 
 class AuthViewModelTest {
 
-  /*private lateinit var fakeAuthRepo: FakeAuthRepository
+  /** private lateinit var fakeAuthRepo: FakeAuthRepository
   private lateinit var mockOneTapClient: SignInClient
   private lateinit var authViewModel: AuthViewModel
 
