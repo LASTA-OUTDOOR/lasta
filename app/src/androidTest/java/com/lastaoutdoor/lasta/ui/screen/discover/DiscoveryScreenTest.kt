@@ -13,6 +13,7 @@ import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.models.api.Position
 import com.lastaoutdoor.lasta.ui.MainActivity
+import com.lastaoutdoor.lasta.ui.screen.discover.components.RangeSearchComposable
 import com.lastaoutdoor.lasta.viewmodel.DiscoverDisplayType
 import com.lastaoutdoor.lasta.viewmodel.MapState
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -189,5 +190,34 @@ class DiscoverScreenTest {
     composeRule.waitForIdle()
     composeRule.onNodeWithTag("locationButton").performClick()
     composeRule.onNodeWithTag("listSearchOptionsApplyButton").performClick()
+  }
+
+  @Test
+  fun rangeSearchComposableInTypeMap_isDisplayed() {
+    var isRangePopup = true
+    var screenType = DiscoverDisplayType.MAP
+    composeRule.activity.setContent {
+      MaterialTheme {
+        RangeSearchComposable(
+            screen = screenType,
+            localities =
+                listOf(
+                    "Ecublens" to LatLng(46.519962, 6.633597),
+                    "Geneva" to LatLng(46.2043907, 6.1431577),
+                    "Payerne" to LatLng(46.834190, 6.928969),
+                    "Matterhorn" to LatLng(45.980537, 7.641618),
+                ),
+            selectedLocality = "Ecublens" to LatLng(46.519962, 6.633597),
+            range = 5000.0,
+            fetchActivities = { _, _ -> },
+            onDismissRequest = { isRangePopup = false },
+            setRange = {},
+            isRangePopup = isRangePopup,
+            setSelectedLocality = {},
+        )
+      }
+    }
+
+    composeRule.onNodeWithTag("rangeSearch").assertIsDisplayed()
   }
 }
