@@ -5,9 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.MapUiSettings
-import com.lastaoutdoor.lasta.models.map.HikingMarker
-import com.lastaoutdoor.lasta.models.map.MapItinerary
-import com.lastaoutdoor.lasta.models.map.Marker
 
 // state for the map on the mapScreen
 class MapState {

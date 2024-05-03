@@ -6,17 +6,27 @@ import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.lastaoutdoor.lasta.R
+import androidx.lifecycle.viewModelScope
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.models.map.ClimbingMarker
 import com.lastaoutdoor.lasta.models.map.HikingMarker
+import com.lastaoutdoor.lasta.repository.api.ActivityRepository
+import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
+import com.lastaoutdoor.lasta.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 
 @HiltViewModel
-class MoreInfoScreenViewModel @Inject constructor() : ViewModel() {
+class MoreInfoScreenViewModel
+@Inject
+constructor(
+    private val activityRepository: ActivityRepository,
+    private val activityDB: ActivitiesDBRepository
+) : ViewModel() {
   /* Just a default activity to fill in the mutable state*/
   private val dummyActivity = Activity("", 0, ActivityType.CLIMBING, "Dummy")
   val activityToDisplay = mutableStateOf(dummyActivity)
@@ -33,7 +43,25 @@ class MoreInfoScreenViewModel @Inject constructor() : ViewModel() {
   }
 
   fun changeActivityToDisplay(activity: Activity) {
-    activityToDisplay.value = activity
+    viewModelScope.launch {
+      when (val response =
+          when (activity.activityType) {
+            ActivityType.CLIMBING -> activityRepository.getClimbingPointById(activity.osmId)
+            ActivityType.HIKING -> activityRepository.getHikingRouteById(activity.osmId)
+            ActivityType.BIKING -> activityRepository.getBikingRouteById(activity.osmId)
+          }) {
+        is Response.Loading -> {}
+        is Response.Success -> {
+          val osmData = response.data!!
+          val updatedActivity = activity.copy(startPosition = osmData.getPosition())
+          activityDB.updateStartPosition(activity.activityId, osmData.getPosition())
+          activityToDisplay.value = updatedActivity
+        }
+        is Response.Failure -> {
+          /*TODO*/
+        }
+      }
+    }
   }
 
   fun goToMarker(activity: Activity): com.lastaoutdoor.lasta.models.map.Marker {

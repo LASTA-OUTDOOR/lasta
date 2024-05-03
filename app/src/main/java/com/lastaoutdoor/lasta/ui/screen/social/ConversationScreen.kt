@@ -3,6 +3,7 @@ package com.lastaoutdoor.lasta.ui.screen.social
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,16 +25,22 @@ import androidx.compose.ui.unit.dp
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.social.ConversationModel
 import com.lastaoutdoor.lasta.models.social.MessageModel
+import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
 import com.lastaoutdoor.lasta.ui.screen.moreinfo.TopBarLogo
+import com.lastaoutdoor.lasta.ui.screen.social.components.ProfilePicture
+import com.lastaoutdoor.lasta.ui.screen.social.components.SendMessageDialog
 
 @Composable
 fun ConversationScreen(
     conversationModel: ConversationModel?,
     refresh: () -> Unit,
-    userId: String,
-    friendId: String,
+    user: UserModel,
+    friend: UserModel,
+    showSendMessageDialog: Boolean,
     showSendDialog: () -> Unit,
+    hideSendDialog: () -> Unit,
+    send: (String) -> Unit,
     navigateBack: () -> Unit
 ) {
   Column {
@@ -41,8 +48,6 @@ fun ConversationScreen(
       refresh.invoke()
       return
     }
-
-    val friend = conversationModel.members.firstOrNull { it == friendId } ?: return
 
     Header(navigateBack, friend)
     SeparatorComponent()
@@ -54,7 +59,8 @@ fun ConversationScreen(
           LazyColumn(modifier = Modifier.fillMaxWidth().fillMaxSize(0.8f)) {
             // display 10 Text for testing
             items(conversationModel.messages.size) {
-              ShowMessage(conversationModel.messages[it], userId)
+              // see this function maybe can be wrong
+              ShowMessage(conversationModel.messages[it], user)
             }
           }
 
@@ -81,27 +87,33 @@ fun ConversationScreen(
                     }
               }
         }
+
+    if (showSendMessageDialog) {
+      SendMessageDialog(hideDialog = hideSendDialog, send = send)
+    }
   }
 }
 
 // Top bar of the conversation screen
 @Composable
-fun Header(backCallBack: () -> Unit, friendName: String) {
+fun Header(backCallBack: () -> Unit, friend: UserModel) {
   Row(
       modifier = Modifier.fillMaxWidth().padding(16.dp).testTag("ConversationScreenHeader"),
       horizontalArrangement = Arrangement.Start,
       verticalAlignment = Alignment.CenterVertically) {
         // back button
         TopBarLogo(R.drawable.arrow_back) { backCallBack() }
-        // friend name
-        Text(friendName)
+        Spacer(modifier = Modifier.padding(20.dp))
+        ProfilePicture(friend.profilePictureUrl ?: "")
+        Spacer(modifier = Modifier.padding(8.dp))
+        Text(friend.userName)
       }
 }
 
 @Composable
-fun ShowMessage(message: MessageModel, userId: String) {
+fun ShowMessage(message: MessageModel, user: UserModel) {
 
-  val arrangement = if (message.from == userId) Arrangement.End else Arrangement.Start
+  val arrangement = if (message.from == user) Arrangement.End else Arrangement.Start
 
   Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = arrangement) {
     Card(modifier = Modifier.padding(8.dp)) {

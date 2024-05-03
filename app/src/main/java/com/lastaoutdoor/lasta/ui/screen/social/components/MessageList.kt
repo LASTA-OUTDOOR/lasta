@@ -1,7 +1,9 @@
 package com.lastaoutdoor.lasta.ui.screen.social.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,12 +16,15 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -41,6 +46,9 @@ fun MessageList(
     displayFriendPicker: Boolean,
     changeDisplayFriendPicker: () -> Unit
 ) {
+
+  LaunchedEffect(Unit) { refreshMessages() }
+
   when {
     isConnected == ConnectionState.OFFLINE -> {
       ConnectionMissing()
@@ -56,10 +64,6 @@ fun MessageList(
       if (displayFriendPicker) {
         FriendPicker(friends, hideFriendPicker, navigateToConversation)
       }
-
-      // refresh the message list
-      refreshMessages()
-
       // list of messages
       LazyColumn {
         items(messages.size) {
@@ -77,7 +81,7 @@ fun MessageCard(
     navigateToConversation: (String) -> Unit
 ) {
 
-  val friend = message.members.firstOrNull { it != friendId } ?: return
+  val friend = message.members.firstOrNull { it.userId == friendId } ?: return
 
   Card(
       colors =
@@ -89,17 +93,17 @@ fun MessageCard(
               .fillMaxWidth()
               .padding(8.dp)
               .testTag("MessageCard")
-              .clickable { navigateToConversation(friend) }) {
+              .clickable { navigateToConversation(friend.userId) }) {
         Column(modifier = Modifier.padding(8.dp)) {
-          /*Row(
-          modifier = Modifier.fillMaxWidth(),
-          horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            ProfilePicture(friend.profilePictureUrl ?: "")
-            Text(
-                text = friend.userName ?: "Name error",
-                modifier = Modifier.align(Alignment.CenterVertically),
-                fontWeight = FontWeight.Bold)
-          }*/
+          Row(
+              modifier = Modifier.fillMaxWidth(),
+              horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                ProfilePicture(friend.profilePictureUrl ?: "")
+                Text(
+                    text = friend.userName ?: "Name error",
+                    modifier = Modifier.align(alignment = Alignment.CenterVertically),
+                    fontWeight = FontWeight.Bold)
+              }
 
           Text(text = message.lastMessage?.content ?: "", overflow = TextOverflow.Ellipsis)
         }
@@ -107,7 +111,7 @@ fun MessageCard(
 }
 
 @Composable
-private fun ProfilePicture(url: String) {
+fun ProfilePicture(url: String) {
   AsyncImage(
       model =
           ImageRequest.Builder(LocalContext.current)

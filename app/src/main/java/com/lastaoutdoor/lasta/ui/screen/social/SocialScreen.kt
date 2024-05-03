@@ -70,6 +70,7 @@ fun SocialScreen(
         topButtonIcon,
         topButtonOnClick,
         refreshFriendRequests,
+        refreshFriends,
         navigateToNotifications)
 
     // Tabs
@@ -104,11 +105,15 @@ fun Header(
     topButtonIcon: ImageVector,
     topButtonOnClick: () -> Unit,
     refreshFriendRequests: () -> Unit,
+    refreshFriends: () -> Unit,
     navigateToNotifications: () -> Unit
 ) {
 
   // This will be called when the composable becomes visible
-  LaunchedEffect(Unit) { refreshFriendRequests() }
+  LaunchedEffect(Unit) {
+    refreshFriendRequests()
+    refreshFriends()
+  }
 
   Row(
       modifier = Modifier.fillMaxWidth().testTag("SocialScreenHeader"),

@@ -14,12 +14,14 @@ import com.lastaoutdoor.lasta.data.api.osm.OSMApiService
 import com.lastaoutdoor.lasta.data.api.weather.WeatherApiService
 import com.lastaoutdoor.lasta.data.api.weather.WeatherRepositoryImpl
 import com.lastaoutdoor.lasta.data.auth.AuthRepositoryImpl
+import com.lastaoutdoor.lasta.data.db.ActivitiesDBRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.SocialDBRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.UserActivitiesDBRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.UserDBRepositoryImpl
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
 import com.lastaoutdoor.lasta.repository.api.WeatherRepository
 import com.lastaoutdoor.lasta.repository.auth.AuthRepository
+import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
 import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserActivitiesDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
@@ -113,6 +115,13 @@ object NetworkModule {
 
   @Singleton
   @Provides
+  fun provideActivitiesDBRepository(
+      @ApplicationContext context: Context,
+      firestore: FirebaseFirestore
+  ): ActivitiesDBRepository = ActivitiesDBRepositoryImpl(context, firestore)
+
+  @Singleton
+  @Provides
   fun provideUserActivitiesDBRepository(
       @ApplicationContext context: Context,
       firestore: FirebaseFirestore
@@ -120,7 +129,7 @@ object NetworkModule {
 
   @Singleton
   @Provides
-  fun provideDBRepository(
+  fun provideSocialDBRepository(
       @ApplicationContext context: Context,
       firestore: FirebaseFirestore
   ): SocialDBRepository = SocialDBRepositoryImpl(context, firestore)

@@ -3,12 +3,9 @@ package com.lastaoutdoor.lasta.models.api
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.lastaoutdoor.lasta.models.activity.Activity
-import com.lastaoutdoor.lasta.models.activity.BikingActivity
-import com.lastaoutdoor.lasta.models.activity.ClimbingActivity
-import com.lastaoutdoor.lasta.models.activity.HikingActivity
 
 data class Tags(
-    @SerializedName("name") val name: String,
+    @SerializedName("name") val name: String = "",
     @SerializedName("sport") val sport: String = "",
     @SerializedName("route") val route: String = "",
     @SerializedName("from") val from: String = "",
@@ -41,13 +38,12 @@ class NodeWay(
     @SerializedName("tags") @Expose val tags: Tags,
 ) : OSMData() {
   override fun getPosition(): Position {
-    if (type == "node") return Position(lat!!, lon!!)
-    return center!!
+    return if (type == "node" && lat != null && lon != null) Position(lat, lon)
+    else if (type == "way" && center != null) center else Position(0.0, 0.0)
   }
 
   override fun getActivityFromData(): Activity {
-    return ClimbingActivity(
-        activityId = "", osmId = id, name = tags.name, startPosition = getPosition())
+    return Activity(activityId = "", osmId = id, name = tags.name, startPosition = getPosition())
   }
 }
 
@@ -71,23 +67,12 @@ class Relation(
   }
 
   override fun getActivityFromData(): Activity {
-    return if (tags.route == "hiking") {
-      HikingActivity(
-          activityId = "",
-          osmId = id,
-          name = tags.name,
-          startPosition = getPosition(),
-          from = tags.from,
-          to = tags.to)
-    } else {
-      BikingActivity(
-          activityId = "",
-          osmId = id,
-          name = tags.name,
-          startPosition = getPosition(),
-          from = tags.from,
-          to = tags.to,
-          distance = tags.distance.toFloat())
-    }
+    return Activity(
+        activityId = "",
+        osmId = id,
+        name = tags.name,
+        startPosition = getPosition(),
+        from = tags.from,
+        to = tags.to)
   }
 }
