@@ -36,8 +36,13 @@ constructor(
     private val activitiesDB: ActivitiesDBRepository
 ) : ViewModel() {
 
-  val activities = mutableStateOf<ArrayList<Activity>>(ArrayList())
-  val activityIds = mutableStateOf<ArrayList<Long>>(ArrayList())
+  private val _activities = MutableStateFlow<ArrayList<Activity>>(ArrayList())
+  val activities: StateFlow<List<Activity>> = _activities
+
+
+
+  private val _activityIds = MutableStateFlow<ArrayList<Long>>(ArrayList())
+    val activityIds: StateFlow<List<Long>> = _activityIds
 
   private val _selectedActivityType = MutableStateFlow(ActivityType.CLIMBING)
   val selectedActivityType: StateFlow<ActivityType> = _selectedActivityType
@@ -139,19 +144,19 @@ constructor(
               emptyList<OSMData>()
             }
           }
-      activities.value = ArrayList()
-      activityIds.value = ArrayList()
+      _activities.value = ArrayList()
+      _activityIds.value = ArrayList()
       osmData.map { point ->
         when (_selectedActivityType.value) {
           ActivityType.CLIMBING -> {
             val castedPoint = point as NodeWay
-            activityIds.value.add(castedPoint.id)
+            _activityIds.value.add(castedPoint.id)
             activitiesDB.addActivityIfNonExisting(
                 Activity("", point.id, ActivityType.CLIMBING, point.tags.name))
           }
           ActivityType.HIKING -> {
             val castedPoint = point as Relation
-            activityIds.value.add(castedPoint.id)
+            _activityIds.value.add(castedPoint.id)
             activitiesDB.addActivityIfNonExisting(
                 Activity(
                     "",
@@ -163,7 +168,7 @@ constructor(
           }
           ActivityType.BIKING -> {
             val castedPoint = point as Relation
-            activityIds.value.add(castedPoint.id)
+            _activityIds.value.add(castedPoint.id)
             activitiesDB.addActivityIfNonExisting(
                 Activity(
                     "",
@@ -176,7 +181,7 @@ constructor(
           }
         }
       }
-      activities.value =
+      _activities.value =
           activitiesDB.getActivitiesByOSMIds(activityIds.value, true) as ArrayList<Activity>
       _markerList.value = activitiesToMarkers(activities.value)
     }
