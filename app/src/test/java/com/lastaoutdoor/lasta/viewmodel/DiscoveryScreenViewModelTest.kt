@@ -1,45 +1,118 @@
 package com.lastaoutdoor.lasta.viewmodel
 
 import com.google.android.gms.maps.model.LatLng
+import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
-import com.lastaoutdoor.lasta.models.api.Relation
-import com.lastaoutdoor.lasta.models.api.Tags
-import com.lastaoutdoor.lasta.models.map.MapItinerary
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
-import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
 import com.lastaoutdoor.lasta.utils.Response
-import io.mockk.coEvery
+import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivitiesDBRepository
+import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivityRepository
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.TestDispatcher
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import kotlinx.coroutines.withContext
+import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 
-class DiscoveryScreenViewModelTest {
+@ExperimentalCoroutinesApi
+class MainDispatcherRule(val dispatcher: TestDispatcher = StandardTestDispatcher()) :
+    TestWatcher() {
+  @ExperimentalCoroutinesApi
+  override fun starting(description: Description?) = Dispatchers.setMain(dispatcher)
 
-  @get:Rule val mainDispatcherRule = MainDispatcherRule()
+  class DiscoveryScreenViewModelTest()
+
+  override fun finished(description: Description?) = Dispatchers.resetMain()
+}
+
+class DiscoveryScreenViewModelTest() {
+  @ExperimentalCoroutinesApi val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
+
+  private var repo = FakeActivityRepository()
 
   private lateinit var viewModel: DiscoverScreenViewModel
   private lateinit var repository: ActivityRepository
-  private lateinit var activitiesDB: ActivitiesDBRepository
+  private lateinit var activitiesDB: FakeActivitiesDBRepository
+
+  @ExperimentalCoroutinesApi
+  @Before
+  fun setupDispatcher() {
+    Dispatchers.setMain(testDispatcher)
+  }
+
+  @ExperimentalCoroutinesApi
+  @After
+  fun tearDownDispatcher() {
+    Dispatchers.resetMain()
+    testDispatcher.cleanupTestCoroutines()
+  }
 
   @Before
   fun setUp() {
     repository = mockk(relaxed = true)
-    activitiesDB = mockk(relaxed = true)
+    activitiesDB = FakeActivitiesDBRepository()
     viewModel = DiscoverScreenViewModel(repository, activitiesDB)
+    repo.currResponse = Response.Success(null)
+
+    viewModel = DiscoverScreenViewModel(repo, mockk())
+  }
+
+  @ExperimentalCoroutinesApi
+  @Test
+  fun fetchBikingActivities() {
+    runBlocking {
+      viewModel.updateActivityType(ActivityType.BIKING)
+      viewModel.fetchActivities()
+      assertEquals(viewModel.activities.value, emptyList<Activity>())
+    }
+  }
+
+  @ExperimentalCoroutinesApi
+  @Test
+  fun fetchHikingActivities() {
+    runBlocking {
+      viewModel.updateActivityType(ActivityType.HIKING)
+      viewModel.fetchActivities()
+      assertEquals(viewModel.activities.value, emptyList<Activity>())
+    }
+  }
+
+  @ExperimentalCoroutinesApi
+  @Test
+  fun fetchClimbingActivities() {
+    runBlocking {
+      viewModel.updateActivityType(ActivityType.CLIMBING)
+      viewModel.fetchActivities()
+      assertEquals(viewModel.activities.value, emptyList<Activity>())
+    }
+  }
+
+  @ExperimentalCoroutinesApi
+  @Test
+  fun setScreen() {
+    runBlocking {
+      viewModel.setScreen(DiscoverDisplayType.LIST)
+      assertEquals(viewModel.screen.value, DiscoverDisplayType.LIST)
+    }
+  }
+
+  @ExperimentalCoroutinesApi
+  @Test
+  fun setLoc() {
+    runBlocking {
+      viewModel.setSelectedLocality(Pair("a", LatLng(0.0, 0.0)))
+      assertEquals(viewModel.selectedLocality.value, Pair("a", LatLng(0.0, 0.0)))
+    }
   }
 
   @Test
@@ -64,6 +137,15 @@ class DiscoveryScreenViewModelTest {
     assertEquals(viewModel.initialPosition, LatLng(46.519962, 6.633597))
   }
 
+  @ExperimentalCoroutinesApi
+  @Test
+  fun setRnage() {
+    runBlocking {
+      viewModel.setRange(0.0)
+      assertEquals(viewModel.range.value, 0.0)
+    }
+  }
+
   @Test
   fun testClearSelectedItinerary() {
     viewModel.clearSelectedItinerary()
@@ -79,40 +161,29 @@ class DiscoveryScreenViewModelTest {
   @Test
   fun testUpdateMarkers() {
     viewModel.updateMarkers(LatLng(46.519962, 6.633597), 10000.0)
-    assertEquals(viewModel.markerList.value, viewModel.markerList.value)
+    assertEquals(viewModel.markerList.value, emptyList<Marker>())
   }
 
-  @OptIn(ExperimentalCoroutinesApi::class)
   @Test
-  fun `updateSelectedMarker updates marker and triggers itinerary fetch`() = runTest {
-    withContext(Dispatchers.Main) {
-
-      // Prepare
-      val marker =
-          Marker(1L, "Trail Name", LatLng(45.0, -45.0), "Description", 0, ActivityType.HIKING)
-      val expectedRelation = Relation("Relationt Test", 1L, Tags(""), emptyList())
-      val expectedItinerary = MapItinerary(1L, "Trail Name", listOf(LatLng(45.0, -45.0)))
-
-      // Mock the repository response
-      coEvery { repository.getHikingRouteById(1L) } returns Response.Success(expectedRelation)
-
-      //
-      viewModel.updateSelectedMarker(marker)
-      // Wait for the coroutine to finish
-      advanceUntilIdle()
-      assertEquals(marker, viewModel.selectedMarker.value)
-    }
-  }
-}
-
-@OptIn(ExperimentalCoroutinesApi::class)
-class MainDispatcherRule(private val testDispatcher: TestDispatcher = UnconfinedTestDispatcher()) :
-    TestWatcher() {
-  override fun starting(description: Description) {
-    Dispatchers.setMain(testDispatcher)
-  }
-
-  override fun finished(description: Description) {
-    Dispatchers.resetMain()
+  fun update_selectedMarker() {
+    viewModel.updateSelectedMarker(
+        Marker(0, "name", LatLng(0.0, 0.0), "description", 1, ActivityType.BIKING))
+    assertEquals(
+        viewModel.selectedMarker.value,
+        Marker(0, "name", LatLng(0.0, 0.0), "description", 1, ActivityType.BIKING))
+    viewModel.clearSelectedMarker()
+    // hiking
+    viewModel.updateSelectedMarker(
+        Marker(0, "name", LatLng(0.0, 0.0), "description", 1, ActivityType.HIKING))
+    assertEquals(
+        viewModel.selectedMarker.value,
+        Marker(0, "name", LatLng(0.0, 0.0), "description", 1, ActivityType.HIKING))
+    viewModel.clearSelectedMarker()
+    // climbing
+    viewModel.updateSelectedMarker(
+        Marker(0, "name", LatLng(0.0, 0.0), "description", 1, ActivityType.CLIMBING))
+    assertEquals(
+        viewModel.selectedMarker.value,
+        Marker(0, "name", LatLng(0.0, 0.0), "description", 1, ActivityType.CLIMBING))
   }
 }
