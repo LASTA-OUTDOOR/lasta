@@ -12,59 +12,31 @@ import kotlinx.coroutines.flow.Flow
 class FakePreferencesRepository(override val userPreferencesFlow: Flow<UserPreferences>) :
     PreferencesRepository {
 
-  override suspend fun updateIsLoggedIn(isLoggedIn: Boolean) {
+  override suspend fun updateIsLoggedIn(isLoggedIn: Boolean) {}
 
-  }
+  override suspend fun updateUserInfo(userModel: UserModel) {}
 
-  override suspend fun updateUserInfo(userModel: UserModel) {
+  override suspend fun updateDescription(description: String) {}
 
-  }
+  override suspend fun updateLanguage(language: Language) {}
 
-  override suspend fun updateDescription(description: String) {
+  override suspend fun updatePrefActivity(activityType: ActivityType) {}
 
-  }
+  override suspend fun updateActivityLevels(userActivitiesLevel: UserActivitiesLevel) {}
 
-  override suspend fun updateLanguage(language: Language) {
+  override suspend fun updateClimbingLevel(level: UserLevel) {}
 
-  }
+  override suspend fun updateHikingLevel(level: UserLevel) {}
 
-  override suspend fun updatePrefActivity(activityType: ActivityType) {
+  override suspend fun updateBikingLevel(level: UserLevel) {}
 
-  }
+  override suspend fun updateFriends(friends: List<String>) {}
 
-  override suspend fun updateActivityLevels(userActivitiesLevel: UserActivitiesLevel) {
+  override suspend fun updateFriendRequests(friendRequests: List<String>) {}
 
-  }
+  override suspend fun updateFavorites(favorites: List<String>) {}
 
-  override suspend fun updateClimbingLevel(level: UserLevel) {
+  override suspend fun updateDownloadedActivities(downloadedActivities: List<String>) {}
 
-  }
-
-  override suspend fun updateHikingLevel(level: UserLevel) {
-
-  }
-
-  override suspend fun updateBikingLevel(level: UserLevel) {
-
-  }
-
-  override suspend fun updateFriends(friends: List<String>) {
-
-  }
-
-  override suspend fun updateFriendRequests(friendRequests: List<String>) {
-
-  }
-
-  override suspend fun updateFavorites(favorites: List<String>) {
-
-  }
-
-  override suspend fun updateDownloadedActivities(downloadedActivities: List<String>) {
-
-  }
-
-  override suspend fun clearPreferences() {
-
-  }
+  override suspend fun clearPreferences() {}
 }

@@ -15,64 +15,61 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
 class PreferencesViewModelTest {
 
-    @ExperimentalCoroutinesApi val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
-    private val flow = flowOf(UserPreferences(true))
-    val db = FakePreferencesRepository(flow)
-    val db2 = FakeUserDB()
-    val vm = PreferencesViewModel(db,db2)
-    @ExperimentalCoroutinesApi
-    @Before
-    fun setupDispatcher() {
-        Dispatchers.setMain(testDispatcher)
+  @ExperimentalCoroutinesApi val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
+  private val flow = flowOf(UserPreferences(true))
+  val db = FakePreferencesRepository(flow)
+  val db2 = FakeUserDB()
+  val vm = PreferencesViewModel(db, db2)
 
-    }
+  @ExperimentalCoroutinesApi
+  @Before
+  fun setupDispatcher() {
+    Dispatchers.setMain(testDispatcher)
+  }
 
-    @ExperimentalCoroutinesApi
-    @After
-    fun tearDownDispatcher() {
-        Dispatchers.resetMain()
-        testDispatcher.cleanupTestCoroutines()
-    }
+  @ExperimentalCoroutinesApi
+  @After
+  fun tearDownDispatcher() {
+    Dispatchers.resetMain()
+    testDispatcher.cleanupTestCoroutines()
+  }
 
-    @Test
-    fun prefRepo(){
-        val userLevel = UserLevel.BEGINNER
-        vm.updateBikingLevel(userLevel)
-        vm.updateClimbingLevel(userLevel)
-        vm.updateHikingLevel(userLevel)
-        vm.updateDescription("")
+  @Test
+  fun prefRepo() {
+    val userLevel = UserLevel.BEGINNER
+    vm.updateBikingLevel(userLevel)
+    vm.updateClimbingLevel(userLevel)
+    vm.updateHikingLevel(userLevel)
+    vm.updateDescription("")
 
-        vm.updateActivityLevels(UserActivitiesLevel(UserLevel.BEGINNER,UserLevel.BEGINNER,UserLevel.BEGINNER))
-        vm.updateFriendRequests(listOf(""))
-        vm.updateDownloadedActivities(listOf(""))
-        vm.updateUserInfo(UserModel(""))
-        vm.updateLanguage(Language.ENGLISH)
-        vm.updatePrefActivity(ActivityType.CLIMBING)
-        vm.updateFriends(listOf(""))
-        vm.updateIsLoggedIn(true)
-        vm.clearPreferences()
-        vm.prefActivity
-        vm.email
-        vm.description
-        vm.downloadedActivities
-        vm.favorites
-        vm.friendRequests
-        vm.friends
-        vm.isLoggedIn
-        vm.language
-        vm.userId
-        vm.user
-        vm.userName
-        vm.profilePictureUrl
-        vm.levels
-
-
-    }
-
+    vm.updateActivityLevels(
+        UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER))
+    vm.updateFriendRequests(listOf(""))
+    vm.updateDownloadedActivities(listOf(""))
+    vm.updateUserInfo(UserModel(""))
+    vm.updateLanguage(Language.ENGLISH)
+    vm.updatePrefActivity(ActivityType.CLIMBING)
+    vm.updateFriends(listOf(""))
+    vm.updateIsLoggedIn(true)
+    vm.clearPreferences()
+    vm.prefActivity
+    vm.email
+    vm.description
+    vm.downloadedActivities
+    vm.favorites
+    vm.friendRequests
+    vm.friends
+    vm.isLoggedIn
+    vm.language
+    vm.userId
+    vm.user
+    vm.userName
+    vm.profilePictureUrl
+    vm.levels
+  }
 }

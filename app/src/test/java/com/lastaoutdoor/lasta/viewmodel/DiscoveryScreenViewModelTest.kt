@@ -36,17 +36,12 @@ class DiscoveryScreenViewModelTest() {
   private lateinit var viewModel: DiscoverScreenViewModel
   private var repo = FakeActivityRepository()
 
-
   @Before
   fun setUp() {
     repo.currResponse = Response.Success(null)
 
     viewModel = DiscoverScreenViewModel(repo, mockk())
   }
-
-
-
-
 
   @ExperimentalCoroutinesApi
   @Test

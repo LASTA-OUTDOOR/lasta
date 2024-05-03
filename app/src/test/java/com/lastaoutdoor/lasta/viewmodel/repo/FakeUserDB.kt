@@ -17,11 +17,8 @@ class FakeUserDB : UserDBRepository {
   }
 
   override suspend fun updateField(userId: String, field: String, value: Any) {}
-  override suspend fun addFavorite(userId: String, activityId: String) {
 
-  }
+  override suspend fun addFavorite(userId: String, activityId: String) {}
 
-  override suspend fun removeFavorite(userId: String, activityId: String) {
-
-  }
+  override suspend fun removeFavorite(userId: String, activityId: String) {}
 }

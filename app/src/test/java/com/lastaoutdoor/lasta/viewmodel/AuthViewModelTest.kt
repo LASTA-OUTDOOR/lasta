@@ -15,40 +15,38 @@ import org.junit.Before
 import org.junit.Test
 
 class AuthViewModelTest {
-    @ExperimentalCoroutinesApi
-    val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
-    val flow = flowOf(true)
-    val db = FakeAuthRepo(flow)
-    val userDB = FakeUserDB()
-    val oneTap : SignInClient = mockk()
-    private lateinit var vm : AuthViewModel
+  @ExperimentalCoroutinesApi val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
+  val flow = flowOf(true)
+  val db = FakeAuthRepo(flow)
+  val userDB = FakeUserDB()
+  val oneTap: SignInClient = mockk()
+  private lateinit var vm: AuthViewModel
 
-    @ExperimentalCoroutinesApi
-    @Before
-    fun setupDispatcher() {
+  @ExperimentalCoroutinesApi
+  @Before
+  fun setupDispatcher() {
 
-        Dispatchers.setMain(testDispatcher)
-        vm = AuthViewModel(db, userDB, oneTap)
-    }
+    Dispatchers.setMain(testDispatcher)
+    vm = AuthViewModel(db, userDB, oneTap)
+  }
 
-    @ExperimentalCoroutinesApi
-    @After
-    fun tearDownDispatcher() {
-        Dispatchers.resetMain()
-        testDispatcher.cleanupTestCoroutines()
-    }
-    @Test
-    fun auth(){
-        vm.updateFieldInUser("",",","")
-        vm.user
-        vm.beginSignInResult
-        vm.isSignUp
-        vm.signedOut
-        vm.oneTapClient
-        vm.finishGoogleSignIn(mockk())
-        vm.signOut()
-        vm.startGoogleSignIn()
+  @ExperimentalCoroutinesApi
+  @After
+  fun tearDownDispatcher() {
+    Dispatchers.resetMain()
+    testDispatcher.cleanupTestCoroutines()
+  }
 
-    }
-
+  @Test
+  fun auth() {
+    vm.updateFieldInUser("", ",", "")
+    vm.user
+    vm.beginSignInResult
+    vm.isSignUp
+    vm.signedOut
+    vm.oneTapClient
+    vm.finishGoogleSignIn(mockk())
+    vm.signOut()
+    vm.startGoogleSignIn()
+  }
 }
