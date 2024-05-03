@@ -4,7 +4,7 @@ Lasta is an Android app whose goal is mainly to help people find and discover ni
 Our application is your go-to tool for discovering the perfect spots for a variety of outdoor activities, including hiking, skiing, rock climbing, trail running, biking, and more.
 ## Architecture Diagram
 
-![Architecture Diagram](Architecture_diagram.jpeg)
+![Architecture Diagram](Architecture_diagram.jpg)
 ## Features
 
 -   Activity Recommendations: Whether you're seeking specific outdoor activities or open to suggestions, LASTA provides personalized recommendations based on your preferences and current environmental conditions.
