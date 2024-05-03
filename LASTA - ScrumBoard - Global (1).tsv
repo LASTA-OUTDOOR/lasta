@@ -1,0 +1,86 @@
+Title	URL	Status	Sprint	Task Type	Nature	Epic	Assignees	Estimated Time	Linked pull requests	Priority
+User can track activity		Product Backlog			User Story	Tracking				
+User can see friend's recent activities		Product Backlog			User Story	Tracking				
+Discover Page for Outdoor Activities with Detailed Listings		Done in Sprint 6	Sprint 6	Frontend + backend	User Story	Activities Interactivity				
+Community System		Done in Sprint 6	Sprint 6	Frontend + backend	User Story	Social				
+Improve the sign-in process so that it integrates the DB and store preferences into it		Done in Sprint 6	Sprint 6	Frontend + backend	User Story	Authentication				
+The app will also develop a user rating and review system for activities		Sprint Backlog		Backend	User Story	Activities Interactivity				
+Users can now sort activities by difficulty, distance and rating		Sprint Backlog	Sprint 7	Backend	User Story	Social				Interesting to have
+Users can use a part of the app while offline		Sprint Backlog	Sprint 7	Backend	User Story	Offline mode				Important
+Users can track their activities		Sprint Backlog	Sprint 7		User Story	Tracking				TOP
+User's can see stats about activitities they've done		Sprint Backlog	Sprint 7	Frontend + backend	User Story	Tracking				TOP
+Users can see friends activity and their stats		Sprint Backlog	Sprint 7		User Story	Tracking				TOP
+Users receive notifications about weather reports/friend activities		Sprint Backlog		Frontend	User Story	User's experience (UX/UI)				
+Outdoor activities come from both API and DB		Done in Sprint 6	Sprint 6	Backend	User Story	Activities Interactivity				TOP
+Dark Mode Integration		Done in Sprint 4	Sprint 4	Frontend	User Story					
+Link filter options with the user's preferences and activities	https://github.com/LASTA-OUTDOOR/lasta/issues/176	Done in Sprint 6	Sprint 6	Backend	Sprint Task	Activities Interactivity	Thimphou	5h	https://github.com/LASTA-OUTDOOR/lasta/pull/223	TOP
+Weather Suggestions		Done in Sprint 6	Sprint 6	Backend	User Story	Activities Interactivity				TOP
+Public transport schedule		Product Backlog		Backend	User Story					
+Group Feature		Product Backlog		Backend	User Story					
+Language support		Done in Sprint 5	Sprint 5	Backend	User Story	Users				
+Integration with Wearable Devices		Product Backlog		Backend	User Story					
+Augmented Reality (AR) Features		Product Backlog		Backend	User Story					
+Sustainable Travel Tips and Eco-Challenges		Product Backlog		Backend	User Story					
+Link with other sportive apps		Product Backlog		Backend	User Story					
+Immersive customizable UI		Product Backlog		Frontend	User Story					
+Battery saving mode		Product Backlog		Backend	User Story					
+Make the app logo visible from phone menu	https://github.com/LASTA-OUTDOOR/lasta/issues/194	Done in Sprint 6	Sprint 6	Frontend	Sprint Task		ecornamu	30min	https://github.com/LASTA-OUTDOOR/lasta/pull/193	Interesting to have
+Fix the messages errors due to the refactor	https://github.com/LASTA-OUTDOOR/lasta/issues/204	Done in Sprint 6	Sprint 6	Backend	Sprint Task	Social	CassioManuguerra	6h	https://github.com/LASTA-OUTDOOR/lasta/pull/207	TOP
+Implement database functions for activities metadata	https://github.com/LASTA-OUTDOOR/lasta/issues/146	Done in Sprint 6	Sprint 6	Backend	Sprint Task	Activities Interactivity	Andy130604	8h	https://github.com/LASTA-OUTDOOR/lasta/pull/191	TOP
+Design UI for smooth current weather display	https://github.com/LASTA-OUTDOOR/lasta/issues/188	Done in Sprint 6	Sprint 6	Frontend	Sprint Task	Activities Interactivity	ecornamu	6h	https://github.com/LASTA-OUTDOOR/lasta/pull/193	TOP
+Make the weather report bound to user location	https://github.com/LASTA-OUTDOOR/lasta/issues/187	Done in Sprint 6	Sprint 6	Backend	Sprint Task	Activities Interactivity	ecornamu	6h	https://github.com/LASTA-OUTDOOR/lasta/pull/193	TOP
+Test for the SetupScreen and SettingsScreen (EXCEPTIONAL DUE TO REFRACTORING)	https://github.com/LASTA-OUTDOOR/lasta/issues/177	Done in Sprint 6	Sprint 6	Testing	Sprint Task	Activities Interactivity	Thimphou	3h	https://github.com/LASTA-OUTDOOR/lasta/pull/199	TOP
+Reformat composables to not have viewmodel instances passed for construction	https://github.com/LASTA-OUTDOOR/lasta/issues/178	Done in Sprint 6	Sprint 6	Structure - Comments	Sprint Task	Activities Interactivity	Andy130604	10h	https://github.com/LASTA-OUTDOOR/lasta/pull/180	TOP
+Translate the App in multiple language	https://github.com/LASTA-OUTDOOR/lasta/issues/147	Done in Sprint 5	Sprint 5	Backend	Sprint Task		npfrei	8h	https://github.com/LASTA-OUTDOOR/lasta/pull/168	
+Show itinerary only when an activity is selected	https://github.com/LASTA-OUTDOOR/lasta/issues/113	Done in Sprint 5	Sprint 5	Frontend	Sprint Task		JeremyHugentobler	4h	https://github.com/LASTA-OUTDOOR/lasta/pull/160	
+Community : adding friends	https://github.com/LASTA-OUTDOOR/lasta/issues/151	Done in Sprint 5	Sprint 5	Frontend	Sprint Task	Social	JeremyHugentobler	8h	https://github.com/LASTA-OUTDOOR/lasta/pull/162	
+Community: send and receive messages	https://github.com/LASTA-OUTDOOR/lasta/issues/157	Done in Sprint 5	Sprint 5	Frontend	Sprint Task	Social	JeremyHugentobler	5h	https://github.com/LASTA-OUTDOOR/lasta/pull/172	
+Community: display list of friends in friends tab	https://github.com/LASTA-OUTDOOR/lasta/issues/155	Done in Sprint 5	Sprint 5	Frontend	Sprint Task	Social	JeremyHugentobler	1h	https://github.com/LASTA-OUTDOOR/lasta/pull/172	
+Community: message structure	https://github.com/LASTA-OUTDOOR/lasta/issues/154	Done in Sprint 5	Sprint 5	Structure - Comments	Sprint Task	Social	JeremyHugentobler	1h	https://github.com/LASTA-OUTDOOR/lasta/pull/172	
+Community: show friend profile	https://github.com/LASTA-OUTDOOR/lasta/issues/152	Done in Sprint 5	Sprint 5	Frontend	Sprint Task	Social	JeremyHugentobler	3h	https://github.com/LASTA-OUTDOOR/lasta/pull/172	
+Test/fix ProfileScreen	https://github.com/LASTA-OUTDOOR/lasta/issues/142	Done in Sprint 5	Sprint 5	Frontend	Sprint Task	Users	JoniDutoit	4h	https://github.com/LASTA-OUTDOOR/lasta/pull/169	
+Community : friends structure	https://github.com/LASTA-OUTDOOR/lasta/issues/150	Done in Sprint 5	Sprint 5	Structure - Comments	Sprint Task	Social	JeremyHugentobler	1h	https://github.com/LASTA-OUTDOOR/lasta/pull/162	
+Search options on Discover screen	https://github.com/LASTA-OUTDOOR/lasta/issues/148	Done in Sprint 5	Sprint 5	Frontend	Sprint Task	Activities Interactivity	CassioManuguerra	8h	https://github.com/LASTA-OUTDOOR/lasta/pull/163	
+Update API calls and also make them asynchronous	https://github.com/LASTA-OUTDOOR/lasta/issues/59	Done in Sprint 5	Sprint 5	Backend	Sprint Task		Andy130604	6h	https://github.com/LASTA-OUTDOOR/lasta/pull/164	
+Implement a filter options screen (UI)	https://github.com/LASTA-OUTDOOR/lasta/issues/144	Done in Sprint 5	Sprint 5	Backend	Sprint Task	Activities Interactivity	CassioManuguerra	5h	https://github.com/LASTA-OUTDOOR/lasta/pull/173	
+Implement a Dialog that displays the current weather on target location	https://github.com/LASTA-OUTDOOR/lasta/issues/149	Done in Sprint 5	Sprint 5	Frontend	Sprint Task		ecornamu	6h	https://github.com/LASTA-OUTDOOR/lasta/pull/175	
+Linked the MoreInfoScreen to a view model to manage what activity to display	https://github.com/LASTA-OUTDOOR/lasta/issues/167	Done in Sprint 5	Sprint 5	Backend	Sprint Task		ecornamu	7h	https://github.com/LASTA-OUTDOOR/lasta/pull/166	
+Make API interface handle failed/too long calls	https://github.com/LASTA-OUTDOOR/lasta/issues/55	Done in Sprint 4	Sprint 4	Backend	Sprint Task		npfrei	2h		
+Unify the colors, fonts and dark mode	https://github.com/LASTA-OUTDOOR/lasta/issues/121	Done in Sprint 4	Sprint 4	Frontend	Sprint Task		CassioManuguerra	6h	https://github.com/LASTA-OUTDOOR/lasta/pull/124	
+Create and set distinct colors for the future markers, or difficulty levels that will be implemented	https://github.com/LASTA-OUTDOOR/lasta/issues/136	Done in Sprint 4	Sprint 4	Frontend	Sprint Task		CassioManuguerra	1h		
+View model for the community tabs	https://github.com/LASTA-OUTDOOR/lasta/issues/129	Done in Sprint 4	Sprint 4	Backend	Sprint Task	Social	JeremyHugentobler	5h	https://github.com/LASTA-OUTDOOR/lasta/pull/123	
+Make favorites page link to downloaded activities	https://github.com/LASTA-OUTDOOR/lasta/issues/120	Done in Sprint 4	Sprint 4	Frontend	Sprint Task		Andy130604	4h	https://github.com/LASTA-OUTDOOR/lasta/pull/128	
+Adapt the figma wireframe and mockup to consider new adaptions to the UI model, like for the new discovery tab concept	https://github.com/LASTA-OUTDOOR/lasta/issues/117	Done in Sprint 4	Sprint 4	Frontend	Sprint Task		JoniDutoit	5h		
+Refactor the discovery tab to include both the map and the list of activities with a botton to switch pages	https://github.com/LASTA-OUTDOOR/lasta/issues/119	Done in Sprint 4	Sprint 4	Frontend	Sprint Task		JoniDutoit	7h	https://github.com/LASTA-OUTDOOR/lasta/pull/135	
+Implement offline app capabilities by caching the correct activities	https://github.com/LASTA-OUTDOOR/lasta/issues/140	In Development	Sprint 7	Backend	Sprint Task	Offline mode	npfrei	11h		Interesting to have
+Figma design for Tracking	https://github.com/LASTA-OUTDOOR/lasta/issues/210	In Development	Sprint 7	Figma	Sprint Task	Tracking	JoniDutoit, Thimphou	6h		TOP
+Photos of itinerary + View in Discover Screen	https://github.com/LASTA-OUTDOOR/lasta/issues/211	In Development	Sprint 7	Frontend + backend	Sprint Task	User's experience (UX/UI)	JoniDutoit	8h		Interesting to have
+Send pop-up notifications when Favorites activities have good weather for tomorrow	https://github.com/LASTA-OUTDOOR/lasta/issues/218	In Development	Sprint 7	Frontend	Sprint Task	User's experience (UX/UI)	ecornamu	3h		Important
+Send pop-up notifications about friends recent activities	https://github.com/LASTA-OUTDOOR/lasta/issues/220	In Development	Sprint 7	Frontend	Sprint Task	User's experience (UX/UI)	CassioManuguerra	5h		Important
+Make Discover Search Bar + Localities (Ecublens, Payerne, ...) responsive, not hard coded and working	https://github.com/LASTA-OUTDOOR/lasta/issues/219	In Development	Sprint 7	Backend	Sprint Task	Activities Interactivity	JeremyHugentobler	13h+		Interesting to have
+Re-do messages design for the social part (they look like a form when writing a message, look figma)	https://github.com/LASTA-OUTDOOR/lasta/issues/217	In Development	Sprint 7	Frontend	Sprint Task	Social	JeremyHugentobler	4h		Important
+Allow weather report location to be changed for the activity start position	https://github.com/LASTA-OUTDOOR/lasta/issues/216	In Development	Sprint 7	Backend	Sprint Task	Activities Interactivity	ecornamu	4h		Important
+Setting DB for Tracking	https://github.com/LASTA-OUTDOOR/lasta/issues/214	In Development	Sprint 7	Backend	Sprint Task	Tracking	ecornamu	6h		TOP
+Rating system to be displayed (comments, rating that are shown and users can add one)	https://github.com/LASTA-OUTDOOR/lasta/issues/213	In Development	Sprint 7	Frontend + backend	Sprint Task	Activities Interactivity	Thimphou	9h		Important
+Show friends activity on feed	https://github.com/LASTA-OUTDOOR/lasta/issues/215	In Development	Sprint 7	Frontend + backend	Sprint Task	Tracking	JoniDutoit	7h		TOP
+Sorting by difficulty and rating activities with the filter applied	https://github.com/LASTA-OUTDOOR/lasta/issues/212	In Development	Sprint 7	Frontend + backend	Sprint Task	Activities Interactivity	CassioManuguerra	7h		Important
+UI of the community tabs	https://github.com/LASTA-OUTDOOR/lasta/issues/114	Done in Sprint 4	Sprint 4	Frontend	Sprint Task	Social	JeremyHugentobler	5h	https://github.com/LASTA-OUTDOOR/lasta/pull/123	
+Make sure to have a working APK building workflow	https://github.com/LASTA-OUTDOOR/lasta/issues/116	Done in Sprint 4	Sprint 4	Structure - Comments	Sprint Task		Andy130604	2h	https://github.com/LASTA-OUTDOOR/lasta/pull/118	
+Create notion for shared resources/informations about code/methods for the team	https://github.com/LASTA-OUTDOOR/lasta/issues/115	Done in Sprint 4	Sprint 4	Frontend	Sprint Task		JoniDutoit	2h		
+Add database linking with SignUp and SignIn infos	https://github.com/LASTA-OUTDOOR/lasta/issues/133	Done in Sprint 4	Sprint 4	Backend	Sprint Task	Users	Thimphou	5h	https://github.com/LASTA-OUTDOOR/lasta/pull/126	
+Implement Setup Screen who stores prefered values in user DB.	https://github.com/LASTA-OUTDOOR/lasta/issues/134	Done in Sprint 4	Sprint 4	Frontend	Sprint Task	Users	Thimphou	8h	https://github.com/LASTA-OUTDOOR/lasta/pull/126	
+Build the UI for the new more info tab of an activity (displayed on the figma board)	https://github.com/LASTA-OUTDOOR/lasta/issues/131	Done in Sprint 4	Sprint 4	Frontend	Sprint Task		ecornamu	8h	https://github.com/LASTA-OUTDOOR/lasta/pull/122	
+Test databases	https://github.com/LASTA-OUTDOOR/lasta/issues/132	Done in Sprint 4	Sprint 4	Testing	Sprint Task		npfrei	8h	https://github.com/LASTA-OUTDOOR/lasta/pull/127	
+Link the More Info tab with clickable buttons on the Favourite and Discover tabs to navigate	https://github.com/LASTA-OUTDOOR/lasta/issues/158	Done in Sprint 4	Sprint 4	Frontend	Sprint Task		ecornamu	2h	https://github.com/LASTA-OUTDOOR/lasta/pull/122	
+Refactor the color usage on the More Info tab to avoid local constants and use Color.kt and the lasta app theme	https://github.com/LASTA-OUTDOOR/lasta/issues/159	Done in Sprint 4	Sprint 4	Frontend	Sprint Task		ecornamu	2h	https://github.com/LASTA-OUTDOOR/lasta/pull/122	
+Implement correct theme instanciating	https://github.com/LASTA-OUTDOOR/lasta/issues/137	Done in Sprint 4	Sprint 4	Backend	Sprint Task		CassioManuguerra	5h		
+drawer on profile screen for settings	https://github.com/LASTA-OUTDOOR/lasta/issues/145	Done in Sprint 5	Sprint 5	Frontend	Sprint Task	Users	Thimphou	7h	https://github.com/LASTA-OUTDOOR/lasta/pull/171	
+Test/fix MapScreen	https://github.com/LASTA-OUTDOOR/lasta/issues/141	Done in Sprint 5	Sprint 5	Frontend	Sprint Task		JoniDutoit	5h	https://github.com/LASTA-OUTDOOR/lasta/pull/174	
+Test/fix DiscoveryScreen	https://github.com/LASTA-OUTDOOR/lasta/issues/143	Done in Sprint 5	Sprint 5	Frontend	Sprint Task		JoniDutoit	4h		
+Making SetupScreen only for Signing-Up Users	https://github.com/LASTA-OUTDOOR/lasta/issues/170	Done in Sprint 5	Sprint 5	Backend	Sprint Task	Users	Thimphou	2h	https://github.com/LASTA-OUTDOOR/lasta/pull/171	
+When clicking on an activity on the map, display it's itinerary	https://github.com/LASTA-OUTDOOR/lasta/issues/192	Done in Sprint 6	Sprint 6	Frontend + backend	User Story	Activities Interactivity	JoniDutoit	6h	https://github.com/LASTA-OUTDOOR/lasta/pull/202	TOP
+Display user profile when clicking on a friend	https://github.com/LASTA-OUTDOOR/lasta/issues/181	Done in Sprint 6	Sprint 6	Frontend + backend	Sprint Task	Social	CassioManuguerra	3h	https://github.com/LASTA-OUTDOOR/lasta/pull/201	Important
+Update Figma Design in relation to new adaptions in the application		Done in Sprint 6	Sprint 6	Figma	Sprint Task		JoniDutoit	5h		Important
+Testing the social epic (EXCEPTIONAL DUE TO REFACTORING)	https://github.com/LASTA-OUTDOOR/lasta/issues/198	Done in Sprint 6	Sprint 6	Testing	Sprint Task	Social	CassioManuguerra	6h	https://github.com/LASTA-OUTDOOR/lasta/pull/201	TOP
+Display relevant information about friends in the friends list view + fix bugs	https://github.com/LASTA-OUTDOOR/lasta/issues/186	Done in Sprint 6	Sprint 6	Frontend + backend	Sprint Task	Social	CassioManuguerra	8h	https://github.com/LASTA-OUTDOOR/lasta/pull/197	Important
+Make the more info responsive	https://github.com/LASTA-OUTDOOR/lasta/issues/182	Done in Sprint 6	Sprint 6	Frontend	Sprint Task	Activities Interactivity	CassioManuguerra	3h	https://github.com/LASTA-OUTDOOR/lasta/pull/189	TOP
