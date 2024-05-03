@@ -1,6 +1,7 @@
 package com.lastaoutdoor.lasta
 
-import com.lastaoutdoor.lasta.models.activity.HikingActivity
+import com.lastaoutdoor.lasta.models.activity.Activity
+import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.api.NodeWay
 import com.lastaoutdoor.lasta.models.api.Position
 import com.lastaoutdoor.lasta.models.api.Relation
@@ -34,7 +35,7 @@ class OSMDataTest {
     val tag = Tags("a", "b", "c", "d", "e", "f")
     val nodeWay = NodeWay("node", 1L, 2.0, 3.0, Position(1.0, 2.0), tag)
     assertEquals(Position(2.0, 3.0), nodeWay.getPosition())
-    val nodeWay2 = NodeWay("a", 1L, 2.0, 3.0, Position(1.0, 2.0), tag)
+    val nodeWay2 = NodeWay("way", 1L, 2.0, 3.0, Position(1.0, 2.0), tag)
     assertEquals(Position(1.0, 2.0), nodeWay2.getPosition())
     assertEquals("", nodeWay.getActivityFromData().activityId)
     assertEquals(1L, nodeWay.getActivityFromData().osmId)
@@ -63,9 +64,10 @@ class OSMDataTest {
     assertEquals(Position(0.0, 0.0), relation2.getPosition())
 
     val hikingActivity =
-        HikingActivity(
+        Activity(
             activityId = "",
             osmId = 1L,
+            activityType = ActivityType.HIKING,
             name = "a",
             startPosition = Position(1.0, 2.0),
             from = "d",

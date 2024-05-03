@@ -8,9 +8,10 @@ class ActivityTest {
   @Test
   fun climbingActivityTest() {
     val climbingActivity =
-        ClimbingActivity(
+        Activity(
             "a",
             1L,
+            ActivityType.CLIMBING,
             "b",
             Position(1.0, 2.0),
             3F,
@@ -35,9 +36,10 @@ class ActivityTest {
   @Test
   fun hikingActivityTest() {
     val hikingActivity =
-        HikingActivity(
+        Activity(
             "a",
             1L,
+            ActivityType.HIKING,
             "b",
             Position(1.0, 2.0),
             3F,
@@ -45,9 +47,9 @@ class ActivityTest {
             listOf(Rating("5")),
             Difficulty.NORMAL,
             "c",
-            "from",
-            "to",
-            8f)
+            from = "from",
+            to = "to",
+            distance = 8f)
     assertEquals("a", hikingActivity.activityId)
     assertEquals(1L, hikingActivity.osmId)
     assertEquals(Position(1.0, 2.0), hikingActivity.startPosition)
@@ -64,9 +66,10 @@ class ActivityTest {
   @Test
   fun bikingActivityTest() {
     val bikingActivity =
-        BikingActivity(
+        Activity(
             "a",
             1L,
+            ActivityType.BIKING,
             "b",
             Position(1.0, 2.0),
             3F,
@@ -74,9 +77,9 @@ class ActivityTest {
             listOf(Rating("5")),
             Difficulty.NORMAL,
             "c",
-            "from",
-            "to",
-            8f)
+            from = "from",
+            to = "to",
+            distance = 8f)
     assertEquals("a", bikingActivity.activityId)
     assertEquals(1L, bikingActivity.osmId)
     assertEquals(Position(1.0, 2.0), bikingActivity.startPosition)
