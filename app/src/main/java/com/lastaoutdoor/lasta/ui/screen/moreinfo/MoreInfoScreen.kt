@@ -34,9 +34,12 @@ import androidx.compose.ui.unit.sp
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.models.activity.Activity
+import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
 import com.lastaoutdoor.lasta.ui.theme.Black
+import com.lastaoutdoor.lasta.ui.theme.GreenDifficulty
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
+import com.lastaoutdoor.lasta.ui.theme.RedDifficulty
 import com.lastaoutdoor.lasta.ui.theme.YellowDifficulty
 
 // MoreInfoScreen : displays all the information of an activity
@@ -176,14 +179,20 @@ fun Star(iconId: Int) {
 
 // Displays the difficulty of the activity
 @Composable
-fun ElevatedDifficultyDisplay(diff: String) {
+fun ElevatedDifficultyDisplay(activityToDisplay: Activity) {
+  val difficultyColor =
+      when (activityToDisplay.difficulty) {
+        Difficulty.EASY -> GreenDifficulty
+        Difficulty.NORMAL -> YellowDifficulty
+        Difficulty.HARD -> RedDifficulty
+      }
   ElevatedButton(
-      onClick = {},
+      onClick = { /*TODO let user change activity difficulty */},
       contentPadding = PaddingValues(all = 3.dp),
       modifier = Modifier.width(80.dp).height(24.dp),
-      colors = ButtonDefaults.buttonColors(containerColor = YellowDifficulty)) {
+      colors = ButtonDefaults.buttonColors(containerColor = difficultyColor)) {
         Text(
-            diff,
+            activityToDisplay.difficulty.toString(),
             style =
                 TextStyle(
                     fontSize = 16.sp,
@@ -228,7 +237,7 @@ fun ActivityTitleZone(activityToDisplay: Activity) {
     ActivityPicture()
     ActivityTitleText(activityToDisplay)
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
-      ElevatedDifficultyDisplay(diff = activityToDisplay.difficulty.toString())
+      ElevatedDifficultyDisplay(activityToDisplay)
     }
   }
 }

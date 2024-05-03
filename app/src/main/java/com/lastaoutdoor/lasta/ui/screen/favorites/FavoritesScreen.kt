@@ -1,28 +1,34 @@
 package com.lastaoutdoor.lasta.ui.screen.favorites
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
+import androidx.compose.ui.unit.dp
+import com.google.android.gms.maps.model.LatLng
+import com.lastaoutdoor.lasta.models.activity.Activity
+import com.lastaoutdoor.lasta.ui.screen.discover.ActivitiesDisplay
 
 @Composable
-fun FavoritesScreen(navigateToMoreInfo: () -> Unit, weather: WeatherResponse?) {
-
-  Column(
-      modifier = Modifier.fillMaxSize(),
-      verticalArrangement = Arrangement.Center,
-      horizontalAlignment = Alignment.CenterHorizontally) {
-        Button(onClick = { navigateToMoreInfo() }) {
-          Text(text = LocalContext.current.getString(R.string.more_info))
-        }
-      }
+fun FavoritesScreen(
+    activities: List<Activity>,
+    centerPoint: LatLng,
+    favorites: List<String>,
+    changeActivityToDisplay: (Activity) -> Unit,
+    flipFavorite: (String) -> Unit,
+    navigateToMoreInfo: () -> Unit
+) {
+  LazyColumn {
+    item {
+      Spacer(modifier = Modifier.height(8.dp))
+      ActivitiesDisplay(
+          activities,
+          centerPoint,
+          favorites,
+          changeActivityToDisplay,
+          flipFavorite,
+          navigateToMoreInfo)
+    }
+  }
 }

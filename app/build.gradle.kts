@@ -169,6 +169,9 @@ dependencies {
 
     globalTestImplementation(libs.androidx.junit)
     globalTestImplementation(libs.androidx.espresso.core)
+    configurations.configureEach {
+        exclude(group = "com.google.protobuf", module = "protobuf-lite")
+    }
 
     // ------------- Jetpack Compose ------------------
     val composeBom = platform(libs.compose.bom)
