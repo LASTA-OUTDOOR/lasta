@@ -71,5 +71,6 @@ class PreferencesViewModelTest {
     vm.userName
     vm.profilePictureUrl
     vm.levels
+    vm.flipFavorite("")
   }
 }
