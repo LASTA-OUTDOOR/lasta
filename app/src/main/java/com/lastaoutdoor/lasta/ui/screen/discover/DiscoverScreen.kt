@@ -64,7 +64,6 @@ import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
 import com.lastaoutdoor.lasta.viewmodel.DiscoverDisplayType
 import com.lastaoutdoor.lasta.viewmodel.MapState
 import com.lastaoutdoor.lasta.viewmodel.OrderingBy
-import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun DiscoverScreen(
@@ -95,7 +94,7 @@ fun DiscoverScreen(
     selectedMarker: Marker?,
     selectedItinerary: MapItinerary?,
     markerList: List<Marker>,
-    orderingBy: StateFlow<OrderingBy>,
+    orderingBy: OrderingBy,
     updateOrderingBy: (OrderingBy) -> Unit,
     clearSelectedMarker: () -> Unit
 ) {
@@ -184,7 +183,7 @@ fun HeaderComposable(
     setScreen: (DiscoverDisplayType) -> Unit,
     updatePopup: () -> Unit,
     navigateToFilter: () -> Unit,
-    orderingBy: StateFlow<OrderingBy>,
+    orderingBy: OrderingBy,
     updateOrderingBy: (OrderingBy) -> Unit,
     weather: WeatherResponse?
 ) {
@@ -277,7 +276,7 @@ fun HeaderComposable(
                   Spacer(modifier = Modifier.width(8.dp))
                   Text(
                       text =
-                          when (orderingBy.value) {
+                          when (orderingBy) {
                             OrderingBy.DIFFICULTYASCENDING -> {
                               LocalContext.current.getString(R.string.difficulty_asc)
                             }
@@ -297,6 +296,7 @@ fun HeaderComposable(
                               LocalContext.current.getString(R.string.popularity)
                             }
                           },
+                      modifier = Modifier.testTag("sortingTextValue"),
                       style = MaterialTheme.typography.bodyMedium,
                       color = MaterialTheme.colorScheme.primary)
 
@@ -342,11 +342,12 @@ fun HeaderComposable(
                     })
           },
           onClick = {
-              if (order != orderingBy.value) {
-                  updateOrderingBy(order)
-              }
+            if (order != orderingBy) {
+              updateOrderingBy(order)
+            }
             showMenu = false
-          })
+          },
+          modifier = Modifier.testTag("sortingItem" + order.name))
     }
   }
 }

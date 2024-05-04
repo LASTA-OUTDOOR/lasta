@@ -60,6 +60,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val markerList = discoverScreenViewModel.markerList.collectAsState().value
       val weatherViewModel: WeatherViewModel = hiltViewModel(entry)
       val weather = weatherViewModel.weather.observeAsState().value
+      val orderingBy = discoverScreenViewModel.orderingBy.collectAsState().value
 
       DiscoverScreen(
           activities,
@@ -89,7 +90,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           selectedMarker,
           selectedItinerary,
           markerList,
-          discoverScreenViewModel.orderingBy,
+          orderingBy,
           discoverScreenViewModel::updateOrderingBy,
           discoverScreenViewModel::clearSelectedMarker)
     }

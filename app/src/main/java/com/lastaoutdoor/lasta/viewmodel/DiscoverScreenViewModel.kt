@@ -20,12 +20,12 @@ import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
 import com.lastaoutdoor.lasta.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 enum class OrderingBy {
   DISTANCEASCENDING,
@@ -269,24 +269,25 @@ constructor(
     when (_orderingBy.value) {
       OrderingBy.DISTANCEASCENDING -> {
         if (_activities.value.isEmpty()) return
-          val distances =
-              activities.value.map {
-                  SphericalUtil.computeDistanceBetween(
-                      selectedLocality.value.second, LatLng(it.startPosition.lat, it.startPosition.lon))
-              }
+        val distances =
+            activities.value.map {
+              SphericalUtil.computeDistanceBetween(
+                  selectedLocality.value.second, LatLng(it.startPosition.lat, it.startPosition.lon))
+            }
         _activities.value =
-            ArrayList<Activity>(activities.value.sortedBy { distances[activities.value.indexOf(it)] })
-
+            ArrayList<Activity>(
+                activities.value.sortedBy { distances[activities.value.indexOf(it)] })
       }
       OrderingBy.DISTANCEDESCENDING -> {
         if (_activities.value.isEmpty()) return
-            val distances =
-                activities.value.map {
-                    SphericalUtil.computeDistanceBetween(
-                        selectedLocality.value.second, LatLng(it.startPosition.lat, it.startPosition.lon))
-                }
+        val distances =
+            activities.value.map {
+              SphericalUtil.computeDistanceBetween(
+                  selectedLocality.value.second, LatLng(it.startPosition.lat, it.startPosition.lon))
+            }
         _activities.value =
-            ArrayList<Activity>(activities.value.sortedBy { distances[activities.value.indexOf(it)] }.reversed())
+            ArrayList<Activity>(
+                activities.value.sortedBy { distances[activities.value.indexOf(it)] }.reversed())
       }
       OrderingBy.RATING -> {
         if (_activities.value.isEmpty()) return
@@ -303,7 +304,7 @@ constructor(
       }
       OrderingBy.POPULARITY -> {
         if (_activities.value.isEmpty()) return
-          println("popularity")
+        println("popularity")
         _activities.value =
             ArrayList<Activity>(_activities.value.sortedBy { it.numRatings }.reversed())
       }
@@ -312,7 +313,7 @@ constructor(
 
   fun updateOrderingBy(orderingBy: OrderingBy) {
     _orderingBy.value = orderingBy
-      println("ordering by: $orderingBy")
+    println("ordering by: $orderingBy")
     updateActivitiesByOrdering()
   }
 

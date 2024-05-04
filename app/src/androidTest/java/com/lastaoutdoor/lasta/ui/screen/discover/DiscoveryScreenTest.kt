@@ -16,6 +16,7 @@ import com.lastaoutdoor.lasta.ui.MainActivity
 import com.lastaoutdoor.lasta.ui.screen.discover.components.RangeSearchComposable
 import com.lastaoutdoor.lasta.viewmodel.DiscoverDisplayType
 import com.lastaoutdoor.lasta.viewmodel.MapState
+import com.lastaoutdoor.lasta.viewmodel.OrderingBy
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -52,6 +53,8 @@ class DiscoverScreenTest {
             setScreen = { screenType = it },
             updatePopup = { popUp = true },
             navigateToFilter = { navigateFilter = true },
+            orderingBy = OrderingBy.RATING,
+            updateOrderingBy = {},
             weather = null)
       }
     }
@@ -179,6 +182,8 @@ class DiscoverScreenTest {
             selectedZoom = 13f,
             selectedMarker = null,
             selectedItinerary = null,
+            orderingBy = OrderingBy.RATING,
+            updateOrderingBy = {},
             markerList = emptyList()) {}
       }
     }
@@ -219,5 +224,307 @@ class DiscoverScreenTest {
     }
 
     composeRule.onNodeWithTag("rangeSearch").assertIsDisplayed()
+  }
+
+  /*
+   * Test for ordering options
+   */
+  @Test
+  fun discover_sortingButtonWorks() {
+    var screenType = DiscoverDisplayType.LIST
+    composeRule.activity.setContent {
+      MaterialTheme {
+        DiscoverScreen(
+            activities =
+                listOf(
+                    Activity(
+                        "1",
+                        11033919,
+                        ActivityType.HIKING,
+                        "Chemin panorama alpin",
+                        Position(46.4718332, 6.8338907),
+                        0.0f,
+                        0,
+                        emptyList(),
+                        difficulty = Difficulty.EASY,
+                        activityImageUrl = "")),
+            screen = screenType,
+            range = 5000.0,
+            centerPoint = LatLng(46.519962, 6.633597),
+            favorites = emptyList(),
+            localities =
+                listOf(
+                    "Ecublens" to LatLng(46.519962, 6.633597),
+                    "Geneva" to LatLng(46.2043907, 6.1431577),
+                    "Payerne" to LatLng(46.834190, 6.928969),
+                    "Matterhorn" to LatLng(45.980537, 7.641618)),
+            selectedLocality = "Ecublens" to LatLng(46.519962, 6.633597),
+            fetchActivities = { _, _ -> },
+            setScreen = { screenType = it },
+            setRange = {},
+            setSelectedLocality = {},
+            flipFavorite = {},
+            navigateToFilter = { /*TODO*/},
+            navigateToMoreInfo = { /*TODO*/},
+            changeActivityToDisplay = {},
+            weather = null,
+            state = MapState(),
+            updatePermission = {},
+            initialPosition = LatLng(46.519962, 6.633597),
+            initialZoom = 11f,
+            updateMarkers = { _, _ -> },
+            updateSelectedMarker = { /*TODO*/},
+            clearSelectedItinerary = { /*TODO*/},
+            selectedZoom = 13f,
+            selectedMarker = null,
+            selectedItinerary = null,
+            orderingBy = OrderingBy.DISTANCEASCENDING,
+            updateOrderingBy = {},
+            markerList = emptyList()) {}
+      }
+    }
+
+    composeRule.onNodeWithTag("discoveryScreen").assertIsDisplayed()
+    composeRule.onNodeWithTag("sortingButton").assertIsDisplayed()
+    composeRule.onNodeWithTag("sortingButton").performClick()
+    composeRule.onNodeWithTag("sortingItemRATING").assertIsDisplayed()
+    composeRule.onNodeWithTag("sortingItemDISTANCEASCENDING").assertIsDisplayed()
+    composeRule.onNodeWithTag("sortingItemDISTANCEDESCENDING").assertIsDisplayed()
+    composeRule.onNodeWithTag("sortingItemDIFFICULTYASCENDING").assertIsDisplayed()
+    composeRule.onNodeWithTag("sortingItemDIFFICULTYDESCENDING").assertIsDisplayed()
+    composeRule.onNodeWithTag("sortingItemPOPULARITY").assertIsDisplayed()
+    composeRule.onNodeWithTag("sortingItemPOPULARITY").performClick()
+  }
+
+  @Test
+  fun discoverScreenWithOrderingByDifficultyAscending() {
+    var screenType = DiscoverDisplayType.LIST
+    composeRule.activity.setContent {
+      MaterialTheme {
+        DiscoverScreen(
+            activities =
+                listOf(
+                    Activity(
+                        "1",
+                        11033919,
+                        ActivityType.HIKING,
+                        "Chemin panorama alpin",
+                        Position(46.4718332, 6.8338907),
+                        0.0f,
+                        0,
+                        emptyList(),
+                        difficulty = Difficulty.EASY,
+                        activityImageUrl = "")),
+            screen = screenType,
+            range = 5000.0,
+            centerPoint = LatLng(46.519962, 6.633597),
+            favorites = emptyList(),
+            localities =
+                listOf(
+                    "Ecublens" to LatLng(46.519962, 6.633597),
+                    "Geneva" to LatLng(46.2043907, 6.1431577),
+                    "Payerne" to LatLng(46.834190, 6.928969),
+                    "Matterhorn" to LatLng(45.980537, 7.641618),
+                ),
+            selectedLocality = "Ecublens" to LatLng(46.519962, 6.633597),
+            fetchActivities = { _, _ -> },
+            setScreen = { screenType = it },
+            setRange = {},
+            setSelectedLocality = {},
+            flipFavorite = {},
+            navigateToFilter = { /*TODO*/},
+            navigateToMoreInfo = { /*TODO*/},
+            changeActivityToDisplay = {},
+            weather = null,
+            state = MapState(),
+            updatePermission = {},
+            initialPosition = LatLng(46.519962, 6.633597),
+            initialZoom = 11f,
+            updateMarkers = { _, _ -> },
+            updateSelectedMarker = { /*TODO*/},
+            clearSelectedItinerary = { /*TODO*/},
+            selectedZoom = 13f,
+            selectedMarker = null,
+            selectedItinerary = null,
+            orderingBy = OrderingBy.DIFFICULTYASCENDING,
+            updateOrderingBy = {},
+            markerList = emptyList()) {}
+      }
+    }
+    composeRule.onNodeWithTag("sortingTextValue").assertIsDisplayed()
+  }
+
+  @Test
+  fun discoverScreenWithOrderingByDifficultyDescending() {
+    var screenType = DiscoverDisplayType.LIST
+    composeRule.activity.setContent {
+      MaterialTheme {
+        DiscoverScreen(
+            activities =
+                listOf(
+                    Activity(
+                        "1",
+                        11033919,
+                        ActivityType.HIKING,
+                        "Chemin panorama alpin",
+                        Position(46.4718332, 6.8338907),
+                        0.0f,
+                        0,
+                        emptyList(),
+                        difficulty = Difficulty.EASY,
+                        activityImageUrl = "")),
+            screen = screenType,
+            range = 5000.0,
+            centerPoint = LatLng(46.519962, 6.633597),
+            favorites = emptyList(),
+            localities =
+                listOf(
+                    "Ecublens" to LatLng(46.519962, 6.633597),
+                    "Geneva" to LatLng(46.2043907, 6.1431577),
+                    "Payerne" to LatLng(46.834190, 6.928969),
+                    "Matterhorn" to LatLng(45.980537, 7.641618),
+                ),
+            selectedLocality = "Ecublens" to LatLng(46.519962, 6.633597),
+            fetchActivities = { _, _ -> },
+            setScreen = { screenType = it },
+            setRange = {},
+            setSelectedLocality = {},
+            flipFavorite = {},
+            navigateToFilter = { /*TODO*/},
+            navigateToMoreInfo = { /*TODO*/},
+            changeActivityToDisplay = {},
+            weather = null,
+            state = MapState(),
+            updatePermission = {},
+            initialPosition = LatLng(46.519962, 6.633597),
+            initialZoom = 11f,
+            updateMarkers = { _, _ -> },
+            updateSelectedMarker = { /*TODO*/},
+            clearSelectedItinerary = { /*TODO*/},
+            selectedZoom = 13f,
+            selectedMarker = null,
+            selectedItinerary = null,
+            orderingBy = OrderingBy.DIFFICULTYDESCENDING,
+            updateOrderingBy = {},
+            markerList = emptyList()) {}
+      }
+    }
+    composeRule.onNodeWithTag("sortingTextValue").assertIsDisplayed()
+  }
+
+  @Test
+  fun discoverScreenWithOrderingByPopularity() {
+    var screenType = DiscoverDisplayType.LIST
+    composeRule.activity.setContent {
+      MaterialTheme {
+        DiscoverScreen(
+            activities =
+                listOf(
+                    Activity(
+                        "1",
+                        11033919,
+                        ActivityType.HIKING,
+                        "Chemin panorama alpin",
+                        Position(46.4718332, 6.8338907),
+                        0.0f,
+                        0,
+                        emptyList(),
+                        difficulty = Difficulty.EASY,
+                        activityImageUrl = "")),
+            screen = screenType,
+            range = 5000.0,
+            centerPoint = LatLng(46.519962, 6.633597),
+            favorites = emptyList(),
+            localities =
+                listOf(
+                    "Ecublens" to LatLng(46.519962, 6.633597),
+                    "Geneva" to LatLng(46.2043907, 6.1431577),
+                    "Payerne" to LatLng(46.834190, 6.928969),
+                    "Matterhorn" to LatLng(45.980537, 7.641618),
+                ),
+            selectedLocality = "Ecublens" to LatLng(46.519962, 6.633597),
+            fetchActivities = { _, _ -> },
+            setScreen = { screenType = it },
+            setRange = {},
+            setSelectedLocality = {},
+            flipFavorite = {},
+            navigateToFilter = { /*TODO*/},
+            navigateToMoreInfo = { /*TODO*/},
+            changeActivityToDisplay = {},
+            weather = null,
+            state = MapState(),
+            updatePermission = {},
+            initialPosition = LatLng(46.519962, 6.633597),
+            initialZoom = 11f,
+            updateMarkers = { _, _ -> },
+            updateSelectedMarker = { /*TODO*/},
+            clearSelectedItinerary = { /*TODO*/},
+            selectedZoom = 13f,
+            selectedMarker = null,
+            selectedItinerary = null,
+            orderingBy = OrderingBy.POPULARITY,
+            updateOrderingBy = {},
+            markerList = emptyList()) {}
+      }
+    }
+    composeRule.onNodeWithTag("sortingTextValue").assertIsDisplayed()
+  }
+
+  @Test
+  fun discoverScreenWithOrderingByDistanceDescending() {
+    var screenType = DiscoverDisplayType.LIST
+    composeRule.activity.setContent {
+      MaterialTheme {
+        DiscoverScreen(
+            activities =
+                listOf(
+                    Activity(
+                        "1",
+                        11033919,
+                        ActivityType.HIKING,
+                        "Chemin panorama alpin",
+                        Position(46.4718332, 6.8338907),
+                        0.0f,
+                        0,
+                        emptyList(),
+                        difficulty = Difficulty.EASY,
+                        activityImageUrl = "")),
+            screen = screenType,
+            range = 5000.0,
+            centerPoint = LatLng(46.519962, 6.633597),
+            favorites = emptyList(),
+            localities =
+                listOf(
+                    "Ecublens" to LatLng(46.519962, 6.633597),
+                    "Geneva" to LatLng(46.2043907, 6.1431577),
+                    "Payerne" to LatLng(46.834190, 6.928969),
+                    "Matterhorn" to LatLng(45.980537, 7.641618),
+                ),
+            selectedLocality = "Ecublens" to LatLng(46.519962, 6.633597),
+            fetchActivities = { _, _ -> },
+            setScreen = { screenType = it },
+            setRange = {},
+            setSelectedLocality = {},
+            flipFavorite = {},
+            navigateToFilter = { /*TODO*/},
+            navigateToMoreInfo = { /*TODO*/},
+            changeActivityToDisplay = {},
+            weather = null,
+            state = MapState(),
+            updatePermission = {},
+            initialPosition = LatLng(46.519962, 6.633597),
+            initialZoom = 11f,
+            updateMarkers = { _, _ -> },
+            updateSelectedMarker = { /*TODO*/},
+            clearSelectedItinerary = { /*TODO*/},
+            selectedZoom = 13f,
+            selectedMarker = null,
+            selectedItinerary = null,
+            orderingBy = OrderingBy.DISTANCEDESCENDING,
+            updateOrderingBy = {},
+            markerList = emptyList()) {}
+      }
+    }
+    composeRule.onNodeWithTag("sortingTextValue").assertIsDisplayed()
   }
 }
