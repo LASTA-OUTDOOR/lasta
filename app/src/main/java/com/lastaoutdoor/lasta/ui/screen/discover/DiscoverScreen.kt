@@ -190,6 +190,29 @@ fun HeaderComposable(
   // Dropdown menu boolean
   var showMenu by remember { mutableStateOf(false) }
 
+  // text for the sorting value
+  val sortingText =
+      when (orderingBy) {
+        OrderingBy.DIFFICULTYASCENDING -> {
+          LocalContext.current.getString(R.string.difficulty_asc)
+        }
+        OrderingBy.DIFFICULTYDESCENDING -> {
+          LocalContext.current.getString(R.string.difficulty_desc)
+        }
+        OrderingBy.RATING -> {
+          LocalContext.current.getString(R.string.rating)
+        }
+        OrderingBy.DISTANCEASCENDING -> {
+          LocalContext.current.getString(R.string.distance_asc)
+        }
+        OrderingBy.DISTANCEDESCENDING -> {
+          LocalContext.current.getString(R.string.distance_desc)
+        }
+        OrderingBy.POPULARITY -> {
+          LocalContext.current.getString(R.string.popularity)
+        }
+      }
+
   val iconSize = 48.dp // Adjust icon size as needed
   val displayWeather = remember { mutableStateOf(false) }
   if (displayWeather.value) {
@@ -275,27 +298,7 @@ fun HeaderComposable(
                       style = MaterialTheme.typography.bodyMedium)
                   Spacer(modifier = Modifier.width(8.dp))
                   Text(
-                      text =
-                          when (orderingBy) {
-                            OrderingBy.DIFFICULTYASCENDING -> {
-                              LocalContext.current.getString(R.string.difficulty_asc)
-                            }
-                            OrderingBy.DIFFICULTYDESCENDING -> {
-                              LocalContext.current.getString(R.string.difficulty_desc)
-                            }
-                            OrderingBy.RATING -> {
-                              LocalContext.current.getString(R.string.rating)
-                            }
-                            OrderingBy.DISTANCEASCENDING -> {
-                              LocalContext.current.getString(R.string.distance_asc)
-                            }
-                            OrderingBy.DISTANCEDESCENDING -> {
-                              LocalContext.current.getString(R.string.distance_desc)
-                            }
-                            OrderingBy.POPULARITY -> {
-                              LocalContext.current.getString(R.string.popularity)
-                            }
-                          },
+                      text = sortingText,
                       modifier = Modifier.testTag("sortingTextValue"),
                       style = MaterialTheme.typography.bodyMedium,
                       color = MaterialTheme.colorScheme.primary)
@@ -317,30 +320,7 @@ fun HeaderComposable(
   if (showMenu) {
     OrderingBy.values().forEach { order ->
       DropdownMenuItem(
-          text = {
-            Text(
-                text =
-                    when (order) {
-                      OrderingBy.DIFFICULTYASCENDING -> {
-                        LocalContext.current.getString(R.string.difficulty_asc)
-                      }
-                      OrderingBy.DIFFICULTYDESCENDING -> {
-                        LocalContext.current.getString(R.string.difficulty_desc)
-                      }
-                      OrderingBy.RATING -> {
-                        LocalContext.current.getString(R.string.rating)
-                      }
-                      OrderingBy.DISTANCEASCENDING -> {
-                        LocalContext.current.getString(R.string.distance_asc)
-                      }
-                      OrderingBy.DISTANCEDESCENDING -> {
-                        LocalContext.current.getString(R.string.distance_desc)
-                      }
-                      OrderingBy.POPULARITY -> {
-                        LocalContext.current.getString(R.string.popularity)
-                      }
-                    })
-          },
+          text = { Text(text = sortingText) },
           onClick = {
             if (order != orderingBy) {
               updateOrderingBy(order)
