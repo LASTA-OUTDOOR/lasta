@@ -1,3 +1,6 @@
+![CI Status](https://github.com/LASTA-OUTDOOR/lasta/actions/workflows/ci.yml/badge.svg)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=LASTA-OUTDOOR_lasta&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=LASTA-OUTDOOR_lasta)
+
 # LASTA Project
 
 Lasta is an Android app whose goal is mainly to help people find and discover nicely suited spots for outdoor activities, such as hiking, skiing, rock climbing, trail running, biking, etc.
