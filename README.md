@@ -27,6 +27,13 @@ Our application is your go-to tool for discovering the perfect spots for a varie
 
 Figma link for the project can be found [here](https://www.figma.com/files/project/216392243).
 
-### Devs
-
-Emile Cornamusaz, Maxime Ducourau, Jonathan Dutoit, Néhémie Frei, Jérémy Hugentobler, Andrew Limond et Cassio Manuguerra.
+## Team
+| Name               | GitHub account                                            |
+|--------------------|-----------------------------------------------------------|
+| Emile Cornamusaz   | [ecornamu](https://github.com/ecornamu)                   |
+| Maxime Ducourau    | [Thimphou](https://github.com/Thimphou)                   |
+| Jonathan Dutoit    | [JoniDutoit](https://github.com/JoniDutoit)               |
+| Néhémie Frei       | [npfrei](https://github.com/npfrei)                       |
+| Jérémy Hugentobler | [JeremyHugentobler](https://github.com/JeremyHugentobler) |
+| Andrew Limond      | [Andy130604](https://github.com/Andy130604)               |
+| Cassio Manuguerra  | [CassioManuguerra](https://github.com/CassioManuguerra)   |
