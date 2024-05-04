@@ -89,6 +89,8 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           selectedMarker,
           selectedItinerary,
           markerList,
+          discoverScreenViewModel.orderingBy,
+          discoverScreenViewModel::updateOrderingBy,
           discoverScreenViewModel::clearSelectedMarker)
     }
     composable(DestinationRoute.Favorites.route) { entry ->

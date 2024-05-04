@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -62,6 +63,8 @@ import com.lastaoutdoor.lasta.ui.screen.discover.components.RangeSearchComposabl
 import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
 import com.lastaoutdoor.lasta.viewmodel.DiscoverDisplayType
 import com.lastaoutdoor.lasta.viewmodel.MapState
+import com.lastaoutdoor.lasta.viewmodel.OrderingBy
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun DiscoverScreen(
@@ -92,6 +95,8 @@ fun DiscoverScreen(
     selectedMarker: Marker?,
     selectedItinerary: MapItinerary?,
     markerList: List<Marker>,
+    orderingBy: StateFlow<OrderingBy>,
+    updateOrderingBy: (OrderingBy) -> Unit,
     clearSelectedMarker: () -> Unit
 ) {
 
@@ -121,6 +126,8 @@ fun DiscoverScreen(
                 setScreen,
                 { isRangePopup = true },
                 navigateToFilter,
+                orderingBy,
+                updateOrderingBy,
                 weather)
           }
 
@@ -144,6 +151,8 @@ fun DiscoverScreen(
           setScreen,
           { isRangePopup = true },
           navigateToFilter,
+          orderingBy,
+          updateOrderingBy,
           weather)
       Box(modifier = Modifier.fillMaxHeight().testTag("mapScreenDiscover")) {
         MapScreen(
@@ -175,8 +184,13 @@ fun HeaderComposable(
     setScreen: (DiscoverDisplayType) -> Unit,
     updatePopup: () -> Unit,
     navigateToFilter: () -> Unit,
+    orderingBy: StateFlow<OrderingBy>,
+    updateOrderingBy: (OrderingBy) -> Unit,
     weather: WeatherResponse?
 ) {
+  // Dropdown menu boolean
+  var showMenu by remember { mutableStateOf(false) }
+
   val iconSize = 48.dp // Adjust icon size as needed
   val displayWeather = remember { mutableStateOf(false) }
   if (displayWeather.value) {
@@ -262,12 +276,32 @@ fun HeaderComposable(
                       style = MaterialTheme.typography.bodyMedium)
                   Spacer(modifier = Modifier.width(8.dp))
                   Text(
-                      text = LocalContext.current.getString(R.string.relevance),
+                      text =
+                          when (orderingBy.value) {
+                            OrderingBy.DIFFICULTYASCENDING -> {
+                              LocalContext.current.getString(R.string.difficulty_asc)
+                            }
+                            OrderingBy.DIFFICULTYDESCENDING -> {
+                              LocalContext.current.getString(R.string.difficulty_desc)
+                            }
+                            OrderingBy.RATING -> {
+                              LocalContext.current.getString(R.string.rating)
+                            }
+                            OrderingBy.DISTANCEASCENDING -> {
+                              LocalContext.current.getString(R.string.distance_asc)
+                            }
+                            OrderingBy.DISTANCEDESCENDING -> {
+                              LocalContext.current.getString(R.string.distance_desc)
+                            }
+                            OrderingBy.POPULARITY -> {
+                              LocalContext.current.getString(R.string.popularity)
+                            }
+                          },
                       style = MaterialTheme.typography.bodyMedium,
                       color = MaterialTheme.colorScheme.primary)
 
                   IconButton(
-                      onClick = { /*TODO*/},
+                      onClick = { showMenu = true },
                       modifier = Modifier.size(24.dp).testTag("sortingButton")) {
                         Icon(
                             Icons.Outlined.KeyboardArrowDown,
@@ -279,6 +313,42 @@ fun HeaderComposable(
           }
         }
       }
+
+  if (showMenu) {
+    OrderingBy.values().forEach { order ->
+      DropdownMenuItem(
+          text = {
+            Text(
+                text =
+                    when (order) {
+                      OrderingBy.DIFFICULTYASCENDING -> {
+                        LocalContext.current.getString(R.string.difficulty_asc)
+                      }
+                      OrderingBy.DIFFICULTYDESCENDING -> {
+                        LocalContext.current.getString(R.string.difficulty_desc)
+                      }
+                      OrderingBy.RATING -> {
+                        LocalContext.current.getString(R.string.rating)
+                      }
+                      OrderingBy.DISTANCEASCENDING -> {
+                        LocalContext.current.getString(R.string.distance_asc)
+                      }
+                      OrderingBy.DISTANCEDESCENDING -> {
+                        LocalContext.current.getString(R.string.distance_desc)
+                      }
+                      OrderingBy.POPULARITY -> {
+                        LocalContext.current.getString(R.string.popularity)
+                      }
+                    })
+          },
+          onClick = {
+              if (order != orderingBy.value) {
+                  updateOrderingBy(order)
+              }
+            showMenu = false
+          })
+    }
+  }
 }
 
 @Composable
@@ -290,12 +360,8 @@ fun ActivitiesDisplay(
     flipFavorite: (String) -> Unit,
     navigateToMoreInfo: () -> Unit
 ) {
-  val distances =
-      activities.map {
-        SphericalUtil.computeDistanceBetween(
-            centerPoint, LatLng(it.startPosition.lat, it.startPosition.lon))
-      }
-  for (a in activities.sortedBy { distances[activities.indexOf(it)] }) {
+
+  for (a in activities) {
     Card(
         modifier =
             Modifier.fillMaxWidth()
