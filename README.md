@@ -1,5 +1,8 @@
 ![CI Status](https://github.com/LASTA-OUTDOOR/lasta/actions/workflows/ci.yml/badge.svg)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=LASTA-OUTDOOR_lasta&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=LASTA-OUTDOOR_lasta)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=LASTA-OUTDOOR_lasta&metric=coverage)](https://sonarcloud.io/summary/new_code?id=LASTA-OUTDOOR_lasta)
+![Line Coverage](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fsonarcloud.io%2Fapi%2Fqualitygates%2Fproject_status%2FprojectKey%2FLASTA-OUTDOOR_lasta&query=%24.projectStatus.conditions%5B%3F(%40.metricKey%3D%3D'line_coverage')%5D.actualValue&suffix=%25&label=Line%20Coverage&link=https%3A%2F%2Fsonarcloud.io%2Fcomponent_measures%3Fmetric%3Dnew_line_coverage%26id%3DLASTA-OUTDOOR_lasta)
+
 
 # LASTA Project
 
