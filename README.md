@@ -25,7 +25,8 @@ Our application is your go-to tool for discovering the perfect spots for a varie
 
 ## Useful Links
 
-Figma link for the project can be found [here](https://www.figma.com/files/project/216392243).
+- Figma link for the project can be found [here](https://www.figma.com/files/project/216392243).
+- Standup reports and sprint retrospectives can be found on the wiki alongside some download info [Wiki](https://github.com/LASTA-OUTDOOR/lasta/wiki)
 
 ## Team
 | Name               | GitHub account                                            |
