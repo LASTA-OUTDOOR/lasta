@@ -264,6 +264,11 @@ constructor(
     fetchActivities()
   }
 
+  // function used only for testing purposes
+  fun updateActivities(activities: List<Activity>) {
+    _activities.value = ArrayList(activities)
+  }
+
   private fun updateActivitiesByOrdering() {
     // order the activities by the selected ordering
     when (_orderingBy.value) {
@@ -304,7 +309,6 @@ constructor(
       }
       OrderingBy.POPULARITY -> {
         if (_activities.value.isEmpty()) return
-        println("popularity")
         _activities.value =
             ArrayList<Activity>(_activities.value.sortedBy { it.numRatings }.reversed())
       }
@@ -313,7 +317,6 @@ constructor(
 
   fun updateOrderingBy(orderingBy: OrderingBy) {
     _orderingBy.value = orderingBy
-    println("ordering by: $orderingBy")
     updateActivitiesByOrdering()
   }
 

@@ -155,10 +155,7 @@ constructor(
 
   // Refresh the list of friends request
   fun refreshFriendRequests() {
-    println("refreshing friend requests")
     viewModelScope.launch {
-      println(user.userId)
-      println(repository.getFriendRequests(user.userId))
       friendRequests = repository.getFriendRequests(user.userId)
       hasFriendRequest = friendRequests.isNotEmpty()
     }

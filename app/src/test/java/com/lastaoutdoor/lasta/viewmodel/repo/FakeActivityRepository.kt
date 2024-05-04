@@ -10,7 +10,7 @@ import com.lastaoutdoor.lasta.utils.Response
 
 class FakeActivityRepository() : ActivityRepository {
   val t = Throwable("thrown")
-  var currResponse: Response<Void> = Response.Failure(t)
+  var currResponse: Response<Void> = Response.Success(null)
 
   val fakeNode = NodeWay("node", 10, 1.0, 1.0, Position(0.0, 0.0), Tags("name"))
   val fakeRel = Relation("node", 10, Tags("name"), listOf(SimpleWay(listOf(Position(0.0, 0.0)))))
@@ -20,11 +20,7 @@ class FakeActivityRepository() : ActivityRepository {
       lat: Double,
       lon: Double
   ): Response<List<NodeWay>> {
-    return when (currResponse) {
-      is Response.Failure -> Response.Failure(t)
-      Response.Loading -> Response.Loading
-      is Response.Success -> Response.Success(listOf(fakeNode))
-    }
+    return Response.Success(listOf(fakeNode))
   }
 
   override suspend fun getClimbingPointById(id: Long): Response<NodeWay> {
@@ -40,11 +36,7 @@ class FakeActivityRepository() : ActivityRepository {
       lat: Double,
       lon: Double
   ): Response<List<Relation>> {
-    return when (currResponse) {
-      is Response.Failure -> Response.Failure(t)
-      Response.Loading -> Response.Loading
-      is Response.Success -> Response.Success(listOf(fakeRel))
-    }
+    return Response.Success(listOf(fakeRel))
   }
 
   override suspend fun getHikingRouteById(id: Long): Response<Relation> {
@@ -60,11 +52,7 @@ class FakeActivityRepository() : ActivityRepository {
       lat: Double,
       lon: Double
   ): Response<List<Relation>> {
-    return when (currResponse) {
-      is Response.Failure -> Response.Failure(t)
-      Response.Loading -> Response.Loading
-      is Response.Success -> Response.Success(listOf(fakeRel))
-    }
+    return Response.Success(listOf(fakeRel))
   }
 
   override suspend fun getBikingRouteById(id: Long): Response<Relation> {
