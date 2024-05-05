@@ -18,6 +18,7 @@ import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
+import com.lastaoutdoor.lasta.utils.OrderingBy
 import com.lastaoutdoor.lasta.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -26,15 +27,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-
-enum class OrderingBy {
-  DISTANCEASCENDING,
-  DISTANCEDESCENDING,
-  RATING,
-  DIFFICULTYASCENDING,
-  DIFFICULTYDESCENDING,
-  POPULARITY
-}
 
 @HiltViewModel
 class DiscoverScreenViewModel
