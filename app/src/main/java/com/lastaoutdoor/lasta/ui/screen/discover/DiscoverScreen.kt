@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -60,6 +61,7 @@ import com.lastaoutdoor.lasta.ui.components.WeatherReportSmall
 import com.lastaoutdoor.lasta.ui.screen.discover.components.ModalUpperSheet
 import com.lastaoutdoor.lasta.ui.screen.discover.components.RangeSearchComposable
 import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
+import com.lastaoutdoor.lasta.utils.OrderingBy
 import com.lastaoutdoor.lasta.viewmodel.DiscoverDisplayType
 import com.lastaoutdoor.lasta.viewmodel.MapState
 
@@ -92,6 +94,8 @@ fun DiscoverScreen(
     selectedMarker: Marker?,
     selectedItinerary: MapItinerary?,
     markerList: List<Marker>,
+    orderingBy: OrderingBy,
+    updateOrderingBy: (OrderingBy) -> Unit,
     clearSelectedMarker: () -> Unit
 ) {
 
@@ -121,6 +125,8 @@ fun DiscoverScreen(
                 setScreen,
                 { isRangePopup = true },
                 navigateToFilter,
+                orderingBy,
+                updateOrderingBy,
                 weather)
           }
 
@@ -144,6 +150,8 @@ fun DiscoverScreen(
           setScreen,
           { isRangePopup = true },
           navigateToFilter,
+          orderingBy,
+          updateOrderingBy,
           weather)
       Box(modifier = Modifier.fillMaxHeight().testTag("mapScreenDiscover")) {
         MapScreen(
@@ -175,8 +183,36 @@ fun HeaderComposable(
     setScreen: (DiscoverDisplayType) -> Unit,
     updatePopup: () -> Unit,
     navigateToFilter: () -> Unit,
+    orderingBy: OrderingBy,
+    updateOrderingBy: (OrderingBy) -> Unit,
     weather: WeatherResponse?
 ) {
+  // Dropdown menu boolean
+  var showMenu by remember { mutableStateOf(false) }
+
+  // text for the sorting value
+  val sortingText =
+      when (orderingBy) {
+        OrderingBy.DIFFICULTYASCENDING -> {
+          LocalContext.current.getString(R.string.difficulty_asc)
+        }
+        OrderingBy.DIFFICULTYDESCENDING -> {
+          LocalContext.current.getString(R.string.difficulty_desc)
+        }
+        OrderingBy.RATING -> {
+          LocalContext.current.getString(R.string.rating)
+        }
+        OrderingBy.DISTANCEASCENDING -> {
+          LocalContext.current.getString(R.string.distance_asc)
+        }
+        OrderingBy.DISTANCEDESCENDING -> {
+          LocalContext.current.getString(R.string.distance_desc)
+        }
+        OrderingBy.POPULARITY -> {
+          LocalContext.current.getString(R.string.popularity)
+        }
+      }
+
   val iconSize = 48.dp // Adjust icon size as needed
   val displayWeather = remember { mutableStateOf(false) }
   if (displayWeather.value) {
@@ -262,12 +298,13 @@ fun HeaderComposable(
                       style = MaterialTheme.typography.bodyMedium)
                   Spacer(modifier = Modifier.width(8.dp))
                   Text(
-                      text = LocalContext.current.getString(R.string.relevance),
+                      text = sortingText,
+                      modifier = Modifier.testTag("sortingTextValue"),
                       style = MaterialTheme.typography.bodyMedium,
                       color = MaterialTheme.colorScheme.primary)
 
                   IconButton(
-                      onClick = { /*TODO*/},
+                      onClick = { showMenu = true },
                       modifier = Modifier.size(24.dp).testTag("sortingButton")) {
                         Icon(
                             Icons.Outlined.KeyboardArrowDown,
@@ -279,6 +316,20 @@ fun HeaderComposable(
           }
         }
       }
+
+  if (showMenu) {
+    OrderingBy.values().forEach { order ->
+      DropdownMenuItem(
+          text = { Text(text = sortingText) },
+          onClick = {
+            if (order != orderingBy) {
+              updateOrderingBy(order)
+            }
+            showMenu = false
+          },
+          modifier = Modifier.testTag("sortingItem" + order.name))
+    }
+  }
 }
 
 @Composable
@@ -290,12 +341,8 @@ fun ActivitiesDisplay(
     flipFavorite: (String) -> Unit,
     navigateToMoreInfo: () -> Unit
 ) {
-  val distances =
-      activities.map {
-        SphericalUtil.computeDistanceBetween(
-            centerPoint, LatLng(it.startPosition.lat, it.startPosition.lon))
-      }
-  for (a in activities.sortedBy { distances[activities.indexOf(it)] }) {
+
+  for (a in activities) {
     Card(
         modifier =
             Modifier.fillMaxWidth()

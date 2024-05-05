@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.SphericalUtil
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
@@ -17,6 +18,7 @@ import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
+import com.lastaoutdoor.lasta.utils.OrderingBy
 import com.lastaoutdoor.lasta.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -40,6 +42,9 @@ constructor(
 
   private val _activityIds = MutableStateFlow<ArrayList<Long>>(ArrayList())
   val activityIds: StateFlow<List<Long>> = _activityIds
+
+  private val _orderingBy = MutableStateFlow(OrderingBy.DISTANCEASCENDING)
+  val orderingBy: StateFlow<OrderingBy> = _orderingBy
 
   private val _selectedActivityType = MutableStateFlow(ActivityType.CLIMBING)
   val selectedActivityType: StateFlow<ActivityType> = _selectedActivityType
@@ -181,6 +186,8 @@ constructor(
       _activities.value =
           activitiesDB.getActivitiesByOSMIds(activityIds.value, false) as ArrayList<Activity>
       _markerList.value = activitiesToMarkers(activities.value)
+      // order the activities by the selected ordering
+      updateActivitiesByOrdering()
     }
   }
 
@@ -247,6 +254,62 @@ constructor(
   fun updateActivityType(activityType: ActivityType) {
     _selectedActivityType.value = activityType
     fetchActivities()
+  }
+
+  // function used only for testing purposes
+  fun updateActivities(activities: List<Activity>) {
+    _activities.value = ArrayList(activities)
+  }
+
+  private fun updateActivitiesByOrdering() {
+    // order the activities by the selected ordering
+    when (_orderingBy.value) {
+      OrderingBy.DISTANCEASCENDING -> {
+        if (_activities.value.isEmpty()) return
+        val distances =
+            activities.value.map {
+              SphericalUtil.computeDistanceBetween(
+                  selectedLocality.value.second, LatLng(it.startPosition.lat, it.startPosition.lon))
+            }
+        _activities.value =
+            ArrayList<Activity>(
+                activities.value.sortedBy { distances[activities.value.indexOf(it)] })
+      }
+      OrderingBy.DISTANCEDESCENDING -> {
+        if (_activities.value.isEmpty()) return
+        val distances =
+            activities.value.map {
+              SphericalUtil.computeDistanceBetween(
+                  selectedLocality.value.second, LatLng(it.startPosition.lat, it.startPosition.lon))
+            }
+        _activities.value =
+            ArrayList<Activity>(
+                activities.value.sortedBy { distances[activities.value.indexOf(it)] }.reversed())
+      }
+      OrderingBy.RATING -> {
+        if (_activities.value.isEmpty()) return
+        _activities.value = ArrayList<Activity>(_activities.value.sortedBy { it.rating }.reversed())
+      }
+      OrderingBy.DIFFICULTYASCENDING -> {
+        if (_activities.value.isEmpty()) return
+        _activities.value = ArrayList<Activity>(_activities.value.sortedBy { it.difficulty })
+      }
+      OrderingBy.DIFFICULTYDESCENDING -> {
+        if (_activities.value.isEmpty()) return
+        _activities.value =
+            ArrayList<Activity>(_activities.value.sortedBy { it.difficulty }.reversed())
+      }
+      OrderingBy.POPULARITY -> {
+        if (_activities.value.isEmpty()) return
+        _activities.value =
+            ArrayList<Activity>(_activities.value.sortedBy { it.numRatings }.reversed())
+      }
+    }
+  }
+
+  fun updateOrderingBy(orderingBy: OrderingBy) {
+    _orderingBy.value = orderingBy
+    updateActivitiesByOrdering()
   }
 
   fun updateMarkers(centerLocation: LatLng, rad: Double) {

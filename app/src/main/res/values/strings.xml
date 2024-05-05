@@ -19,14 +19,19 @@
 
     <!--Discovery-->
     <string name = "relevance">Relevance</string>
-    <string name = "filter_by">Filtering by :</string>
+    <string name = "filter_by">Ordering by :</string>
     <string name = "filter">Filter</string>
     <string name = "rating">Rating</string>
     <string name = "difficulty">Difficulty</string>
+    <string name = "distance">Distance</string>
+    <string name = "difficulty_desc">Difficulty (hardest to easiest)</string>
+    <string name = "difficulty_asc">Difficulty (easiest to hardest)</string>
+    <string name = "distance_desc">Distance (furthest to nearest)</string>
+    <string name = "distance_asc">Distance (nearest to Furthest)</string>
     <string name = "less_than">Less than</string>
     <string name = "around_you">around you</string>
     <string name = "Climbing">Climbing</string>
-    <string name = "popularity">popularity</string>
+    <string name = "popularity">Popularity (number of ratings)</string>
     <string name = "list">List</string>
     <string name = "map">Map</string>
 

@@ -1,0 +1,10 @@
+package com.lastaoutdoor.lasta.utils
+
+enum class OrderingBy {
+  DISTANCEASCENDING,
+  DISTANCEDESCENDING,
+  RATING,
+  DIFFICULTYASCENDING,
+  DIFFICULTYDESCENDING,
+  POPULARITY
+}
