@@ -44,6 +44,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
+      val isLoading = discoverScreenViewModel.isLoading.collectAsState().value
       val activities = discoverScreenViewModel.activities.collectAsState().value
       val screen = discoverScreenViewModel.screen.collectAsState().value
       val range = discoverScreenViewModel.range.collectAsState().value
@@ -62,6 +63,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val weather = weatherViewModel.weather.observeAsState().value
 
       DiscoverScreen(
+          isLoading,
           activities,
           screen,
           range,

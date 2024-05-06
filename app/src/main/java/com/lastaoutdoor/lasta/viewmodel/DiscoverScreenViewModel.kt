@@ -37,6 +37,9 @@ constructor(
     private val activitiesDB: ActivitiesDBRepository
 ) : ViewModel() {
 
+  private val _isLoading = MutableStateFlow(true)
+  val isLoading: StateFlow<Boolean> = _isLoading
+
   private val _activities = MutableStateFlow<ArrayList<Activity>>(ArrayList())
   val activities: StateFlow<List<Activity>> = _activities
 
@@ -121,6 +124,9 @@ constructor(
 
   fun fetchActivities(rad: Double = 10000.0, centerLocation: LatLng = LatLng(46.519962, 6.633597)) {
     viewModelScope.launch {
+      _isLoading.value = true
+      _activities.value = ArrayList()
+      _activityIds.value = ArrayList()
       val response =
           when (_selectedActivityType.value) {
             ActivityType.CLIMBING ->
@@ -146,8 +152,6 @@ constructor(
               emptyList<OSMData>()
             }
           }
-      _activities.value = ArrayList()
-      _activityIds.value = ArrayList()
       osmData.map { point ->
         when (_selectedActivityType.value) {
           ActivityType.CLIMBING -> {
@@ -188,6 +192,7 @@ constructor(
       _markerList.value = activitiesToMarkers(activities.value)
       // order the activities by the selected ordering
       updateActivitiesByOrdering()
+      _isLoading.value = false
     }
   }
 
@@ -272,8 +277,7 @@ constructor(
                   selectedLocality.value.second, LatLng(it.startPosition.lat, it.startPosition.lon))
             }
         _activities.value =
-            ArrayList<Activity>(
-                activities.value.sortedBy { distances[activities.value.indexOf(it)] })
+            ArrayList(activities.value.sortedBy { distances[activities.value.indexOf(it)] })
       }
       OrderingBy.DISTANCEDESCENDING -> {
         if (_activities.value.isEmpty()) return
