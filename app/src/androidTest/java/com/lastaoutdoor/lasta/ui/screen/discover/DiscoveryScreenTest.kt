@@ -120,7 +120,8 @@ class DiscoverScreenTest {
             favorites = emptyList(),
             changeActivityToDisplay = {},
             flipFavorite = {},
-            navigateToMoreInfo = {})
+            navigateToMoreInfo = {},
+            changeWeatherTarget = {})
       }
     }
 
@@ -184,7 +185,8 @@ class DiscoverScreenTest {
             selectedItinerary = null,
             orderingBy = OrderingBy.RATING,
             updateOrderingBy = {},
-            markerList = emptyList()) {}
+            markerList = emptyList(),
+            changeWeatherTarget = {}) {}
       }
     }
 
@@ -280,7 +282,8 @@ class DiscoverScreenTest {
             selectedItinerary = null,
             orderingBy = OrderingBy.DISTANCEASCENDING,
             updateOrderingBy = {},
-            markerList = emptyList()) {}
+            markerList = emptyList(),
+            changeWeatherTarget = {}) {}
       }
     }
 
@@ -348,7 +351,8 @@ class DiscoverScreenTest {
             selectedItinerary = null,
             orderingBy = OrderingBy.DIFFICULTYASCENDING,
             updateOrderingBy = {},
-            markerList = emptyList()) {}
+            markerList = emptyList(),
+            changeWeatherTarget = {}) {}
       }
     }
     composeRule.onNodeWithTag("sortingTextValue").assertIsDisplayed()
@@ -406,7 +410,8 @@ class DiscoverScreenTest {
             selectedItinerary = null,
             orderingBy = OrderingBy.DIFFICULTYDESCENDING,
             updateOrderingBy = {},
-            markerList = emptyList()) {}
+            markerList = emptyList(),
+            changeWeatherTarget = {}) {}
       }
     }
     composeRule.onNodeWithTag("sortingTextValue").assertIsDisplayed()
@@ -464,7 +469,8 @@ class DiscoverScreenTest {
             selectedItinerary = null,
             orderingBy = OrderingBy.POPULARITY,
             updateOrderingBy = {},
-            markerList = emptyList()) {}
+            markerList = emptyList(),
+            changeWeatherTarget = {}) {}
       }
     }
     composeRule.onNodeWithTag("sortingTextValue").assertIsDisplayed()
@@ -522,7 +528,8 @@ class DiscoverScreenTest {
             selectedItinerary = null,
             orderingBy = OrderingBy.DISTANCEDESCENDING,
             updateOrderingBy = {},
-            markerList = emptyList()) {}
+            markerList = emptyList(),
+            changeWeatherTarget = {}) {}
       }
     }
     composeRule.onNodeWithTag("sortingTextValue").assertIsDisplayed()

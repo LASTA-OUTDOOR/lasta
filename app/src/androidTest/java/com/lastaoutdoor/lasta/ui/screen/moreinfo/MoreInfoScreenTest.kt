@@ -51,7 +51,8 @@ class MoreInfoScreenTest {
           null,
           emptyList(),
           null,
-          {})
+          {},
+          setWeatherBackToUserLoc = {})
     }
   }
 

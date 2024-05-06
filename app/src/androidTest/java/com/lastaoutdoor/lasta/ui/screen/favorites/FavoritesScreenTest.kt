@@ -52,7 +52,8 @@ class FavoritesScreenTest {
             centerPoint = LatLng(46.519962, 6.633597),
             favorites = listOf("1"),
             changeActivityToDisplay = {},
-            flipFavorite = {}) {}
+            flipFavorite = {},
+            changeWeatherTarget = {}) {}
       }
     }
   }
