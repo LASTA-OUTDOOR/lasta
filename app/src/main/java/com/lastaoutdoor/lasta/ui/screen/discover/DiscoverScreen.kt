@@ -133,9 +133,11 @@ fun DiscoverScreen(
 
           Spacer(modifier = Modifier.height(8.dp))
           if (isLoading) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-              CircularProgressIndicator(modifier = Modifier.width(35.dp))
-            }
+            Box(
+                modifier = Modifier.fillMaxSize().testTag("LoadingBarDiscover"),
+                contentAlignment = Alignment.Center) {
+                  CircularProgressIndicator(modifier = Modifier.width(35.dp))
+                }
           } else if (activities.isEmpty()) {
             Text(
                 text = "No activities found. Please try again.",
