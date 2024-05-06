@@ -51,7 +51,7 @@ constructor(private val weatherRepository: WeatherRepository, application: Appli
     }
   }
 
-  fun changeLocOfWeather(a:Activity) {
+  fun changeLocOfWeather(a: Activity) {
     viewModelScope.launch {
       try {
         val weather = weatherRepository.getWeatherWithLoc(a.startPosition.lat, a.startPosition.lon)

@@ -140,7 +140,7 @@ fun DiscoverScreen(
                 changeActivityToDisplay,
                 flipFavorite = flipFavorite,
                 navigateToMoreInfo = navigateToMoreInfo,
-                changeWeatherTarget=changeWeatherTarget)
+                changeWeatherTarget = changeWeatherTarget)
           }
         }
   } else if (screen == DiscoverDisplayType.MAP) {
