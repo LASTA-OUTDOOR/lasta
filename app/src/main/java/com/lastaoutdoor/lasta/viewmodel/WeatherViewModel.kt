@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
+import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.repository.api.WeatherRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -31,10 +32,10 @@ constructor(private val weatherRepository: WeatherRepository, application: Appli
   val weather: LiveData<WeatherResponse> = _weather
 
   init {
-    fetchWeather()
+    fetchWeatherWithUserLoc()
   }
 
-  private fun fetchWeather() {
+  fun fetchWeatherWithUserLoc() {
     if (ContextCompat.checkSelfPermission(
         getApplication(), Manifest.permission.ACCESS_FINE_LOCATION) ==
         PackageManager.PERMISSION_GRANTED) {
@@ -46,6 +47,17 @@ constructor(private val weatherRepository: WeatherRepository, application: Appli
         } catch (e: Exception) {
           e.printStackTrace()
         }
+      }
+    }
+  }
+
+  fun changeLocOfWeather(a:Activity) {
+    viewModelScope.launch {
+      try {
+        val weather = weatherRepository.getWeatherWithLoc(a.startPosition.lat, a.startPosition.lon)
+        _weather.postValue(weather)
+      } catch (e: Exception) {
+        e.printStackTrace()
       }
     }
   }
