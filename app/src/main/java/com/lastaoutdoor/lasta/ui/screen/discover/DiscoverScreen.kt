@@ -206,29 +206,6 @@ fun HeaderComposable(
   // Dropdown menu boolean
   var showMenu by remember { mutableStateOf(false) }
 
-  // text for the sorting value
-  val sortingText =
-      when (orderingBy) {
-        OrderingBy.DIFFICULTYASCENDING -> {
-          LocalContext.current.getString(R.string.difficulty_asc)
-        }
-        OrderingBy.DIFFICULTYDESCENDING -> {
-          LocalContext.current.getString(R.string.difficulty_desc)
-        }
-        OrderingBy.RATING -> {
-          LocalContext.current.getString(R.string.rating)
-        }
-        OrderingBy.DISTANCEASCENDING -> {
-          LocalContext.current.getString(R.string.distance_asc)
-        }
-        OrderingBy.DISTANCEDESCENDING -> {
-          LocalContext.current.getString(R.string.distance_desc)
-        }
-        OrderingBy.POPULARITY -> {
-          LocalContext.current.getString(R.string.popularity)
-        }
-      }
-
   val iconSize = 48.dp // Adjust icon size as needed
   val displayWeather = remember { mutableStateOf(false) }
   if (displayWeather.value) {
@@ -314,13 +291,13 @@ fun HeaderComposable(
                       style = MaterialTheme.typography.bodyMedium)
                   Spacer(modifier = Modifier.width(8.dp))
                   Text(
-                      text = sortingText,
+                      text = LocalContext.current.getString(orderingBy.orderText),
                       modifier = Modifier.testTag("sortingTextValue"),
                       style = MaterialTheme.typography.bodyMedium,
                       color = MaterialTheme.colorScheme.primary)
 
                   IconButton(
-                      onClick = { showMenu = true },
+                      onClick = { showMenu = showMenu.not() },
                       modifier = Modifier.size(24.dp).testTag("sortingButton")) {
                         Icon(
                             Icons.Outlined.KeyboardArrowDown,
@@ -336,7 +313,7 @@ fun HeaderComposable(
   if (showMenu) {
     OrderingBy.values().forEach { order ->
       DropdownMenuItem(
-          text = { Text(text = sortingText) },
+          text = { Text(text = LocalContext.current.getString(order.orderText)) },
           onClick = {
             if (order != orderingBy) {
               updateOrderingBy(order)
@@ -428,7 +405,6 @@ fun ActivitiesDisplay(
               Spacer(modifier = Modifier.width(8.dp))
               Text(text = "Difficulty: ${a.difficulty}")
               Spacer(modifier = Modifier.width(16.dp))
-              // Distance from the user's location, NOT THE LENGTH OF THE ACTIVITY!!!
               Text(
                   text =
                       "${String.format("%.1f", SphericalUtil.computeDistanceBetween(centerPoint, LatLng(a.startPosition.lat, a.startPosition.lon)) / 1000)} km")
