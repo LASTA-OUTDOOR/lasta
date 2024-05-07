@@ -37,6 +37,7 @@ import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.Difficulty
+import com.lastaoutdoor.lasta.models.activity.Rating
 import com.lastaoutdoor.lasta.models.map.MapItinerary
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
@@ -337,3 +338,26 @@ fun ElevatedActivityType(activityToDisplay: Activity) {
                 ))
       }
 }
+
+@Composable
+fun RatingSection(ratings: List<Rating> = emptyList()) {
+
+    Column(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+        RatingInput()
+        RatingList(ratings)
+    }
+
+}
+
+@Composable
+fun RatingList(ratings: List<Rating>) {
+
+
+}
+
+
+@Composable
+fun RatingInput() {
+
+}
+
