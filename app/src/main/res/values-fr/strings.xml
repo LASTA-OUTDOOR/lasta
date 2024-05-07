@@ -99,4 +99,7 @@
     <string name="difficulty_asc">Difficulté (du plus facile au plus dur</string>
     <string name="distance_desc">Distance (du plus loin au plus proche)</string>
     <string name="distance_asc">Distance (du plus proche au plus loin)</string>
+    <string name="english">Anglais</string>
+    <string name="french">Français</string>
+    <string name="german">Allemand</string>
 </resources>

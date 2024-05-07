@@ -131,4 +131,7 @@
     <string name = "Account_settings">Settings</string>
     <string name= "delete_account">Delete Account</string>
     <string name="sport_level">Level:</string>
+    <string name="english">English</string>
+    <string name="french">French</string>
+    <string name="german">German</string>
 </resources>

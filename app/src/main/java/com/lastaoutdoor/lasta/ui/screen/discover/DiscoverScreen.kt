@@ -54,6 +54,7 @@ import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.map.MapItinerary
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
+import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
 import com.lastaoutdoor.lasta.ui.components.LoadingAnim
 import com.lastaoutdoor.lasta.ui.components.SearchBarComponent
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
@@ -278,43 +279,21 @@ fun HeaderComposable(
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                         .testTag("sortingText"),
                 verticalAlignment = Alignment.CenterVertically) {
-                  Text(
-                      LocalContext.current.getString(R.string.filter_by),
-                      style = MaterialTheme.typography.bodyMedium)
-                  Spacer(modifier = Modifier.width(8.dp))
-                  Text(
-                      text = LocalContext.current.getString(orderingBy.orderText),
-                      modifier = Modifier.testTag("sortingTextValue"),
-                      style = MaterialTheme.typography.bodyMedium,
-                      color = MaterialTheme.colorScheme.primary)
 
-                  IconButton(
-                      onClick = { showMenu = showMenu.not() },
-                      modifier = Modifier.size(24.dp).testTag("sortingButton")) {
-                        Icon(
-                            Icons.Outlined.KeyboardArrowDown,
-                            contentDescription = "Ordering button",
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(24.dp).testTag("sortingIcon"))
-                      }
+                    DropDownMenuComponent(
+                        items = { OrderingBy.values().map { o -> o.resourcesToString(LocalContext.current) } },
+                        selectedItem = orderingBy,
+                        onItemSelected = {
+                            o -> updateOrderingBy(o)
+                            },
+                        toStr = { o -> o.resourcesToString(LocalContext.current)},
+                        fieldText = LocalContext.current.getString(R.string.filter_by)
+                    )
+
                 }
           }
         }
       }
-
-  if (showMenu) {
-    OrderingBy.values().forEach { order ->
-      DropdownMenuItem(
-          text = { Text(text = LocalContext.current.getString(order.orderText)) },
-          onClick = {
-            if (order != orderingBy) {
-              updateOrderingBy(order)
-            }
-            showMenu = false
-          },
-          modifier = Modifier.testTag("sortingItem" + order.name))
-    }
-  }
 }
 
 @Composable

@@ -31,10 +31,10 @@ import androidx.compose.ui.text.font.FontWeight
  */
 @Composable
 fun <T> DropDownMenuComponent(
-    items: List<T>, // Items to display in the dropdown
+    items: @Composable List<T>, // Items to display in the dropdown
     selectedItem: T, // The currently selected item from the ViewModel
     onItemSelected: (T) -> Unit, // Callback to invoke when an item is selected
-    toStr: (T) -> String,
+    toStr: @Composable (T) -> String,
     fieldText: String,
     modifier: Modifier = Modifier
 ) {
@@ -57,7 +57,7 @@ fun <T> DropDownMenuComponent(
       items.forEachIndexed { index, label ->
         DropdownMenuItem(
             modifier = Modifier.testTag("DropdownItem$index"),
-            text = { Text(label.toString()) },
+            text = { Text() },
             onClick = {
               onItemSelected(label)
               expanded = false
