@@ -24,7 +24,6 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -279,17 +278,14 @@ fun HeaderComposable(
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                         .testTag("sortingText"),
                 verticalAlignment = Alignment.CenterVertically) {
-
-                    DropDownMenuComponent(
-                        items = { OrderingBy.values().map { o -> o.resourcesToString(LocalContext.current) } },
-                        selectedItem = orderingBy,
-                        onItemSelected = {
-                            o -> updateOrderingBy(o)
-                            },
-                        toStr = { o -> o.resourcesToString(LocalContext.current)},
-                        fieldText = LocalContext.current.getString(R.string.filter_by)
-                    )
-
+                  DropDownMenuComponent(
+                      items = {
+                        OrderingBy.values().map { o -> o.resourcesToString(LocalContext.current) }
+                      },
+                      selectedItem = orderingBy,
+                      onItemSelected = { o -> updateOrderingBy(o) },
+                      toStr = { o -> o.resourcesToString(LocalContext.current) },
+                      fieldText = LocalContext.current.getString(R.string.filter_by))
                 }
           }
         }
