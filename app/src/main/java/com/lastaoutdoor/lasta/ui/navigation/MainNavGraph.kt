@@ -41,7 +41,7 @@ import com.lastaoutdoor.lasta.viewmodel.WeatherViewModel
 fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
   navigation(startDestination = DestinationRoute.Discover.route, route = BaseRoute.Main.route) {
     composable(DestinationRoute.Discover.route) { entry ->
-      val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
+      val discoverScreenViewModel: DiscoverScreenViewModel = entry.sharedViewModel(navController)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
       val isLoading = discoverScreenViewModel.isLoading.collectAsState().value
@@ -96,7 +96,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           discoverScreenViewModel::clearSelectedMarker)
     }
     composable(DestinationRoute.Favorites.route) { entry ->
-      val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
+      val discoverScreenViewModel: DiscoverScreenViewModel = entry.sharedViewModel(navController)
       val favoritesScreenViewModel: FavoritesScreenViewModel = hiltViewModel(entry)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
