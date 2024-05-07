@@ -295,13 +295,12 @@ fun SportSelection(sport: ActivityType, onSelected: (ActivityType) -> Unit) {
     // Observe LiveData and convert to Composable State
     // profileScreenVIewModel.addTrailToUserActivities()
     // Now trailListState is a normal List<Trail> that you can use in Compose
-    val con = LocalContext.current
-    DropDownMenuComponent<ActivityType>(
+    DropDownMenuComponent(
         items = menuItems,
         selectedItem = sport,
         onItemSelected = { newSport -> onSelected(newSport) },
         toStr = { it.toString() },
-        LocalContext.current.getString(R.string.activity))
+        fieldText = LocalContext.current.getString(R.string.activity))
   }
 }
 

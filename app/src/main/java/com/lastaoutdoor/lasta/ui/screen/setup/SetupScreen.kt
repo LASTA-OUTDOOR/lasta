@@ -82,7 +82,7 @@ fun SetupScreen(
                           selectedLanguage = it
                           updateLanguage(it)
                         },
-                        { selectedLanguage ->
+                        toStr = { selectedLanguage ->
                           selectedLanguage.resourcesToString(LocalContext.current)
                         },
                         fieldText = LocalContext.current.getString(R.string.languague),

@@ -12,6 +12,4 @@ enum class Language(@StringRes val languageText: Int) {
   fun resourcesToString(context: Context): String {
     return context.getString(this.languageText)
   }
-
-
 }

@@ -38,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -196,8 +197,6 @@ fun HeaderComposable(
     weather: WeatherResponse?
 ) {
   // Dropdown menu boolean
-  var showMenu by remember { mutableStateOf(false) }
-
   val iconSize = 48.dp // Adjust icon size as needed
   val displayWeather = remember { mutableStateOf(false) }
   if (displayWeather.value) {
@@ -313,7 +312,7 @@ fun ActivitiesDisplay(
                     })
                 .testTag("${a.activityId}activityCard"),
         shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
     ) {
       Column {
         Row(
@@ -345,6 +344,9 @@ fun ActivitiesDisplay(
                             if (favorites.contains(a.activityId)) Icons.Filled.Favorite
                             else Icons.Filled.FavoriteBorder,
                         contentDescription = "Favorite Button",
+                        tint =
+                            if (favorites.contains(a.activityId)) MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.size(24.dp))
                   }
             }
@@ -361,7 +363,8 @@ fun ActivitiesDisplay(
         SeparatorComponent()
         Row(
             modifier = Modifier.fillMaxWidth().padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically) {
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween) {
               Icon(
                   imageVector = Icons.Default.Star,
                   contentDescription = "Rating",
