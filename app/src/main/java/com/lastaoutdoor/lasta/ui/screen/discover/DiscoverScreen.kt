@@ -133,7 +133,9 @@ fun DiscoverScreen(
                 updateOrderingBy,
                 weather,
                 fetchSuggestion,
-                suggestions
+                suggestions,
+                setSelectedLocality,
+                fetchActivities
             )
           }
 
@@ -161,7 +163,9 @@ fun DiscoverScreen(
           updateOrderingBy,
           weather,
           fetchSuggestion,
-          suggestions
+          suggestions,
+          setSelectedLocality,
+          fetchActivities
       )
       Box(modifier = Modifier
           .fillMaxHeight()
@@ -199,7 +203,9 @@ fun HeaderComposable(
     updateOrderingBy: (OrderingBy) -> Unit,
     weather: WeatherResponse?,
     fetchSuggestion: (String) -> Unit,
-    suggestions: Map<String, LatLng>
+    suggestions: Map<String, LatLng>,
+    setSelectedLocality: (Pair<String, LatLng>) -> Unit,
+    fetchActivities: (Double, LatLng) -> Unit
 ) {
   // Dropdown menu boolean
   var showMenu by remember { mutableStateOf(false) }
@@ -307,9 +313,15 @@ fun HeaderComposable(
                               .testTag("filterIcon"))
                     }
               }
-          Column (modifier = Modifier.fillMaxWidth()) {
+          Column (modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
               suggestions.forEach() {
-                Text(text = it.key)
+                  Card (modifier = Modifier.fillMaxWidth().padding(4.dp).clickable {
+                      setSelectedLocality(Pair(it.key, it.value))
+                      fetchActivities(range, it.value)
+                  })
+                   {
+                    Text(modifier = Modifier.padding(4.dp), text = it.key)
+                  }
               }
           }
           Row(
