@@ -10,12 +10,14 @@ import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.api.NodeWay
 import com.lastaoutdoor.lasta.models.api.OSMData
+import com.lastaoutdoor.lasta.models.api.RadarSuggestion
 import com.lastaoutdoor.lasta.models.api.Relation
 import com.lastaoutdoor.lasta.models.map.MapItinerary
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
+import com.lastaoutdoor.lasta.repository.api.RadarRepository
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
 import com.lastaoutdoor.lasta.utils.OrderingBy
@@ -34,7 +36,8 @@ class DiscoverScreenViewModel
 constructor(
     private val repository: ActivityRepository,
     private val preferencesRepository: PreferencesRepository,
-    private val activitiesDB: ActivitiesDBRepository
+    private val activitiesDB: ActivitiesDBRepository,
+    private val radarRepository: RadarRepository
 ) : ViewModel() {
 
   private val _activities = MutableStateFlow<ArrayList<Activity>>(ArrayList())
@@ -77,6 +80,10 @@ constructor(
   private val _markerList = MutableStateFlow<List<Marker>>(emptyList())
   val markerList: StateFlow<List<Marker>> = _markerList
 
+  // Map of suggestions from the radar API with the locality as key and the LatLng as value
+  private val _suggestions = MutableStateFlow<Map<String, LatLng>>(emptyMap())
+  val suggestions: StateFlow<Map<String, LatLng>> = _suggestions
+
   // Displayed itinerary
   private val _selectedItinerary = MutableStateFlow<MapItinerary?>(null)
   val selectedItinerary: StateFlow<MapItinerary?> = _selectedItinerary
@@ -116,6 +123,26 @@ constructor(
           "",
           R.drawable.hiking_icon,
           ActivityType.HIKING)
+    }
+  }
+
+  // Fetch the suggestions from the radar API (called when the user types in the search bar)
+  fun fetchSuggestions(query: String) {
+    viewModelScope.launch {
+      val suggestions =
+          when (val response = radarRepository.getSuggestions(query)) {
+            is Response.Failure -> {
+              response.e.printStackTrace()
+              return@launch
+            }
+            is Response.Success -> {
+              response.data ?: emptyList()
+            }
+            is Response.Loading -> {
+              emptyList<RadarSuggestion>()
+            }
+          }
+      _suggestions.value = suggestions.map { it.getSuggestion() to it.getPosition()}.toMap()
     }
   }
 
@@ -190,6 +217,7 @@ constructor(
       updateActivitiesByOrdering()
     }
   }
+
 
   fun setScreen(screen: DiscoverDisplayType) {
     _screen.value = screen

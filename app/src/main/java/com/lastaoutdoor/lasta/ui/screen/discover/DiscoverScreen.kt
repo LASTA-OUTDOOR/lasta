@@ -96,7 +96,8 @@ fun DiscoverScreen(
     markerList: List<Marker>,
     orderingBy: OrderingBy,
     updateOrderingBy: (OrderingBy) -> Unit,
-    clearSelectedMarker: () -> Unit
+    clearSelectedMarker: () -> Unit,
+    fetchSuggestion: (String) -> Unit
 ) {
 
   var isRangePopup by rememberSaveable { mutableStateOf(false) }
@@ -127,7 +128,9 @@ fun DiscoverScreen(
                 navigateToFilter,
                 orderingBy,
                 updateOrderingBy,
-                weather)
+                weather,
+                fetchSuggestion
+            )
           }
 
           item {
@@ -152,7 +155,8 @@ fun DiscoverScreen(
           navigateToFilter,
           orderingBy,
           updateOrderingBy,
-          weather)
+          weather,
+          fetchSuggestion)
       Box(modifier = Modifier.fillMaxHeight().testTag("mapScreenDiscover")) {
         MapScreen(
             state,
@@ -185,7 +189,8 @@ fun HeaderComposable(
     navigateToFilter: () -> Unit,
     orderingBy: OrderingBy,
     updateOrderingBy: (OrderingBy) -> Unit,
-    weather: WeatherResponse?
+    weather: WeatherResponse?,
+    fetchSuggestion: (String) -> Unit
 ) {
   // Dropdown menu boolean
   var showMenu by remember { mutableStateOf(false) }
@@ -265,7 +270,9 @@ fun HeaderComposable(
                       .testTag("searchBar"),
               verticalAlignment = Alignment.CenterVertically) {
                 SearchBarComponent(
-                    Modifier.weight(1f).testTag("searchBarComponent"), onSearch = { /*TODO*/})
+                    Modifier.weight(1f).testTag("searchBarComponent"), onSearch = {
+                        fetchSuggestion(it)
+                    })
                 Spacer(modifier = Modifier.width(8.dp))
                 IconButton(
                     onClick = { navigateToFilter() },

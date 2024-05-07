@@ -55,7 +55,9 @@ class DiscoverScreenTest {
             navigateToFilter = { navigateFilter = true },
             orderingBy = OrderingBy.RATING,
             updateOrderingBy = {},
-            weather = null)
+            weather = null,
+            fetchSuggestion = fetchSuggestion
+        )
       }
     }
 
