@@ -23,7 +23,7 @@ import org.junit.Test
 
 class AuthRepositoryImplTest {
 
-  private lateinit var authRepo : AuthRepository
+  private lateinit var authRepo: AuthRepository
   private val auth = mockk<FirebaseAuth>(relaxed = true)
   private val oneTapClient = mockk<SignInClient>(relaxed = true)
   private val signInRequest = mockk<BeginSignInRequest>(relaxed = true)
@@ -67,11 +67,7 @@ class AuthRepositoryImplTest {
   }
 
   @Test
-  fun `Is sign Up is false by default`() = runTest {
-    authRepo.isSignUp.first().let {
-      assert(!it)
-    }
-  }
+  fun `Is sign Up is false by default`() = runTest { authRepo.isSignUp.first().let { assert(!it) } }
 
   @Test
   fun `Start Google Sign In emits Loading and Success`() = runTest {

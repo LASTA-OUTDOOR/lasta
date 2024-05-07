@@ -2,7 +2,6 @@ package com.lastaoutdoor.lasta.models.map
 
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.models.activity.ActivityType
-import com.lastaoutdoor.lasta.models.map.Marker
 import org.junit.Test
 
 class MapMarkerTest {
