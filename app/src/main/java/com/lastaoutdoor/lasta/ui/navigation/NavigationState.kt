@@ -3,7 +3,6 @@ package com.lastaoutdoor.lasta.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -23,11 +22,10 @@ class NavigationState(val navController: NavHostController) {
 
   fun navigateToBottomBarRoute(route: String) {
     if (route != currentRoute) {
-      navController.navigate(route) {
-        launchSingleTop = true
-        restoreState = true
-        popUpTo(navController.graph.findStartDestination().id) { saveState = true }
-      }
+      if (currentRoute != DestinationRoute.Discover.route)
+          navController.popBackStack(
+              DestinationRoute.Discover.route, inclusive = false, saveState = true)
+      navController.navigate(route)
     }
   }
 }
