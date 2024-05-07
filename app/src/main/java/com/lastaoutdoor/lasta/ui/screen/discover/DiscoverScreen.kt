@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,7 +24,6 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -56,6 +54,7 @@ import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.map.MapItinerary
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
+import com.lastaoutdoor.lasta.ui.components.LoadingAnim
 import com.lastaoutdoor.lasta.ui.components.SearchBarComponent
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
 import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
@@ -133,16 +132,9 @@ fun DiscoverScreen(
 
           Spacer(modifier = Modifier.height(8.dp))
           if (isLoading) {
-            Box(
-                modifier = Modifier.fillMaxSize().testTag("LoadingBarDiscover"),
-                contentAlignment = Alignment.Center) {
-                  CircularProgressIndicator(modifier = Modifier.width(35.dp))
-                }
+            LoadingAnim(width = 35, tag = "LoadingBarDiscover")
           } else if (activities.isEmpty()) {
-            Text(
-                text = "No activities found. Please try again.",
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(16.dp))
+            /* TODO */
           } else {
             LazyColumn {
               item {

@@ -100,10 +100,12 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val favoritesScreenViewModel: FavoritesScreenViewModel = hiltViewModel(entry)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
+      val isLoading = favoritesScreenViewModel.isLoading.collectAsState().value
       val favorites = favoritesScreenViewModel.favorites.collectAsState().value
       val centerPoint = discoverScreenViewModel.selectedLocality.collectAsState().value.second
       val favoriteIds = favoritesScreenViewModel.favoritesIds.collectAsState().value
       FavoritesScreen(
+          isLoading,
           favorites,
           centerPoint,
           favoriteIds,
@@ -268,7 +270,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
     }
 
     composable(DestinationRoute.Settings.route) { entry ->
-      val authViewModel: AuthViewModel = hiltViewModel()
+      val authViewModel: AuthViewModel = hiltViewModel(entry)
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
       val language = preferencesViewModel.language.collectAsState(initial = Language.ENGLISH).value
       val prefActivity = preferencesViewModel.prefActivity.collectAsState(ActivityType.HIKING).value

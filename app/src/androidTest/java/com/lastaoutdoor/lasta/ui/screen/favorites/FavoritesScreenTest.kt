@@ -33,9 +33,30 @@ class FavoritesScreenTest {
   @Before
   fun setUp() {
     hiltRule.inject()
+  }
+
+  @Test
+  fun favoritesScreen_isLoading() {
     composeRule.activity.setContent {
       MaterialTheme {
         FavoritesScreen(
+            isLoading = true,
+            activities = emptyList(),
+            centerPoint = LatLng(46.519962, 6.633597),
+            favorites = emptyList(),
+            changeActivityToDisplay = {},
+            flipFavorite = {}) {}
+      }
+    }
+    composeRule.onNodeWithTag("LoadingBarFavorites").assertIsDisplayed()
+  }
+
+  @Test
+  fun favoritesScreen_isDisplayed() {
+    composeRule.activity.setContent {
+      MaterialTheme {
+        FavoritesScreen(
+            isLoading = false,
             activities =
                 listOf(
                     Activity(
@@ -55,11 +76,7 @@ class FavoritesScreenTest {
             flipFavorite = {}) {}
       }
     }
-  }
-
-  @Test
-  fun favoritesScreen_isDisplayed() {
-    composeRule.onNodeWithTag("favoritesScreen").assertIsDisplayed()
+    composeRule.onNodeWithTag("FavoritesScreen").assertIsDisplayed()
     composeRule.onNodeWithTag("1activityCard").assertIsDisplayed()
   }
 }
