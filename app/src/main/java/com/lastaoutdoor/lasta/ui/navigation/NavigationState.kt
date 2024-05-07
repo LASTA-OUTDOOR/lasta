@@ -24,11 +24,8 @@ class NavigationState(val navController: NavHostController) {
     if (route != currentRoute) {
       if (currentRoute != DestinationRoute.Discover.route)
           navController.popBackStack(
-              DestinationRoute.Discover.route, inclusive = true, saveState = true)
-      navController.navigate(route) {
-        launchSingleTop = true
-        restoreState = true
-      }
+              DestinationRoute.Discover.route, inclusive = false, saveState = true)
+      navController.navigate(route)
     }
   }
 }
