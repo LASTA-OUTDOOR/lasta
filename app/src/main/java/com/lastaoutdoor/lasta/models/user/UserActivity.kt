@@ -7,7 +7,7 @@ sealed class UserActivity(
     val activityType: ActivityType,
     open val activityId: Long = 0L,
     open val timeStarted: Date = Date(),
-    open val timeFinished: Date = Date(),
+    open val timeFinished: Date = Date()
 )
 
 data class ClimbingUserActivity(
