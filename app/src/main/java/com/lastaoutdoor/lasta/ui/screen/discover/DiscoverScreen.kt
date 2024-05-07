@@ -279,9 +279,7 @@ fun HeaderComposable(
                         .testTag("sortingText"),
                 verticalAlignment = Alignment.CenterVertically) {
                   DropDownMenuComponent(
-                      items = {
-                        OrderingBy.values().map { o -> o.resourcesToString(LocalContext.current) }
-                      },
+                      items = OrderingBy.values().toList(),
                       selectedItem = orderingBy,
                       onItemSelected = { o -> updateOrderingBy(o) },
                       toStr = { o -> o.resourcesToString(LocalContext.current) },
