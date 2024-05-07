@@ -65,6 +65,7 @@ fun MoreInfoScreen(
     markerList: List<Marker>,
     selectedItenary: MapItinerary?,
     navigateBack: () -> Unit,
+    navigateToTracking: () -> Unit
 ) {
   var isMapDisplayed = remember { mutableStateOf(false) }
   if (!isMapDisplayed.value) {
@@ -81,7 +82,7 @@ fun MoreInfoScreen(
         item { MiddleZone(activityToDisplay, isMapDisplayed) }
         // filled with a spacer for the moment but will contain address + community
       }
-      StartButton()
+      StartButton(navigateToTracking)
     }
   } else {
     Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoMap")) {
@@ -109,14 +110,12 @@ fun MoreInfoScreen(
 
 // Start button : once clicked, the activity tracking starts
 @Composable
-fun StartButton() {
+fun StartButton(navigateToTracking: () -> Unit) {
   Row(
       modifier = Modifier.fillMaxWidth().testTag("MoreInfoStartButton"),
       horizontalArrangement = Arrangement.Center) {
         ElevatedButton(
-            onClick = {
-              /** TODO : Start Activity */
-            },
+            onClick = { navigateToTracking() },
             modifier = Modifier.fillMaxWidth(0.8f).height(48.dp), // takes up 80% of the width
             colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
               Text(

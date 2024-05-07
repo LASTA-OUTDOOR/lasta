@@ -30,6 +30,8 @@ sealed class DestinationRoute(override val route: String) : Route(route) {
 
   object MoreInfo : DestinationRoute("MoreInfo")
 
+  object Tracking : DestinationRoute("Tracking")
+
   object Filter : DestinationRoute("Filter")
 
   object Conversation : DestinationRoute("Conversation")

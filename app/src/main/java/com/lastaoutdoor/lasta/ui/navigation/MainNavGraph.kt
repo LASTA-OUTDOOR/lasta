@@ -26,6 +26,7 @@ import com.lastaoutdoor.lasta.ui.screen.social.ConversationScreen
 import com.lastaoutdoor.lasta.ui.screen.social.FriendProfileScreen
 import com.lastaoutdoor.lasta.ui.screen.social.NotificationsScreen
 import com.lastaoutdoor.lasta.ui.screen.social.SocialScreen
+import com.lastaoutdoor.lasta.ui.screen.tracking.TrackingScreen
 import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 import com.lastaoutdoor.lasta.viewmodel.ConversationViewModel
@@ -199,10 +200,12 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           moreInfoScreenViewModel::goToMarker,
           weather,
           markerList,
-          selectedItinerary) {
-            navController.navigateUp()
+          selectedItinerary,
+          navController::navigateUp) {
+            navController.navigate(DestinationRoute.Tracking.route)
           }
     }
+    composable(DestinationRoute.Tracking.route) { TrackingScreen() }
     composable(DestinationRoute.Filter.route) { entry ->
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
       val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
