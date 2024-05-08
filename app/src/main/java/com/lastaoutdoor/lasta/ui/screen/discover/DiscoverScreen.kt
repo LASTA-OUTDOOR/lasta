@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.DropdownMenu
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -28,14 +27,11 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,6 +48,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.google.android.gms.maps.CameraUpdate
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.SphericalUtil
 import com.lastaoutdoor.lasta.R
@@ -68,7 +66,7 @@ import com.lastaoutdoor.lasta.ui.components.WeatherReportSmall
 import com.lastaoutdoor.lasta.ui.components.searchBarComponent
 import com.lastaoutdoor.lasta.ui.screen.discover.components.ModalUpperSheet
 import com.lastaoutdoor.lasta.ui.screen.discover.components.RangeSearchComposable
-import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
+import com.lastaoutdoor.lasta.ui.screen.map.mapScreen
 import com.lastaoutdoor.lasta.utils.OrderingBy
 import com.lastaoutdoor.lasta.viewmodel.DiscoverDisplayType
 import com.lastaoutdoor.lasta.viewmodel.MapState
@@ -109,7 +107,8 @@ fun DiscoverScreen(
     clearSelectedMarker: () -> Unit,
     fetchSuggestion: (String) -> Unit,
     suggestions: Map<String, LatLng>,
-    clearSuggestions: () -> Unit
+    clearSuggestions: () -> Unit,
+    updateInitialPosition: (LatLng) -> Unit
 ) {
 
   var isRangePopup by rememberSaveable { mutableStateOf(false) }
@@ -125,6 +124,8 @@ fun DiscoverScreen(
       isRangePopup) {
         isRangePopup = false
       }
+
+  var moveCamera: (CameraUpdate) -> Unit by remember { mutableStateOf({_->}) }
 
   if (screen == DiscoverDisplayType.LIST) {
     Column(
@@ -146,7 +147,10 @@ fun DiscoverScreen(
               suggestions,
               setSelectedLocality,
               fetchActivities,
-              clearSuggestions)
+              clearSuggestions,
+              updateInitialPosition,
+              moveCamera
+          )
 
           Spacer(modifier = Modifier.height(8.dp))
           if (isLoading) {
@@ -184,11 +188,14 @@ fun DiscoverScreen(
           suggestions,
           setSelectedLocality,
           fetchActivities,
-          clearSuggestions)
+          clearSuggestions,
+          updateInitialPosition,
+          moveCamera
+      )
       Box(modifier = Modifier
           .fillMaxHeight()
           .testTag("mapScreenDiscover")) {
-        MapScreen(
+        moveCamera = mapScreen(
             state,
             updatePermission,
             initialPosition,
@@ -225,7 +232,9 @@ fun HeaderComposable(
     suggestions: Map<String, LatLng>,
     setSelectedLocality: (Pair<String, LatLng>) -> Unit,
     fetchActivities: (Double, LatLng) -> Unit,
-    clearSuggestions: () -> Unit
+    clearSuggestions: () -> Unit,
+    updateInitialPosition: (LatLng) -> Unit,
+    moveCamera : (CameraUpdate) -> Unit
 ) {
   // Dropdown menu boolean
   var showMenu by remember { mutableStateOf(false) }
@@ -332,6 +341,8 @@ fun HeaderComposable(
                             setSelectedLocality(Pair(suggestion.key, suggestion.value))
                             fetchActivities(range, suggestion.value)
                             changeText(suggestion.key)
+                            updateInitialPosition(suggestion.value)
+                            moveCamera(CameraUpdateFactory.newLatLng(suggestion.value))
                             clearSuggestions()
                         }) {
                       Text(modifier = Modifier.padding(8.dp).height(20.dp), text = suggestion.key)

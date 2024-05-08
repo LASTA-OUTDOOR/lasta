@@ -273,6 +273,11 @@ constructor(
     _selectedMarker.value = null
   }
 
+  //change the default place on the map
+  fun updateInitialPosition(position: LatLng) {
+    _initialPosition.value = position
+  }
+
   private fun showHikingItinerary(id: Long) {
     viewModelScope.launch {
       val response = repository.getHikingRouteById(id)

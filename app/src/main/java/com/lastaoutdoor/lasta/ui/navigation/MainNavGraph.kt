@@ -54,7 +54,6 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val favorites = preferencesViewModel.favorites.collectAsState(initial = emptyList()).value
       val mapState = discoverScreenViewModel.mapState.collectAsState().value
       val initialZoom = discoverScreenViewModel.initialZoom
-      val initialPosition = discoverScreenViewModel.initialPosition
       val selectedZoom = discoverScreenViewModel.selectedZoom
       val selectedMarker = discoverScreenViewModel.selectedMarker.collectAsState().value
       val selectedItinerary = discoverScreenViewModel.selectedItinerary.collectAsState().value
@@ -62,6 +61,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val weatherViewModel: WeatherViewModel = entry.sharedViewModel(navController)
       val weather = weatherViewModel.weather.observeAsState().value
       val suggestions = discoverScreenViewModel.suggestions.collectAsState().value
+      val initialPosition = discoverScreenViewModel.initialPosition.collectAsState().value
 
       DiscoverScreen(
           isLoading,
@@ -84,7 +84,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           weather,
           mapState,
           discoverScreenViewModel::updatePermission,
-          initialPositieon,
+          initialPosition,
           initialZoom,
           discoverScreenViewModel::updateMarkers,
           discoverScreenViewModel::updateSelectedMarker,
@@ -99,6 +99,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           discoverScreenViewModel::fetchSuggestions,
           suggestions,
           discoverScreenViewModel::clearSuggestions,
+            discoverScreenViewModel::updateInitialPosition,
       )
     }
     composable(DestinationRoute.Favorites.route) { entry ->
@@ -189,7 +190,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val weather = weatherViewModel.weather.observeAsState().value
       val mapState = discoverScreenViewModel.mapState.collectAsState().value
       val initialZoom = discoverScreenViewModel.initialZoom
-      val initialPosition = discoverScreenViewModel.initialPosition
+      val initialPosition = discoverScreenViewModel.initialPosition.collectAsState().value
       val selectedZoom = discoverScreenViewModel.selectedZoom
       val selectedMarker = discoverScreenViewModel.selectedMarker.collectAsState().value
       val selectedItinerary = discoverScreenViewModel.selectedItinerary.collectAsState().value

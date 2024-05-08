@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.AuthUI.getApplicationContext
+import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -116,7 +117,7 @@ private fun ManagePermissions(updatePermission: (Boolean) -> Unit) {
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("RestrictedApi")
 @Composable
-fun MapScreen(
+fun mapScreen(
     state: MapState,
     updatePermission: (Boolean) -> Unit,
     initialPosition: LatLng,
@@ -129,7 +130,7 @@ fun MapScreen(
     selectedItinerary: MapItinerary?,
     markerList: List<Marker>,
     clearSelectedMarker: () -> Unit
-) {
+) : (CameraUpdate) -> Unit {
 
   // Initialise the map, otherwise the icon functionality won't work
   MapsInitializer.initialize(getApplicationContext())
@@ -188,6 +189,9 @@ fun MapScreen(
       selectedMarker,
       clearSelectedItinerary,
       clearSelectedMarker)
+
+  //return a function that can move the camera to a specific position
+  return cameraPositionState::move
 }
 
 // Composable that displays the Google Map

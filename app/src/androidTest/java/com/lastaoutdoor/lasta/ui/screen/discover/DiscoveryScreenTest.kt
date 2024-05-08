@@ -62,9 +62,10 @@ class DiscoverScreenTest {
             weather = null,
             fetchSuggestion = fetchSuggestion,
             suggestions = suggestion,
-            clearSuggestions = { suggestion = emptyMap() },
-            fetchActivities = {_, _ ->},
             setSelectedLocality = {},
+            fetchActivities = {_, _ ->},
+            clearSuggestions = { suggestion = emptyMap() },
+            updateInitialPosition = updateInitialPosition,
             )
       }
     }
@@ -124,6 +125,7 @@ class DiscoverScreenTest {
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
             changeActivityToDisplay = {},
+            changeWeatherTarget = {},
             weather = null,
             state = MapState(),
             updatePermission = {},
@@ -135,14 +137,15 @@ class DiscoverScreenTest {
             selectedZoom = 13f,
             selectedMarker = null,
             selectedItinerary = null,
+            markerList = emptyList(),
             orderingBy = OrderingBy.RATING,
             updateOrderingBy = {},
-            markerList = emptyList(),
-            changeWeatherTarget = {},
             clearSelectedMarker = {},
             fetchSuggestion = {_->},
             suggestions = emptyMap(),
-        ) {}
+            {},
+            discoverScreenViewModel::updateInitialPosition,
+        )
       }
     }
     composeRule.onNodeWithTag("LoadingBarDiscover").assertIsDisplayed()
@@ -246,6 +249,7 @@ class DiscoverScreenTest {
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
             changeActivityToDisplay = {},
+            changeWeatherTarget = {},
             weather = null,
             state = MapState(),
             updatePermission = {},
@@ -257,14 +261,14 @@ class DiscoverScreenTest {
             selectedZoom = 13f,
             selectedMarker = null,
             selectedItinerary = null,
+            markerList = emptyList(),
             orderingBy = OrderingBy.RATING,
             updateOrderingBy = {},
-            markerList = emptyList(),
-            changeWeatherTarget = {},
-            clearSuggestions = {},
-            suggestions = emptyMap(),
+            clearSelectedMarker = {},
             fetchSuggestion = {_->},
-            clearSelectedMarker = {},)
+            suggestions = emptyMap(),
+            clearSuggestions = {},
+            kFunction1 = discoverScreenViewModel::updateInitialPosition,)
       }
     }
 
@@ -348,6 +352,7 @@ class DiscoverScreenTest {
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
             changeActivityToDisplay = {},
+            changeWeatherTarget = {},
             weather = null,
             state = MapState(),
             updatePermission = {},
@@ -359,14 +364,14 @@ class DiscoverScreenTest {
             selectedZoom = 13f,
             selectedMarker = null,
             selectedItinerary = null,
+            markerList = emptyList(),
             orderingBy = OrderingBy.DISTANCEASCENDING,
             updateOrderingBy = {},
-            markerList = emptyList(),
-            changeWeatherTarget = {},
+            clearSelectedMarker = {},
             fetchSuggestion = {},
             suggestions = emptyMap(),
             clearSuggestions = {},
-            clearSelectedMarker = {},
+            kFunction1 = discoverScreenViewModel::updateInitialPosition,
         )
       }
     }
@@ -423,6 +428,7 @@ class DiscoverScreenTest {
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
             changeActivityToDisplay = {},
+            changeWeatherTarget = {},
             weather = null,
             state = MapState(),
             updatePermission = {},
@@ -434,14 +440,14 @@ class DiscoverScreenTest {
             selectedZoom = 13f,
             selectedMarker = null,
             selectedItinerary = null,
+            markerList = emptyList(),
             orderingBy = OrderingBy.DIFFICULTYASCENDING,
             updateOrderingBy = {},
-            markerList = emptyList(),
-            changeWeatherTarget = {},
-            clearSuggestions = {},
-            suggestions = emptyMap(),
-            fetchSuggestion = {_->},
             clearSelectedMarker = {},
+            fetchSuggestion = {_->},
+            suggestions = emptyMap(),
+            clearSuggestions = {},
+            kFunction1 = discoverScreenViewModel::updateInitialPosition,
         )
       }
     }
@@ -488,6 +494,7 @@ class DiscoverScreenTest {
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
             changeActivityToDisplay = {},
+            changeWeatherTarget = {},
             weather = null,
             state = MapState(),
             updatePermission = {},
@@ -499,14 +506,15 @@ class DiscoverScreenTest {
             selectedZoom = 13f,
             selectedMarker = null,
             selectedItinerary = null,
+            markerList = emptyList(),
             orderingBy = OrderingBy.DIFFICULTYDESCENDING,
             updateOrderingBy = {},
-            markerList = emptyList(),
-            changeWeatherTarget = {},
             clearSelectedMarker = {},
             fetchSuggestion = {_->},
             suggestions = emptyMap(),
-        ) {}
+            {},
+            discoverScreenViewModel::updateInitialPosition,
+        )
       }
     }
     composeRule.onNodeWithTag("sortingTextValue").assertIsDisplayed()
@@ -552,6 +560,7 @@ class DiscoverScreenTest {
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
             changeActivityToDisplay = {},
+            changeWeatherTarget = {},
             weather = null,
             state = MapState(),
             updatePermission = {},
@@ -563,14 +572,14 @@ class DiscoverScreenTest {
             selectedZoom = 13f,
             selectedMarker = null,
             selectedItinerary = null,
+            markerList = emptyList(),
             orderingBy = OrderingBy.POPULARITY,
             updateOrderingBy = {},
-            markerList = emptyList(),
-            changeWeatherTarget = {},
-            clearSuggestions = {},
+            clearSelectedMarker = {},
             fetchSuggestion = {_->},
             suggestions = emptyMap(),
-            clearSelectedMarker = {},
+            clearSuggestions = {},
+            kFunction1 = discoverScreenViewModel::updateInitialPosition,
         )
       }
     }
@@ -617,6 +626,7 @@ class DiscoverScreenTest {
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
             changeActivityToDisplay = {},
+            changeWeatherTarget = {},
             weather = null,
             state = MapState(),
             updatePermission = {},
@@ -628,14 +638,14 @@ class DiscoverScreenTest {
             selectedZoom = 13f,
             selectedMarker = null,
             selectedItinerary = null,
+            markerList = emptyList(),
             orderingBy = OrderingBy.DISTANCEDESCENDING,
             updateOrderingBy = {},
-            markerList = emptyList(),
-            changeWeatherTarget = {},
-            fetchSuggestion = {},
-            clearSuggestions = {},
             clearSelectedMarker = {},
+            fetchSuggestion = {},
             suggestions = emptyMap(),
+            clearSuggestions = {},
+            kFunction1 = discoverScreenViewModel::updateInitialPosition,
         )
       }
     }
