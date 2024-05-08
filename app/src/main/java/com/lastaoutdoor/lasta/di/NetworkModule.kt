@@ -32,10 +32,10 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Named
 import javax.inject.Singleton
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -136,11 +136,10 @@ object NetworkModule {
       firestore: FirebaseFirestore
   ): SocialDBRepository = SocialDBRepositoryImpl(context, firestore)
 
-    @Singleton
-    @Provides
-    fun provideTokenDBRepository(
-        @ApplicationContext context: Context,
-        firestore: FirebaseFirestore
-    ): TokenDBRepository = TokenDBRepositoryImpl(context, firestore)
+  @Singleton
+  @Provides
+  fun provideTokenDBRepository(
+      @ApplicationContext context: Context,
+      firestore: FirebaseFirestore
+  ): TokenDBRepository = TokenDBRepositoryImpl(context, firestore)
 }
-
