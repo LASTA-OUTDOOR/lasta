@@ -12,4 +12,20 @@ class FakeUserActivityRepo() : UserActivitiesDBRepository {
   }
 
   override suspend fun addUserActivity(userId: String, userActivity: UserActivity) {}
+
+  override suspend fun getNLatestActivities(userId: String, n: Int): List<UserActivity> {
+    TODO("Not yet implemented")
+  }
+
+  override suspend fun getUserHikingActivities(userId: String): List<UserActivity> {
+    TODO("Not yet implemented")
+  }
+
+  override suspend fun getUserClimbingActivities(userId: String): List<UserActivity> {
+    TODO("Not yet implemented")
+  }
+
+  override suspend fun getUserBikingActivities(userId: String): List<UserActivity> {
+    TODO("Not yet implemented")
+  }
 }
