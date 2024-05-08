@@ -43,6 +43,10 @@ class DiscoverScreenTest {
     var navigateFilter = false
     var screenType = DiscoverDisplayType.LIST
     var popUp = false
+
+    val fetchSuggestion: (String) -> Unit = { /*TODO*/ }
+    var suggestion : Map<String, LatLng> = emptyMap()
+
     composeRule.activity.setContent {
       MaterialTheme {
         // Assuming you have a minimal setup or mock data needed for DiscoverScreen
@@ -56,7 +60,12 @@ class DiscoverScreenTest {
             orderingBy = OrderingBy.RATING,
             updateOrderingBy = {},
             weather = null,
-            fetchSuggestion = fetchSuggestion)
+            fetchSuggestion = fetchSuggestion,
+            suggestions = suggestion,
+            clearSuggestions = { suggestion = emptyMap() },
+            fetchActivities = {_, _ ->},
+            setSelectedLocality = {},
+            )
       }
     }
 
@@ -128,7 +137,11 @@ class DiscoverScreenTest {
             selectedItinerary = null,
             orderingBy = OrderingBy.RATING,
             updateOrderingBy = {},
-            markerList = emptyList()) {}
+            markerList = emptyList(),
+            clearSelectedMarker = {},
+            fetchSuggestion = {_->},
+            suggestions = emptyMap(),
+        ) {}
       }
     }
     composeRule.onNodeWithTag("LoadingBarDiscover").assertIsDisplayed()
@@ -244,7 +257,12 @@ class DiscoverScreenTest {
             selectedItinerary = null,
             orderingBy = OrderingBy.RATING,
             updateOrderingBy = {},
-            markerList = emptyList()) {}
+            markerList = emptyList(),
+            clearSuggestions = {},
+            suggestions = emptyMap(),
+            fetchSuggestion = {_->},
+            clearSelectedMarker = {},
+        )
       }
     }
 
@@ -341,7 +359,12 @@ class DiscoverScreenTest {
             selectedItinerary = null,
             orderingBy = OrderingBy.DISTANCEASCENDING,
             updateOrderingBy = {},
-            markerList = emptyList()) {}
+            markerList = emptyList(),
+            fetchSuggestion = {},
+            suggestions = emptyMap(),
+            clearSuggestions = {},
+            clearSelectedMarker = {},
+        )
       }
     }
 
@@ -410,7 +433,12 @@ class DiscoverScreenTest {
             selectedItinerary = null,
             orderingBy = OrderingBy.DIFFICULTYASCENDING,
             updateOrderingBy = {},
-            markerList = emptyList()) {}
+            markerList = emptyList(),
+            clearSuggestions = {},
+            suggestions = emptyMap(),
+            fetchSuggestion = {_->},
+            clearSelectedMarker = {},
+        )
       }
     }
     composeRule.onNodeWithTag("sortingTextValue").assertIsDisplayed()
@@ -469,7 +497,11 @@ class DiscoverScreenTest {
             selectedItinerary = null,
             orderingBy = OrderingBy.DIFFICULTYDESCENDING,
             updateOrderingBy = {},
-            markerList = emptyList()) {}
+            markerList = emptyList(),
+            clearSelectedMarker = {},
+            fetchSuggestion = {_->},
+            suggestions = emptyMap(),
+        ) {}
       }
     }
     composeRule.onNodeWithTag("sortingTextValue").assertIsDisplayed()
@@ -528,7 +560,12 @@ class DiscoverScreenTest {
             selectedItinerary = null,
             orderingBy = OrderingBy.POPULARITY,
             updateOrderingBy = {},
-            markerList = emptyList()) {}
+            markerList = emptyList(),
+            clearSuggestions = {},
+            fetchSuggestion = {_->},
+            suggestions = emptyMap(),
+            clearSelectedMarker = {},
+        )
       }
     }
     composeRule.onNodeWithTag("sortingTextValue").assertIsDisplayed()
@@ -587,7 +624,12 @@ class DiscoverScreenTest {
             selectedItinerary = null,
             orderingBy = OrderingBy.DISTANCEDESCENDING,
             updateOrderingBy = {},
-            markerList = emptyList()) {}
+            markerList = emptyList(),
+            fetchSuggestion = {},
+            clearSuggestions = {},
+            clearSelectedMarker = {},
+            suggestions = emptyMap(),
+        )
       }
     }
     composeRule.onNodeWithTag("sortingTextValue").assertIsDisplayed()

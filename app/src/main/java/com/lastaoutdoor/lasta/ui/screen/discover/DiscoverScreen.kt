@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.DropdownMenu
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -26,11 +27,15 @@ import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -123,7 +128,9 @@ fun DiscoverScreen(
   if (screen == DiscoverDisplayType.LIST) {
     Column(
         modifier =
-            Modifier.testTag("discoveryScreen").background(MaterialTheme.colorScheme.background)) {
+        Modifier
+            .testTag("discoveryScreen")
+            .background(MaterialTheme.colorScheme.background)) {
           HeaderComposable(
               screen,
               range,
@@ -176,7 +183,9 @@ fun DiscoverScreen(
           setSelectedLocality,
           fetchActivities,
           clearSuggestions)
-      Box(modifier = Modifier.fillMaxHeight().testTag("mapScreenDiscover")) {
+      Box(modifier = Modifier
+          .fillMaxHeight()
+          .testTag("mapScreenDiscover")) {
         MapScreen(
             state,
             updatePermission,
@@ -198,6 +207,7 @@ fun DiscoverScreen(
   ModalUpperSheet(isRangePopup = isRangePopup)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HeaderComposable(
     screen: DiscoverDisplayType,
@@ -226,13 +236,17 @@ fun HeaderComposable(
     }
   }
   Surface(
-      modifier = Modifier.fillMaxWidth().testTag("header"),
+      modifier = Modifier
+          .fillMaxWidth()
+          .testTag("header"),
       color = MaterialTheme.colorScheme.background,
       shadowElevation = 3.dp) {
         Column {
           // Location bar
           Row(
-              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+              modifier = Modifier
+                  .fillMaxWidth()
+                  .padding(horizontal = 16.dp, vertical = 8.dp),
               verticalAlignment = Alignment.CenterVertically) {
                 Column {
                   Row {
@@ -243,11 +257,15 @@ fun HeaderComposable(
 
                     IconButton(
                         onClick = updatePopup,
-                        modifier = Modifier.size(24.dp).testTag("locationButton")) {
+                        modifier = Modifier
+                            .size(24.dp)
+                            .testTag("locationButton")) {
                           Icon(
                               Icons.Outlined.KeyboardArrowDown,
                               contentDescription = "Location button",
-                              modifier = Modifier.size(24.dp).testTag("locationIcon"))
+                              modifier = Modifier
+                                  .size(24.dp)
+                                  .testTag("locationIcon"))
                         }
                   }
 
@@ -265,44 +283,63 @@ fun HeaderComposable(
           // Search bar with toggle buttons
           Row(
               modifier =
-                  Modifier.fillMaxWidth()
-                      .padding(horizontal = 16.dp, vertical = 8.dp)
-                      .testTag("searchBar"),
+              Modifier
+                  .fillMaxWidth()
+                  .padding(horizontal = 16.dp, vertical = 8.dp)
+                  .testTag("searchBar"),
               verticalAlignment = Alignment.CenterVertically) {
                 SearchBarComponent(
-                    Modifier.weight(1f).testTag("searchBarComponent"),
-                    onSearch = { fetchSuggestion(it) })
+                        Modifier
+                            .weight(1f)
+                            .testTag("searchBarComponent"),
+                        onSearch = { fetchSuggestion(it) })
+
+
                 Spacer(modifier = Modifier.width(8.dp))
-                IconButton(
+                    IconButton(
                     onClick = { navigateToFilter() },
-                    modifier = Modifier.size(iconSize).testTag("filterButton")) {
+                    modifier = Modifier
+                        .size(iconSize)
+                        .testTag("filterButton")) {
                       Icon(
                           painter = painterResource(id = R.drawable.filter_icon),
                           contentDescription = "Filter button",
-                          modifier = Modifier.size(24.dp).testTag("filterIcon"))
+                          modifier = Modifier
+                              .size(24.dp)
+                              .testTag("filterIcon"))
                     }
               }
 
           val fManager = LocalFocusManager.current
           // Suggestions for the places
-          LazyColumn(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp).heightIn(0.dp, 100.dp)) {
+
+          LazyColumn(modifier = Modifier
+              .fillMaxWidth()
+              .padding(horizontal = 16.dp, vertical = 8.dp)
+              .heightIn(0.dp, 130.dp)) {
               items(suggestions.count()){i ->
                 val suggestion = suggestions.entries.elementAt(i)
                 Card(
                     modifier =
-                        Modifier.fillMaxWidth().padding(4.dp).clickable {
-                          // Click on a suggestion
-                          setSelectedLocality(Pair(suggestion.key, suggestion.value))
-                          fetchActivities(range, suggestion.value)
-                          clearSuggestions()
-                          fManager.clearFocus()
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp)
+                        .testTag("suggestion")
+                        .clickable {
+                            // Click on a suggestion
+                            setSelectedLocality(Pair(suggestion.key, suggestion.value))
+                            fetchActivities(range, suggestion.value)
+                            clearSuggestions()
+                            fManager.clearFocus()
                         }) {
-                  Text(modifier = Modifier.padding(4.dp), text = suggestion.key)
+                  Text(modifier = Modifier.padding(8.dp).height(20.dp), text = suggestion.key)
                 }
             }
           }
           Row(
-              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+              modifier = Modifier
+                  .fillMaxWidth()
+                  .padding(horizontal = 16.dp, vertical = 8.dp),
               verticalAlignment = Alignment.CenterVertically,
               horizontalArrangement = Arrangement.Center) {
                 val context = LocalContext.current
@@ -314,9 +351,10 @@ fun HeaderComposable(
           if (screen == DiscoverDisplayType.LIST) {
             Row(
                 modifier =
-                    Modifier.fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                        .testTag("sortingText"),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .testTag("sortingText"),
                 verticalAlignment = Alignment.CenterVertically) {
                   Text(
                       LocalContext.current.getString(R.string.filter_by),
@@ -330,12 +368,16 @@ fun HeaderComposable(
 
                   IconButton(
                       onClick = { showMenu = showMenu.not() },
-                      modifier = Modifier.size(24.dp).testTag("sortingButton")) {
+                      modifier = Modifier
+                          .size(24.dp)
+                          .testTag("sortingButton")) {
                         Icon(
                             Icons.Outlined.KeyboardArrowDown,
                             contentDescription = "Ordering button",
                             tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(24.dp).testTag("sortingIcon"))
+                            modifier = Modifier
+                                .size(24.dp)
+                                .testTag("sortingIcon"))
                       }
                 }
           }
@@ -370,28 +412,32 @@ fun ActivitiesDisplay(
   for (a in activities) {
     Card(
         modifier =
-            Modifier.fillMaxWidth()
-                .wrapContentHeight()
-                .padding(vertical = 8.dp, horizontal = 16.dp)
-                .clickable(
-                    onClick = {
-                      changeActivityToDisplay(a)
-                      navigateToMoreInfo()
-                    })
-                .testTag("${a.activityId}activityCard"),
+        Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .clickable(
+                onClick = {
+                    changeActivityToDisplay(a)
+                    navigateToMoreInfo()
+                })
+            .testTag("${a.activityId}activityCard"),
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
     ) {
       Column {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
               Box(
                   modifier =
-                      Modifier.shadow(4.dp, RoundedCornerShape(30))
-                          .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
-                          .padding(PaddingValues(8.dp))) {
+                  Modifier
+                      .shadow(4.dp, RoundedCornerShape(30))
+                      .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
+                      .padding(PaddingValues(8.dp))) {
                     Text(
                         text =
                             LocalContext.current.getString(
@@ -406,7 +452,9 @@ fun ActivitiesDisplay(
 
               IconButton(
                   onClick = { flipFavorite(a.activityId) },
-                  modifier = Modifier.size(24.dp).testTag("${a.activityId}favoriteButton")) {
+                  modifier = Modifier
+                      .size(24.dp)
+                      .testTag("${a.activityId}favoriteButton")) {
                     Icon(
                         imageVector =
                             if (favorites.contains(a.activityId)) Icons.Filled.Favorite
@@ -418,7 +466,9 @@ fun ActivitiesDisplay(
 
         Spacer(modifier = Modifier.height(16.dp))
         Row(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically) {
               Text(
                   text = a.name,
@@ -427,7 +477,9 @@ fun ActivitiesDisplay(
             }
         SeparatorComponent()
         Row(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically) {
               Icon(
                   imageVector = Icons.Default.Star,

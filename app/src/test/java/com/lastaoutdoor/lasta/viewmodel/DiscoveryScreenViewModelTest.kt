@@ -1,5 +1,6 @@
 package com.lastaoutdoor.lasta.viewmodel
 
+import androidx.compose.runtime.collectAsState
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
@@ -13,6 +14,7 @@ import com.lastaoutdoor.lasta.utils.Response
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivitiesDBRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivityRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
+import com.lastaoutdoor.lasta.viewmodel.repo.FakeRadarRepository
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.Dispatchers
@@ -49,6 +51,7 @@ class DiscoveryScreenViewModelTest() {
   private lateinit var repository: ActivityRepository
   private lateinit var activitiesDB: FakeActivitiesDBRepository
   private lateinit var prefRepo: FakePreferencesRepository
+  private lateinit var radarRepo: FakeRadarRepository
 
   @ExperimentalCoroutinesApi
   @Before
@@ -67,8 +70,9 @@ class DiscoveryScreenViewModelTest() {
   fun setUp() {
     repository = mockk(relaxed = true)
     prefRepo = FakePreferencesRepository()
+    radarRepo = FakeRadarRepository()
     activitiesDB = FakeActivitiesDBRepository()
-    viewModel = DiscoverScreenViewModel(repository, prefRepo, activitiesDB)
+    viewModel = DiscoverScreenViewModel(repository, prefRepo, activitiesDB, radarRepo)
     repo.currResponse = Response.Success(null)
   }
 
@@ -125,6 +129,7 @@ class DiscoveryScreenViewModelTest() {
     assertEquals(viewModel.activities.value.isEmpty(), true) // Check initial activities
     assertEquals(viewModel.screen.value, DiscoverDisplayType.LIST)
     assertEquals(viewModel.range.value, 10000.0)
+    assertEquals(viewModel.suggestions.value, emptyMap<String, LatLng>())
     assertEquals(
         viewModel.localities,
         listOf(
@@ -242,4 +247,19 @@ class DiscoveryScreenViewModelTest() {
     viewModel.updateOrderingBy(OrderingBy.POPULARITY)
     assertEquals(viewModel.orderingBy.value, OrderingBy.POPULARITY)
   }
+
+  //Test autocompletion part of the view model
+    @Test
+    fun testFetchSuggestions(){
+      viewModel.fetchSuggestions("Test")
+      assert(viewModel.suggestions.value.isNotEmpty())
+      assert(viewModel.suggestions.value.size == 4)
+
+      radarRepo.shouldWork(false)
+      viewModel.fetchSuggestions("Test")
+      runBlocking {
+        viewModel.suggestions.collect {
+        }
+      }
+    }
 }
