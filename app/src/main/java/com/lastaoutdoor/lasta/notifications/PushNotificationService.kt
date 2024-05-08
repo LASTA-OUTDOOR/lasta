@@ -13,7 +13,7 @@ class PushNotificationService: FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
-
+        println("Received message: ${message.data.toMap()}")
         // Respond to received messages
     }
 }
