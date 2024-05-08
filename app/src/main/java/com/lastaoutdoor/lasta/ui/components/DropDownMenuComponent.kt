@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
@@ -45,40 +44,37 @@ fun <T> DropDownMenuComponent(
 ) {
   var expanded by remember { mutableStateOf(false) }
 
-
-    Row(modifier = modifier.clickable(onClick = { expanded = true }).fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically) {
-      Text(
-          "$fieldText:",
-          style = MaterialTheme.typography.bodyMedium)
+  Row(
+      modifier = modifier.clickable(onClick = { expanded = true }),
+      verticalAlignment = Alignment.CenterVertically) {
+        Text("$fieldText:", style = MaterialTheme.typography.bodyMedium)
 
         Spacer(modifier = Modifier.width(8.dp))
-        Column{
-            Row(verticalAlignment = Alignment.CenterVertically){
-                Text(
-                    toStr(selectedItem),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.primary)
+        Column {
+          Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                toStr(selectedItem),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.primary)
 
-                Icon(
-                    imageVector = Icons.Outlined.KeyboardArrowDown,
-                    contentDescription = "Dropdown",
-                    modifier = Modifier.clickable(onClick = { expanded = true }).testTag("spinnerIcon"),
-                    tint = MaterialTheme.colorScheme.primary)
+            Icon(
+                imageVector = Icons.Outlined.KeyboardArrowDown,
+                contentDescription = "Dropdown",
+                modifier = Modifier.clickable(onClick = { expanded = true }).testTag("spinnerIcon"),
+                tint = MaterialTheme.colorScheme.primary)
+          }
+
+          DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            items.forEachIndexed { index, label ->
+              DropdownMenuItem(
+                  modifier = Modifier.testTag("DropdownItem$index").wrapContentWidth(),
+                  text = { Text(toStr(label)) },
+                  onClick = {
+                    onItemSelected(label)
+                    expanded = false
+                  })
             }
-
-            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                items.forEachIndexed { index, label ->
-                    DropdownMenuItem(
-                        modifier = Modifier.testTag("DropdownItem$index").wrapContentWidth(),
-                        text = { Text(toStr(label)) },
-                        onClick = {
-                            onItemSelected(label)
-                            expanded = false
-                        })
-                }
+          }
         }
-
-    }
-  }
+      }
 }

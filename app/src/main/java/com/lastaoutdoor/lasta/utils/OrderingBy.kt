@@ -5,8 +5,7 @@ import androidx.annotation.StringRes
 import com.lastaoutdoor.lasta.R
 
 enum class OrderingBy(@StringRes val orderText: Int) {
-  DISTANCEASCENDING(R.string.distance_asc),
-  DISTANCEDESCENDING(R.string.distance_desc),
+  DISTANCE(R.string.distance_asc),
   RATING(R.string.rating),
   POPULARITY(R.string.popularity),
   DIFFICULTYASCENDING(R.string.difficulty_asc),

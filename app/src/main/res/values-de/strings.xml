@@ -10,7 +10,7 @@
     <string name="less_than">Weniger als</string>
     <string name="around_you">in Ihrer Nähe</string>
     <string name="Climbing">Klettern</string>
-    <string name="popularity">Popularität (Anzahl der Bewertungen)</string>
+    <string name="popularity">Popularität</string>
     <string name="more_info">Mehr Infos</string>
     <string name="sign_in_google">Mit Google anmelden</string>
     <string name="offline">Sie sind Offline</string>
@@ -95,11 +95,13 @@
     <string name="no_fr_twice">Sie haben diesem Benutzer bereits eine Freundschaftsanfrage gesendet</string>
     <string name="inv_email">Die E-Mail-adresse ist nicht gültig</string>
     <string name="distance">Distanz</string>
-    <string name="difficulty_desc">Schwierigkeit (vom Schwierigsten zum Einfachsten)</string>
-    <string name="difficulty_asc">Schwierigkeit (vom einfachsten zum schwierigsten)</string>
-    <string name="distance_desc">Entfernung (am weitesten zum nächsten)</string>
-    <string name="distance_asc">Entfernung (am nächsten bis am weitesten)</string>
+    <string name="difficulty_desc">" Schwierigkeit (abnehmend)"</string>
+    <string name="difficulty_asc">Schwierigkeit (zunehmende)</string>
+    <string name="distance_asc">"Entfernung "</string>
     <string name="english">Englisch</string>
     <string name="french">Französisch</string>
     <string name="german">Deutsch</string>
+    <string name="beginner">Anfänger</string>
+    <string name="intermediate">Fortgeschritten</string>
+    <string name="advanced">Erweitert</string>
 </resources>
