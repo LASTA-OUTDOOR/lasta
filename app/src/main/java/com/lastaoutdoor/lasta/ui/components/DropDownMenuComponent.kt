@@ -45,9 +45,12 @@ fun <T> DropDownMenuComponent(
   var expanded by remember { mutableStateOf(false) }
 
   Row(
-      modifier = modifier.clickable(onClick = { expanded = true }),
+      modifier = modifier.clickable(onClick = { expanded = true }).testTag("textValueRow"),
       verticalAlignment = Alignment.CenterVertically) {
-        Text("$fieldText:", style = MaterialTheme.typography.bodyMedium)
+        Text(
+            "$fieldText:",
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.testTag("fieldTextValue"))
 
         Spacer(modifier = Modifier.width(8.dp))
         Column {
@@ -55,7 +58,8 @@ fun <T> DropDownMenuComponent(
             Text(
                 toStr(selectedItem),
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.primary)
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.testTag("selectedTextValue"))
 
             Icon(
                 imageVector = Icons.Outlined.KeyboardArrowDown,
