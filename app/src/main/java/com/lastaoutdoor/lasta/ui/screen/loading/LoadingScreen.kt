@@ -14,7 +14,8 @@ fun LoadingScreen(
 ) {
   LaunchedEffect(key1 = isLoggedIn) {
     // print token fcm
-    println(FirebaseMessaging.getInstance().token.await())
+    //FirebaseMessaging.getInstance().deleteToken().await()
+    //println(FirebaseMessaging.getInstance().token.await())
     if (isLoggedIn != null) {
       if (isLoggedIn == true) {
         navigateWhenLoggedIn()

@@ -7,7 +7,7 @@ import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class TokenDBRepositoryImpl @Inject constructor(context: Context, database: FirebaseFirestore) :
+class TokenDBRepositoryImpl(context: Context, database: FirebaseFirestore) :
     TokenDBRepository {
   private val tokenCollection = database.collection("user_fcm_tokens")
 
