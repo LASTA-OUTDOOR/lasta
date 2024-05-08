@@ -45,7 +45,8 @@ class FavoritesScreenTest {
             centerPoint = LatLng(46.519962, 6.633597),
             favorites = emptyList(),
             changeActivityToDisplay = {},
-            flipFavorite = {}) {}
+            flipFavorite = {},
+            changeWeatherTarget = {}) {}
       }
     }
     composeRule.onNodeWithTag("LoadingBarFavorites").assertIsDisplayed()

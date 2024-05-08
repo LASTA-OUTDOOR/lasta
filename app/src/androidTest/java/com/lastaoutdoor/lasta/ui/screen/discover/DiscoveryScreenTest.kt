@@ -127,7 +127,8 @@ class DiscoverScreenTest {
             selectedItinerary = null,
             orderingBy = OrderingBy.RATING,
             updateOrderingBy = {},
-            markerList = emptyList()) {}
+            markerList = emptyList(),
+            changeWeatherTarget = {}) {}
       }
     }
     composeRule.onNodeWithTag("LoadingBarDiscover").assertIsDisplayed()
