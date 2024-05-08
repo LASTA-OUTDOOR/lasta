@@ -84,6 +84,7 @@ fun DiscoverScreen(
     navigateToFilter: () -> Unit,
     navigateToMoreInfo: () -> Unit,
     changeActivityToDisplay: (Activity) -> Unit,
+    changeWeatherTarget: (Activity) -> Unit,
     weather: WeatherResponse?,
     state: MapState,
     updatePermission: (Boolean) -> Unit,
@@ -129,7 +130,6 @@ fun DiscoverScreen(
               orderingBy,
               updateOrderingBy,
               weather)
-
           Spacer(modifier = Modifier.height(8.dp))
           if (isLoading) {
             LoadingAnim(width = 35, tag = "LoadingBarDiscover")
@@ -143,8 +143,9 @@ fun DiscoverScreen(
                     centerPoint,
                     favorites,
                     changeActivityToDisplay,
-                    flipFavorite,
-                    navigateToMoreInfo)
+                    flipFavorite = flipFavorite,
+                    navigateToMoreInfo = navigateToMoreInfo,
+                    changeWeatherTarget = changeWeatherTarget)
               }
             }
           }
@@ -323,6 +324,7 @@ fun ActivitiesDisplay(
     centerPoint: LatLng,
     favorites: List<String>,
     changeActivityToDisplay: (Activity) -> Unit,
+    changeWeatherTarget: (Activity) -> Unit,
     flipFavorite: (String) -> Unit,
     navigateToMoreInfo: () -> Unit
 ) {
@@ -336,6 +338,7 @@ fun ActivitiesDisplay(
                 .clickable(
                     onClick = {
                       changeActivityToDisplay(a)
+                      changeWeatherTarget(a)
                       navigateToMoreInfo()
                     })
                 .testTag("${a.activityId}activityCard"),
