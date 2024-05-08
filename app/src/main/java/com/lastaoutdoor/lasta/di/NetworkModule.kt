@@ -16,6 +16,7 @@ import com.lastaoutdoor.lasta.data.api.weather.WeatherRepositoryImpl
 import com.lastaoutdoor.lasta.data.auth.AuthRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.ActivitiesDBRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.SocialDBRepositoryImpl
+import com.lastaoutdoor.lasta.data.db.TokenDBRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.UserActivitiesDBRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.UserDBRepositoryImpl
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
@@ -23,6 +24,7 @@ import com.lastaoutdoor.lasta.repository.api.WeatherRepository
 import com.lastaoutdoor.lasta.repository.auth.AuthRepository
 import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
 import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
+import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserActivitiesDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import dagger.Module
@@ -30,10 +32,10 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Named
-import javax.inject.Singleton
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -133,4 +135,12 @@ object NetworkModule {
       @ApplicationContext context: Context,
       firestore: FirebaseFirestore
   ): SocialDBRepository = SocialDBRepositoryImpl(context, firestore)
+
+    @Singleton
+    @Provides
+    fun provideTokenDBRepository(
+        @ApplicationContext context: Context,
+        firestore: FirebaseFirestore
+    ): TokenDBRepository = TokenDBRepositoryImpl(context, firestore)
 }
+
