@@ -63,7 +63,7 @@ fun MoreInfoScreen(
     goToMarker: (Activity) -> Marker,
     weather: WeatherResponse?,
     markerList: List<Marker>,
-    selectedItinary: MapItinerary?,
+    selectedItinerary: MapItinerary?,
     navigateBack: () -> Unit,
     setWeatherBackToUserLoc: () -> Unit
 ) {
@@ -106,7 +106,7 @@ fun MoreInfoScreen(
           clearSelectedItinerary,
           selectedZoom,
           marker,
-          selectedItinary,
+          selectedItinerary,
           markerList,
       ) {
         clearSelectedItinerary()
