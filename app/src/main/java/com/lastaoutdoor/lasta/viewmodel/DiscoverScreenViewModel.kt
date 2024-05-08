@@ -142,8 +142,13 @@ constructor(
               emptyList<RadarSuggestion>()
             }
           }
-      _suggestions.value = suggestions.map { it.getSuggestion() to it.getPosition()}.toMap()
+      _suggestions.value = suggestions.map { it.getSuggestion() to it.getPosition() }.toMap()
     }
+  }
+
+  // Clears the list of suggestions
+  fun clearSuggestions() {
+    _suggestions.value = emptyMap()
   }
 
   fun fetchActivities(rad: Double = 10000.0, centerLocation: LatLng = LatLng(46.519962, 6.633597)) {
@@ -217,7 +222,6 @@ constructor(
       updateActivitiesByOrdering()
     }
   }
-
 
   fun setScreen(screen: DiscoverDisplayType) {
     _screen.value = screen

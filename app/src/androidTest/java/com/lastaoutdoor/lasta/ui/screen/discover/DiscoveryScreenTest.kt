@@ -56,8 +56,7 @@ class DiscoverScreenTest {
             orderingBy = OrderingBy.RATING,
             updateOrderingBy = {},
             weather = null,
-            fetchSuggestion = fetchSuggestion
-        )
+            fetchSuggestion = fetchSuggestion)
       }
     }
 

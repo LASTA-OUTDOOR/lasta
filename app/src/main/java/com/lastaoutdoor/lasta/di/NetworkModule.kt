@@ -33,7 +33,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import okhttp3.OkHttpClient
 import javax.inject.Named
 import javax.inject.Singleton
 import retrofit2.Retrofit
@@ -101,7 +100,7 @@ object NetworkModule {
 
   @Singleton
   @Provides
-  fun provideRadarApiService() : RadarApiService =
+  fun provideRadarApiService(): RadarApiService =
       Retrofit.Builder()
           .baseUrl("https://api.radar.io/v1/search/")
           .addConverterFactory(GsonConverterFactory.create())

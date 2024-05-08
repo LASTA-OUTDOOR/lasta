@@ -94,8 +94,9 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           discoverScreenViewModel::updateOrderingBy,
           discoverScreenViewModel::clearSelectedMarker,
           discoverScreenViewModel::fetchSuggestions,
-          suggestions)
-
+          suggestions,
+          discoverScreenViewModel::clearSuggestions,
+      )
     }
     composable(DestinationRoute.Favorites.route) { entry ->
       val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
