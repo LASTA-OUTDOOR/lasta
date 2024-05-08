@@ -41,9 +41,10 @@ import com.lastaoutdoor.lasta.viewmodel.WeatherViewModel
 fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
   navigation(startDestination = DestinationRoute.Discover.route, route = BaseRoute.Main.route) {
     composable(DestinationRoute.Discover.route) { entry ->
-      val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
+      val discoverScreenViewModel: DiscoverScreenViewModel = entry.sharedViewModel(navController)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
+      val isLoading = discoverScreenViewModel.isLoading.collectAsState().value
       val activities = discoverScreenViewModel.activities.collectAsState().value
       val screen = discoverScreenViewModel.screen.collectAsState().value
       val range = discoverScreenViewModel.range.collectAsState().value
@@ -62,6 +63,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val weather = weatherViewModel.weather.observeAsState().value
 
       DiscoverScreen(
+          isLoading,
           activities,
           screen,
           range,
@@ -95,15 +97,17 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           discoverScreenViewModel::clearSelectedMarker)
     }
     composable(DestinationRoute.Favorites.route) { entry ->
-      val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
+      val discoverScreenViewModel: DiscoverScreenViewModel = entry.sharedViewModel(navController)
       val favoritesScreenViewModel: FavoritesScreenViewModel = hiltViewModel(entry)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
+      val isLoading = favoritesScreenViewModel.isLoading.collectAsState().value
       val favorites = favoritesScreenViewModel.favorites.collectAsState().value
       val centerPoint = discoverScreenViewModel.selectedLocality.collectAsState().value.second
       val favoriteIds = favoritesScreenViewModel.favoritesIds.collectAsState().value
       val weatherViewModel: WeatherViewModel = entry.sharedViewModel(navController)
       FavoritesScreen(
+          isLoading,
           favorites,
           centerPoint,
           favoriteIds,
@@ -269,7 +273,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
     }
 
     composable(DestinationRoute.Settings.route) { entry ->
-      val authViewModel: AuthViewModel = hiltViewModel()
+      val authViewModel: AuthViewModel = hiltViewModel(entry)
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
       val language = preferencesViewModel.language.collectAsState(initial = Language.ENGLISH).value
       val prefActivity = preferencesViewModel.prefActivity.collectAsState(ActivityType.HIKING).value

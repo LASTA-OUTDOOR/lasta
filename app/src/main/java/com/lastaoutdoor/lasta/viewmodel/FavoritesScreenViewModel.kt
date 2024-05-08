@@ -17,6 +17,9 @@ constructor(
     private val preferences: PreferencesRepository,
     private val activitiesDB: ActivitiesDBRepository
 ) : ViewModel() {
+  private val _isLoading = MutableStateFlow(true)
+  val isLoading = _isLoading
+
   private val _favoritesIds = MutableStateFlow<List<String>>(emptyList())
   val favoritesIds = _favoritesIds
 
@@ -28,6 +31,7 @@ constructor(
   }
 
   private fun fetchFavorites() {
+    _isLoading.value = true
     viewModelScope.launch {
       preferences.userPreferencesFlow.collect { userPreferences ->
         val favoritesIds = userPreferences.user.favorites
@@ -40,5 +44,6 @@ constructor(
         }
       }
     }
+    _isLoading.value = false
   }
 }

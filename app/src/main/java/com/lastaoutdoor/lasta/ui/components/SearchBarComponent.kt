@@ -39,9 +39,7 @@ fun SearchBarComponent(modifier: Modifier, onSearch: (String) -> Unit) {
       placeholder = {
         Text(
             text = LocalContext.current.getString(R.string.search),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.secondary,
-        )
+            style = MaterialTheme.typography.bodySmall)
       },
       leadingIcon = {
         Icon(

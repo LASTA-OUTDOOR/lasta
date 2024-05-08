@@ -2,6 +2,7 @@ package com.lastaoutdoor.lasta.ui.navigation
 
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -16,12 +17,14 @@ fun NavGraphBuilder.addLoadingNavGraph(navController: NavHostController) {
       LoadingScreen(
           isLoggedIn = preferencesViewModel.isLoggedIn.observeAsState(initial = null).value,
           navigateWhenLoggedIn = {
-            navController.popBackStack()
-            navController.navigate(BaseRoute.Main.route)
+            navController.navigate(BaseRoute.Main.route) {
+              popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
+            }
           },
           navigateWhenLoggedOut = {
-            navController.popBackStack()
-            navController.navigate(BaseRoute.Login.route)
+            navController.navigate(BaseRoute.Login.route) {
+              popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
+            }
           })
     }
   }
