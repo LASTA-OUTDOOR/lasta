@@ -340,6 +340,11 @@ fun ElevatedActivityType(activityToDisplay: Activity) {
 }
 
 @Composable
+fun AddRatingButton() {
+
+}
+
+@Composable
 fun RatingSection(ratings: List<Rating> = emptyList()) {
 
     Column(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
