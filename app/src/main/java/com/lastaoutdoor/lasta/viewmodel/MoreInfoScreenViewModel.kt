@@ -76,4 +76,8 @@ constructor(
         icon,
         activity.activityType)
   }
+
+  fun getActivityRatings(activity: Activity): String {
+    return ""
+  }
 }

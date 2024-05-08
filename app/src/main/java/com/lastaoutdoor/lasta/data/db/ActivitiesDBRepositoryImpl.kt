@@ -3,6 +3,7 @@ package com.lastaoutdoor.lasta.data.db
 import android.content.Context
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldPath
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.Activity
@@ -141,5 +142,13 @@ constructor(context: Context, database: FirebaseFirestore) : ActivitiesDBReposit
         from,
         to,
         distance)
+  }
+
+  fun addRatingToActivity(activityId: String, rating: Rating) {
+    val document = activitiesCollection.document(activityId)
+    document.update(
+        "ratings",
+        FieldValue.arrayUnion(
+            hashMapOf("userId" to rating.userId, "comment" to rating.comment, "rating" to rating.rating)))
   }
 }
