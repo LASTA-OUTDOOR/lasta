@@ -12,6 +12,7 @@ import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.ui.MainActivity
 import com.lastaoutdoor.lasta.viewmodel.MapState
@@ -81,5 +82,20 @@ class MoreInfoScreenTest {
   @Test
   fun moreInfoMapIsDisplayed() {
     composeRule.onNodeWithTag("viewOnMapButton").performClick()
+  }
+
+  @Test
+  fun elevateddiff_isDisplayed() {
+    composeRule.activity.setContent {
+      ElevatedDifficultyDisplay(
+          activityToDisplay = Activity("", 0L, difficulty = Difficulty.NORMAL))
+    }
+    composeRule.onNodeWithTag("elevatedTestTag").assertIsDisplayed()
+    composeRule.onNodeWithTag("elevatedTestTag").performClick()
+    composeRule.activity.setContent {
+      ElevatedDifficultyDisplay(activityToDisplay = Activity("", 0L, difficulty = Difficulty.HARD))
+    }
+    composeRule.onNodeWithTag("elevatedTestTag").assertIsDisplayed()
+    composeRule.onNodeWithTag("elevatedTestTag").performClick()
   }
 }

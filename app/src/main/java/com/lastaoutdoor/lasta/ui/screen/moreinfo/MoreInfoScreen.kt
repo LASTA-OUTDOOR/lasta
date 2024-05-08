@@ -240,7 +240,7 @@ fun ElevatedDifficultyDisplay(activityToDisplay: Activity) {
   ElevatedButton(
       onClick = { /*TODO let user change activity difficulty */},
       contentPadding = PaddingValues(all = 3.dp),
-      modifier = Modifier.width(80.dp).height(24.dp),
+      modifier = Modifier.width(80.dp).height(24.dp).testTag("elevatedTestTag"),
       colors = ButtonDefaults.buttonColors(containerColor = difficultyColor)) {
         Text(
             activityToDisplay.difficulty.toString(),
