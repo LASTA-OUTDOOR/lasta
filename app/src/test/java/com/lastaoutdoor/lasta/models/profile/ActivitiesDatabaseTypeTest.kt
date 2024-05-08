@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.data.model.profile
+package com.lastaoutdoor.lasta.models.profile
 
 import android.content.Context
 import com.lastaoutdoor.lasta.R

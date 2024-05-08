@@ -127,7 +127,8 @@ class DiscoverScreenTest {
             selectedItinerary = null,
             orderingBy = OrderingBy.RATING,
             updateOrderingBy = {},
-            markerList = emptyList()) {}
+            markerList = emptyList(),
+            changeWeatherTarget = {}) {}
       }
     }
     composeRule.onNodeWithTag("LoadingBarDiscover").assertIsDisplayed()
@@ -178,7 +179,8 @@ class DiscoverScreenTest {
             favorites = emptyList(),
             changeActivityToDisplay = {},
             flipFavorite = {},
-            navigateToMoreInfo = {})
+            navigateToMoreInfo = {},
+            changeWeatherTarget = {})
       }
     }
 
@@ -243,7 +245,8 @@ class DiscoverScreenTest {
             selectedItinerary = null,
             orderingBy = OrderingBy.RATING,
             updateOrderingBy = {},
-            markerList = emptyList()) {}
+            markerList = emptyList(),
+            changeWeatherTarget = {}) {}
       }
     }
 
@@ -340,7 +343,8 @@ class DiscoverScreenTest {
             selectedItinerary = null,
             orderingBy = OrderingBy.DISTANCE,
             updateOrderingBy = {},
-            markerList = emptyList()) {}
+            markerList = emptyList(),
+            changeWeatherTarget = {}) {}
       }
     }
 
@@ -408,7 +412,8 @@ class DiscoverScreenTest {
             selectedItinerary = null,
             orderingBy = OrderingBy.DIFFICULTYASCENDING,
             updateOrderingBy = {},
-            markerList = emptyList()) {}
+            markerList = emptyList(),
+            changeWeatherTarget = {}) {}
       }
     }
     composeRule.onNodeWithTag("textValueRow").assertIsDisplayed()
@@ -468,7 +473,8 @@ class DiscoverScreenTest {
             selectedItinerary = null,
             orderingBy = OrderingBy.DIFFICULTYDESCENDING,
             updateOrderingBy = {},
-            markerList = emptyList()) {}
+            markerList = emptyList(),
+            changeWeatherTarget = {}) {}
       }
     }
     composeRule.onNodeWithTag("textValueRow").assertIsDisplayed()
@@ -528,7 +534,8 @@ class DiscoverScreenTest {
             selectedItinerary = null,
             orderingBy = OrderingBy.POPULARITY,
             updateOrderingBy = {},
-            markerList = emptyList()) {}
+            markerList = emptyList(),
+            changeWeatherTarget = {}) {}
       }
     }
     composeRule.onNodeWithTag("textValueRow").assertIsDisplayed()
@@ -588,7 +595,8 @@ class DiscoverScreenTest {
             selectedItinerary = null,
             orderingBy = OrderingBy.DISTANCE,
             updateOrderingBy = {},
-            markerList = emptyList()) {}
+            markerList = emptyList(),
+            changeWeatherTarget = {}) {}
       }
     }
     composeRule.onNodeWithTag("textValueRow").assertIsDisplayed()

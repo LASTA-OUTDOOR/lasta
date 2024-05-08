@@ -85,6 +85,7 @@ fun DiscoverScreen(
     navigateToFilter: () -> Unit,
     navigateToMoreInfo: () -> Unit,
     changeActivityToDisplay: (Activity) -> Unit,
+    changeWeatherTarget: (Activity) -> Unit,
     weather: WeatherResponse?,
     state: MapState,
     updatePermission: (Boolean) -> Unit,
@@ -144,8 +145,9 @@ fun DiscoverScreen(
                     centerPoint,
                     favorites,
                     changeActivityToDisplay,
-                    flipFavorite,
-                    navigateToMoreInfo)
+                    flipFavorite = flipFavorite,
+                    navigateToMoreInfo = navigateToMoreInfo,
+                    changeWeatherTarget = changeWeatherTarget)
               }
             }
           }
@@ -295,6 +297,7 @@ fun ActivitiesDisplay(
     centerPoint: LatLng,
     favorites: List<String>,
     changeActivityToDisplay: (Activity) -> Unit,
+    changeWeatherTarget: (Activity) -> Unit,
     flipFavorite: (String) -> Unit,
     navigateToMoreInfo: () -> Unit
 ) {
@@ -308,6 +311,7 @@ fun ActivitiesDisplay(
                 .clickable(
                     onClick = {
                       changeActivityToDisplay(a)
+                      changeWeatherTarget(a)
                       navigateToMoreInfo()
                     })
                 .testTag("${a.activityId}activityCard"),

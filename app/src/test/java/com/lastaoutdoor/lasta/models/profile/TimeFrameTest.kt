@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.data.model.profile
+package com.lastaoutdoor.lasta.models.profile
 
 import com.lastaoutdoor.lasta.utils.DaysInWeek
 import com.lastaoutdoor.lasta.utils.MonthsInYear

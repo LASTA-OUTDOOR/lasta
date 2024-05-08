@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.data
+package com.lastaoutdoor.lasta.models
 
 import com.lastaoutdoor.lasta.models.activity.ClimbingStyle
 import com.lastaoutdoor.lasta.models.activity.Difficulty
