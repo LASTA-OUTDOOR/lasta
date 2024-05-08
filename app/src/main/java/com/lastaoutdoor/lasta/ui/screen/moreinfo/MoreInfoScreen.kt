@@ -64,8 +64,9 @@ fun MoreInfoScreen(
     goToMarker: (Activity) -> Marker,
     weather: WeatherResponse?,
     markerList: List<Marker>,
-    selectedItenary: MapItinerary?,
+    selectedItinerary: MapItinerary?,
     navigateBack: () -> Unit,
+    setWeatherBackToUserLoc: () -> Unit
 ) {
   var isMapDisplayed = remember { mutableStateOf(false) }
   if (!isMapDisplayed.value) {
@@ -73,7 +74,12 @@ fun MoreInfoScreen(
       LazyColumn(modifier = Modifier.weight(1f).padding(8.dp)) {
         item { Spacer(modifier = Modifier.height(15.dp)) }
         // contains the top icon buttons
-        item { TopBar(navigateBack) }
+        item {
+          TopBar {
+            navigateBack()
+            setWeatherBackToUserLoc()
+          }
+        }
         // displays activity title and duration
         item { ActivityTitleZone(activityToDisplay) }
         item {
@@ -87,7 +93,10 @@ fun MoreInfoScreen(
   } else {
     Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoMap")) {
       val marker = goToMarker(activityToDisplay)
-      TopBar(navigateBack)
+      TopBar {
+        navigateBack()
+        setWeatherBackToUserLoc()
+      }
       MapScreen(
           state,
           updatePermission,
@@ -98,7 +107,7 @@ fun MoreInfoScreen(
           clearSelectedItinerary,
           selectedZoom,
           marker,
-          selectedItenary,
+          selectedItinerary,
           markerList,
       ) {
         clearSelectedItinerary()
@@ -232,7 +241,7 @@ fun ElevatedDifficultyDisplay(activityToDisplay: Activity) {
   ElevatedButton(
       onClick = { /*TODO let user change activity difficulty */},
       contentPadding = PaddingValues(all = 3.dp),
-      modifier = Modifier.width(80.dp).height(24.dp),
+      modifier = Modifier.width(80.dp).height(24.dp).testTag("elevatedTestTag"),
       colors = ButtonDefaults.buttonColors(containerColor = difficultyColor)) {
         Text(
             activityToDisplay.difficulty.toString(),
