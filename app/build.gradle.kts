@@ -10,6 +10,7 @@ plugins {
     id("com.google.gms.google-services")
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
+    id("androidx.room")
 }
 
 android {
@@ -41,6 +42,10 @@ android {
             name = "WEATHER_API_KEY",
             value = apiKey
         )
+        room {
+            schemaDirectory("$projectDir/schemas")
+        }
+
     }
 
     val keystorePropertiesFile = project.rootProject.file("./keystore.properties")
@@ -238,9 +243,15 @@ dependencies {
 
     globalTestImplementation(libs.mockk)
 
+
     //Android Testing
     androidTestImplementation(libs.hilt.android.testing)
     kaptAndroidTest(libs.hilt.android.compiler)
+
+    //Android room
+    val room_version = "2.6.1"
+    implementation (libs.androidx.room.ktx)
+    kapt ("androidx.room:room-compiler:$room_version")
 
 
 }
