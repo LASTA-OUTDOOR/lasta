@@ -1,7 +1,7 @@
 package com.lastaoutdoor.lasta.data.db
 
 import android.content.Context
-import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
 import kotlinx.coroutines.tasks.await
@@ -15,7 +15,7 @@ class TokenDBRepositoryImpl @Inject constructor(context: Context, database: Fire
         if (userId.isEmpty()) return
         // Upload user token to database
         val document = tokenCollection.document(userId)
-        val data = hashMapOf("token" to token, "createdAt" to Timestamp.now())
+        val data = hashMapOf("token" to token, "createdAt" to FieldValue.serverTimestamp())
         document.set(data).await()
     }
 
