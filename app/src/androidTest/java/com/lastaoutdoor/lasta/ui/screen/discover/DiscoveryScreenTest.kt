@@ -138,8 +138,7 @@ class DiscoverScreenTest {
             orderingBy = OrderingBy.RATING,
             updateOrderingBy = {},
             markerList = emptyList(),
-            changeWeatherTarget = {}) {}
-            markerList = emptyList(),
+            changeWeatherTarget = {},
             clearSelectedMarker = {},
             fetchSuggestion = {_->},
             suggestions = emptyMap(),
@@ -262,12 +261,10 @@ class DiscoverScreenTest {
             updateOrderingBy = {},
             markerList = emptyList(),
             changeWeatherTarget = {},
-            markerList = emptyList(),
             clearSuggestions = {},
             suggestions = emptyMap(),
             fetchSuggestion = {_->},
             clearSelectedMarker = {},)
-        )
       }
     }
 

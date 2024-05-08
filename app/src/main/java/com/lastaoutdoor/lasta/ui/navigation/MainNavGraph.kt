@@ -84,7 +84,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           weather,
           mapState,
           discoverScreenViewModel::updatePermission,
-          initialPosition,
+          initialPositieon,
           initialZoom,
           discoverScreenViewModel::updateMarkers,
           discoverScreenViewModel::updateSelectedMarker,

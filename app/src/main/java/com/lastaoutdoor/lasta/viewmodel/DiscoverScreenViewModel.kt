@@ -68,8 +68,10 @@ constructor(
 
   private val _range = MutableStateFlow(10000.0)
   val range: StateFlow<Double> = _range
-  // if the user has not agreed to share his location, the map will be centered on Lausanne
-  val initialPosition = LatLng(46.519962, 6.633597)
+
+  // Position of the map when it is first displayed
+  private val _initialPosition = MutableStateFlow(LatLng(46.519962, 6.633597))
+  val initialPosition : StateFlow<LatLng> = _initialPosition
 
   // initial zoom level of the map
   val initialZoom = 11f
@@ -240,6 +242,7 @@ constructor(
   // Set the selected locality
   fun setSelectedLocality(locality: Pair<String, LatLng>) {
     _selectedLocality.value = locality
+    _initialPosition.value = locality.second
   }
 
   fun setSelectedActivityType(activityType: ActivityType) {
