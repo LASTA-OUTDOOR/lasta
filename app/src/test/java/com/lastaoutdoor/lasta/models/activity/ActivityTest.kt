@@ -34,6 +34,35 @@ class ActivityTest {
   }
 
   @Test
+  fun activitiesAreCopied() {
+    val climbingActivity =
+        Activity(
+            "a",
+            1L,
+            ActivityType.CLIMBING,
+            "b",
+            Position(1.0, 2.0),
+            3F,
+            4,
+            listOf(Rating("5")),
+            Difficulty.NORMAL,
+            "c",
+            ClimbingStyle.INDOOR,
+            6f)
+    val copiedActivity = climbingActivity.copy("d")
+    assertEquals("d", copiedActivity.activityId)
+    assertEquals(1L, copiedActivity.osmId)
+    assertEquals(Position(1.0, 2.0), copiedActivity.startPosition)
+    assertEquals(3F, copiedActivity.rating)
+    assertEquals(4, copiedActivity.numRatings)
+    assertEquals(listOf(Rating("5")), copiedActivity.ratings)
+    assertEquals(Difficulty.NORMAL, copiedActivity.difficulty)
+    assertEquals("c", copiedActivity.activityImageUrl)
+    assertEquals(ClimbingStyle.INDOOR, copiedActivity.climbingStyle)
+    assertEquals(6f, copiedActivity.elevationTotal)
+  }
+
+  @Test
   fun hikingActivityTest() {
     val hikingActivity =
         Activity(

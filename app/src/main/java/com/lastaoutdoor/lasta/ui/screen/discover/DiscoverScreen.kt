@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -55,6 +56,7 @@ import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.map.MapItinerary
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
+import com.lastaoutdoor.lasta.ui.components.LoadingAnim
 import com.lastaoutdoor.lasta.ui.components.SearchBarComponent
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
 import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
@@ -68,6 +70,7 @@ import com.lastaoutdoor.lasta.viewmodel.MapState
 
 @Composable
 fun DiscoverScreen(
+    isLoading: Boolean,
     activities: List<Activity>,
     screen: DiscoverDisplayType,
     range: Double,
@@ -118,36 +121,42 @@ fun DiscoverScreen(
       }
 
   if (screen == DiscoverDisplayType.LIST) {
-    LazyColumn(
+    Column(
         modifier =
             Modifier.testTag("discoveryScreen").background(MaterialTheme.colorScheme.background)) {
-          item {
-            HeaderComposable(
-                screen,
-                range,
-                selectedLocality,
-                setScreen,
-                { isRangePopup = true },
-                navigateToFilter,
-                orderingBy,
-                updateOrderingBy,
-                weather,
-                fetchSuggestion,
-                suggestions,
-                setSelectedLocality,
-                fetchActivities,
-                clearSuggestions)
-          }
+          HeaderComposable(
+              screen,
+              range,
+              selectedLocality,
+              setScreen,
+              { isRangePopup = true },
+              navigateToFilter,
+              orderingBy,
+              updateOrderingBy,
+              weather,
+              fetchSuggestion,
+              suggestions,
+              setSelectedLocality,
+              fetchActivities,
+              clearSuggestions)
 
-          item {
-            Spacer(modifier = Modifier.height(8.dp))
-            ActivitiesDisplay(
-                activities,
-                centerPoint,
-                favorites,
-                changeActivityToDisplay,
-                flipFavorite,
-                navigateToMoreInfo)
+          Spacer(modifier = Modifier.height(8.dp))
+          if (isLoading) {
+            LoadingAnim(width = 35, tag = "LoadingBarDiscover")
+          } else if (activities.isEmpty()) {
+            /* TODO */
+          } else {
+            LazyColumn {
+              item {
+                ActivitiesDisplay(
+                    activities,
+                    centerPoint,
+                    favorites,
+                    changeActivityToDisplay,
+                    flipFavorite,
+                    navigateToMoreInfo)
+              }
+            }
           }
         }
   } else if (screen == DiscoverDisplayType.MAP) {
@@ -208,29 +217,6 @@ fun HeaderComposable(
 ) {
   // Dropdown menu boolean
   var showMenu by remember { mutableStateOf(false) }
-
-  // text for the sorting value
-  val sortingText =
-      when (orderingBy) {
-        OrderingBy.DIFFICULTYASCENDING -> {
-          LocalContext.current.getString(R.string.difficulty_asc)
-        }
-        OrderingBy.DIFFICULTYDESCENDING -> {
-          LocalContext.current.getString(R.string.difficulty_desc)
-        }
-        OrderingBy.RATING -> {
-          LocalContext.current.getString(R.string.rating)
-        }
-        OrderingBy.DISTANCEASCENDING -> {
-          LocalContext.current.getString(R.string.distance_asc)
-        }
-        OrderingBy.DISTANCEDESCENDING -> {
-          LocalContext.current.getString(R.string.distance_desc)
-        }
-        OrderingBy.POPULARITY -> {
-          LocalContext.current.getString(R.string.popularity)
-        }
-      }
 
   val iconSize = 48.dp // Adjust icon size as needed
   val displayWeather = remember { mutableStateOf(false) }
@@ -297,21 +283,22 @@ fun HeaderComposable(
                     }
               }
 
-          // Focus manager for the keyboard
           val fManager = LocalFocusManager.current
           // Suggestions for the places
-          Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
-            suggestions.forEach() {
-              Card(
-                  modifier =
-                      Modifier.fillMaxWidth().padding(4.dp).clickable {
-                        // Click on a suggestion
-                        fManager.clearFocus()
-                        setSelectedLocality(Pair(it.key, it.value))
-                        fetchActivities(range, it.value)
-                      }) {
-                    Text(modifier = Modifier.padding(4.dp), text = it.key)
-                  }
+          LazyColumn(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp).heightIn(0.dp, 100.dp)) {
+              items(suggestions.count()){i ->
+                val suggestion = suggestions.entries.elementAt(i)
+                Card(
+                    modifier =
+                        Modifier.fillMaxWidth().padding(4.dp).clickable {
+                          // Click on a suggestion
+                          setSelectedLocality(Pair(suggestion.key, suggestion.value))
+                          fetchActivities(range, suggestion.value)
+                          clearSuggestions()
+                          fManager.clearFocus()
+                        }) {
+                  Text(modifier = Modifier.padding(4.dp), text = suggestion.key)
+                }
             }
           }
           Row(
@@ -336,13 +323,13 @@ fun HeaderComposable(
                       style = MaterialTheme.typography.bodyMedium)
                   Spacer(modifier = Modifier.width(8.dp))
                   Text(
-                      text = sortingText,
+                      text = LocalContext.current.getString(orderingBy.orderText),
                       modifier = Modifier.testTag("sortingTextValue"),
                       style = MaterialTheme.typography.bodyMedium,
                       color = MaterialTheme.colorScheme.primary)
 
                   IconButton(
-                      onClick = { showMenu = true },
+                      onClick = { showMenu = showMenu.not() },
                       modifier = Modifier.size(24.dp).testTag("sortingButton")) {
                         Icon(
                             Icons.Outlined.KeyboardArrowDown,
@@ -358,7 +345,7 @@ fun HeaderComposable(
   if (showMenu) {
     OrderingBy.values().forEach { order ->
       DropdownMenuItem(
-          text = { Text(text = sortingText) },
+          text = { Text(text = LocalContext.current.getString(order.orderText)) },
           onClick = {
             if (order != orderingBy) {
               updateOrderingBy(order)
@@ -450,7 +437,6 @@ fun ActivitiesDisplay(
               Spacer(modifier = Modifier.width(8.dp))
               Text(text = "Difficulty: ${a.difficulty}")
               Spacer(modifier = Modifier.width(16.dp))
-              // Distance from the user's location, NOT THE LENGTH OF THE ACTIVITY!!!
               Text(
                   text =
                       "${String.format("%.1f", SphericalUtil.computeDistanceBetween(centerPoint, LatLng(a.startPosition.lat, a.startPosition.lon)) / 1000)} km")

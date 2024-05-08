@@ -1,8 +1,11 @@
 package com.lastaoutdoor.lasta.ui.components
 
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -13,8 +16,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.lastaoutdoor.lasta.R
@@ -28,6 +34,10 @@ import com.lastaoutdoor.lasta.R
  */
 @Composable
 fun SearchBarComponent(modifier: Modifier, onSearch: (String) -> Unit) {
+
+  // Focus to hide the keyboard
+  val focusManager = LocalFocusManager.current
+
   var searchText by remember { mutableStateOf(TextFieldValue("")) }
   val iconSize = 48.dp // Adjust icon size as needed
   OutlinedTextField(
@@ -39,9 +49,7 @@ fun SearchBarComponent(modifier: Modifier, onSearch: (String) -> Unit) {
       placeholder = {
         Text(
             text = LocalContext.current.getString(R.string.search),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.secondary,
-        )
+            style = MaterialTheme.typography.bodySmall)
       },
       leadingIcon = {
         Icon(
@@ -55,6 +63,10 @@ fun SearchBarComponent(modifier: Modifier, onSearch: (String) -> Unit) {
       },
       shape = RoundedCornerShape(20), // Adjust the corner radius to get the desired roundness
       singleLine = true,
-      modifier = modifier.height(56.dp) // Match Material Design height for text fields
+      modifier = modifier.height(56.dp), // Match Material Design height for text fields,
+      keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+      keyboardActions = KeyboardActions(
+          onDone = {focusManager.clearFocus()}
       )
+  )
 }

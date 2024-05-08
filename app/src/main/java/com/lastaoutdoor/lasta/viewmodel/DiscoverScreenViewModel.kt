@@ -40,6 +40,9 @@ constructor(
     private val radarRepository: RadarRepository
 ) : ViewModel() {
 
+  private val _isLoading = MutableStateFlow(true)
+  val isLoading: StateFlow<Boolean> = _isLoading
+
   private val _activities = MutableStateFlow<ArrayList<Activity>>(ArrayList())
   val activities: StateFlow<List<Activity>> = _activities
 
@@ -153,6 +156,9 @@ constructor(
 
   fun fetchActivities(rad: Double = 10000.0, centerLocation: LatLng = LatLng(46.519962, 6.633597)) {
     viewModelScope.launch {
+      _isLoading.value = true
+      _activities.value = ArrayList()
+      _activityIds.value = ArrayList()
       val response =
           when (_selectedActivityType.value) {
             ActivityType.CLIMBING ->
@@ -178,8 +184,6 @@ constructor(
               emptyList<OSMData>()
             }
           }
-      _activities.value = ArrayList()
-      _activityIds.value = ArrayList()
       osmData.map { point ->
         when (_selectedActivityType.value) {
           ActivityType.CLIMBING -> {
@@ -220,6 +224,7 @@ constructor(
       _markerList.value = activitiesToMarkers(activities.value)
       // order the activities by the selected ordering
       updateActivitiesByOrdering()
+      _isLoading.value = false
     }
   }
 
@@ -294,47 +299,33 @@ constructor(
   }
 
   private fun updateActivitiesByOrdering() {
-    // order the activities by the selected ordering
+    if (_activities.value.isEmpty()) return
     when (_orderingBy.value) {
-      OrderingBy.DISTANCEASCENDING -> {
-        if (_activities.value.isEmpty()) return
-        val distances =
-            activities.value.map {
-              SphericalUtil.computeDistanceBetween(
-                  selectedLocality.value.second, LatLng(it.startPosition.lat, it.startPosition.lon))
-            }
-        _activities.value =
-            ArrayList<Activity>(
-                activities.value.sortedBy { distances[activities.value.indexOf(it)] })
-      }
+      OrderingBy.DISTANCEASCENDING,
       OrderingBy.DISTANCEDESCENDING -> {
-        if (_activities.value.isEmpty()) return
         val distances =
-            activities.value.map {
+            _activities.value.map {
               SphericalUtil.computeDistanceBetween(
                   selectedLocality.value.second, LatLng(it.startPosition.lat, it.startPosition.lon))
             }
+        val sortedActivities =
+            _activities.value.sortedBy { distances[_activities.value.indexOf(it)] }
         _activities.value =
-            ArrayList<Activity>(
-                activities.value.sortedBy { distances[activities.value.indexOf(it)] }.reversed())
+            if (_orderingBy.value == OrderingBy.DISTANCEDESCENDING)
+                ArrayList(sortedActivities.reversed())
+            else ArrayList(sortedActivities)
       }
       OrderingBy.RATING -> {
-        if (_activities.value.isEmpty()) return
-        _activities.value = ArrayList<Activity>(_activities.value.sortedBy { it.rating }.reversed())
-      }
-      OrderingBy.DIFFICULTYASCENDING -> {
-        if (_activities.value.isEmpty()) return
-        _activities.value = ArrayList<Activity>(_activities.value.sortedBy { it.difficulty })
-      }
-      OrderingBy.DIFFICULTYDESCENDING -> {
-        if (_activities.value.isEmpty()) return
-        _activities.value =
-            ArrayList<Activity>(_activities.value.sortedBy { it.difficulty }.reversed())
+        _activities.value = ArrayList(_activities.value.sortedBy { it.rating }.reversed())
       }
       OrderingBy.POPULARITY -> {
-        if (_activities.value.isEmpty()) return
-        _activities.value =
-            ArrayList<Activity>(_activities.value.sortedBy { it.numRatings }.reversed())
+        _activities.value = ArrayList(_activities.value.sortedBy { it.numRatings }.reversed())
+      }
+      OrderingBy.DIFFICULTYASCENDING -> {
+        _activities.value = ArrayList(_activities.value.sortedBy { it.difficulty })
+      }
+      OrderingBy.DIFFICULTYDESCENDING -> {
+        _activities.value = ArrayList(_activities.value.sortedBy { it.difficulty }.reversed())
       }
     }
   }

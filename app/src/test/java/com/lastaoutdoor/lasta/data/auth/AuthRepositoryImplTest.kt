@@ -1,205 +1,254 @@
 package com.lastaoutdoor.lasta.data.auth
 
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import com.google.android.gms.auth.api.identity.BeginSignInResult
 import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.lastaoutdoor.lasta.data.MockTask
+import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.auth.AuthRepository
+import com.lastaoutdoor.lasta.repository.db.UserDBRepository
+import com.lastaoutdoor.lasta.utils.Response
+import io.mockk.clearAllMocks
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.mockk
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.runTest
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
 
-// @RunWith(RobolectricTestRunner::class)
-// @Config(manifest = Config.NONE)
 class AuthRepositoryImplTest {
 
-  private lateinit var auth: FirebaseAuth
-  private lateinit var oneTapClient: SignInClient
-  private lateinit var signInRequest: BeginSignInRequest
-  private lateinit var repository: AuthRepository
+  private lateinit var authRepo: AuthRepository
+  private val auth = mockk<FirebaseAuth>(relaxed = true)
+  private val oneTapClient = mockk<SignInClient>(relaxed = true)
+  private val signInRequest = mockk<BeginSignInRequest>(relaxed = true)
+  private val signUpRequest = mockk<BeginSignInRequest>(relaxed = true)
+  private val userDBRepo = mockk<UserDBRepository>(relaxed = true)
+  private val startLoginTask: MockTask<BeginSignInResult> = mockk()
+  private val signInWithCredentialTask: MockTask<AuthResult> = mockk()
+  private val signOutTask: MockTask<Void> = mockk()
 
-  /*@Before
+  private val beginSignInResult: BeginSignInResult = mockk(relaxed = true)
+  private val authResult: AuthResult = mockk(relaxed = true)
+
+  @Before
   fun setup() {
-    auth = mockk(relaxed = true)
-    oneTapClient = mockk(relaxed = true)
-    signInRequest = mockk(relaxed = true)
+    authRepo = AuthRepositoryImpl(auth, oneTapClient, signInRequest, signUpRequest, userDBRepo)
+    every { startLoginTask.isComplete } returns true
+    every { startLoginTask.isCanceled } returns false
+    every { startLoginTask.isSuccessful } returns true
+    every { startLoginTask.result } returns beginSignInResult
+    every { startLoginTask.exception } returns null
+    coEvery { startLoginTask.await() } returns beginSignInResult
 
-    repository = AuthRepositoryImpl(auth, oneTapClient, signInRequest)
+    every { signInWithCredentialTask.isComplete } returns true
+    every { signInWithCredentialTask.isCanceled } returns false
+    every { signInWithCredentialTask.isSuccessful } returns true
+    every { signInWithCredentialTask.result } returns authResult
+    every { signInWithCredentialTask.exception } returns null
+    coEvery { signInWithCredentialTask.await() } returns authResult
+
+    every { signOutTask.isComplete } returns true
+    every { signOutTask.isCanceled } returns false
+    every { signOutTask.isSuccessful } returns true
+    every { signOutTask.result } returns mockk()
+    every { signOutTask.exception } returns null
+    coEvery { signOutTask.await() } returns mockk()
+  }
+
+  @After
+  fun tearDown() {
+    clearAllMocks()
   }
 
   @Test
-  fun `startGoogleSignIn should emit Success`() = runTest {
-    // Given
-    val signInResult = mockk<BeginSignInResult>()
-    coEvery { oneTapClient.beginSignIn(signInRequest).await() } returns signInResult
-
-    println("Hello")
-    // When
-    val flow = repository.startGoogleSignIn()
-
-    // Then
-    flow.collect { response ->
-      when (response) {
-        is Response.Loading -> {
-          // Do nothing or verify loading state if required
-        }
-        is Response.Success -> {
-          assertEquals(signInResult, response.data)
-        }
-        is Response.Failure -> {
-          fail("Should not be a failure state")
-        }
-      }
-    }
-
-    coVerify { oneTapClient.beginSignIn(signInRequest).await() }
-  }
+  fun `Is sign Up is false by default`() = runTest { authRepo.isSignUp.first().let { assert(!it) } }
 
   @Test
-  fun `startGoogleSignIn should emit Failure`() = runTest {
-    // Given
-    val exception = Exception("Test Exception")
-    coEvery { oneTapClient.beginSignIn(signInRequest).await() } throws exception
-
-    // When
-    val flow = repository.startGoogleSignIn()
-
-    // Then
-    flow.collect { response ->
-      when (response) {
-        is Response.Loading -> {
-          // Do nothing or verify loading state if required
-        }
-        is Response.Success -> {
-          fail("Should not be a success state")
-        }
-        is Response.Failure -> {
-          assertEquals(exception, response.e)
-        }
+  fun `Start Google Sign In emits Loading and Success`() = runTest {
+    var counter = 0
+    every { oneTapClient.beginSignIn(signInRequest) } returns startLoginTask
+    authRepo.startGoogleSignIn().collect {
+      if (counter == 0) {
+        assert(it is Response.Loading)
+        counter++
+      } else {
+        assert(it is Response.Success)
+        val success = it as Response.Success
+        assert(success.data == beginSignInResult)
       }
-    }
-
-    verify { oneTapClient.beginSignIn(signInRequest).await() }
-  }
-
-  @Test
-  fun `finishGoogleSignIn should emit Success`() = runTest {
-    // Given
-    val googleCredential = mockk<AuthCredential>()
-    val signInTask = mockk<SignInTask>()
-    val user = mockk<FirebaseUser>()
-    val userModel = UserModel("uid", "displayName", "email", "photoUrl", null)
-
-    coEvery { auth.signInWithCredential(googleCredential).await() } returns signInTask
-    coEvery { signInTask.user } returns user
-    every { user.uid } returns "uid"
-    every { user.displayName } returns "displayName"
-    every { user.email } returns "email"
-    every { user.photoUrl } returns mockk { every { toString() } returns "photoUrl" }
-
-    // When
-    val flow = repository.finishGoogleSignIn(googleCredential)
-
-    // Then
-    flow.collect { response ->
-      when (response) {
-        is Response.Loading -> {
-          // Do nothing or verify loading state if required
-        }
-        is Response.Success -> {
-          assertEquals(userModel, response.data)
-        }
-        is Response.Failure -> {
-          fail("Should not be a failure state")
-        }
-      }
-    }
-
-    verify { auth.signInWithCredential(googleCredential).await() }
-  }
-
-  @Test
-  fun `finishGoogleSignIn should emit Failure`() = runBlockingTest {
-    // Given
-    val googleCredential = mockk<AuthCredential>()
-    val exception = Exception("Test Exception")
-
-    coEvery { auth.signInWithCredential(googleCredential).await() } throws exception
-
-    // When
-    val flow = repository.finishGoogleSignIn(googleCredential)
-
-    // Then
-    flow.collect { response ->
-      when (response) {
-        is Response.Loading -> {
-          // Do nothing or verify loading state if required
-        }
-        is Response.Success -> {
-          fail("Should not be a success state")
-        }
-        is Response.Failure -> {
-          assertEquals(exception, response.exception)
-        }
-      }
-    }
-
-    verify { auth.signInWithCredential(googleCredential).await() }
-  }
-
-  @Test
-  fun `signOut should emit Success`() = runBlockingTest {
-    // Given
-    val signOutTask = mockk<SignOutTask>()
-
-    coEvery { oneTapClient.signOut().await() } returns signOutTask
-    coEvery { auth.signOut() } returns Unit
-
-    // When
-    val flow = repository.signOut()
-
-    // Then
-    flow.collect { response ->
-      when (response) {
-        is Response.Loading -> {
-          // Do nothing or verify loading state if required
-        }
-        is Response.Success -> {
-          assertTrue(response.data!!)
-        }
-        is Response.Failure -> {
-          fail("Should not be a failure state")
-        }
-      }
-    }
-
-    verify {
-      oneTapClient.signOut().await()
-      auth.signOut()
     }
   }
 
   @Test
-  fun `signOut should emit Failure`() = runBlockingTest {
-    // Given
-    val exception = Exception("Test Exception")
-
-    coEvery { oneTapClient.signOut().await() } throws exception
-
-    // When
-    val flow = repository.signOut()
-
-    // Then
-    flow.collect { response ->
-      when (response) {
-        is Response.Loading -> {
-          // Do nothing or verify loading state if required
-        }
-        is Response.Success -> {
-          fail("Should not be a success state")
-        }
-        is Response.Failure -> {
-          assertEquals(exception, response.exception)
-        }
+  fun `Start Google Sign In emits Loading then fails and goes to sign up then success`() = runTest {
+    var counter = 0
+    every { oneTapClient.beginSignIn(signInRequest) } throws Exception()
+    every { oneTapClient.beginSignIn(signUpRequest) } returns startLoginTask
+    authRepo.startGoogleSignIn().collect {
+      if (counter == 0) {
+        assert(it is Response.Loading)
+        counter++
+      } else {
+        assert(it is Response.Success)
+        val success = it as Response.Success
+        assert(success.data == beginSignInResult)
       }
     }
+  }
 
-    verify { oneTapClient.signOut().await() }
-  }*/
+  @Test
+  fun `Start Google Sign in emits Loading then fails twice on sign in and sign up`() = runTest {
+    var counter = 0
+    every { oneTapClient.beginSignIn(signInRequest) } throws Exception()
+    every { oneTapClient.beginSignIn(signUpRequest) } throws Exception()
+    authRepo.startGoogleSignIn().collect {
+      if (counter == 0) {
+        assert(it is Response.Loading)
+        counter++
+      } else {
+        assert(it is Response.Failure)
+      }
+    }
+  }
+
+  @Test
+  fun `Finish Google sign in emits Loading then with null user fails`() = runTest {
+    var counter = 0
+    every { auth.signInWithCredential(any()) } returns signInWithCredentialTask
+    every { authResult.user } returns null
+    authRepo.finishGoogleSignIn(mockk()).collect {
+      if (counter == 0) {
+        assert(it is Response.Loading)
+        counter++
+      } else {
+        assert(it is Response.Failure)
+        val failure = it as Response.Failure
+        assert(failure.e.message == "User is null")
+      }
+    }
+  }
+
+  @Test
+  fun `Finish Google sign in emits loading then when throwing returns a failure`() = runTest {
+    var counter = 0
+    every { auth.signInWithCredential(any()) } throws Exception()
+    authRepo.finishGoogleSignIn(mockk()).collect {
+      if (counter == 0) {
+        assert(it is Response.Loading)
+        counter++
+      } else {
+        assert(it is Response.Failure)
+      }
+    }
+  }
+
+  @Test
+  fun `Finish Google Sign in works for sign up`() = runTest {
+    var counter = 0
+    every { auth.signInWithCredential(any()) } returns signInWithCredentialTask
+    val user: FirebaseUser = mockk(relaxed = true)
+    every { authResult.user } returns user
+    every { user.uid } returns "123"
+    every { user.displayName } returns "John"
+    every { user.email } returns "test@email.com"
+    every { user.photoUrl } returns null
+    every { authResult.additionalUserInfo?.isNewUser } returns true
+    every { userDBRepo.updateUser(any()) } returns Unit
+    authRepo.finishGoogleSignIn(mockk()).collect {
+      if (counter == 0) {
+        assert(it is Response.Loading)
+        counter++
+      } else {
+        assert(it is Response.Success)
+        val success = it as Response.Success
+        assert(success.data is UserModel)
+      }
+    }
+  }
+
+  @Test
+  fun `Finish Google Sign in works for sign in`() = runTest {
+    var counter = 0
+    every { auth.signInWithCredential(any()) } returns signInWithCredentialTask
+    val user: FirebaseUser = mockk(relaxed = true)
+    val dbUser = UserModel("test")
+    every { authResult.user } returns user
+    every { user.uid } returns "123"
+    every { user.displayName } returns "John"
+    every { user.email } returns "test@email.com"
+    every { user.photoUrl } returns null
+    every { authResult.additionalUserInfo?.isNewUser } returns false
+    coEvery { userDBRepo.getUserById(any()) } returns dbUser
+    authRepo.finishGoogleSignIn(mockk()).collect {
+      if (counter == 0) {
+        assert(it is Response.Loading)
+        counter++
+      } else {
+        assert(it is Response.Success)
+        val success = it as Response.Success
+        assert(success.data is UserModel)
+      }
+    }
+  }
+
+  @Test
+  fun `Finish Google Sign in works for sign in but doesn't find user in DB`() = runTest {
+    var counter = 0
+    every { auth.signInWithCredential(any()) } returns signInWithCredentialTask
+    val user: FirebaseUser = mockk(relaxed = true)
+    every { authResult.user } returns user
+    every { user.uid } returns "123"
+    every { user.displayName } returns "John"
+    every { user.email } returns "test@email.com"
+    every { user.photoUrl } returns null
+    every { authResult.additionalUserInfo } returns null
+    coEvery { userDBRepo.getUserById(any()) } returns null
+    authRepo.finishGoogleSignIn(mockk()).collect {
+      if (counter == 0) {
+        assert(it is Response.Loading)
+        counter++
+      } else {
+        assert(it is Response.Failure)
+        val failure = it as Response.Failure
+        assert(failure.e.message == "User data not found")
+      }
+    }
+  }
+
+  @Test
+  fun `Sign out throws exception so failure after loading`() = runTest {
+    var counter = 0
+    every { oneTapClient.signOut() } throws Exception()
+    authRepo.signOut().collect {
+      if (counter == 0) {
+        assert(it is Response.Loading)
+        counter++
+      } else {
+        assert(it is Response.Failure)
+      }
+    }
+  }
+
+  @Test
+  fun `Sign out works emits loading then success`() = runTest {
+    var counter = 0
+    every { oneTapClient.signOut() } returns signOutTask
+    every { auth.signOut() } returns Unit
+    authRepo.signOut().collect {
+      if (counter == 0) {
+        assert(it is Response.Loading)
+        counter++
+      } else {
+        assert(it is Response.Success)
+        val result = it as Response.Success
+        assert(result.data == true)
+      }
+    }
+  }
 }

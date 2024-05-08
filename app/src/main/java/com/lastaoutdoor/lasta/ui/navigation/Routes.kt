@@ -4,10 +4,6 @@ open class Route(open val route: String)
 
 sealed class BaseRoute(override val route: String) : Route(route) {
 
-  object App : BaseRoute("App")
-
-  object Root : BaseRoute("Root")
-
   object Loading : BaseRoute("Loading")
 
   object Login : BaseRoute("Login")
