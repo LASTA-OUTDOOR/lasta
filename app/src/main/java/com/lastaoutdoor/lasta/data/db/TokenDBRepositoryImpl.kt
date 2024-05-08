@@ -4,8 +4,8 @@ import android.content.Context
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
-import javax.inject.Inject
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
 class TokenDBRepositoryImpl @Inject constructor(context: Context, database: FirebaseFirestore) :
     TokenDBRepository {
