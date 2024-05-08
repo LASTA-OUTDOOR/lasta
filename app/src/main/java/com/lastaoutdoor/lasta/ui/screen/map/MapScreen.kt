@@ -130,7 +130,7 @@ fun mapScreen(
     selectedItinerary: MapItinerary?,
     markerList: List<Marker>,
     clearSelectedMarker: () -> Unit
-) : (CameraUpdate) -> Unit {
+): (CameraUpdate) -> Unit {
 
   // Initialise the map, otherwise the icon functionality won't work
   MapsInitializer.initialize(getApplicationContext())
@@ -190,7 +190,7 @@ fun mapScreen(
       clearSelectedItinerary,
       clearSelectedMarker)
 
-  //return a function that can move the camera to a specific position
+  // return a function that can move the camera to a specific position
   return cameraPositionState::move
 }
 

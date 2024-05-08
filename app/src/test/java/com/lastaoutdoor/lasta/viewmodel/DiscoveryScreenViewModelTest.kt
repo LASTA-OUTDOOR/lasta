@@ -1,6 +1,5 @@
 package com.lastaoutdoor.lasta.viewmodel
 
-import androidx.compose.runtime.collectAsState
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
@@ -248,18 +247,15 @@ class DiscoveryScreenViewModelTest() {
     assertEquals(viewModel.orderingBy.value, OrderingBy.POPULARITY)
   }
 
-  //Test autocompletion part of the view model
-    @Test
-    fun testFetchSuggestions(){
-      viewModel.fetchSuggestions("Test")
-      assert(viewModel.suggestions.value.isNotEmpty())
-      assert(viewModel.suggestions.value.size == 4)
+  // Test autocompletion part of the view model
+  @Test
+  fun testFetchSuggestions() {
+    viewModel.fetchSuggestions("Test")
+    assert(viewModel.suggestions.value.isNotEmpty())
+    assert(viewModel.suggestions.value.size == 4)
 
-      radarRepo.shouldWork(false)
-      viewModel.fetchSuggestions("Test")
-      runBlocking {
-        viewModel.suggestions.collect {
-        }
-      }
-    }
+    radarRepo.shouldWork(false)
+    viewModel.fetchSuggestions("Test")
+    runBlocking { viewModel.suggestions.collect {} }
+  }
 }

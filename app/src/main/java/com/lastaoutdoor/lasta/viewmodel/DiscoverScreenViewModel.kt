@@ -71,7 +71,7 @@ constructor(
 
   // Position of the map when it is first displayed
   private val _initialPosition = MutableStateFlow(LatLng(46.519962, 6.633597))
-  val initialPosition : StateFlow<LatLng> = _initialPosition
+  val initialPosition: StateFlow<LatLng> = _initialPosition
 
   // initial zoom level of the map
   val initialZoom = 11f
@@ -273,7 +273,7 @@ constructor(
     _selectedMarker.value = null
   }
 
-  //change the default place on the map
+  // change the default place on the map
   fun updateInitialPosition(position: LatLng) {
     _initialPosition.value = position
   }

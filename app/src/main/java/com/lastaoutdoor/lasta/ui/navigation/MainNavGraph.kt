@@ -99,7 +99,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           discoverScreenViewModel::fetchSuggestions,
           suggestions,
           discoverScreenViewModel::clearSuggestions,
-            discoverScreenViewModel::updateInitialPosition,
+          discoverScreenViewModel::updateInitialPosition,
       )
     }
     composable(DestinationRoute.Favorites.route) { entry ->

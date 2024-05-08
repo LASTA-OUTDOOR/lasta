@@ -44,8 +44,8 @@ class DiscoverScreenTest {
     var screenType = DiscoverDisplayType.LIST
     var popUp = false
 
-    val fetchSuggestion: (String) -> Unit = { /*TODO*/ }
-    var suggestion : Map<String, LatLng> = emptyMap()
+    val fetchSuggestion: (String) -> Unit = { /*TODO*/}
+    var suggestion: Map<String, LatLng> = emptyMap()
 
     composeRule.activity.setContent {
       MaterialTheme {
@@ -63,10 +63,11 @@ class DiscoverScreenTest {
             fetchSuggestion = fetchSuggestion,
             suggestions = suggestion,
             setSelectedLocality = {},
-            fetchActivities = {_, _ ->},
+            fetchActivities = { _, _ -> },
             clearSuggestions = { suggestion = emptyMap() },
-            updateInitialPosition = updateInitialPosition,
-            )
+            updateInitialPosition = {},
+            moveCamera = { _ -> },
+        )
       }
     }
 
@@ -141,10 +142,10 @@ class DiscoverScreenTest {
             orderingBy = OrderingBy.RATING,
             updateOrderingBy = {},
             clearSelectedMarker = {},
-            fetchSuggestion = {_->},
+            fetchSuggestion = { _ -> },
             suggestions = emptyMap(),
-            {},
-            discoverScreenViewModel::updateInitialPosition,
+            clearSuggestions = {},
+            updateInitialPosition = {},
         )
       }
     }
@@ -265,10 +266,11 @@ class DiscoverScreenTest {
             orderingBy = OrderingBy.RATING,
             updateOrderingBy = {},
             clearSelectedMarker = {},
-            fetchSuggestion = {_->},
+            fetchSuggestion = { _ -> },
             suggestions = emptyMap(),
             clearSuggestions = {},
-            kFunction1 = discoverScreenViewModel::updateInitialPosition,)
+            updateInitialPosition = {},
+        )
       }
     }
 
@@ -371,7 +373,7 @@ class DiscoverScreenTest {
             fetchSuggestion = {},
             suggestions = emptyMap(),
             clearSuggestions = {},
-            kFunction1 = discoverScreenViewModel::updateInitialPosition,
+            updateInitialPosition = {},
         )
       }
     }
@@ -444,10 +446,10 @@ class DiscoverScreenTest {
             orderingBy = OrderingBy.DIFFICULTYASCENDING,
             updateOrderingBy = {},
             clearSelectedMarker = {},
-            fetchSuggestion = {_->},
+            fetchSuggestion = { _ -> },
             suggestions = emptyMap(),
             clearSuggestions = {},
-            kFunction1 = discoverScreenViewModel::updateInitialPosition,
+            updateInitialPosition = {},
         )
       }
     }
@@ -510,10 +512,10 @@ class DiscoverScreenTest {
             orderingBy = OrderingBy.DIFFICULTYDESCENDING,
             updateOrderingBy = {},
             clearSelectedMarker = {},
-            fetchSuggestion = {_->},
+            fetchSuggestion = { _ -> },
             suggestions = emptyMap(),
-            {},
-            discoverScreenViewModel::updateInitialPosition,
+            updateInitialPosition = {},
+            clearSuggestions = {},
         )
       }
     }
@@ -576,10 +578,10 @@ class DiscoverScreenTest {
             orderingBy = OrderingBy.POPULARITY,
             updateOrderingBy = {},
             clearSelectedMarker = {},
-            fetchSuggestion = {_->},
+            fetchSuggestion = { _ -> },
             suggestions = emptyMap(),
             clearSuggestions = {},
-            kFunction1 = discoverScreenViewModel::updateInitialPosition,
+            updateInitialPosition = {},
         )
       }
     }
@@ -645,7 +647,7 @@ class DiscoverScreenTest {
             fetchSuggestion = {},
             suggestions = emptyMap(),
             clearSuggestions = {},
-            kFunction1 = discoverScreenViewModel::updateInitialPosition,
+            updateInitialPosition = {},
         )
       }
     }

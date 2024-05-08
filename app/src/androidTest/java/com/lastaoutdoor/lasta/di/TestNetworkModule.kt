@@ -137,17 +137,17 @@ object TestNetworkModule {
       firestore: FirebaseFirestore
   ): SocialDBRepository = SocialDBRepositoryImpl(context, firestore)
 
-    @Singleton
-    @Provides
-    fun provideRadarApiService(): RadarApiService =
-        Retrofit.Builder()
-            .baseUrl("https://api.radar.io/v1/search/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(RadarApiService::class.java)
+  @Singleton
+  @Provides
+  fun provideRadarApiService(): RadarApiService =
+      Retrofit.Builder()
+          .baseUrl("https://api.radar.io/v1/search/")
+          .addConverterFactory(GsonConverterFactory.create())
+          .build()
+          .create(RadarApiService::class.java)
 
-    @Singleton
-    @Provides
-    fun provideRadarRepository(radarApiService: RadarApiService): RadarRepository =
-        RadarRepositoryImpl(radarApiService)
+  @Singleton
+  @Provides
+  fun provideRadarRepository(radarApiService: RadarApiService): RadarRepository =
+      RadarRepositoryImpl(radarApiService)
 }

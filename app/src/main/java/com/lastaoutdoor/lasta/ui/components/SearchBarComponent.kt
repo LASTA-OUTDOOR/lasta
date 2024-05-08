@@ -1,6 +1,5 @@
 package com.lastaoutdoor.lasta.ui.components
 
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,7 +15,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -30,11 +28,11 @@ import com.lastaoutdoor.lasta.R
  *
  * @param modifier Modifier to apply to the search bar.
  * @param onSearch Callback to be invoked when the user searches for an item.
- * @sample SearchBarComponent(modifier = Modifier, onSearch = { searchText -> println(searchText) })
  * @return A function that sets the search text.
+ * @sample SearchBarComponent(modifier = Modifier, onSearch = { searchText -> println(searchText) })
  */
 @Composable
-fun searchBarComponent(modifier: Modifier, onSearch: (String) -> Unit) : (String) -> Unit {
+fun searchBarComponent(modifier: Modifier, onSearch: (String) -> Unit): (String) -> Unit {
 
   // Focus to hide the keyboard
   val focusManager = LocalFocusManager.current
@@ -66,9 +64,6 @@ fun searchBarComponent(modifier: Modifier, onSearch: (String) -> Unit) : (String
       singleLine = true,
       modifier = modifier.height(56.dp), // Match Material Design height for text fields,
       keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-      keyboardActions = KeyboardActions(
-          onDone = {focusManager.clearFocus()}
-      )
-  )
-  return {s : String -> searchText = TextFieldValue(s)}
+      keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }))
+  return { s: String -> searchText = TextFieldValue(s) }
 }
