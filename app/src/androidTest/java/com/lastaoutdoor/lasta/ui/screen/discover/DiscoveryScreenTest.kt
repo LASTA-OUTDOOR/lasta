@@ -138,6 +138,8 @@ class DiscoverScreenTest {
             orderingBy = OrderingBy.RATING,
             updateOrderingBy = {},
             markerList = emptyList(),
+            changeWeatherTarget = {}) {}
+            markerList = emptyList(),
             clearSelectedMarker = {},
             fetchSuggestion = {_->},
             suggestions = emptyMap(),
@@ -192,7 +194,8 @@ class DiscoverScreenTest {
             favorites = emptyList(),
             changeActivityToDisplay = {},
             flipFavorite = {},
-            navigateToMoreInfo = {})
+            navigateToMoreInfo = {},
+            changeWeatherTarget = {})
       }
     }
 
@@ -258,10 +261,12 @@ class DiscoverScreenTest {
             orderingBy = OrderingBy.RATING,
             updateOrderingBy = {},
             markerList = emptyList(),
+            changeWeatherTarget = {},
+            markerList = emptyList(),
             clearSuggestions = {},
             suggestions = emptyMap(),
             fetchSuggestion = {_->},
-            clearSelectedMarker = {},
+            clearSelectedMarker = {},)
         )
       }
     }
@@ -360,6 +365,7 @@ class DiscoverScreenTest {
             orderingBy = OrderingBy.DISTANCEASCENDING,
             updateOrderingBy = {},
             markerList = emptyList(),
+            changeWeatherTarget = {},
             fetchSuggestion = {},
             suggestions = emptyMap(),
             clearSuggestions = {},
@@ -434,6 +440,7 @@ class DiscoverScreenTest {
             orderingBy = OrderingBy.DIFFICULTYASCENDING,
             updateOrderingBy = {},
             markerList = emptyList(),
+            changeWeatherTarget = {},
             clearSuggestions = {},
             suggestions = emptyMap(),
             fetchSuggestion = {_->},
@@ -498,6 +505,7 @@ class DiscoverScreenTest {
             orderingBy = OrderingBy.DIFFICULTYDESCENDING,
             updateOrderingBy = {},
             markerList = emptyList(),
+            changeWeatherTarget = {},
             clearSelectedMarker = {},
             fetchSuggestion = {_->},
             suggestions = emptyMap(),
@@ -561,6 +569,7 @@ class DiscoverScreenTest {
             orderingBy = OrderingBy.POPULARITY,
             updateOrderingBy = {},
             markerList = emptyList(),
+            changeWeatherTarget = {},
             clearSuggestions = {},
             fetchSuggestion = {_->},
             suggestions = emptyMap(),
@@ -625,6 +634,7 @@ class DiscoverScreenTest {
             orderingBy = OrderingBy.DISTANCEDESCENDING,
             updateOrderingBy = {},
             markerList = emptyList(),
+            changeWeatherTarget = {},
             fetchSuggestion = {},
             clearSuggestions = {},
             clearSelectedMarker = {},

@@ -29,6 +29,7 @@ fun FavoritesScreen(
     centerPoint: LatLng,
     favorites: List<String>,
     changeActivityToDisplay: (Activity) -> Unit,
+    changeWeatherTarget: (Activity) -> Unit,
     flipFavorite: (String) -> Unit,
     navigateToMoreInfo: () -> Unit
 ) {
@@ -55,6 +56,7 @@ fun FavoritesScreen(
               centerPoint,
               favorites,
               changeActivityToDisplay,
+              changeWeatherTarget,
               flipFavorite,
               navigateToMoreInfo)
         }

@@ -62,7 +62,6 @@ import com.lastaoutdoor.lasta.models.map.MapItinerary
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
 import com.lastaoutdoor.lasta.ui.components.LoadingAnim
-import com.lastaoutdoor.lasta.ui.components.SearchBarComponent
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
 import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
 import com.lastaoutdoor.lasta.ui.components.WeatherReportSmall
@@ -92,6 +91,7 @@ fun DiscoverScreen(
     navigateToFilter: () -> Unit,
     navigateToMoreInfo: () -> Unit,
     changeActivityToDisplay: (Activity) -> Unit,
+    changeWeatherTarget: (Activity) -> Unit,
     weather: WeatherResponse?,
     state: MapState,
     updatePermission: (Boolean) -> Unit,
@@ -161,8 +161,9 @@ fun DiscoverScreen(
                     centerPoint,
                     favorites,
                     changeActivityToDisplay,
-                    flipFavorite,
-                    navigateToMoreInfo)
+                    flipFavorite = flipFavorite,
+                    navigateToMoreInfo = navigateToMoreInfo,
+                    changeWeatherTarget = changeWeatherTarget)
               }
             }
           }
@@ -406,6 +407,7 @@ fun ActivitiesDisplay(
     centerPoint: LatLng,
     favorites: List<String>,
     changeActivityToDisplay: (Activity) -> Unit,
+    changeWeatherTarget: (Activity) -> Unit,
     flipFavorite: (String) -> Unit,
     navigateToMoreInfo: () -> Unit
 ) {
@@ -413,16 +415,16 @@ fun ActivitiesDisplay(
   for (a in activities) {
     Card(
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(vertical = 8.dp, horizontal = 16.dp)
-            .clickable(
-                onClick = {
-                    changeActivityToDisplay(a)
-                    navigateToMoreInfo()
-                })
-            .testTag("${a.activityId}activityCard"),
+            Modifier.fillMaxWidth()
+                .wrapContentHeight()
+                .padding(vertical = 8.dp, horizontal = 16.dp)
+                .clickable(
+                    onClick = {
+                      changeActivityToDisplay(a)
+                      changeWeatherTarget(a)
+                      navigateToMoreInfo()
+                    })
+                .testTag("${a.activityId}activityCard"),
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
     ) {
