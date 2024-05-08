@@ -66,6 +66,7 @@ import com.lastaoutdoor.lasta.ui.components.SearchBarComponent
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
 import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
 import com.lastaoutdoor.lasta.ui.components.WeatherReportSmall
+import com.lastaoutdoor.lasta.ui.components.searchBarComponent
 import com.lastaoutdoor.lasta.ui.screen.discover.components.ModalUpperSheet
 import com.lastaoutdoor.lasta.ui.screen.discover.components.RangeSearchComposable
 import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
@@ -281,6 +282,7 @@ fun HeaderComposable(
               }
 
           // Search bar with toggle buttons
+          var changeText = {_:String ->}
           Row(
               modifier =
               Modifier
@@ -288,14 +290,13 @@ fun HeaderComposable(
                   .padding(horizontal = 16.dp, vertical = 8.dp)
                   .testTag("searchBar"),
               verticalAlignment = Alignment.CenterVertically) {
-                SearchBarComponent(
+                changeText = searchBarComponent(
                         Modifier
                             .weight(1f)
                             .testTag("searchBarComponent"),
                         onSearch = { fetchSuggestion(it) })
 
-
-                Spacer(modifier = Modifier.width(8.dp))
+              Spacer(modifier = Modifier.width(8.dp))
                     IconButton(
                     onClick = { navigateToFilter() },
                     modifier = Modifier
@@ -319,20 +320,20 @@ fun HeaderComposable(
               .heightIn(0.dp, 130.dp)) {
               items(suggestions.count()){i ->
                 val suggestion = suggestions.entries.elementAt(i)
-                Card(
+                  Card(
                     modifier =
                     Modifier
                         .fillMaxWidth()
                         .padding(4.dp)
                         .testTag("suggestion")
                         .clickable {
-                            // Click on a suggestion
+                            fManager.clearFocus()
                             setSelectedLocality(Pair(suggestion.key, suggestion.value))
                             fetchActivities(range, suggestion.value)
+                            changeText(suggestion.key)
                             clearSuggestions()
-                            fManager.clearFocus()
                         }) {
-                  Text(modifier = Modifier.padding(8.dp).height(20.dp), text = suggestion.key)
+                      Text(modifier = Modifier.padding(8.dp).height(20.dp), text = suggestion.key)
                 }
             }
           }

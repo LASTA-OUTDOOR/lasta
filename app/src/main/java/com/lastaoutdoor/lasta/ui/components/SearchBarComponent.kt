@@ -31,9 +31,10 @@ import com.lastaoutdoor.lasta.R
  * @param modifier Modifier to apply to the search bar.
  * @param onSearch Callback to be invoked when the user searches for an item.
  * @sample SearchBarComponent(modifier = Modifier, onSearch = { searchText -> println(searchText) })
+ * @return A function that sets the search text.
  */
 @Composable
-fun SearchBarComponent(modifier: Modifier, onSearch: (String) -> Unit) {
+fun searchBarComponent(modifier: Modifier, onSearch: (String) -> Unit) : (String) -> Unit {
 
   // Focus to hide the keyboard
   val focusManager = LocalFocusManager.current
@@ -69,4 +70,5 @@ fun SearchBarComponent(modifier: Modifier, onSearch: (String) -> Unit) {
           onDone = {focusManager.clearFocus()}
       )
   )
+  return {s : String -> searchText = TextFieldValue(s)}
 }
