@@ -311,4 +311,4 @@ tasks.register("submitAndCheck", GradleBuild::class) {
 kapt {
     correctErrorTypes = true
 }
-tasks.forEach{if(it.name == "hiltJavaCompileDebug"){it.dependsOn("copyRoomSchemas")} }
+tasks.forEach{if(it.name == "copyRoomSchemas"){it.dependsOn("hiltJavaCompileDebug")} }
