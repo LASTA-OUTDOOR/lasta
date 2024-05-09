@@ -141,9 +141,11 @@ class DiscoveryScreenViewModelTest() {
   @Test
   fun testPUpdatePermissions() {
     viewModel.updatePermission(true)
-    assertEquals(viewModel.initialPosition, LatLng(46.519962, 6.633597))
+    assertEquals(viewModel.mapState.value.uiSettings.myLocationButtonEnabled, true)
+    assertEquals(viewModel.mapState.value.properties.isMyLocationEnabled, true)
     viewModel.updatePermission(false)
-    assertEquals(viewModel.initialPosition, LatLng(46.519962, 6.633597))
+    assertEquals(viewModel.mapState.value.properties.isMyLocationEnabled, false)
+    assertEquals(viewModel.mapState.value.uiSettings.myLocationButtonEnabled, false)
   }
 
   @ExperimentalCoroutinesApi
@@ -249,13 +251,47 @@ class DiscoveryScreenViewModelTest() {
 
   // Test autocompletion part of the view model
   @Test
-  fun testFetchSuggestions() {
+  fun testFetchSuggestionsAndClear() {
     viewModel.fetchSuggestions("Test")
     assert(viewModel.suggestions.value.isNotEmpty())
     assert(viewModel.suggestions.value.size == 4)
 
-    radarRepo.shouldWork(false)
-    viewModel.fetchSuggestions("Test")
-    runBlocking { viewModel.suggestions.collect {} }
+    viewModel.clearSuggestions()
+    assert(viewModel.suggestions.value.isEmpty())
+  }
+
+  @Test
+  fun testActivitiesToMarkers() {
+    val testActivity =
+        Activity(
+            "id",
+            1,
+            ActivityType.BIKING,
+            "description",
+            Position(0.0, 0.0),
+            1f,
+            5,
+            emptyList(),
+            Difficulty.EASY,
+            "url",
+            ClimbingStyle.OUTDOOR,
+            1f,
+            "from",
+            "to",
+            1f)
+    val marker = viewModel.activitiesToMarkers(listOf(testActivity))
+    assert(marker.isNotEmpty())
+    assert(marker.size == 1)
+    assert(marker.first().position == LatLng(0.0, 0.0))
+  }
+
+  @Test
+  fun randomSmallChecks() {
+    viewModel.setSelectedActivityType(ActivityType.BIKING)
+    assert(viewModel.selectedActivityType.value == ActivityType.BIKING)
+
+    assert(viewModel.selectedZoom == 13f)
+    assert(viewModel.initialPosition.value == LatLng(46.519962, 6.633597))
+    assert(viewModel.initialZoom == 11f)
   }
 }

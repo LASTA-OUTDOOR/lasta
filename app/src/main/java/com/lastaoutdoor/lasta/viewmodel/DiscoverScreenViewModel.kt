@@ -119,7 +119,7 @@ constructor(
     }
   }
 
-  private fun activitiesToMarkers(activities: List<Activity>): List<Marker> {
+  fun activitiesToMarkers(activities: List<Activity>): List<Marker> {
     return activities.map { activity ->
       Marker(
           activity.osmId,
