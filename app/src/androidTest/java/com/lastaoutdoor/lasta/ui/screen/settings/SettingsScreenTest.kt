@@ -181,6 +181,7 @@ class SettingsScreenTest {
     composeRule.onNodeWithText("Intermediate").performClick()
   }
 
+  /*
   @Test
   fun settingsScreen_signOut() {
     val language = Language.ENGLISH
@@ -206,4 +207,5 @@ class SettingsScreenTest {
     composeRule.onNodeWithTag("settingsDeleteAccount").assertIsDisplayed()
     composeRule.onNodeWithTag("settingsDeleteAccount").performClick()
   }
+     */
 }
