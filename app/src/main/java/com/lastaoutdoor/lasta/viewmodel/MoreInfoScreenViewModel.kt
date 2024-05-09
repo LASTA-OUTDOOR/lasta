@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.data.offline.ActivityDatabaseImpl
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.activity.Difficulty
@@ -22,7 +23,8 @@ class MoreInfoScreenViewModel
 @Inject
 constructor(
     private val activityRepository: ActivityRepository,
-    private val activityDB: ActivitiesDBRepository
+    private val activityDB: ActivitiesDBRepository,
+    private val activitydaoImpl: ActivityDatabaseImpl
 ) : ViewModel() {
   /* Just a default activity to fill in the mutable state*/
   private val dummyActivity = Activity("", 0, ActivityType.CLIMBING, "Dummy")
@@ -75,5 +77,9 @@ constructor(
         "",
         icon,
         activity.activityType)
+  }
+
+  fun downloadActivity(a: Activity) {
+    viewModelScope.launch { activitydaoImpl.insertActivity(a) }
   }
 }
