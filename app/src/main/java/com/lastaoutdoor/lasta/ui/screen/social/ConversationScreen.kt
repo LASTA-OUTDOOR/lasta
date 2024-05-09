@@ -127,7 +127,7 @@ fun ShowMessage(message: MessageModel, user: UserModel) {
   }
 
   Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = arrangement) {
-    Card(modifier = Modifier.padding(8.dp).widthIn(0.dp, LocalConfiguration.current.screenWidthDp.dp * 0.65f), colors = CardColors(
+    Card(modifier = Modifier.padding(8.dp).widthIn(0.dp, LocalConfiguration.current.screenWidthDp.dp * 0.55f), colors = CardColors(
         containerColor = backgroundColor,
         contentColor = textColor,
         disabledContentColor = backgroundColor,
