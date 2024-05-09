@@ -73,7 +73,7 @@ class ConversationScreenTest {
   }
 
   @Test
-  fun sendButtonTest(){
+  fun sendButtonTest() {
 
     var clicked = false
 
@@ -87,11 +87,11 @@ class ConversationScreenTest {
           refresh = {},
           user = UserModel("1"),
           friend = UserModel("2"),
-          send = {clicked = true},
+          send = { clicked = true },
           navigateBack = {})
     }
     composeRule.onNodeWithTag("SendMessageButton").assertIsDisplayed()
     composeRule.onNodeWithTag("SendMessageButton").performClick()
-      assert(clicked)
+    assert(clicked)
   }
 }
