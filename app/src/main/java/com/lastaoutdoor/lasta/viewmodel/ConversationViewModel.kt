@@ -25,11 +25,11 @@ import kotlinx.coroutines.runBlocking
 class ConversationViewModel
 @Inject
 constructor(
-  private val userRepository: UserDBRepository,
-  private val tokenDBRepo: TokenDBRepository,
-  private val fcmAPI: FCMApi,
-  val repository: SocialDBRepository,
-  val preferences: PreferencesRepository
+    private val userRepository: UserDBRepository,
+    private val tokenDBRepo: TokenDBRepository,
+    private val fcmAPI: FCMApi,
+    val repository: SocialDBRepository,
+    val preferences: PreferencesRepository
 ) : ViewModel() {
 
   private val _user = MutableStateFlow(UserModel(""))
@@ -87,7 +87,8 @@ constructor(
           updateConversation()
           val friendToken = tokenDBRepo.getUserTokenById(friendUserId)
           if (friendToken != null) {
-            fcmAPI.sendMessage(SendMessageDto(friendToken, NotificationBody(user.value.userName, message)))
+            fcmAPI.sendMessage(
+                SendMessageDto(friendToken, NotificationBody(user.value.userName, message)))
           }
         } catch (e: Exception) {
           e.printStackTrace()

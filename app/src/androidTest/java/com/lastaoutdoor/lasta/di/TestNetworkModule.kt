@@ -91,11 +91,11 @@ object TestNetworkModule {
   @Singleton
   @Provides
   fun provideFcmAPIService(@ApplicationContext context: Context): FCMApi =
-    Retrofit.Builder()
-      .baseUrl(context.getString(R.string.notification_server_url))
-      .addConverterFactory(GsonConverterFactory.create())
-      .build()
-      .create(FCMApi::class.java)
+      Retrofit.Builder()
+          .baseUrl(context.getString(R.string.notification_server_url))
+          .addConverterFactory(GsonConverterFactory.create())
+          .build()
+          .create(FCMApi::class.java)
 
   @Singleton
   @Provides
@@ -149,7 +149,7 @@ object TestNetworkModule {
   @Singleton
   @Provides
   fun provideTokenDBRepository(
-    @ApplicationContext context: Context,
-    firestore: FirebaseFirestore
+      @ApplicationContext context: Context,
+      firestore: FirebaseFirestore
   ): TokenDBRepository = TokenDBRepositoryImpl(context, firestore)
 }

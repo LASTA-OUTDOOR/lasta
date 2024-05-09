@@ -2,9 +2,7 @@ package com.lastaoutdoor.lasta.ui.screen.loading
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import com.google.firebase.messaging.FirebaseMessaging
 import com.lastaoutdoor.lasta.ui.components.LoadingAnim
-import kotlinx.coroutines.tasks.await
 
 @Composable
 fun LoadingScreen(
@@ -14,7 +12,7 @@ fun LoadingScreen(
 ) {
   LaunchedEffect(key1 = isLoggedIn) {
     // print token fcm
-    //FirebaseMessaging.getInstance().deleteToken().await()
+    // FirebaseMessaging.getInstance().deleteToken().await()
     if (isLoggedIn != null) {
       if (isLoggedIn == true) {
         navigateWhenLoggedIn()

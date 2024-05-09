@@ -8,8 +8,7 @@ import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
 import kotlinx.coroutines.tasks.await
 
-class TokenDBRepositoryImpl(context: Context, database: FirebaseFirestore) :
-    TokenDBRepository {
+class TokenDBRepositoryImpl(context: Context, database: FirebaseFirestore) : TokenDBRepository {
   private val tokenCollection = database.collection(context.getString(R.string.token_db_name))
 
   override suspend fun uploadUserToken(userId: String, token: String) {

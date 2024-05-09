@@ -31,11 +31,11 @@ import kotlinx.coroutines.launch
 class SocialViewModel
 @Inject
 constructor(
-  @ApplicationContext private val context: Context,
-  val repository: SocialDBRepository,
-  private val userDBRepo: UserDBRepository,
-  connectionRepo: ConnectivityRepository,
-  val preferences: PreferencesRepository
+    @ApplicationContext private val context: Context,
+    val repository: SocialDBRepository,
+    private val userDBRepo: UserDBRepository,
+    connectionRepo: ConnectivityRepository,
+    val preferences: PreferencesRepository
 ) : ViewModel() {
 
   // get the user id

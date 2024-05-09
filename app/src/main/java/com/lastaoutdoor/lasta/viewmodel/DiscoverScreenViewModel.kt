@@ -38,7 +38,7 @@ constructor(
     private val repository: ActivityRepository,
     private val preferencesRepository: PreferencesRepository,
     private val activitiesDB: ActivitiesDBRepository,
-  private val tokenDBRepository: TokenDBRepository
+    private val tokenDBRepository: TokenDBRepository
 ) : ViewModel() {
 
   private val _isLoading = MutableStateFlow(true)
@@ -107,10 +107,10 @@ constructor(
     viewModelScope.launch {
       val userId = preferencesRepository.userPreferencesFlow.map { it.user.userId }.first()
       _selectedActivityType.value =
-        preferencesRepository.userPreferencesFlow.map { it.user.prefActivity }.first()
+          preferencesRepository.userPreferencesFlow.map { it.user.prefActivity }.first()
 
       _selectedLevels.value =
-        preferencesRepository.userPreferencesFlow.map { it.user.levels }.first()
+          preferencesRepository.userPreferencesFlow.map { it.user.levels }.first()
       val token = FirebaseMessaging.getInstance().token.await()
       tokenDBRepository.uploadUserToken(userId, token)
 
