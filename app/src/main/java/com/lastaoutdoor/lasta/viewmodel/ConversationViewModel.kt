@@ -82,7 +82,7 @@ constructor(
   fun send(message: String) {
     viewModelScope.launch {
       if (message.isNotEmpty()) {
-        val friendToken = tokenDBRepo.getUserTokenById("2o5pXioIK7Zta9ptMAZcCjcwUhj2")
+        val friendToken = tokenDBRepo.getUserTokenById(friendUserId)
         if (friendToken != null) {
           fcmAPI.sendMessage(SendMessageDto(friendToken, NotificationBody(friend.value.userName, message)))
         }

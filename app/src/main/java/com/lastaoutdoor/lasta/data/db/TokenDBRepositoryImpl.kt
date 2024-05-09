@@ -3,21 +3,22 @@ package com.lastaoutdoor.lasta.data.db
 import android.content.Context
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
+import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
 import kotlinx.coroutines.tasks.await
-import javax.inject.Inject
 
 class TokenDBRepositoryImpl(context: Context, database: FirebaseFirestore) :
     TokenDBRepository {
-  private val tokenCollection = database.collection("user_fcm_tokens")
+  private val tokenCollection = database.collection(context.getString(R.string.token_db_name))
 
   override suspend fun uploadUserToken(userId: String, token: String) {
     if (token.isEmpty()) return
     if (userId.isEmpty()) return
     // Upload user token to database
     val document = tokenCollection.document(userId)
-    val data = hashMapOf("token" to token, "createdAt" to FieldValue.serverTimestamp())
-    document.set(data).await()
+    val data = hashMapOf("token" to token, "timestamp" to FieldValue.serverTimestamp())
+    document.set(data, SetOptions.merge()).await()
   }
 
   override suspend fun getUserTokenById(userId: String): String? {

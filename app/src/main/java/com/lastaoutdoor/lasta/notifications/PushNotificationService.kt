@@ -11,16 +11,6 @@ class PushNotificationService : FirebaseMessagingService() {
 
   override fun onNewToken(token: String) {
     super.onNewToken(token)
-    println("FCM Token: $token")
-    // Update server (call db)
-    val deviceToken = hashMapOf(
-      "token" to token,
-      "timestamp" to FieldValue.serverTimestamp(),
-    )
-    // Get user ID from Firebase Auth or your own server
-    val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
-    Firebase.firestore.collection("user_fcm_tokens").document(userId)
-      .set(deviceToken)
   }
 
   override fun onMessageReceived(message: RemoteMessage) {

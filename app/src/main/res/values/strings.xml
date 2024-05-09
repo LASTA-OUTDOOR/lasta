@@ -9,6 +9,7 @@
     <string name="user_activities_db_name" translatable="false">user_activities</string>
     <string name="activities_db_name" translatable="false">activities</string>
     <string name="conversations_db_name" translatable="false">conversations</string>
+    <string name="token_db_name" translatable="false">user_fcm_tokens</string>
 
     <!--Nav-->
     <string name="app_name" translatable="false">Lasta</string>

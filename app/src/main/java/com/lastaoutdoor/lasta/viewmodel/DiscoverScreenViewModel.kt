@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.maps.android.SphericalUtil
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.Activity
@@ -18,6 +19,7 @@ import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
+import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
 import com.lastaoutdoor.lasta.utils.OrderingBy
 import com.lastaoutdoor.lasta.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,6 +29,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 @HiltViewModel
 class DiscoverScreenViewModel
@@ -34,7 +37,8 @@ class DiscoverScreenViewModel
 constructor(
     private val repository: ActivityRepository,
     private val preferencesRepository: PreferencesRepository,
-    private val activitiesDB: ActivitiesDBRepository
+    private val activitiesDB: ActivitiesDBRepository,
+  private val tokenDBRepository: TokenDBRepository
 ) : ViewModel() {
 
   private val _isLoading = MutableStateFlow(true)
@@ -101,11 +105,15 @@ constructor(
 
   init {
     viewModelScope.launch {
+      val userId = preferencesRepository.userPreferencesFlow.map { it.user.userId }.first()
       _selectedActivityType.value =
-          preferencesRepository.userPreferencesFlow.map { it.user.prefActivity }.first()
+        preferencesRepository.userPreferencesFlow.map { it.user.prefActivity }.first()
 
       _selectedLevels.value =
-          preferencesRepository.userPreferencesFlow.map { it.user.levels }.first()
+        preferencesRepository.userPreferencesFlow.map { it.user.levels }.first()
+      val token = FirebaseMessaging.getInstance().token.await()
+      tokenDBRepository.uploadUserToken(userId, token)
+
       fetchActivities()
     }
   }
