@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.Card
@@ -56,10 +57,14 @@ fun ConversationScreen(
     SeparatorComponent()
 
     Column(
-        modifier = Modifier.fillMaxSize().testTag("ConversationScreen"),
+        modifier = Modifier
+            .fillMaxSize()
+            .testTag("ConversationScreen"),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start) {
-          LazyColumn(modifier = Modifier.fillMaxWidth().fillMaxSize(0.8f)) {
+          LazyColumn(modifier = Modifier
+              .fillMaxWidth()
+              .fillMaxSize(0.8f)) {
             // display 10 Text for testing
             items(conversationModel.messages.size) {
               // see this function maybe can be wrong
@@ -72,7 +77,10 @@ fun ConversationScreen(
 
           // Icon to display the send message button
           Row(
-              modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(8.dp),
+              modifier = Modifier
+                  .fillMaxWidth()
+                  .fillMaxHeight()
+                  .padding(8.dp),
               horizontalArrangement = Arrangement.Center,
               verticalAlignment = Alignment.CenterVertically) {
                 IconButton(
@@ -88,6 +96,7 @@ fun ConversationScreen(
                     modifier = Modifier.fillMaxWidth(0.6f)) {
                       Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "Send message")
                     }
+                TextField(value = "d", onValueChange = {})
               }
         }
 
@@ -101,7 +110,10 @@ fun ConversationScreen(
 @Composable
 fun Header(backCallBack: () -> Unit, friend: UserModel) {
   Row(
-      modifier = Modifier.fillMaxWidth().padding(16.dp).testTag("ConversationScreenHeader"),
+      modifier = Modifier
+          .fillMaxWidth()
+          .padding(16.dp)
+          .testTag("ConversationScreenHeader"),
       horizontalArrangement = Arrangement.Start,
       verticalAlignment = Alignment.CenterVertically) {
         // back button
@@ -127,7 +139,9 @@ fun ShowMessage(message: MessageModel, user: UserModel) {
   }
 
   Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = arrangement) {
-    Card(modifier = Modifier.padding(8.dp).widthIn(0.dp, LocalConfiguration.current.screenWidthDp.dp * 0.55f), colors = CardColors(
+    Card(modifier = Modifier
+        .padding(8.dp)
+        .widthIn(0.dp, LocalConfiguration.current.screenWidthDp.dp * 0.55f), colors = CardColors(
         containerColor = backgroundColor,
         contentColor = textColor,
         disabledContentColor = backgroundColor,
