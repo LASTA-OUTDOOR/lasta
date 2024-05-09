@@ -40,7 +40,7 @@ fun SocialScreen(
     topButtonOnClick: () -> Unit,
     refreshFriendRequests: () -> Unit,
     navigateToNotifications: () -> Unit,
-    isConnedted: ConnectionState,
+    isConnected: ConnectionState,
     friends: List<UserModel>,
     messages: List<ConversationModel>,
     latestFriendActivities: List<UserActivity>,
@@ -75,7 +75,7 @@ fun SocialScreen(
 
     // Tabs
     TabMenu(
-        isConnedted,
+        isConnected,
         friends,
         messages,
         latestFriendActivities,

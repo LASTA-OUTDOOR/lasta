@@ -21,6 +21,29 @@ constructor(context: Context, database: FirebaseFirestore) : UserActivitiesDBRep
   private val userActivitiesCollection =
       database.collection(context.getString(R.string.user_activities_db_name))
 
+  /**
+   * Adds a new user to the activities database.
+   *
+   * @param userId the userId from the database.
+   */
+
+  /*
+  private suspend fun addUserToActivitiesDatabase(userId: String) {
+    try {
+      val userDocumentRef = userActivitiesCollection.document(userId)
+      val userData =
+        hashMapOf(
+          "Hiking" to arrayListOf<HikingUserActivity>(),
+          "Climbing" to arrayListOf<ClimbingUserActivity>(),
+          "Biking" to arrayListOf<BikingUserActivity>())
+      userDocumentRef.set(userData).await()
+    } catch (e: Exception) {
+      /* TODO: cache the information so that we can add activities when we have internet again */
+      e.printStackTrace()
+    }
+  }
+   */
+
   override suspend fun getUserActivities(userId: String): List<UserActivity> {
     val userActivities: ArrayList<UserActivity> = ArrayList()
 

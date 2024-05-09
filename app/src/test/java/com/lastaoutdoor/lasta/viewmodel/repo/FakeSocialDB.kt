@@ -5,6 +5,7 @@ import com.lastaoutdoor.lasta.models.user.ClimbingUserActivity
 import com.lastaoutdoor.lasta.models.user.UserActivity
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
+import com.lastaoutdoor.lasta.utils.TimeFrame
 
 class FakeSocialDB() : SocialDBRepository {
   val fakeUserModel = UserModel(userId = "id")
@@ -21,7 +22,11 @@ class FakeSocialDB() : SocialDBRepository {
     return listOf(fakeUserModel)
   }
 
-  override suspend fun getLatestFriendActivities(userId: String, days: Int): List<UserActivity> {
+  override suspend fun getLatestFriendActivities(
+      userId: String,
+      timeFrame: TimeFrame,
+      friends: List<String>
+  ): List<UserActivity> {
     return listOf(fakeActivity)
   }
 
