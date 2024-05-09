@@ -5,11 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lastaoutdoor.lasta.data.api.notifications.FCMApi
+import com.lastaoutdoor.lasta.models.notifications.NotificationBody
+import com.lastaoutdoor.lasta.models.notifications.SendMessageDto
 import com.lastaoutdoor.lasta.models.social.ConversationModel
 import com.lastaoutdoor.lasta.models.user.UserModel
-import com.lastaoutdoor.lasta.repository.app.ConnectivityRepository
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
+import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -22,16 +25,17 @@ import kotlinx.coroutines.runBlocking
 class ConversationViewModel
 @Inject
 constructor(
-    private val userRepository: UserDBRepository,
-    val repository: SocialDBRepository,
-    val connectionRepo: ConnectivityRepository,
-    val preferences: PreferencesRepository
+  private val userRepository: UserDBRepository,
+  private val tokenDBRepo: TokenDBRepository,
+  private val fcmAPI: FCMApi,
+  val repository: SocialDBRepository,
+  val preferences: PreferencesRepository
 ) : ViewModel() {
 
-  private val _user = MutableStateFlow<UserModel>(UserModel(""))
+  private val _user = MutableStateFlow(UserModel(""))
   val user = _user
 
-  private val _friend = MutableStateFlow<UserModel>(UserModel(""))
+  private val _friend = MutableStateFlow(UserModel(""))
   val friend = _friend
 
   // current user id
@@ -78,6 +82,10 @@ constructor(
   fun send(message: String) {
     viewModelScope.launch {
       if (message.isNotEmpty()) {
+        val friendToken = tokenDBRepo.getUserTokenById("2o5pXioIK7Zta9ptMAZcCjcwUhj2")
+        if (friendToken != null) {
+          fcmAPI.sendMessage(SendMessageDto(friendToken, NotificationBody(friend.value.userName, message)))
+        }
         repository.sendMessage(userId, friendUserId, message)
         updateConversation()
       }

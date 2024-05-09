@@ -10,14 +10,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.data.db.TokenDBRepositoryImpl
 import com.lastaoutdoor.lasta.models.social.ConversationModel
 import com.lastaoutdoor.lasta.models.user.UserActivity
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.app.ConnectivityRepository
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
-import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import com.lastaoutdoor.lasta.utils.ConnectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,7 +34,6 @@ constructor(
   @ApplicationContext private val context: Context,
   val repository: SocialDBRepository,
   private val userDBRepo: UserDBRepository,
-  val tokenDBRepo: TokenDBRepository,
   connectionRepo: ConnectivityRepository,
   val preferences: PreferencesRepository
 ) : ViewModel() {

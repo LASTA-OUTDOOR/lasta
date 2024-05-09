@@ -9,6 +9,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.data.api.notifications.FCMApi
 import com.lastaoutdoor.lasta.data.api.osm.ActivityRepositoryImpl
 import com.lastaoutdoor.lasta.data.api.osm.OSMApiService
 import com.lastaoutdoor.lasta.data.api.weather.WeatherApiService
@@ -86,6 +87,15 @@ object TestNetworkModule {
           .addConverterFactory(GsonConverterFactory.create())
           .build()
           .create(WeatherApiService::class.java)
+
+  @Singleton
+  @Provides
+  fun provideFcmAPIService(@ApplicationContext context: Context): FCMApi =
+    Retrofit.Builder()
+      .baseUrl(context.getString(R.string.notification_server_url))
+      .addConverterFactory(GsonConverterFactory.create())
+      .build()
+      .create(FCMApi::class.java)
 
   @Singleton
   @Provides

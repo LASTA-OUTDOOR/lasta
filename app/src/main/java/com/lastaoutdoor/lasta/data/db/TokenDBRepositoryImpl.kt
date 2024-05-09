@@ -24,7 +24,7 @@ class TokenDBRepositoryImpl(context: Context, database: FirebaseFirestore) :
     if (userId.isEmpty()) return null
     // Get user token from database
     val document = tokenCollection.document(userId).get().await()
-    return document.getString("token")
+    return document.getString("token") ?: ""
   }
 
   override suspend fun getTokensByIds(userIds: List<String>): List<String> {
