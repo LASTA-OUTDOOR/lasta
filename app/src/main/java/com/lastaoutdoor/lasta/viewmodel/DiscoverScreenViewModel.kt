@@ -8,6 +8,7 @@ import com.google.maps.android.SphericalUtil
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.models.api.NodeWay
 import com.lastaoutdoor.lasta.models.api.OSMData
 import com.lastaoutdoor.lasta.models.api.Relation
@@ -212,6 +213,7 @@ constructor(
 
   fun setSelectedActivityType(activityType: ActivityType) {
     _selectedActivityType.value = activityType
+    updateActivitiesByOrdering()
   }
 
   fun setSelectedLevels(levels: UserActivitiesLevel) {
@@ -296,6 +298,24 @@ constructor(
         _activities.value = ArrayList(_activities.value.sortedBy { it.difficulty }.reversed())
       }
     }
+    _activities.value =
+        _activities.value.filter {
+          filterWithDiff(_selectedActivityType.value, _selectedLevels.value.bikingLevel, it)
+        } as ArrayList<Activity>
+  }
+
+  fun filterWithDiff(
+      activityType: ActivityType,
+      difficulty: UserLevel,
+      activity: Activity
+  ): Boolean {
+    return if (activityType == activity.activityType)
+        when (difficulty) {
+          UserLevel.BEGINNER -> activity.difficulty == Difficulty.EASY
+          UserLevel.INTERMEDIATE -> activity.difficulty == Difficulty.NORMAL
+          UserLevel.ADVANCED -> activity.difficulty == Difficulty.HARD
+        }
+    else false
   }
 
   fun updateOrderingBy(orderingBy: OrderingBy) {

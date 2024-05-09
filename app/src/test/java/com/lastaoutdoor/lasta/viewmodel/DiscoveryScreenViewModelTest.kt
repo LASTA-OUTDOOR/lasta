@@ -7,6 +7,7 @@ import com.lastaoutdoor.lasta.models.activity.ClimbingStyle
 import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.models.api.Position
 import com.lastaoutdoor.lasta.models.map.Marker
+import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
 import com.lastaoutdoor.lasta.utils.OrderingBy
 import com.lastaoutdoor.lasta.utils.Response
@@ -167,6 +168,26 @@ class DiscoveryScreenViewModelTest() {
   fun testUpdateMarkers() {
     viewModel.updateMarkers(LatLng(46.519962, 6.633597), 10000.0)
     assertEquals(viewModel.markerList.value, emptyList<Marker>())
+  }
+
+  @Test
+  fun filterWithDiff_worksAsIntended() {
+    var res = viewModel.filterWithDiff(ActivityType.BIKING, UserLevel.BEGINNER, Activity("", 0L))
+    assertEquals(false, res)
+    res = viewModel.filterWithDiff(ActivityType.CLIMBING, UserLevel.BEGINNER, Activity("", 0L))
+    assertEquals(true, res)
+    res =
+        viewModel.filterWithDiff(
+            ActivityType.BIKING,
+            UserLevel.INTERMEDIATE,
+            Activity("", 0L, activityType = ActivityType.BIKING))
+    assertEquals(false, res)
+    res =
+        viewModel.filterWithDiff(
+            ActivityType.HIKING,
+            UserLevel.ADVANCED,
+            Activity("", 0L, activityType = ActivityType.HIKING))
+    assertEquals(false, res)
   }
 
   @Test
