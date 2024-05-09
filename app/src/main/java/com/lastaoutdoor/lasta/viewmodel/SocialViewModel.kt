@@ -18,6 +18,7 @@ import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import com.lastaoutdoor.lasta.utils.ConnectionState
+import com.lastaoutdoor.lasta.utils.TimeFrame
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -51,7 +52,7 @@ constructor(
   var hasFriendRequest: Boolean = friendRequests.isNotEmpty()
 
   // number of days to consider for the latest activities
-  private val numberOfDays = 7
+  private val timeFrame = TimeFrame.W
 
   // is the top button visible
   var topButton by mutableStateOf(false)
@@ -69,7 +70,7 @@ constructor(
   var messages: List<ConversationModel> by mutableStateOf(emptyList())
 
   // returns all the activities done by friends in the last 7 days
-  val latestFriendActivities: List<UserActivity> by mutableStateOf(emptyList())
+  var latestFriendActivities: List<UserActivity> by mutableStateOf(emptyList())
 
   // Fetch connection info from the repository, set isConnected to true if connected, false
   // otherwise
@@ -88,11 +89,8 @@ constructor(
       refreshFriends()
       refreshFriendRequests()
       refreshMessages()
+      refreshFriendsActivities()
     }
-  }
-
-  fun getNumberOfDays(): Int {
-    return numberOfDays
   }
 
   fun showTopButton(ico: ImageVector, onClick: () -> Unit) {
@@ -198,5 +196,17 @@ constructor(
   // Clear the feedback message for the friend request
   fun clearFriendRequestFeedback() {
     friendRequestFeedback = ""
+  }
+
+  private fun refreshFriendsActivities() {
+    viewModelScope.launch {
+      var friends: List<String> = emptyList()
+
+      preferences.userPreferencesFlow.collect { userPreferences ->
+        friends = userPreferences.user.friends
+      }
+
+      latestFriendActivities = repository.getLatestFriendActivities(user.userId, timeFrame, friends)
+    }
   }
 }

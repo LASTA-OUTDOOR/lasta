@@ -27,7 +27,7 @@ import com.lastaoutdoor.lasta.utils.ConnectionState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TabMenu(
-    isConnedted: ConnectionState,
+    isConnected: ConnectionState,
     friends: List<UserModel>,
     messages: List<ConversationModel>,
     latestFriendActivities: List<UserActivity>,
@@ -72,12 +72,12 @@ fun TabMenu(
   when (state) {
     0 -> {
       hideTopButton()
-      FriendsActivityList(isConnedted, latestFriendActivities)
+      FriendsActivityList(isConnected, latestFriendActivities)
     }
     1 -> {
       showTopButton(Icons.Filled.Add) { displayAddFriendDialog() }
       FriendsList(
-          isConnedted,
+          isConnected,
           friends,
           addFriendDialog,
           friendRequestFeedback,
@@ -90,7 +90,7 @@ fun TabMenu(
     2 -> {
       showTopButton(Icons.Filled.Email) { displayFriendPicker() }
       MessageList(
-          isConnedted,
+          isConnected,
           messages,
           refreshMessages,
           friends,

@@ -1,5 +1,6 @@
 package com.lastaoutdoor.lasta.utils
 
+import android.annotation.SuppressLint
 import com.google.firebase.Timestamp
 import com.lastaoutdoor.lasta.data.time.TimeProvider
 import com.lastaoutdoor.lasta.models.activity.ActivityType
@@ -18,6 +19,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
+/* Initial data for the application */
 val firstValidDate: LocalDate = LocalDate.of(1970, 1, 1)
 
 fun calculateTimeRangeUntilNow(
@@ -47,6 +49,33 @@ fun calculateTimeRangeUntilNow(
   val endTimestamp = Timestamp(endInstant.epochSecond, endInstant.nano)
 
   return Pair(startTimestamp, endTimestamp)
+}
+
+/**
+ * Filters the activities by the selected time frame.
+ *
+ * @param activities The list of activities to filter.
+ * @param timeFrame The selected time frame.
+ * @return The filtered list of activities.
+ */
+fun filterTrailsByTimeFrame(
+    activities: List<UserActivity>,
+    timeFrame: TimeFrame,
+    timeProvider: TimeProvider
+): List<UserActivity> {
+  return when (timeFrame) {
+    TimeFrame.W,
+    TimeFrame.M,
+    TimeFrame.Y -> {
+      val frame = calculateTimeRangeUntilNow(timeFrame, timeProvider)
+      activities.filter { activity ->
+        val trailStart = Timestamp(activity.timeStarted)
+        val trailEnd = Timestamp(activity.timeFinished)
+        trailStart > frame.first && trailEnd < frame.second
+      }
+    }
+    TimeFrame.ALL -> activities
+  }
 }
 
 fun createDateTime(year: Int, month: Int, day: Int, hour: Int, minute: Int, second: Int): Date {
@@ -135,6 +164,7 @@ fun timeFromActivityInMillis(activities: List<UserActivity>): Long {
   return activities.sumOf { it.timeFinished.time - it.timeStarted.time }
 }
 
+@SuppressLint("DefaultLocale")
 fun timeFromMillis(time: Long): String {
   val hours = time / 3600000
   val minutes = (time % 3600000) / 60000

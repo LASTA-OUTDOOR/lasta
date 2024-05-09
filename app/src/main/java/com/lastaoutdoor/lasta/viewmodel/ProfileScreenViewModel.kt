@@ -2,7 +2,6 @@ package com.lastaoutdoor.lasta.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.Timestamp
 import com.lastaoutdoor.lasta.data.time.TimeProvider
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.UserActivity
@@ -11,7 +10,7 @@ import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.db.UserActivitiesDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import com.lastaoutdoor.lasta.utils.TimeFrame
-import com.lastaoutdoor.lasta.utils.calculateTimeRangeUntilNow
+import com.lastaoutdoor.lasta.utils.filterTrailsByTimeFrame
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -63,7 +62,7 @@ constructor(
   /** Initializes the ViewModel by fetching the current user and user activities. */
   init {
     fetchCurrentUser()
-    // fetchUserActivities()
+    fetchUserActivities()
   }
 
   /** Fetches the current user from the preferences. */
@@ -86,33 +85,8 @@ constructor(
 
   /** Applies the selected filters to the activities fetched from the repository. */
   private fun applyFilters() {
-    _filteredActivities.value = filterTrailsByTimeFrame(_activitiesCache.value, _time.value)
-  }
-
-  /**
-   * Filters the activities by the selected time frame.
-   *
-   * @param activities The list of activities to filter.
-   * @param timeFrame The selected time frame.
-   * @return The filtered list of activities.
-   */
-  private fun filterTrailsByTimeFrame(
-      activities: List<UserActivity>,
-      timeFrame: TimeFrame
-  ): List<UserActivity> {
-    return when (timeFrame) {
-      TimeFrame.W,
-      TimeFrame.M,
-      TimeFrame.Y -> {
-        val frame = calculateTimeRangeUntilNow(timeFrame, timeProvider)
-        activities.filter { activity ->
-          val trailStart = Timestamp(activity.timeStarted)
-          val trailEnd = Timestamp(activity.timeFinished)
-          trailStart > frame.first && trailEnd < frame.second
-        }
-      }
-      TimeFrame.ALL -> activities
-    }
+    _filteredActivities.value =
+        filterTrailsByTimeFrame(_activitiesCache.value, _time.value, timeProvider)
   }
 
   /**
@@ -140,7 +114,7 @@ constructor(
    *
    * @param user The new user.
    */
-  fun updateUser(user: UserModel) {
+  private fun updateUser(user: UserModel) {
     if (user != _user.value) {
       _user.value = user
       fetchUserActivities()
@@ -153,7 +127,7 @@ constructor(
   /**
    * Updates the current user by fetching the user from the database.
    *
-   * @param uid The user id of the new user.
+   * @param userId The user id of the new user.
    */
   fun updateUser(userId: String) {
     viewModelScope.launch {
