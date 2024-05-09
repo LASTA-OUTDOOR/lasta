@@ -8,10 +8,12 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonColors
@@ -20,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.lastaoutdoor.lasta.R
@@ -113,10 +116,23 @@ fun Header(backCallBack: () -> Unit, friend: UserModel) {
 @Composable
 fun ShowMessage(message: MessageModel, user: UserModel) {
 
-  val arrangement = if (message.from == user) Arrangement.End else Arrangement.Start
+  var arrangement = Arrangement.Start
+  var backgroundColor = MaterialTheme.colorScheme.surfaceContainer
+  var textColor = MaterialTheme.colorScheme.onSurface
+
+  if (message.from == user)  {
+    arrangement =  Arrangement.End
+    backgroundColor = MaterialTheme.colorScheme.primary
+    textColor = MaterialTheme.colorScheme.onPrimary
+  }
 
   Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = arrangement) {
-    Card(modifier = Modifier.padding(8.dp)) {
+    Card(modifier = Modifier.padding(8.dp).widthIn(0.dp, LocalConfiguration.current.screenWidthDp.dp * 0.65f), colors = CardColors(
+        containerColor = backgroundColor,
+        contentColor = textColor,
+        disabledContentColor = backgroundColor,
+        disabledContainerColor = textColor,
+    )) {
       Text(message.content, modifier = Modifier.padding(8.dp))
     }
   }
