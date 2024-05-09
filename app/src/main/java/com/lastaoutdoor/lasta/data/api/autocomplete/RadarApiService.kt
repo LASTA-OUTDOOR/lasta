@@ -17,6 +17,6 @@ interface RadarApiService {
       @Query("query") query: String,
       @Query("layers") layers: String,
       @Query("country") country: String = "CH",
-      @Query("limit") limit: Int = 10
+      @Query("limit") limit: Int = 5
   ): Call<RadarApiResponse>
 }
