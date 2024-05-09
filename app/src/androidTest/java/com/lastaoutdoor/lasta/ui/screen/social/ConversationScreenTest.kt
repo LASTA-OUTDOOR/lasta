@@ -42,9 +42,6 @@ class ConversationScreenTest {
           refresh = {},
           user = UserModel("1"),
           friend = UserModel("2"),
-          showSendDialog = {},
-          showSendMessageDialog = true,
-          hideSendDialog = {},
           send = {},
           navigateBack = {})
     }
@@ -64,13 +61,13 @@ class ConversationScreenTest {
           refresh = {},
           user = UserModel("1"),
           friend = UserModel("2"),
-          showSendDialog = {},
-          showSendMessageDialog = true,
-          hideSendDialog = {},
           send = {},
           navigateBack = {})
     }
     composeRule.onNodeWithTag("ConversationScreen").assertIsDisplayed()
     composeRule.onNodeWithTag("ConversationScreenHeader").assertIsDisplayed()
+    composeRule.onNodeWithTag("ConversationScreenHeader").assertIsDisplayed()
+    composeRule.onNodeWithTag("SendMessageButton").assertIsDisplayed()
+    composeRule.onNodeWithTag("MessageTextField").assertIsDisplayed()
   }
 }
