@@ -8,6 +8,7 @@ import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.activity.Difficulty
+import com.lastaoutdoor.lasta.models.activity.Rating
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
@@ -36,6 +37,9 @@ constructor(
 
   private val _usersList = MutableStateFlow<ArrayList<UserModel?>>(arrayListOf())
   val usersList = _usersList
+
+  private val _ratings = MutableStateFlow<ArrayList<Rating>>(arrayListOf())
+  val ratings = _ratings
 
   /*Changes the int difficulty of the activity for its String equivalent : 0 -> Easy, 1 -> Medium, etc...*/
   fun processDiffText(activity: Activity): String {
@@ -92,5 +96,13 @@ constructor(
       }
       _usersList.value = users
     }
+  }
+
+  fun writeNewRating(activityId: String, rating: Rating, newMeanRating: String) {
+    viewModelScope.launch {
+      activityDB.addRating(activityId, rating, newMeanRating)
+      activityToDisplay.value = activityDB.getActivityById(activityId) ?: dummyActivity
+    }
+    _ratings.value.add(rating)
   }
 }

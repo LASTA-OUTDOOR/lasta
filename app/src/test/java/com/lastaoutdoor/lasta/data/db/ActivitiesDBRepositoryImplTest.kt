@@ -106,7 +106,7 @@ class ActivitiesDBRepositoryImplTest {
     every { querySnapshot.isEmpty } returns true
     val result =
         activitiesDB.addActivityIfNonExisting(
-            Activity("", 0, ratings = listOf(Rating("userId", "comment", 5))))
+            Activity("", 0, ratings = listOf(Rating("userId", "comment", "5"))))
     assert(result)
   }
 
@@ -148,7 +148,7 @@ class ActivitiesDBRepositoryImplTest {
     assert(result.ratings.size == 1)
     assert(result.ratings[0].userId == "userId")
     assert(result.ratings[0].comment == "comment")
-    assert(result.ratings[0].rating == 5)
+    assert(result.ratings[0].rating == "5")
     assert(result.difficulty == Difficulty.EASY)
     assert(result.activityImageUrl == "activityImageUrl")
     assert(result.climbingStyle == ClimbingStyle.OUTDOOR)

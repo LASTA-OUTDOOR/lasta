@@ -34,7 +34,7 @@ constructor(context: Context, database: FirebaseFirestore) : ActivitiesDBReposit
             "name" to activity.name,
             "startPosition" to
                 hashMapOf("lat" to activity.startPosition.lat, "lon" to activity.startPosition.lon),
-            "rating" to activity.rating,
+            "rating" to activity.rating.toString(),
             "numRatings" to activity.numRatings,
             "ratings" to
                 activity.ratings.map {
@@ -111,7 +111,7 @@ constructor(context: Context, database: FirebaseFirestore) : ActivitiesDBReposit
     val activityType = ActivityType.valueOf(document.getString("activityType") ?: "CLIMBING")
     val name = document.getString("name") ?: ""
 
-    val rating = (document.getDouble("rating") ?: 5).toFloat()
+    val rating = (document.getString("rating") ?: "5").toFloat()
     val numRatings = (document.getLong("numRatings") ?: 1).toInt()
     val ratingsMap: List<Map<String, Any>> =
         (document.get("ratings") ?: emptyList<Map<String, Any>>()) as List<Map<String, Any>>
@@ -144,12 +144,15 @@ constructor(context: Context, database: FirebaseFirestore) : ActivitiesDBReposit
         distance)
   }
 
-  fun addRatingToActivity(activityId: String, rating: Rating) {
+  override fun addRating(activityId: String, rating: Rating, newMeanRating: String) {
     val document = activitiesCollection.document(activityId)
     document.update(
         "ratings",
         FieldValue.arrayUnion(
             hashMapOf(
                 "userId" to rating.userId, "comment" to rating.comment, "rating" to rating.rating)))
+
+    document.update("numRatings", FieldValue.increment(1))
+    document.update("rating", newMeanRating)
   }
 }
