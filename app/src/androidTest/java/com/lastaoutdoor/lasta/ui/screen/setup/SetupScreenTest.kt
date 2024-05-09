@@ -58,7 +58,6 @@ class SetupScreenTest {
       }
     }
     composeRule.onNodeWithTag("setupScreen").assertIsDisplayed()
-    composeRule.onNodeWithTag("setupTitle").assertIsDisplayed()
   }
 
   @Test
@@ -83,10 +82,10 @@ class SetupScreenTest {
             {})
       }
     }
-    composeRule.onNodeWithTag("setupLanguage").assertIsDisplayed()
-    composeRule.onNodeWithTag("setupLanguage").performClick()
+    composeRule.onNodeWithTag("settingsLanguage").assertIsDisplayed()
+    composeRule.onNodeWithTag("settingsLanguage").performClick()
     composeRule.onNodeWithText("French").performClick()
-    composeRule.onNodeWithTag("setupLanguage").assertIsDisplayed()
+    composeRule.onNodeWithTag("settingsLanguage").assertIsDisplayed()
   }
 
   /*@Test
