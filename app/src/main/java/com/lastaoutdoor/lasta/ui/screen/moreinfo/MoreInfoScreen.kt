@@ -1,21 +1,33 @@
 package com.lastaoutdoor.lasta.ui.screen.moreinfo
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,7 +36,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -32,6 +46,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
@@ -40,6 +55,8 @@ import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.models.activity.Rating
 import com.lastaoutdoor.lasta.models.map.MapItinerary
 import com.lastaoutdoor.lasta.models.map.Marker
+import com.lastaoutdoor.lasta.models.user.UserModel
+import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
 import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
 import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
 import com.lastaoutdoor.lasta.ui.theme.Black
@@ -62,6 +79,8 @@ fun MoreInfoScreen(
     clearSelectedItinerary: () -> Unit,
     selectedZoom: Float,
     goToMarker: (Activity) -> Marker,
+    usersList: List<UserModel?>,
+    getUserModels: (List<String>) -> Unit,
     weather: WeatherResponse?,
     markerList: List<Marker>,
     selectedItinerary: MapItinerary?,
@@ -70,28 +89,35 @@ fun MoreInfoScreen(
 ) {
   var isMapDisplayed = remember { mutableStateOf(false) }
   if (!isMapDisplayed.value) {
-    Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoComposable")) {
-      LazyColumn(modifier = Modifier.weight(1f).padding(8.dp)) {
-        item { Spacer(modifier = Modifier.height(15.dp)) }
+    Column(modifier = Modifier
+        .fillMaxSize(1f)
+        .testTag("MoreInfoComposable"), verticalArrangement = Arrangement.SpaceBetween) {
+      Column(modifier = Modifier.padding(8.dp)) {
+        Spacer(modifier = Modifier.height(15.dp))
         // contains the top icon buttons
-        item {
-          TopBar {
-            navigateBack()
-            setWeatherBackToUserLoc()
-          }
+        TopBar {
+          navigateBack()
+          setWeatherBackToUserLoc()
         }
         // displays activity title and duration
-        item { ActivityTitleZone(activityToDisplay) }
-        item {
-          WeatherReportBig(weather, true)
-        } // displays activity difficulty, ration and view on map button
-        item { MiddleZone(activityToDisplay, isMapDisplayed) }
+        ActivityTitleZone(activityToDisplay)
+        WeatherReportBig(weather, true)
+        // displays activity difficulty, ration and view on map button
+        MiddleZone(activityToDisplay, isMapDisplayed)
         // filled with a spacer for the moment but will contain address + community
       }
-      StartButton()
+      Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
+          LazyColumn(modifier = Modifier.weight(0.88f)) { item { RatingCards(activityToDisplay.ratings, usersList, getUserModels) } }
+          Spacer(modifier = Modifier.height(5.dp))
+          Box(modifier = Modifier.weight(0.12f), contentAlignment = Alignment.Center) {
+              StartButton()
+          }
+      }
     }
   } else {
-    Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoMap")) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .testTag("MoreInfoMap")) {
       val marker = goToMarker(activityToDisplay)
       TopBar {
         navigateBack()
@@ -121,13 +147,17 @@ fun MoreInfoScreen(
 @Composable
 fun StartButton() {
   Row(
-      modifier = Modifier.fillMaxWidth().testTag("MoreInfoStartButton"),
+      modifier = Modifier
+          .fillMaxWidth()
+          .testTag("MoreInfoStartButton"),
       horizontalArrangement = Arrangement.Center) {
         ElevatedButton(
             onClick = {
               /** TODO : Start Activity */
             },
-            modifier = Modifier.fillMaxWidth(0.8f).height(48.dp), // takes up 80% of the width
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .height(48.dp), // takes up 80% of the width
             colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
               Text(
                   LocalContext.current.getString(R.string.start),
@@ -145,23 +175,31 @@ fun StartButton() {
 // on the map on the right
 @Composable
 fun MiddleZone(activityToDisplay: Activity, isMapDisplayed: MutableState<Boolean>) {
-  Row(modifier = Modifier.fillMaxWidth().testTag("MoreInfoMiddleZone")) {
-    DiffAndRating(activityToDisplay)
-    Spacer(Modifier.weight(1f))
-    ViewOnMapButton(isMapDisplayed)
-  }
+  Row(
+      modifier = Modifier
+          .fillMaxWidth()
+          .testTag("MoreInfoMiddleZone"),
+      horizontalArrangement = Arrangement.SpaceBetween) {
+        RatingLine(activityToDisplay)
+        ViewOnMapButton(isMapDisplayed)
+      }
+  SeparatorComponent()
 }
 
 // Button to view the activity on the map
 @Composable
 fun ViewOnMapButton(isMapDisplayed: MutableState<Boolean>) {
   Column(
-      modifier = Modifier.padding(vertical = 25.dp).testTag("viewOnMapButton"),
+      modifier = Modifier
+          .padding(vertical = 25.dp)
+          .testTag("viewOnMapButton"),
       horizontalAlignment = Alignment.End) {
         ElevatedButton(
             onClick = { isMapDisplayed.value = true },
             contentPadding = PaddingValues(all = 3.dp),
-            modifier = Modifier.width(130.dp).height(40.dp),
+            modifier = Modifier
+                .width(130.dp)
+                .height(40.dp),
             colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
               Text(
                   LocalContext.current.getString(R.string.on_map),
@@ -174,6 +212,16 @@ fun ViewOnMapButton(isMapDisplayed: MutableState<Boolean>) {
                       ))
             }
       }
+}
+
+/** Displays the rating of the activity and the "Add review" button */
+@Composable
+fun RatingLine(activityToDisplay: Activity) {
+  Row(verticalAlignment = Alignment.CenterVertically) {
+    DiffAndRating(activityToDisplay = activityToDisplay)
+    Spacer(modifier = Modifier.padding(6.dp))
+    AddRatingButton()
+  }
 }
 
 // Displays the difficulty and rating of the activity
@@ -226,7 +274,9 @@ fun Star(iconId: Int) {
       painter = painterResource(iconId),
       contentDescription = "Rating Star",
       tint = PrimaryBlue,
-      modifier = Modifier.width(17.dp).height(16.dp))
+      modifier = Modifier
+          .width(17.dp)
+          .height(16.dp))
 }
 
 // Displays the difficulty of the activity
@@ -241,7 +291,10 @@ fun ElevatedDifficultyDisplay(activityToDisplay: Activity) {
   ElevatedButton(
       onClick = { /*TODO let user change activity difficulty */},
       contentPadding = PaddingValues(all = 3.dp),
-      modifier = Modifier.width(80.dp).height(24.dp).testTag("elevatedTestTag"),
+      modifier = Modifier
+          .width(80.dp)
+          .height(24.dp)
+          .testTag("elevatedTestTag"),
       colors = ButtonDefaults.buttonColors(containerColor = difficultyColor)) {
         Text(
             activityToDisplay.difficulty.toString(),
@@ -259,7 +312,9 @@ fun ElevatedDifficultyDisplay(activityToDisplay: Activity) {
 // Top Bar that displays the four clickable logos with distinct usages
 @Composable
 fun TopBar(navigateBack: () -> Unit) {
-  Row(modifier = Modifier.fillMaxWidth().testTag("Top Bar")) {
+  Row(modifier = Modifier
+      .fillMaxWidth()
+      .testTag("Top Bar")) {
     TopBarLogo(R.drawable.arrow_back) { navigateBack() }
     Spacer(modifier = Modifier.weight(1f))
     TopBarLogo(R.drawable.download_button) {}
@@ -275,7 +330,9 @@ fun TopBarLogo(logoPainterId: Int, isFriendProf: Boolean = false, f: () -> Unit)
     Icon(
         painter = painterResource(id = logoPainterId),
         contentDescription = "Top Bar logo $logoPainterId",
-        modifier = Modifier.width(26.dp).height(26.dp),
+        modifier = Modifier
+            .width(26.dp)
+            .height(26.dp),
         // put to white if bool else put to default color
         tint = if (isFriendProf) Color.White else MaterialTheme.colorScheme.onSurface)
   }
@@ -301,7 +358,10 @@ fun ActivityPicture() {
     Image(
         painter = painterResource(id = R.drawable.ellipse),
         contentDescription = "Soon Activity Picture",
-        modifier = Modifier.padding(5.dp).width(70.dp).height(70.dp))
+        modifier = Modifier
+            .padding(5.dp)
+            .width(70.dp)
+            .height(70.dp))
   }
 }
 
@@ -330,10 +390,11 @@ fun ElevatedActivityType(activityToDisplay: Activity) {
       onClick = {},
       contentPadding = PaddingValues(all = 3.dp),
       modifier =
-          Modifier.padding(3.dp)
-              .width(64.dp)
-              .height(20.dp)
-              .testTag("MoreInfoActivityTypeComposable"),
+      Modifier
+          .padding(3.dp)
+          .width(64.dp)
+          .height(20.dp)
+          .testTag("MoreInfoActivityTypeComposable"),
       colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
         Text(
             text = activityToDisplay.activityType.toString(),
@@ -350,28 +411,113 @@ fun ElevatedActivityType(activityToDisplay: Activity) {
 
 @Composable
 fun AddRatingButton() {
-
+  IconButton(
+      onClick = { /*TODO*/},
+      colors =
+          IconButtonColors(
+              containerColor = Color.Yellow,
+              contentColor = Color.Black,
+              disabledContentColor = Color.Yellow,
+              disabledContainerColor = Color.Black),
+      modifier = Modifier.size(25.dp)) {
+        Icon(
+            painter = painterResource(id = R.drawable.plus),
+            contentDescription = "Add Rating",
+            modifier = Modifier
+                .width(16.dp)
+                .height(16.dp),
+            tint = Color.Black,
+        )
+      }
 }
 
 @Composable
-fun RatingSection(ratings: List<Rating> = emptyList()) {
-
-    Column(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
-        RatingInput()
-        RatingList(ratings)
-    }
-
+fun RatingCard(rating: Rating, usersList: List<UserModel?>) {
+  Card(
+      modifier =
+      Modifier
+          .fillMaxWidth()
+          .padding(vertical = 8.dp, horizontal = 16.dp)
+          .clickable(onClick = { /*TODO show */ })
+          .testTag("/* TODO */"),
+      shape = RoundedCornerShape(8.dp),
+      elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+      colors =
+          CardDefaults.cardColors(
+              containerColor = MaterialTheme.colorScheme.surface,
+              contentColor = MaterialTheme.colorScheme.onSurface,
+              disabledContainerColor = MaterialTheme.colorScheme.surface,
+              disabledContentColor = MaterialTheme.colorScheme.onSurface)) {
+        Column(modifier = Modifier.padding(10.dp)) {
+          // Row that with user profile picture, user name and rating
+          Row {
+            AsyncImage(
+                model = usersList.find { it?.userId == rating.userId }?.profilePictureUrl,
+                contentDescription = "Profile picture",
+                modifier =
+                Modifier
+                    .size(30.dp)
+                    .clip(CircleShape)
+                    .border(
+                        2.dp, MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(100.dp)
+                    ),
+                contentScale = ContentScale.Crop,
+                error = painterResource(id = R.drawable.default_profile_icon))
+            Spacer(modifier = Modifier.width(10.dp))
+            Text(
+                text = usersList.find { it?.userId == rating.userId }?.userName ?: "Unknown",
+                style =
+                    TextStyle(
+                        fontSize = 16.sp,
+                        lineHeight = 24.sp,
+                        fontWeight = FontWeight(500),
+                        letterSpacing = 0.15.sp,
+                    ),
+                modifier = Modifier.padding(5.dp))
+            Spacer(modifier = Modifier.weight(1f))
+            // Row composed of the rating as Int, and the Star
+            Row(verticalAlignment = Alignment.CenterVertically) {
+              Text(
+                  text = rating.rating,
+                  style =
+                      TextStyle(
+                          fontSize = 16.sp,
+                          lineHeight = 24.sp,
+                          fontWeight = FontWeight.Bold,
+                          letterSpacing = 0.15.sp,
+                      ),
+                  modifier = Modifier.padding(3.dp))
+              Star(R.drawable.filled_star)
+            }
+          }
+          SeparatorComponent()
+          // Row with the comment
+          Row {
+            Text(
+                text = rating.comment,
+                style =
+                    TextStyle(
+                        fontSize = 14.sp,
+                        lineHeight = 20.sp,
+                        fontWeight = FontWeight(400),
+                        color = Color.Gray,
+                        letterSpacing = 0.1.sp,
+                    ),
+                modifier = Modifier.padding(5.dp))
+          }
+        }
+      }
 }
 
 @Composable
-fun RatingList(ratings: List<Rating>) {
-
-
+fun RatingCards(
+    ratings: List<Rating>,
+    usersList: List<UserModel?>,
+    getUserModels: (List<String>) -> Unit
+) {
+  val userIds = ratings.map { it.userId }
+  getUserModels(userIds)
+  for (rating in ratings) {
+    RatingCard(rating, usersList)
+  }
 }
-
-
-@Composable
-fun RatingInput() {
-
-}
-

@@ -117,7 +117,7 @@ constructor(context: Context, database: FirebaseFirestore) : ActivitiesDBReposit
         (document.get("ratings") ?: emptyList<Map<String, Any>>()) as List<Map<String, Any>>
     val ratings =
         ratingsMap.map {
-          Rating(it["userId"] as String, it["comment"] as String, it["rating"] as Int)
+          Rating(it["userId"] as String, it["comment"] as String, it["rating"] as String)
         }
     val difficulty = Difficulty.valueOf(document.getString("difficulty") ?: "EASY")
     val activityImageUrl = document.getString("activityImageUrl") ?: ""
@@ -149,6 +149,7 @@ constructor(context: Context, database: FirebaseFirestore) : ActivitiesDBReposit
     document.update(
         "ratings",
         FieldValue.arrayUnion(
-            hashMapOf("userId" to rating.userId, "comment" to rating.comment, "rating" to rating.rating)))
+            hashMapOf(
+                "userId" to rating.userId, "comment" to rating.comment, "rating" to rating.rating)))
   }
 }
