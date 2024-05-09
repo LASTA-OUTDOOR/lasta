@@ -24,7 +24,7 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -54,6 +54,7 @@ import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.map.MapItinerary
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
+import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
 import com.lastaoutdoor.lasta.ui.components.LoadingAnim
 import com.lastaoutdoor.lasta.ui.components.SearchBarComponent
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
@@ -130,7 +131,7 @@ fun DiscoverScreen(
               orderingBy,
               updateOrderingBy,
               weather)
-          Spacer(modifier = Modifier.height(8.dp))
+
           if (isLoading) {
             LoadingAnim(width = 35, tag = "LoadingBarDiscover")
           } else if (activities.isEmpty()) {
@@ -138,6 +139,7 @@ fun DiscoverScreen(
           } else {
             LazyColumn {
               item {
+                Spacer(modifier = Modifier.height(8.dp))
                 ActivitiesDisplay(
                     activities,
                     centerPoint,
@@ -197,8 +199,6 @@ fun HeaderComposable(
     weather: WeatherResponse?
 ) {
   // Dropdown menu boolean
-  var showMenu by remember { mutableStateOf(false) }
-
   val iconSize = 48.dp // Adjust icon size as needed
   val displayWeather = remember { mutableStateOf(false) }
   if (displayWeather.value) {
@@ -208,15 +208,14 @@ fun HeaderComposable(
   }
   Surface(
       modifier = Modifier.fillMaxWidth().testTag("header"),
-      color = MaterialTheme.colorScheme.background,
-      shadowElevation = 3.dp) {
+      color = MaterialTheme.colorScheme.background) {
         Column {
           // Location bar
           Row(
               modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
               verticalAlignment = Alignment.CenterVertically) {
                 Column {
-                  Row {
+                  Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = selectedLocality.first,
                         style = MaterialTheme.typography.bodyMedium,
@@ -276,46 +275,20 @@ fun HeaderComposable(
             Row(
                 modifier =
                     Modifier.fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .padding(16.dp, 8.dp, 16.dp, 8.dp)
                         .testTag("sortingText"),
                 verticalAlignment = Alignment.CenterVertically) {
-                  Text(
-                      LocalContext.current.getString(R.string.filter_by),
-                      style = MaterialTheme.typography.bodyMedium)
-                  Spacer(modifier = Modifier.width(8.dp))
-                  Text(
-                      text = LocalContext.current.getString(orderingBy.orderText),
-                      modifier = Modifier.testTag("sortingTextValue"),
-                      style = MaterialTheme.typography.bodyMedium,
-                      color = MaterialTheme.colorScheme.primary)
-
-                  IconButton(
-                      onClick = { showMenu = showMenu.not() },
-                      modifier = Modifier.size(24.dp).testTag("sortingButton")) {
-                        Icon(
-                            Icons.Outlined.KeyboardArrowDown,
-                            contentDescription = "Ordering button",
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(24.dp).testTag("sortingIcon"))
-                      }
+                  DropDownMenuComponent(
+                      items = OrderingBy.values().toList(),
+                      selectedItem = orderingBy,
+                      onItemSelected = { o -> updateOrderingBy(o) },
+                      toStr = { o -> o.resourcesToString(LocalContext.current) },
+                      fieldText = LocalContext.current.getString(R.string.filter_by))
                 }
           }
+          HorizontalDivider()
         }
       }
-
-  if (showMenu) {
-    OrderingBy.values().forEach { order ->
-      DropdownMenuItem(
-          text = { Text(text = LocalContext.current.getString(order.orderText)) },
-          onClick = {
-            if (order != orderingBy) {
-              updateOrderingBy(order)
-            }
-            showMenu = false
-          },
-          modifier = Modifier.testTag("sortingItem" + order.name))
-    }
-  }
 }
 
 @Composable
@@ -343,68 +316,73 @@ fun ActivitiesDisplay(
                     })
                 .testTag("${a.activityId}activityCard"),
         shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-    ) {
-      Column {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween) {
-              Box(
-                  modifier =
-                      Modifier.shadow(4.dp, RoundedCornerShape(30))
-                          .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
-                          .padding(PaddingValues(8.dp))) {
-                    Text(
-                        text =
-                            LocalContext.current.getString(
-                                when (a.activityType) {
-                                  ActivityType.HIKING -> R.string.hiking
-                                  ActivityType.CLIMBING -> R.string.climbing
-                                  ActivityType.BIKING -> R.string.biking
-                                }),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onPrimary)
-                  }
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)) {
+          Column {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween) {
+                  Box(
+                      modifier =
+                          Modifier.shadow(4.dp, RoundedCornerShape(30))
+                              .background(
+                                  MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
+                              .padding(PaddingValues(8.dp))) {
+                        Text(
+                            text =
+                                LocalContext.current.getString(
+                                    when (a.activityType) {
+                                      ActivityType.HIKING -> R.string.hiking
+                                      ActivityType.CLIMBING -> R.string.climbing
+                                      ActivityType.BIKING -> R.string.biking
+                                    }),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onPrimary)
+                      }
 
-              IconButton(
-                  onClick = { flipFavorite(a.activityId) },
-                  modifier = Modifier.size(24.dp).testTag("${a.activityId}favoriteButton")) {
-                    Icon(
-                        imageVector =
-                            if (favorites.contains(a.activityId)) Icons.Filled.Favorite
-                            else Icons.Filled.FavoriteBorder,
-                        contentDescription = "Favorite Button",
-                        modifier = Modifier.size(24.dp))
-                  }
-            }
+                  IconButton(
+                      onClick = { flipFavorite(a.activityId) },
+                      modifier = Modifier.size(24.dp).testTag("${a.activityId}favoriteButton")) {
+                        Icon(
+                            imageVector =
+                                if (favorites.contains(a.activityId)) Icons.Filled.Favorite
+                                else Icons.Filled.FavoriteBorder,
+                            contentDescription = "Favorite Button",
+                            tint =
+                                if (favorites.contains(a.activityId))
+                                    MaterialTheme.colorScheme.primary
+                                else MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.size(24.dp))
+                      }
+                }
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically) {
-              Text(
-                  text = a.name,
-                  style = MaterialTheme.typography.titleMedium,
-                  fontWeight = FontWeight.Bold)
-            }
-        SeparatorComponent()
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically) {
-              Icon(
-                  imageVector = Icons.Default.Star,
-                  contentDescription = "Rating",
-                  tint = MaterialTheme.colorScheme.primary)
-              Text(text = "${a.rating} (${a.numRatings})")
-              Spacer(modifier = Modifier.width(8.dp))
-              Text(text = "Difficulty: ${a.difficulty}")
-              Spacer(modifier = Modifier.width(16.dp))
-              Text(
-                  text =
-                      "${String.format("%.1f", SphericalUtil.computeDistanceBetween(centerPoint, LatLng(a.startPosition.lat, a.startPosition.lon)) / 1000)} km")
-            }
-      }
-    }
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically) {
+                  Text(
+                      text = a.name,
+                      style = MaterialTheme.typography.titleMedium,
+                      fontWeight = FontWeight.Bold)
+                }
+            SeparatorComponent()
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween) {
+                  Icon(
+                      imageVector = Icons.Default.Star,
+                      contentDescription = "Rating",
+                      tint = MaterialTheme.colorScheme.primary)
+                  Text(text = "${a.rating} (${a.numRatings})")
+                  Spacer(modifier = Modifier.width(8.dp))
+                  Text(text = "Difficulty: ${a.difficulty}")
+                  Spacer(modifier = Modifier.width(16.dp))
+                  Text(
+                      text =
+                          "${String.format("%.1f", SphericalUtil.computeDistanceBetween(centerPoint, LatLng(a.startPosition.lat, a.startPosition.lon)) / 1000)} km")
+                }
+          }
+        }
   }
 }

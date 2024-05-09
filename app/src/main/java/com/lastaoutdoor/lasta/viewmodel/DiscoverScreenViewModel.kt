@@ -47,7 +47,7 @@ constructor(
   private val _activityIds = MutableStateFlow<ArrayList<Long>>(ArrayList())
   val activityIds: StateFlow<List<Long>> = _activityIds
 
-  private val _orderingBy = MutableStateFlow(OrderingBy.DISTANCEASCENDING)
+  private val _orderingBy = MutableStateFlow(OrderingBy.DISTANCE)
   val orderingBy: StateFlow<OrderingBy> = _orderingBy
 
   private val _selectedActivityType = MutableStateFlow(ActivityType.CLIMBING)
@@ -271,8 +271,7 @@ constructor(
   private fun updateActivitiesByOrdering() {
     if (_activities.value.isEmpty()) return
     when (_orderingBy.value) {
-      OrderingBy.DISTANCEASCENDING,
-      OrderingBy.DISTANCEDESCENDING -> {
+      OrderingBy.DISTANCE -> {
         val distances =
             _activities.value.map {
               SphericalUtil.computeDistanceBetween(
@@ -280,10 +279,7 @@ constructor(
             }
         val sortedActivities =
             _activities.value.sortedBy { distances[_activities.value.indexOf(it)] }
-        _activities.value =
-            if (_orderingBy.value == OrderingBy.DISTANCEDESCENDING)
-                ArrayList(sortedActivities.reversed())
-            else ArrayList(sortedActivities)
+        _activities.value = ArrayList(sortedActivities)
       }
       OrderingBy.RATING -> {
         _activities.value = ArrayList(_activities.value.sortedBy { it.rating }.reversed())
