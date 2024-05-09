@@ -8,6 +8,7 @@ import com.google.maps.android.SphericalUtil
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.models.api.NodeWay
 import com.lastaoutdoor.lasta.models.api.OSMData
 import com.lastaoutdoor.lasta.models.api.Relation
@@ -46,7 +47,7 @@ constructor(
   private val _activityIds = MutableStateFlow<ArrayList<Long>>(ArrayList())
   val activityIds: StateFlow<List<Long>> = _activityIds
 
-  private val _orderingBy = MutableStateFlow(OrderingBy.DISTANCEASCENDING)
+  private val _orderingBy = MutableStateFlow(OrderingBy.DISTANCE)
   val orderingBy: StateFlow<OrderingBy> = _orderingBy
 
   private val _selectedActivityType = MutableStateFlow(ActivityType.CLIMBING)
@@ -110,7 +111,7 @@ constructor(
     }
   }
 
-  private fun activitiesToMarkers(activities: List<Activity>): List<Marker> {
+  fun activitiesToMarkers(activities: List<Activity>): List<Marker> {
     return activities.map { activity ->
       Marker(
           activity.osmId,
@@ -212,6 +213,7 @@ constructor(
 
   fun setSelectedActivityType(activityType: ActivityType) {
     _selectedActivityType.value = activityType
+    updateActivitiesByOrdering()
   }
 
   fun setSelectedLevels(levels: UserActivitiesLevel) {
@@ -269,8 +271,7 @@ constructor(
   private fun updateActivitiesByOrdering() {
     if (_activities.value.isEmpty()) return
     when (_orderingBy.value) {
-      OrderingBy.DISTANCEASCENDING,
-      OrderingBy.DISTANCEDESCENDING -> {
+      OrderingBy.DISTANCE -> {
         val distances =
             _activities.value.map {
               SphericalUtil.computeDistanceBetween(
@@ -278,10 +279,7 @@ constructor(
             }
         val sortedActivities =
             _activities.value.sortedBy { distances[_activities.value.indexOf(it)] }
-        _activities.value =
-            if (_orderingBy.value == OrderingBy.DISTANCEDESCENDING)
-                ArrayList(sortedActivities.reversed())
-            else ArrayList(sortedActivities)
+        _activities.value = ArrayList(sortedActivities)
       }
       OrderingBy.RATING -> {
         _activities.value = ArrayList(_activities.value.sortedBy { it.rating }.reversed())
@@ -296,6 +294,24 @@ constructor(
         _activities.value = ArrayList(_activities.value.sortedBy { it.difficulty }.reversed())
       }
     }
+    _activities.value =
+        _activities.value.filter {
+          filterWithDiff(_selectedActivityType.value, _selectedLevels.value.bikingLevel, it)
+        } as ArrayList<Activity>
+  }
+
+  fun filterWithDiff(
+      activityType: ActivityType,
+      difficulty: UserLevel,
+      activity: Activity
+  ): Boolean {
+    return if (activityType == activity.activityType)
+        when (difficulty) {
+          UserLevel.BEGINNER -> activity.difficulty == Difficulty.EASY
+          UserLevel.INTERMEDIATE -> activity.difficulty == Difficulty.NORMAL
+          UserLevel.ADVANCED -> activity.difficulty == Difficulty.HARD
+        }
+    else false
   }
 
   fun updateOrderingBy(orderingBy: OrderingBy) {
