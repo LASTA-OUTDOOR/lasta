@@ -44,6 +44,7 @@ android {
         )
         room {
             schemaDirectory("$projectDir/schemas")
+
         }
 
     }
@@ -310,3 +311,4 @@ tasks.register("submitAndCheck", GradleBuild::class) {
 kapt {
     correctErrorTypes = true
 }
+tasks.forEach{if(it.name == "hiltJavaCompileDebug"){it.dependsOn("copyRoomSchemas")} }
