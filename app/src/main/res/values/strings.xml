@@ -19,28 +19,27 @@
 
     <!--Discovery-->
     <string name = "relevance">Relevance</string>
-    <string name = "filter_by">Ordering by :</string>
+    <string name = "filter_by">Ordering by</string>
     <string name = "filter">Filter</string>
     <string name = "rating">Rating</string>
     <string name = "difficulty">Difficulty</string>
     <string name = "distance">Distance</string>
-    <string name = "difficulty_desc">Difficulty (hardest to easiest)</string>
-    <string name = "difficulty_asc">Difficulty (easiest to hardest)</string>
-    <string name = "distance_desc">Distance (furthest to nearest)</string>
-    <string name = "distance_asc">Distance (nearest to Furthest)</string>
+    <string name = "difficulty_desc">Difficulty (decreasing)</string>
+    <string name = "difficulty_asc">Difficulty (increasing)</string>
+    <string name = "distance_asc">"Distance "</string>
     <string name = "less_than">Less than</string>
     <string name = "around_you">around you</string>
     <string name = "Climbing">Climbing</string>
-    <string name = "popularity">Popularity (number of ratings)</string>
+    <string name = "popularity">"Popularity "</string>
     <string name = "list">List</string>
     <string name = "map">Map</string>
 
     <!--Filter-->
     <string name = "show_completed_activities">Show completed activities</string>
     <string name = "filter_options">Filter Options</string>
-    <string name = "filter_activity_type">Filter by activity type :</string>
-    <string name = "filter_difficulty_level">Filter by difficulty level :</string>
-    <string name = "filter_distance_range">Filter by distance length :</string>
+    <string name = "filter_activity_type">Filter by activity type</string>
+    <string name = "filter_difficulty_level">Filter by difficulty level</string>
+    <string name = "filter_distance_range">Filter by distance length</string>
     <string name = "from">from</string>
     <string name = "to">to</string>
 
@@ -62,16 +61,16 @@
     <string name = "preferences">Preferences</string>
     <string name = "sign_out">Sign out</string>
     <string name = "activity">Activity</string>
-    <string name = "hikes">hikes</string>
-    <string name = "climbs">climbs</string>
+    <string name = "hikes">Hikes</string>
+    <string name = "climbs">Climbs</string>
     <string name = "calories">Calories</string>
     <string name = "pitches">Pitches</string>
     <string name = "time">Time</string>
     <string name = "elevation">Elevation</string>
     <!--Setup-->
-    <string name = "select_languague">Select your language: </string>
-    <string name = "languague">Language: </string>
-    <string name = "select_fav_activity">Select your favorite outdoor activity:</string>
+    <string name = "select_languague">Select your language</string>
+    <string name = "languague">Language</string>
+    <string name = "select_fav_activity">Select your favorite outdoor activity</string>
     <string name = "finish">Finish</string>
     <string name="setup_title">Settings</string>
     <!--Map-->
@@ -81,10 +80,10 @@
     <!--UpperSheet-->
     <string name = "modify_search">Modify your search settings</string>
     <!--Range search-->
-    <string name = "locality">Locality :</string>
-    <string name = "dist_radius">Search radius :</string>
-    <string name = "search">Search :</string>
-    <string name = "select_dist_radius">Select the search radius :</string>
+    <string name = "locality">"Locality "</string>
+    <string name = "dist_radius">"Search radius "</string>
+    <string name = "search">Search</string>
+    <string name = "select_dist_radius">Select the search radius</string>
     <string name = "use_curr_loc">Use my current location</string>
     <string name = "apply">Apply - To be done</string>
     <!--Friends-->
@@ -130,5 +129,11 @@
     <!--Settings-->
     <string name = "Account_settings">Settings</string>
     <string name= "delete_account">Delete Account</string>
-    <string name="sport_level">Level:</string>
+    <string name="sport_level">Level</string>
+    <string name="english">English</string>
+    <string name="french">French</string>
+    <string name="german">German</string>
+    <string name="beginner">Beginner</string>
+    <string name="intermediate">Intermediate</string>
+    <string name="advanced">Advanced</string>
 </resources>

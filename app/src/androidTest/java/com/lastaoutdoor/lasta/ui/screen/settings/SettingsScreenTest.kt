@@ -97,7 +97,7 @@ class SettingsScreenTest {
     composeRule.onNodeWithTag("settingsLanguage").assertIsDisplayed()
   }
 
-  /*@Test
+  @Test
   fun settingsScreen_changeToHiking() {
     val language = Language.ENGLISH
     val prefActivity = ActivityType.HIKING
@@ -181,6 +181,7 @@ class SettingsScreenTest {
     composeRule.onNodeWithText("Intermediate").performClick()
   }
 
+  /*
   @Test
   fun settingsScreen_signOut() {
     val language = Language.ENGLISH
@@ -206,6 +207,5 @@ class SettingsScreenTest {
     composeRule.onNodeWithTag("settingsDeleteAccount").assertIsDisplayed()
     composeRule.onNodeWithTag("settingsDeleteAccount").performClick()
   }
-
-   */
+     */
 }

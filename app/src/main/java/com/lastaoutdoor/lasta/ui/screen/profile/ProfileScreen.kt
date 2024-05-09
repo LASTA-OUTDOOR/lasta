@@ -290,18 +290,12 @@ fun ChangeBio(
 @Composable
 fun SportSelection(sport: ActivityType, onSelected: (ActivityType) -> Unit) {
   Row {
-    // Sample data for the Spinner
-    val menuItems = ActivityType.values().toList()
-    // Observe LiveData and convert to Composable State
-    // profileScreenVIewModel.addTrailToUserActivities()
-    // Now trailListState is a normal List<Trail> that you can use in Compose
-    val con = LocalContext.current
-    DropDownMenuComponent<ActivityType>(
-        items = menuItems,
+    DropDownMenuComponent(
+        items = ActivityType.values().toList(),
         selectedItem = sport,
         onItemSelected = { newSport -> onSelected(newSport) },
-        toStr = { it.toString() },
-        LocalContext.current.getString(R.string.activity))
+        toStr = { s -> s.resourcesToString(LocalContext.current) },
+        fieldText = LocalContext.current.getString(R.string.activity))
   }
 }
 
