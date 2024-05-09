@@ -44,6 +44,7 @@ constructor(context: Context, database: FirebaseFirestore) : UserActivitiesDBRep
     userActivitiesDocument.update(field, FieldValue.arrayUnion(userActivity)).await()
   }
 
+  //Be careful with take() behaviour when n is greater than the list size
   override suspend fun getNLatestActivities(userId: String, n: Int): List<UserActivity> {
     val userActivities = getUserActivities(userId)
     return userActivities.sortedByDescending { it.timeFinished }.take(n)
