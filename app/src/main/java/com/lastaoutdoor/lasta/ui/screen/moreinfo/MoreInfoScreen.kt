@@ -53,7 +53,6 @@ import com.lastaoutdoor.lasta.viewmodel.MapState
 fun MoreInfoScreen(
     activityToDisplay: Activity,
     state: MapState,
-    updatePermission: (Boolean) -> Unit,
     initialPosition: LatLng,
     initialZoom: Float,
     updateMarkers: (LatLng, Double) -> Unit,
@@ -98,7 +97,6 @@ fun MoreInfoScreen(
       }
       MapScreen(
           state,
-          updatePermission,
           initialPosition,
           initialZoom,
           updateMarkers,

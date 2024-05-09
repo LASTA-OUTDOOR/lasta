@@ -192,7 +192,6 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       MoreInfoScreen(
           activityToDisplay,
           mapState,
-          discoverScreenViewModel::updatePermission,
           initialPosition,
           initialZoom,
           discoverScreenViewModel::updateMarkers,

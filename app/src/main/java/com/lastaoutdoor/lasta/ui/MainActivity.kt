@@ -16,21 +16,8 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
-    requestNotificationPermission()
     enableEdgeToEdge()
     super.onCreate(savedInstanceState)
     setContent { LastaTheme { AppNavGraph() } }
-  }
-
-  private fun requestNotificationPermission() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-      val hasPermission =
-          ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
-              PackageManager.PERMISSION_GRANTED
-
-      if (!hasPermission) {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 0)
-      }
-    }
   }
 }
