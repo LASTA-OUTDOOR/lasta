@@ -27,10 +27,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
-import com.firebase.ui.auth.AuthUI.getApplicationContext
 import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -131,8 +129,6 @@ fun mapScreen(
     markerList: List<Marker>,
     clearSelectedMarker: () -> Unit
 ): (CameraUpdate) -> Unit {
-
-
 
   // Ask for permissions to determine what view to display
   ManagePermissions(updatePermission)
