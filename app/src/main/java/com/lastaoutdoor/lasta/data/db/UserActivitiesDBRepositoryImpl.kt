@@ -4,7 +4,7 @@ import android.content.Context
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.models.user.BikinUserActivity
+import com.lastaoutdoor.lasta.models.user.BikingUserActivity
 import com.lastaoutdoor.lasta.models.user.ClimbingUserActivity
 import com.lastaoutdoor.lasta.models.user.HikingUserActivity
 import com.lastaoutdoor.lasta.models.user.UserActivity
@@ -32,7 +32,7 @@ constructor(context: Context, database: FirebaseFirestore) : UserActivitiesDBRep
       val hikingUserActivities = userActivitiesDocument.get("Hiking") as? List<*>
       userActivities.addAll(hikingUserActivities?.map { it as HikingUserActivity } ?: emptyList())
       val bikingUserActivities = userActivitiesDocument.get("Biking") as? List<*>
-      userActivities.addAll(bikingUserActivities?.map { it as BikinUserActivity } ?: emptyList())
+      userActivities.addAll(bikingUserActivities?.map { it as BikingUserActivity } ?: emptyList())
     }
 
     return userActivities
@@ -42,5 +42,26 @@ constructor(context: Context, database: FirebaseFirestore) : UserActivitiesDBRep
     val userActivitiesDocument = userActivitiesCollection.document(userId)
     val field = userActivity.activityType.toString()
     userActivitiesDocument.update(field, FieldValue.arrayUnion(userActivity)).await()
+  }
+
+  // Be careful with take() behaviour when n is greater than the list size
+  override suspend fun getNLatestActivities(userId: String, n: Int): List<UserActivity> {
+    val userActivities = getUserActivities(userId)
+    return userActivities.sortedByDescending { it.timeFinished }.take(n)
+  }
+
+  override suspend fun getUserHikingActivities(userId: String): List<UserActivity> {
+    val userActivities = getUserActivities(userId)
+    return userActivities.filterIsInstance<HikingUserActivity>()
+  }
+
+  override suspend fun getUserClimbingActivities(userId: String): List<UserActivity> {
+    val userActivities = getUserActivities(userId)
+    return userActivities.filterIsInstance<ClimbingUserActivity>()
+  }
+
+  override suspend fun getUserBikingActivities(userId: String): List<UserActivity> {
+    val userActivities = getUserActivities(userId)
+    return userActivities.filterIsInstance<BikingUserActivity>()
   }
 }
