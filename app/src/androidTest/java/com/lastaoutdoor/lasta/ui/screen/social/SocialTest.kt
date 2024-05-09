@@ -56,7 +56,7 @@ class SocialTest {
           topButtonOnClick = { /*TODO*/},
           refreshFriendRequests = { /*TODO*/},
           navigateToNotifications = { /*TODO*/},
-          isConnedted = ConnectionState.CONNECTED,
+          isConnected = ConnectionState.CONNECTED,
           friends =
               List(1) {
                 UserModel(
@@ -83,9 +83,9 @@ class SocialTest {
           hideFriendPicker = { /*TODO*/},
           changeDisplayFriendPicker = { /*TODO*/},
           navigateToConversation = { /*TODO*/},
-      ) {
-        // This is a fake function, so we do nothing here.
-      }
+          navigateToFriendProfile = { /*TODO*/},
+          refreshFriendsActivities = { /*TODO*/},
+      )
     }
     composeRule.onNodeWithTag("SocialScreen").assertIsDisplayed()
     // Header (title)
@@ -108,7 +108,7 @@ class SocialTest {
           topButtonOnClick = { /*TODO*/},
           refreshFriendRequests = { /*TODO*/},
           navigateToNotifications = { /*TODO*/},
-          isConnedted = ConnectionState.CONNECTED,
+          isConnected = ConnectionState.CONNECTED,
           friends =
               List(1) {
                 UserModel(
@@ -135,9 +135,9 @@ class SocialTest {
           hideFriendPicker = { /*TODO*/},
           changeDisplayFriendPicker = { /*TODO*/},
           navigateToConversation = { /*TODO*/},
-      ) {
-        // This is a fake function, so we do nothing here.
-      }
+          navigateToFriendProfile = { /*TODO*/},
+          refreshFriendsActivities = { /*TODO*/},
+      )
     }
     composeRule.onNodeWithTag("SocialScreen").assertIsDisplayed()
     // Header (title)
@@ -173,7 +173,7 @@ class SocialTest {
           topButtonOnClick = { /*TODO*/},
           refreshFriendRequests = { /*TODO*/},
           navigateToNotifications = { /*TODO*/},
-          isConnedted = ConnectionState.CONNECTED,
+          isConnected = ConnectionState.CONNECTED,
           friends =
               List(1) {
                 UserModel(
@@ -205,9 +205,9 @@ class SocialTest {
           hideFriendPicker = { /*TODO*/},
           changeDisplayFriendPicker = { /*TODO*/},
           navigateToConversation = { /*TODO*/},
-      ) {
-        // This is a fake function, so we do nothing here.
-      }
+          navigateToFriendProfile = { /*TODO*/},
+          refreshFriendsActivities = { /*TODO*/},
+      )
     }
     composeRule.onNodeWithTag("SocialScreen").assertIsDisplayed()
     // Header (title)
@@ -232,7 +232,7 @@ class SocialTest {
           topButtonOnClick = { /*TODO*/},
           refreshFriendRequests = { /*TODO*/},
           navigateToNotifications = { /*TODO*/},
-          isConnedted = ConnectionState.OFFLINE,
+          isConnected = ConnectionState.OFFLINE,
           friends =
               List(1) {
                 UserModel(
@@ -264,9 +264,9 @@ class SocialTest {
           hideFriendPicker = { /*TODO*/},
           changeDisplayFriendPicker = { /*TODO*/},
           navigateToConversation = { /*TODO*/},
-      ) {
-        // This is a fake function, so we do nothing here.
-      }
+          navigateToFriendProfile = { /*TODO*/},
+          refreshFriendsActivities = { /*TODO*/},
+      )
     }
     composeRule.onNodeWithTag("SocialScreen").assertIsDisplayed()
     // Header (title)
@@ -292,7 +292,7 @@ class SocialTest {
           topButtonOnClick = { /*TODO*/},
           refreshFriendRequests = { /*TODO*/},
           navigateToNotifications = { /*TODO*/},
-          isConnedted = ConnectionState.CONNECTED,
+          isConnected = ConnectionState.CONNECTED,
           friends =
               List(1) {
                 UserModel(
@@ -319,9 +319,9 @@ class SocialTest {
           hideFriendPicker = { /*TODO*/},
           changeDisplayFriendPicker = { /*TODO*/},
           navigateToConversation = { /*TODO*/},
-      ) {
-        // This is a fake function, so we do nothing here.
-      }
+          navigateToFriendProfile = { /*TODO*/},
+          refreshFriendsActivities = { /*TODO*/},
+      )
     }
     composeRule.onNodeWithTag("SocialScreen").assertIsDisplayed()
     // Header (title)

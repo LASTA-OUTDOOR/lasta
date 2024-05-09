@@ -20,7 +20,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.social.ConversationModel
-import com.lastaoutdoor.lasta.models.user.UserActivity
+import com.lastaoutdoor.lasta.models.social.FriendsActivities
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.utils.ConnectionState
 
@@ -30,7 +30,7 @@ fun TabMenu(
     isConnected: ConnectionState,
     friends: List<UserModel>,
     messages: List<ConversationModel>,
-    latestFriendActivities: List<UserActivity>,
+    latestFriendActivities: List<FriendsActivities>,
     addFriendDialog: Boolean,
     friendRequestFeedback: String,
     isDisplayedFriendPicker: Boolean,
@@ -46,7 +46,8 @@ fun TabMenu(
     hideFriendPicker: () -> Unit,
     changeDisplayFriendPicker: () -> Unit,
     navigateToConversation: (String) -> Unit,
-    navigateToFriendProfile: (String) -> Unit
+    navigateToFriendProfile: (String) -> Unit,
+    refreshFriendsActivities: () -> Unit
 ) {
 
   var state by remember { mutableIntStateOf(0) }
@@ -72,6 +73,7 @@ fun TabMenu(
   when (state) {
     0 -> {
       hideTopButton()
+      refreshFriendsActivities()
       FriendsActivityList(isConnected, latestFriendActivities)
     }
     1 -> {

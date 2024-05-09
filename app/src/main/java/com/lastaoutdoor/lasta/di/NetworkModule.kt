@@ -134,7 +134,9 @@ object NetworkModule {
       @ApplicationContext context: Context,
       firestore: FirebaseFirestore,
       userActivitiesDBRepository: UserActivitiesDBRepository,
-      timeProvider: TimeProvider
+      timeProvider: TimeProvider,
+      activitiesDBRepository: ActivitiesDBRepository
   ): SocialDBRepository =
-      SocialDBRepositoryImpl(context, firestore, userActivitiesDBRepository, timeProvider)
+      SocialDBRepositoryImpl(
+          context, firestore, userActivitiesDBRepository, timeProvider, activitiesDBRepository)
 }

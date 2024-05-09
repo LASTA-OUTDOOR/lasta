@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.social.ConversationModel
-import com.lastaoutdoor.lasta.models.user.UserActivity
+import com.lastaoutdoor.lasta.models.social.FriendsActivities
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.screen.social.components.TabMenu
 import com.lastaoutdoor.lasta.utils.ConnectionState
@@ -43,7 +43,7 @@ fun SocialScreen(
     isConnected: ConnectionState,
     friends: List<UserModel>,
     messages: List<ConversationModel>,
-    latestFriendActivities: List<UserActivity>,
+    latestFriendActivities: List<FriendsActivities>,
     addFriendDialog: Boolean,
     friendRequestFeedback: String,
     isDisplayedFriendPicker: Boolean,
@@ -59,7 +59,8 @@ fun SocialScreen(
     hideFriendPicker: () -> Unit,
     changeDisplayFriendPicker: () -> Unit,
     navigateToConversation: (String) -> Unit,
-    navigateToFriendProfile: (String) -> Unit
+    navigateToFriendProfile: (String) -> Unit,
+    refreshFriendsActivities: () -> Unit
 ) {
   Column(modifier = Modifier.fillMaxSize().padding(16.dp).testTag("SocialScreen")) {
 
@@ -94,7 +95,8 @@ fun SocialScreen(
         hideFriendPicker,
         changeDisplayFriendPicker,
         navigateToConversation,
-        navigateToFriendProfile)
+        navigateToFriendProfile,
+        refreshFriendsActivities)
   }
 }
 

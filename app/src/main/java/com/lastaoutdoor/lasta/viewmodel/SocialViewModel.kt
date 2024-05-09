@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.social.ConversationModel
-import com.lastaoutdoor.lasta.models.user.UserActivity
+import com.lastaoutdoor.lasta.models.social.FriendsActivities
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.app.ConnectivityRepository
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
@@ -70,7 +70,7 @@ constructor(
   var messages: List<ConversationModel> by mutableStateOf(emptyList())
 
   // returns all the activities done by friends in the last 7 days
-  var latestFriendActivities: List<UserActivity> by mutableStateOf(emptyList())
+  var latestFriendActivities: List<FriendsActivities> by mutableStateOf(emptyList())
 
   // Fetch connection info from the repository, set isConnected to true if connected, false
   // otherwise
@@ -84,13 +84,11 @@ constructor(
   var topButtonOnClick by mutableStateOf({})
 
   init {
-    viewModelScope.launch {
-      preferences.userPreferencesFlow.collect { user = it.user }
-      refreshFriends()
-      refreshFriendRequests()
-      refreshMessages()
-      refreshFriendsActivities()
-    }
+    viewModelScope.launch { preferences.userPreferencesFlow.collect { user = it.user } }
+    refreshFriends()
+    refreshFriendRequests()
+    refreshMessages()
+    refreshFriendsActivities()
   }
 
   fun showTopButton(ico: ImageVector, onClick: () -> Unit) {
@@ -139,6 +137,7 @@ constructor(
       refreshFriendRequests()
       // update the list of friends
       refreshFriends()
+      refreshFriendsActivities()
     }
   }
 
@@ -198,14 +197,8 @@ constructor(
     friendRequestFeedback = ""
   }
 
-  private fun refreshFriendsActivities() {
+  fun refreshFriendsActivities() {
     viewModelScope.launch {
-      var friends: List<String> = emptyList()
-
-      preferences.userPreferencesFlow.collect { userPreferences ->
-        friends = userPreferences.user.friends
-      }
-
       latestFriendActivities = repository.getLatestFriendActivities(user.userId, timeFrame, friends)
     }
   }

@@ -1,7 +1,7 @@
 package com.lastaoutdoor.lasta.repository.db
 
 import com.lastaoutdoor.lasta.models.social.ConversationModel
-import com.lastaoutdoor.lasta.models.user.UserActivity
+import com.lastaoutdoor.lasta.models.social.FriendsActivities
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.utils.TimeFrame
 
@@ -33,8 +33,8 @@ interface SocialDBRepository {
   suspend fun getLatestFriendActivities(
       userId: String,
       timeFrame: TimeFrame,
-      friends: List<String>
-  ): List<UserActivity>
+      friends: List<UserModel>
+  ): List<FriendsActivities>
 
   /**
    * Returns the conversation between the user with the given ID and the friend with the given ID.

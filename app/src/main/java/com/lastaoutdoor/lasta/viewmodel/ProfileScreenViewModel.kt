@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lastaoutdoor.lasta.data.time.TimeProvider
 import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.user.ClimbingUserActivity
+import com.lastaoutdoor.lasta.models.user.HikingUserActivity
 import com.lastaoutdoor.lasta.models.user.UserActivity
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
@@ -12,6 +14,9 @@ import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import com.lastaoutdoor.lasta.utils.TimeFrame
 import com.lastaoutdoor.lasta.utils.filterTrailsByTimeFrame
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.time.LocalDate
+import java.time.ZoneId
+import java.util.Date
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -63,6 +68,7 @@ constructor(
   init {
     fetchCurrentUser()
     fetchUserActivities()
+    //addFakeActivity()
   }
 
   /** Fetches the current user from the preferences. */
@@ -71,6 +77,29 @@ constructor(
       preferences.userPreferencesFlow.collect { userPreferences ->
         _user.value = userPreferences.user
       }
+    }
+  }
+
+  private fun addFakeActivity() {
+    viewModelScope.launch {
+      repository.addUserActivity(
+          "mqROPreWZScUdFi0AOPTUcsNRn72",
+          ClimbingUserActivity(
+              activityId = "yK9p3WUklEfPd9U1RHlM",
+              timeStarted =
+                  Date.from(
+                      LocalDate.of(2024, 5, 7)
+                          .atTime(16, 32, 45)
+                          .atZone(ZoneId.systemDefault())
+                          .toInstant()),
+              timeFinished =
+                  Date.from(
+                      LocalDate.of(2024, 5, 7)
+                          .atTime(17, 21, 45)
+                          .atZone(ZoneId.systemDefault())
+                          .toInstant()),
+              numPitches = 5,
+              totalElevation = 449.3f))
     }
   }
 

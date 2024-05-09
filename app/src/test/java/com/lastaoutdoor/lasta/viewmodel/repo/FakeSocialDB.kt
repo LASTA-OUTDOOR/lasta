@@ -25,7 +25,7 @@ class FakeSocialDB() : SocialDBRepository {
   override suspend fun getLatestFriendActivities(
       userId: String,
       timeFrame: TimeFrame,
-      friends: List<String>
+      friends: List<UserModel>
   ): List<UserActivity> {
     return listOf(fakeActivity)
   }
