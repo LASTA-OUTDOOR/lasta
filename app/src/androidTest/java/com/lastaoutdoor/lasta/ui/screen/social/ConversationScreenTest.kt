@@ -5,6 +5,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
 import com.google.firebase.Timestamp
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.models.social.ConversationModel
@@ -69,5 +70,28 @@ class ConversationScreenTest {
     composeRule.onNodeWithTag("ConversationScreenHeader").assertIsDisplayed()
     composeRule.onNodeWithTag("SendMessageButton").assertIsDisplayed()
     composeRule.onNodeWithTag("MessageTextField").assertIsDisplayed()
+  }
+
+  @Test
+  fun sendButtonTest(){
+
+    var clicked = false
+
+    composeRule.activity.setContent {
+      ConversationScreen(
+          conversationModel =
+              ConversationModel(
+                  members = listOf(UserModel("1"), UserModel("2")),
+                  messages = listOf(MessageModel(UserModel("1"), "2", Timestamp(0, 0))),
+                  lastMessage = MessageModel(UserModel("2"), "1", Timestamp(0, 0))),
+          refresh = {},
+          user = UserModel("1"),
+          friend = UserModel("2"),
+          send = {clicked = true},
+          navigateBack = {})
+    }
+    composeRule.onNodeWithTag("SendMessageButton").assertIsDisplayed()
+    composeRule.onNodeWithTag("SendMessageButton").performClick()
+      assert(clicked)
   }
 }
