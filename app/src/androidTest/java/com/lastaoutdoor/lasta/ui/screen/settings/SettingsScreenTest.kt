@@ -206,6 +206,4 @@ class SettingsScreenTest {
     composeRule.onNodeWithTag("settingsDeleteAccount").assertIsDisplayed()
     composeRule.onNodeWithTag("settingsDeleteAccount").performClick()
   }
-
-
 }
