@@ -7,6 +7,7 @@ import com.lastaoutdoor.lasta.models.activity.ClimbingStyle
 import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.models.api.Position
 import com.lastaoutdoor.lasta.models.map.Marker
+import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
 import com.lastaoutdoor.lasta.utils.OrderingBy
 import com.lastaoutdoor.lasta.utils.Response
@@ -176,6 +177,26 @@ class DiscoveryScreenViewModelTest() {
   }
 
   @Test
+  fun filterWithDiff_worksAsIntended() {
+    var res = viewModel.filterWithDiff(ActivityType.BIKING, UserLevel.BEGINNER, Activity("", 0L))
+    assertEquals(false, res)
+    res = viewModel.filterWithDiff(ActivityType.CLIMBING, UserLevel.BEGINNER, Activity("", 0L))
+    assertEquals(true, res)
+    res =
+        viewModel.filterWithDiff(
+            ActivityType.BIKING,
+            UserLevel.INTERMEDIATE,
+            Activity("", 0L, activityType = ActivityType.BIKING))
+    assertEquals(false, res)
+    res =
+        viewModel.filterWithDiff(
+            ActivityType.HIKING,
+            UserLevel.ADVANCED,
+            Activity("", 0L, activityType = ActivityType.HIKING))
+    assertEquals(false, res)
+  }
+
+  @Test
   fun update_selectedMarker() {
     viewModel.updateSelectedMarker(
         Marker(0, "name", LatLng(0.0, 0.0), "description", 1, ActivityType.BIKING))
@@ -196,6 +217,34 @@ class DiscoveryScreenViewModelTest() {
     assertEquals(
         viewModel.selectedMarker.value,
         Marker(0, "name", LatLng(0.0, 0.0), "description", 1, ActivityType.CLIMBING))
+  }
+
+  @Test
+  fun activitiesToMarkers_worksProperly() {
+    val activities =
+        listOf(
+            Activity(
+                "id",
+                1,
+                ActivityType.BIKING,
+                "description",
+                Position(0.0, 0.0),
+                1f,
+                5,
+                emptyList(),
+                Difficulty.EASY,
+                "url",
+                ClimbingStyle.OUTDOOR,
+                1f,
+                "from",
+                "to",
+                1f))
+    val markers = viewModel.activitiesToMarkers(activities)
+    assertEquals(markers.size, 1)
+    assertEquals(markers[0].id, 1)
+    assertEquals(markers[0].name, "description")
+    assertEquals(markers[0].position, LatLng(0.0, 0.0))
+    assertEquals(markers[0].description, "")
   }
 
   @Test
