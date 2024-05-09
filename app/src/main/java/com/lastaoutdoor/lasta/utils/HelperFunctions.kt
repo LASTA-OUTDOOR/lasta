@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import com.google.firebase.Timestamp
 import com.lastaoutdoor.lasta.data.time.TimeProvider
 import com.lastaoutdoor.lasta.models.activity.ActivityType
-import com.lastaoutdoor.lasta.models.user.BikinUserActivity
+import com.lastaoutdoor.lasta.models.user.BikingUserActivity
 import com.lastaoutdoor.lasta.models.user.ClimbingUserActivity
 import com.lastaoutdoor.lasta.models.user.HikingUserActivity
 import com.lastaoutdoor.lasta.models.user.UserActivity
@@ -115,7 +115,7 @@ fun chartDisplayValues(activities: List<UserActivity>, timeFrame: TimeFrame): Li
           ActivityType.CLIMBING ->
               metersToKilometers((a as ClimbingUserActivity).totalElevation.toLong())
           ActivityType.HIKING -> metersToKilometers((a as HikingUserActivity).distanceDone.toLong())
-          ActivityType.BIKING -> metersToKilometers((a as BikinUserActivity).distanceDone.toLong())
+          ActivityType.BIKING -> metersToKilometers((a as BikingUserActivity).distanceDone.toLong())
         }
   }
   return values

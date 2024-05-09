@@ -20,4 +20,36 @@ interface UserActivitiesDBRepository {
    * @param userActivity the user activity to add
    */
   suspend fun addUserActivity(userId: String, userActivity: UserActivity)
+
+  /**
+   * Gets the n most recently finished user activities from the user with the given ID.
+   *
+   * @param userId the ID of the user
+   * @param n the number of activities to get
+   */
+  suspend fun getNLatestActivities(userId: String, n: Int): List<UserActivity>
+
+  /**
+   * Returns all the hiking activities of the user with the given ID.
+   *
+   * @param userId the ID of the user
+   * @return a list of hiking user activities
+   */
+  suspend fun getUserHikingActivities(userId: String): List<UserActivity>
+
+  /**
+   * Returns all the climbing activities of the user with the given ID.
+   *
+   * @param userId the ID of the user
+   * @return a list of climbing user activities
+   */
+  suspend fun getUserClimbingActivities(userId: String): List<UserActivity>
+
+  /**
+   * Returns all the biking activities of the user with the given ID.
+   *
+   * @param userId the ID of the user
+   * @return a list of biking user activities
+   */
+  suspend fun getUserBikingActivities(userId: String): List<UserActivity>
 }

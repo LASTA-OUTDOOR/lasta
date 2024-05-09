@@ -27,7 +27,7 @@ data class HikingUserActivity(
     val elevationChange: Float = 0f
 ) : UserActivity(ActivityType.HIKING, activityId, timeStarted, timeFinished)
 
-data class BikinUserActivity(
+data class BikingUserActivity(
     override val activityId: Long = 0L,
     override val timeStarted: Date = Date(),
     override val timeFinished: Date = Date(),
