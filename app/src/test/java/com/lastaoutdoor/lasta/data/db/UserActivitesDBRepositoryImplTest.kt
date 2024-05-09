@@ -126,7 +126,7 @@ class UserActivitiesDBRepositoryImplTest {
   @Test
   fun `add user activity works as intended`() = runTest {
     val climbingUserActivity = ClimbingUserActivity()
-    every { documentReference.update("Climbing", any()) } returns updateTask
+    every { documentReference.update("CLIMBING", any()) } returns updateTask
     coEvery { updateTask.await() } returns mockk()
     userActivitiesDB.addUserActivity("randomid", climbingUserActivity)
   }
