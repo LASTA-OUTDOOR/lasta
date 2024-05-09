@@ -71,8 +71,8 @@ class DiscoverScreenTest {
     assertTrue(popUp)
     assertEquals(screenType, DiscoverDisplayType.LIST)
     composeRule.onNodeWithTag("sortingText").assertIsDisplayed()
-    composeRule.onNodeWithTag("sortingButton").assertIsDisplayed()
-    composeRule.onNodeWithTag("sortingButton").performClick()
+    composeRule.onNodeWithTag("spinnerIcon").assertIsDisplayed()
+    composeRule.onNodeWithTag("spinnerIcon").performClick()
   }
 
   @Test
@@ -341,7 +341,7 @@ class DiscoverScreenTest {
             selectedZoom = 13f,
             selectedMarker = null,
             selectedItinerary = null,
-            orderingBy = OrderingBy.DISTANCEASCENDING,
+            orderingBy = OrderingBy.DISTANCE,
             updateOrderingBy = {},
             markerList = emptyList(),
             changeWeatherTarget = {}) {}
@@ -349,15 +349,14 @@ class DiscoverScreenTest {
     }
 
     composeRule.onNodeWithTag("discoveryScreen").assertIsDisplayed()
-    composeRule.onNodeWithTag("sortingButton").assertIsDisplayed()
-    composeRule.onNodeWithTag("sortingButton").performClick()
-    composeRule.onNodeWithTag("sortingItemRATING").assertIsDisplayed()
-    composeRule.onNodeWithTag("sortingItemDISTANCEASCENDING").assertIsDisplayed()
-    composeRule.onNodeWithTag("sortingItemDISTANCEDESCENDING").assertIsDisplayed()
-    composeRule.onNodeWithTag("sortingItemDIFFICULTYASCENDING").assertIsDisplayed()
-    composeRule.onNodeWithTag("sortingItemDIFFICULTYDESCENDING").assertIsDisplayed()
-    composeRule.onNodeWithTag("sortingItemPOPULARITY").assertIsDisplayed()
-    composeRule.onNodeWithTag("sortingItemPOPULARITY").performClick()
+    composeRule.onNodeWithTag("spinnerIcon").assertIsDisplayed()
+    composeRule.onNodeWithTag("spinnerIcon").performClick()
+    composeRule.onNodeWithTag("DropdownItem0").assertIsDisplayed()
+    composeRule.onNodeWithTag("DropdownItem1").assertIsDisplayed()
+    composeRule.onNodeWithTag("DropdownItem2").assertIsDisplayed()
+    composeRule.onNodeWithTag("DropdownItem3").assertIsDisplayed()
+    composeRule.onNodeWithTag("DropdownItem4").assertIsDisplayed()
+    composeRule.onNodeWithTag("DropdownItem4").performClick()
   }
 
   @Test
@@ -417,7 +416,8 @@ class DiscoverScreenTest {
             changeWeatherTarget = {}) {}
       }
     }
-    composeRule.onNodeWithTag("sortingTextValue").assertIsDisplayed()
+    composeRule.onNodeWithTag("textValueRow").assertIsDisplayed()
+    composeRule.onNodeWithTag("spinnerIcon").assertIsDisplayed()
   }
 
   @Test
@@ -477,7 +477,8 @@ class DiscoverScreenTest {
             changeWeatherTarget = {}) {}
       }
     }
-    composeRule.onNodeWithTag("sortingTextValue").assertIsDisplayed()
+    composeRule.onNodeWithTag("textValueRow").assertIsDisplayed()
+    composeRule.onNodeWithTag("spinnerIcon").assertIsDisplayed()
   }
 
   @Test
@@ -537,7 +538,8 @@ class DiscoverScreenTest {
             changeWeatherTarget = {}) {}
       }
     }
-    composeRule.onNodeWithTag("sortingTextValue").assertIsDisplayed()
+    composeRule.onNodeWithTag("textValueRow").assertIsDisplayed()
+    composeRule.onNodeWithTag("spinnerIcon").assertIsDisplayed()
   }
 
   @Test
@@ -591,12 +593,13 @@ class DiscoverScreenTest {
             selectedZoom = 13f,
             selectedMarker = null,
             selectedItinerary = null,
-            orderingBy = OrderingBy.DISTANCEDESCENDING,
+            orderingBy = OrderingBy.DISTANCE,
             updateOrderingBy = {},
             markerList = emptyList(),
             changeWeatherTarget = {}) {}
       }
     }
-    composeRule.onNodeWithTag("sortingTextValue").assertIsDisplayed()
+    composeRule.onNodeWithTag("textValueRow").assertIsDisplayed()
+    composeRule.onNodeWithTag("spinnerIcon").assertIsDisplayed()
   }
 }

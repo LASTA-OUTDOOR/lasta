@@ -230,9 +230,6 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
               conversationViewModel::updateConversation,
               conversationViewModel.user.value,
               conversationViewModel.friend.value,
-              conversationViewModel.showSendMessageDialog,
-              conversationViewModel::showSendMessageDialog,
-              conversationViewModel::hideSendMessageDialog,
               conversationViewModel::send,
               navController::navigateUp)
         }

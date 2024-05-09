@@ -171,7 +171,7 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
                   message["content"] as String,
                   message["timestamp"] as Timestamp)
             }
-            ?.sortedBy { it.timestamp }
+            ?.sortedByDescending { it.timestamp }
             ?.toCollection(ArrayList()) ?: ArrayList()
 
     return ConversationModel(
@@ -280,17 +280,22 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
     val document = conversationDocumentRef.get().await()
     if (!document.exists()) return
 
-    // Create a map containing the message
-    val messageData: (Timestamp) -> HashMap<String, Any> = {
-      hashMapOf("from" to userId, "content" to message, "timestamp" to it)
-    }
-
     // Add the message to the conversation
     conversationDocumentRef
-        .update("messages", FieldValue.arrayUnion(messageData(Timestamp.now())))
+        .update(
+            "messages",
+            FieldValue.arrayUnion(
+                hashMapOf("from" to userId, "content" to message, "timestamp" to Timestamp.now())))
         .await()
 
     // Update the last message in the conversation
-    conversationDocumentRef.update("lastMessage", messageData(Timestamp.now())).await()
+    conversationDocumentRef
+        .update(
+            "lastMessage",
+            hashMapOf(
+                "from" to userId,
+                "content" to message,
+                "timestamp" to FieldValue.serverTimestamp()))
+        .await()
   }
 }
