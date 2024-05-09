@@ -132,8 +132,7 @@ fun mapScreen(
     clearSelectedMarker: () -> Unit
 ): (CameraUpdate) -> Unit {
 
-  // Initialise the map, otherwise the icon functionality won't work
-  MapsInitializer.initialize(getApplicationContext())
+
 
   // Ask for permissions to determine what view to display
   ManagePermissions(updatePermission)

@@ -48,8 +48,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.SphericalUtil
 import com.lastaoutdoor.lasta.R
@@ -232,6 +234,10 @@ fun HeaderComposable(
     updateInitialPosition: (LatLng) -> Unit,
     moveCamera: (CameraUpdate) -> Unit
 ) {
+
+  // Initialise the map, otherwise the icon functionality won't work
+  MapsInitializer.initialize(LocalContext.current)
+
   // Dropdown menu boolean
   val iconSize = 48.dp // Adjust icon size as needed
   val displayWeather = remember { mutableStateOf(false) }
