@@ -214,6 +214,34 @@ class DiscoveryScreenViewModelTest() {
   }
 
   @Test
+  fun activitiesToMarkers_worksProperly() {
+    val activities =
+        listOf(
+            Activity(
+                "id",
+                1,
+                ActivityType.BIKING,
+                "description",
+                Position(0.0, 0.0),
+                1f,
+                5,
+                emptyList(),
+                Difficulty.EASY,
+                "url",
+                ClimbingStyle.OUTDOOR,
+                1f,
+                "from",
+                "to",
+                1f))
+    val markers = viewModel.activitiesToMarkers(activities)
+    assertEquals(markers.size, 1)
+    assertEquals(markers[0].id, 1)
+    assertEquals(markers[0].name, "description")
+    assertEquals(markers[0].position, LatLng(0.0, 0.0))
+    assertEquals(markers[0].description, "")
+  }
+
+  @Test
   fun testUpdateOrderingBy_WithEmptyActivities() {
     viewModel.updateOrderingBy(OrderingBy.RATING)
     assertEquals(viewModel.orderingBy.value, OrderingBy.RATING)
