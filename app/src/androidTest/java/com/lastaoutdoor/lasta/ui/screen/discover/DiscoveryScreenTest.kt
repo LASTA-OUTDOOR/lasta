@@ -6,6 +6,10 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
+import com.firebase.ui.auth.AuthUI
+import com.google.android.gms.maps.CameraUpdate
+import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.models.activity.Activity
@@ -43,6 +47,10 @@ class DiscoverScreenTest {
     var navigateFilter = false
     var screenType = DiscoverDisplayType.LIST
     var popUp = false
+
+    val fetchSuggestion: (String) -> Unit = { /*TODO*/}
+    var suggestion: Map<String, LatLng> = emptyMap()
+
     composeRule.activity.setContent {
       MaterialTheme {
         // Assuming you have a minimal setup or mock data needed for DiscoverScreen
@@ -55,7 +63,15 @@ class DiscoverScreenTest {
             navigateToFilter = { navigateFilter = true },
             orderingBy = OrderingBy.RATING,
             updateOrderingBy = {},
-            weather = null)
+            weather = null,
+            fetchSuggestion = fetchSuggestion,
+            suggestions = suggestion,
+            setSelectedLocality = {},
+            fetchActivities = { _, _ -> },
+            clearSuggestions = { suggestion = emptyMap() },
+            updateInitialPosition = {},
+            moveCamera = { _ -> },
+        )
       }
     }
 
@@ -114,6 +130,7 @@ class DiscoverScreenTest {
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
             changeActivityToDisplay = {},
+            changeWeatherTarget = {},
             weather = null,
             state = MapState(),
             updatePermission = {},
@@ -125,10 +142,15 @@ class DiscoverScreenTest {
             selectedZoom = 13f,
             selectedMarker = null,
             selectedItinerary = null,
+            markerList = emptyList(),
             orderingBy = OrderingBy.RATING,
             updateOrderingBy = {},
-            markerList = emptyList(),
-            changeWeatherTarget = {}) {}
+            clearSelectedMarker = {},
+            fetchSuggestion = { _ -> },
+            suggestions = emptyMap(),
+            clearSuggestions = {},
+            updateInitialPosition = {},
+        )
       }
     }
     composeRule.onNodeWithTag("LoadingBarDiscover").assertIsDisplayed()
@@ -232,6 +254,7 @@ class DiscoverScreenTest {
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
             changeActivityToDisplay = {},
+            changeWeatherTarget = {},
             weather = null,
             state = MapState(),
             updatePermission = {},
@@ -243,10 +266,15 @@ class DiscoverScreenTest {
             selectedZoom = 13f,
             selectedMarker = null,
             selectedItinerary = null,
+            markerList = emptyList(),
             orderingBy = OrderingBy.RATING,
             updateOrderingBy = {},
-            markerList = emptyList(),
-            changeWeatherTarget = {}) {}
+            clearSelectedMarker = {},
+            fetchSuggestion = { _ -> },
+            suggestions = emptyMap(),
+            clearSuggestions = {},
+            updateInitialPosition = {},
+        )
       }
     }
 
@@ -330,6 +358,7 @@ class DiscoverScreenTest {
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
             changeActivityToDisplay = {},
+            changeWeatherTarget = {},
             weather = null,
             state = MapState(),
             updatePermission = {},
@@ -343,8 +372,13 @@ class DiscoverScreenTest {
             selectedItinerary = null,
             orderingBy = OrderingBy.DISTANCE,
             updateOrderingBy = {},
+            clearSelectedMarker = {},
+            fetchSuggestion = {},
+            suggestions = emptyMap(),
+            clearSuggestions = {},
+            updateInitialPosition = {},
             markerList = emptyList(),
-            changeWeatherTarget = {}) {}
+        )
       }
     }
 
@@ -399,6 +433,7 @@ class DiscoverScreenTest {
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
             changeActivityToDisplay = {},
+            changeWeatherTarget = {},
             weather = null,
             state = MapState(),
             updatePermission = {},
@@ -410,10 +445,15 @@ class DiscoverScreenTest {
             selectedZoom = 13f,
             selectedMarker = null,
             selectedItinerary = null,
+            markerList = emptyList(),
             orderingBy = OrderingBy.DIFFICULTYASCENDING,
             updateOrderingBy = {},
-            markerList = emptyList(),
-            changeWeatherTarget = {}) {}
+            clearSelectedMarker = {},
+            fetchSuggestion = { _ -> },
+            suggestions = emptyMap(),
+            clearSuggestions = {},
+            updateInitialPosition = {},
+        )
       }
     }
     composeRule.onNodeWithTag("textValueRow").assertIsDisplayed()
@@ -460,6 +500,7 @@ class DiscoverScreenTest {
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
             changeActivityToDisplay = {},
+            changeWeatherTarget = {},
             weather = null,
             state = MapState(),
             updatePermission = {},
@@ -471,10 +512,15 @@ class DiscoverScreenTest {
             selectedZoom = 13f,
             selectedMarker = null,
             selectedItinerary = null,
+            markerList = emptyList(),
             orderingBy = OrderingBy.DIFFICULTYDESCENDING,
             updateOrderingBy = {},
-            markerList = emptyList(),
-            changeWeatherTarget = {}) {}
+            clearSelectedMarker = {},
+            fetchSuggestion = { _ -> },
+            suggestions = emptyMap(),
+            updateInitialPosition = {},
+            clearSuggestions = {},
+        )
       }
     }
     composeRule.onNodeWithTag("textValueRow").assertIsDisplayed()
@@ -521,6 +567,7 @@ class DiscoverScreenTest {
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
             changeActivityToDisplay = {},
+            changeWeatherTarget = {},
             weather = null,
             state = MapState(),
             updatePermission = {},
@@ -532,10 +579,15 @@ class DiscoverScreenTest {
             selectedZoom = 13f,
             selectedMarker = null,
             selectedItinerary = null,
+            markerList = emptyList(),
             orderingBy = OrderingBy.POPULARITY,
             updateOrderingBy = {},
-            markerList = emptyList(),
-            changeWeatherTarget = {}) {}
+            clearSelectedMarker = {},
+            fetchSuggestion = { _ -> },
+            suggestions = emptyMap(),
+            clearSuggestions = {},
+            updateInitialPosition = {},
+        )
       }
     }
     composeRule.onNodeWithTag("textValueRow").assertIsDisplayed()
@@ -582,6 +634,7 @@ class DiscoverScreenTest {
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
             changeActivityToDisplay = {},
+            changeWeatherTarget = {},
             weather = null,
             state = MapState(),
             updatePermission = {},
@@ -595,11 +648,63 @@ class DiscoverScreenTest {
             selectedItinerary = null,
             orderingBy = OrderingBy.DISTANCE,
             updateOrderingBy = {},
+            clearSelectedMarker = {},
+            fetchSuggestion = {},
+            suggestions = emptyMap(),
+            clearSuggestions = {},
+            updateInitialPosition = {},
             markerList = emptyList(),
-            changeWeatherTarget = {}) {}
+        )
       }
     }
     composeRule.onNodeWithTag("textValueRow").assertIsDisplayed()
     composeRule.onNodeWithTag("spinnerIcon").assertIsDisplayed()
+  }
+
+  @Test
+  fun testSuggestions() {
+
+    val suggestions = mutableMapOf<String, LatLng>()
+    var initialPos = LatLng(46.519962, 6.633597)
+    var cameraPosition: CameraUpdate? = null
+
+    composeRule.activity.setContent {
+      MaterialTheme {
+        MapsInitializer.initialize(AuthUI.getApplicationContext())
+        HeaderComposable(
+            screen = DiscoverDisplayType.LIST,
+            range = 1000.0,
+            selectedLocality = Pair("Ecublens", LatLng(46.519962, 6.633597)),
+            setScreen = { _ -> },
+            updatePopup = {},
+            navigateToFilter = {},
+            orderingBy = OrderingBy.RATING,
+            updateOrderingBy = {},
+            weather = null,
+            fetchSuggestion = { suggestions["Ecublens"] = LatLng(4.519962, 6.633597) },
+            suggestions = suggestions,
+            setSelectedLocality = {},
+            fetchActivities = { _, _ -> },
+            clearSuggestions = { suggestions.clear() },
+            updateInitialPosition = { initialPos = it },
+        ) {
+          cameraPosition = it
+        }
+      }
+    }
+
+    assert(suggestions.isEmpty())
+
+    // check that the searchbar is displayed
+    composeRule.onNodeWithTag("searchBarComponent").assertIsDisplayed()
+    composeRule.onNodeWithTag("searchBarComponent").performTextInput("Ecublens")
+
+    // there should be 8 suggestions
+    composeRule.onNodeWithTag("suggestion").assertIsDisplayed()
+    composeRule.onNodeWithTag("suggestion").performClick()
+
+    assert(cameraPosition != null)
+    assert(suggestions.isEmpty())
+    assert(initialPos != LatLng(46.519962, 6.633597))
   }
 }
