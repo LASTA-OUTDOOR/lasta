@@ -322,5 +322,5 @@ kapt {
     correctErrorTypes = true
 }
 afterEvaluate {
-    project.tasks.getByName("copyRoomSchemas").mustRunAfter(tasks)
+    project.tasks.getByName("copyRoomSchemas").mustRunAfter( ":app:hiltJavaCompileRelease")
 }
