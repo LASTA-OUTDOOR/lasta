@@ -1,5 +1,6 @@
 package com.lastaoutdoor.lasta.ui.screen.profile
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -423,6 +424,7 @@ fun Chart(activities: List<UserActivity>, timeFrame: TimeFrame, sport: ActivityT
   }
 }
 
+@SuppressLint("DefaultLocale")
 @Composable
 fun RecentActivities(
     activities: List<UserActivity>,

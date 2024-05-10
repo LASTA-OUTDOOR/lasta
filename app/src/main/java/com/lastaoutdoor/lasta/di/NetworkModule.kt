@@ -18,6 +18,7 @@ import com.lastaoutdoor.lasta.data.db.ActivitiesDBRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.SocialDBRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.UserActivitiesDBRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.UserDBRepositoryImpl
+import com.lastaoutdoor.lasta.data.time.TimeProvider
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
 import com.lastaoutdoor.lasta.repository.api.WeatherRepository
 import com.lastaoutdoor.lasta.repository.auth.AuthRepository
@@ -131,6 +132,11 @@ object NetworkModule {
   @Provides
   fun provideSocialDBRepository(
       @ApplicationContext context: Context,
-      firestore: FirebaseFirestore
-  ): SocialDBRepository = SocialDBRepositoryImpl(context, firestore)
+      firestore: FirebaseFirestore,
+      userActivitiesDBRepository: UserActivitiesDBRepository,
+      timeProvider: TimeProvider,
+      activitiesDBRepository: ActivitiesDBRepository
+  ): SocialDBRepository =
+      SocialDBRepositoryImpl(
+          context, firestore, userActivitiesDBRepository, timeProvider, activitiesDBRepository)
 }

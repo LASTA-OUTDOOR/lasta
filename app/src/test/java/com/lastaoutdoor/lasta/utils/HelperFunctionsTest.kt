@@ -1,9 +1,19 @@
 package com.lastaoutdoor.lasta.utils
 
+import com.lastaoutdoor.lasta.data.time.TimeProvider
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.unmockkObject
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import java.util.*
+import junit.framework.TestCase.assertEquals
+import org.junit.Test
 
 class HelperFunctionsTest {
-  /*@Test
+
+  @Test
   fun `calculateTimeRange works in general case`() {
     // Start mocking static methods of LocalDate
     val mockTimeProvider = mockk<TimeProvider>()
@@ -105,7 +115,7 @@ class HelperFunctionsTest {
   }
 
   @Test
-  fun `Meters to kilomters`() {
+  fun `Meters to kilometers`() {
     assert(metersToKilometers(1000L) == 1f)
   }
 
@@ -149,7 +159,8 @@ class HelperFunctionsTest {
     val time = 10800000L // eq of 3 hours
     assert(timeFromMillis(time) == "03:00:00")
   }
-
+}
+/*
   @Test
   fun `time from activity millis`() {
     val date1 = Date(1712864046759)
@@ -208,34 +219,7 @@ class HelperFunctionsTest {
     assert(chartDisplayValues(list, timeFrame)[0] == 0.75f)
   }
 
-  @Test
-  fun respLoading() {
-    val ld1 = Response.Loading
-    val ld2 = Response.Loading
-    assert(ld1.javaClass == ld2.javaClass)
-  }
 
-  @Test
-  fun respSuccessNotNull() {
-    val ld1 = Response.Success<String>("wow")
-
-    assert(ld1.data == "wow")
-  }
-
-  @Test
-  fun respSuccessNull() {
-    val ld1 = Response.Success<String>(null)
-
-    assert(ld1.data == null)
-  }
-
-  @Test
-  fun respFailure() {
-
-    val ld2 = Response.Failure(Exception("ex"))
-    assert(ld2.e.message == "ex")
-  }*/
-}
 
     /*
       @Test
@@ -348,3 +332,4 @@ class HelperFunctionsTest {
     }
 
          */
+*/

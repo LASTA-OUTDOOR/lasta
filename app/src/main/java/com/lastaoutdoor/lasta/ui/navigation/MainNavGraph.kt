@@ -152,7 +152,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           { userId: String ->
             navController.navigate(DestinationRoute.FriendProfile.route + "/$userId")
           },
-      )
+          socialViewModel::refreshFriendsActivities)
     }
     composable(DestinationRoute.Profile.route) { entry ->
       val profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(entry)
