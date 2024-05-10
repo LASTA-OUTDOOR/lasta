@@ -1,6 +1,5 @@
 package com.lastaoutdoor.lasta.models.activity
 
-import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -63,5 +62,3 @@ data class Activity(
         this.distance)
   }
 }
-
-
