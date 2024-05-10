@@ -295,4 +295,13 @@ class ActivitiesDBRepositoryImplTest {
     activitiesDB.updateStartPosition("activityId", Position(0.0, 0.0))
     coVerify(exactly = 1) { documentReference.update(any() as String, any()) }
   }
+
+  @Test
+  fun `Add rating works fine`() = runTest {
+    coEvery { documentReference.update(any() as String, any()) } returns updateTask
+    activitiesDB.addRating("activityId", Rating("userId", "comment", "5"), "5")
+    coVerify(exactly = 1) { documentReference.update("ratings", any()) }
+    coVerify(exactly = 1) { documentReference.update("numRatings", any()) }
+    coVerify(exactly = 1) { documentReference.update("rating", any()) }
+  }
 }
