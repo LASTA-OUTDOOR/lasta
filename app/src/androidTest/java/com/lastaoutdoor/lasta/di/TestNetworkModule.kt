@@ -9,6 +9,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.data.api.autocomplete.RadarApiService
+import com.lastaoutdoor.lasta.data.api.autocomplete.RadarRepositoryImpl
 import com.lastaoutdoor.lasta.data.api.osm.ActivityRepositoryImpl
 import com.lastaoutdoor.lasta.data.api.osm.OSMApiService
 import com.lastaoutdoor.lasta.data.api.weather.WeatherApiService
@@ -20,6 +22,7 @@ import com.lastaoutdoor.lasta.data.db.UserActivitiesDBRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.UserDBRepositoryImpl
 import com.lastaoutdoor.lasta.data.time.TimeProvider
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
+import com.lastaoutdoor.lasta.repository.api.RadarRepository
 import com.lastaoutdoor.lasta.repository.api.WeatherRepository
 import com.lastaoutdoor.lasta.repository.auth.AuthRepository
 import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
@@ -139,4 +142,18 @@ object TestNetworkModule {
   ): SocialDBRepository =
       SocialDBRepositoryImpl(
           context, firestore, userActivitiesDBRepository, timeProvider, activitiesDBRepository)
+
+  @Singleton
+  @Provides
+  fun provideRadarApiService(): RadarApiService =
+      Retrofit.Builder()
+          .baseUrl("https://api.radar.io/v1/search/")
+          .addConverterFactory(GsonConverterFactory.create())
+          .build()
+          .create(RadarApiService::class.java)
+
+  @Singleton
+  @Provides
+  fun provideRadarRepository(radarApiService: RadarApiService): RadarRepository =
+      RadarRepositoryImpl(radarApiService)
 }

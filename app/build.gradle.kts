@@ -35,12 +35,19 @@ android {
 
         //return empty key in case something goes wrong
         val apiKey = properties.getProperty("WEATHER_API_KEY") ?: ""
-
         buildConfigField(
             type = "String",
             name = "WEATHER_API_KEY",
             value = apiKey
         )
+        
+        val radarApiKey = properties.getProperty("RADAR_API_KEY") ?: ""
+        buildConfigField(
+            type = "String",
+            name = "RADAR_API_KEY",
+            value = radarApiKey
+        )
+
     }
 
     val keystorePropertiesFile = project.rootProject.file("./keystore.properties")
