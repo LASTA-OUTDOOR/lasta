@@ -79,7 +79,7 @@ constructor(
     }
   }
 
-  private fun addFakeActivity() {
+  fun addFakeActivity() {
     viewModelScope.launch {
       repository.addUserActivity(
           "mqROPreWZScUdFi0AOPTUcsNRn72",

@@ -360,4 +360,21 @@ class SocialDBRepoTest {
       coVerify { documentReference.update(any() as String, any()) }
     }
   }
+
+  /*
+  @Test
+  fun getLatestFriendActivities() {
+    runBlocking{
+      val activities = listOf(userActDb.fakeActivity)
+      // For example, April 15, 2022 Friday
+      every { filterTrailsByTimeFrame(activities, TimeFrame.W, mockTimeProvider) } returns activities
+      every { calculateTimeRangeUntilNow(any(), mockTimeProvider) } returns Pair(Timestamp(0, 0), Timestamp(0, 0))
+      every { }
+      val a = activitiesRepository.getLatestFriendActivities("userId", TimeFrame.W, listOf(UserModel("friends")))
+      val expected = listOf(FriendsActivities(UserModel("friends"), userActDb.fakeActivity, Activity("", 3)))
+        assertEquals(expected, a)
+    }
+  }
+
+   */
 }
