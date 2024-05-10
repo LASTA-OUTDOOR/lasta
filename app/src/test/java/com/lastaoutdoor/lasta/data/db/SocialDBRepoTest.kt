@@ -19,6 +19,7 @@ import com.lastaoutdoor.lasta.models.social.MessageModel
 import com.lastaoutdoor.lasta.models.user.Language
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
+import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivitiesDBRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserActivityRepo
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -51,6 +52,7 @@ class SocialDBRepoTest {
 
   private val mockTimeProvider = mockk<TimeProvider>()
   private val userActDb = FakeUserActivityRepo()
+  private val actDb = FakeActivitiesDBRepository()
 
   private val documentSnapshot: DocumentSnapshot = mockk()
   private lateinit var activitiesRepository: SocialDBRepositoryImpl
@@ -113,7 +115,8 @@ class SocialDBRepoTest {
 
     every { mockTimeProvider.currentDate() } returns LocalDate.of(2022, 4, 15)
 
-    activitiesRepository = SocialDBRepositoryImpl(context, firestore, userActDb, mockTimeProvider)
+    activitiesRepository =
+        SocialDBRepositoryImpl(context, firestore, userActDb, mockTimeProvider, actDb)
   }
 
   @Test

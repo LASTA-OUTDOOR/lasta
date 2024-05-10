@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.lastaoutdoor.lasta.data.time.TimeProvider
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.ClimbingUserActivity
-import com.lastaoutdoor.lasta.models.user.HikingUserActivity
 import com.lastaoutdoor.lasta.models.user.UserActivity
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
@@ -68,7 +67,7 @@ constructor(
   init {
     fetchCurrentUser()
     fetchUserActivities()
-    //addFakeActivity()
+    // addFakeActivity()
   }
 
   /** Fetches the current user from the preferences. */

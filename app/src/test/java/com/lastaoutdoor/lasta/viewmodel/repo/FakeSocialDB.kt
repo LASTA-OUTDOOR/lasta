@@ -1,8 +1,9 @@
 import com.google.firebase.Timestamp
+import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.social.ConversationModel
+import com.lastaoutdoor.lasta.models.social.FriendsActivities
 import com.lastaoutdoor.lasta.models.social.MessageModel
 import com.lastaoutdoor.lasta.models.user.ClimbingUserActivity
-import com.lastaoutdoor.lasta.models.user.UserActivity
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
 import com.lastaoutdoor.lasta.utils.TimeFrame
@@ -26,8 +27,8 @@ class FakeSocialDB() : SocialDBRepository {
       userId: String,
       timeFrame: TimeFrame,
       friends: List<UserModel>
-  ): List<UserActivity> {
-    return listOf(fakeActivity)
+  ): List<FriendsActivities> {
+    return listOf(FriendsActivities(fakeUserModel, fakeActivity, Activity("1", 1)))
   }
 
   override suspend fun getConversation(
