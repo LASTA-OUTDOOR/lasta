@@ -193,20 +193,23 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val markerList = discoverScreenViewModel.markerList.collectAsState().value
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
       val currentUser = preferencesViewModel.user.collectAsState(initial = UserModel("")).value
+      val activities = discoverScreenViewModel.activities.collectAsState().value
       MoreInfoScreen(
           activityToDisplay,
           mapState,
           discoverScreenViewModel::updatePermission,
           initialPosition,
           initialZoom,
+          activities,
+          discoverScreenViewModel::updateActivities,
           discoverScreenViewModel::updateMarkers,
           discoverScreenViewModel::updateSelectedMarker,
           discoverScreenViewModel::clearSelectedItinerary,
+          discoverScreenViewModel::fetchActivities,
           selectedZoom,
           moreInfoScreenViewModel::goToMarker,
           usersList,
           moreInfoScreenViewModel::getUserModels,
-          ratings,
           moreInfoScreenViewModel::writeNewRating,
           currentUser,
           weather,

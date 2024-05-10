@@ -8,6 +8,7 @@ import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivitiesDBRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivityRepository
+import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserDB
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -38,7 +39,9 @@ class MoreInfoScreenViewModelTest {
   fun testFetchDiff() {
     val fakeDb = FakeActivityRepository()
     val fk = FakeActivitiesDBRepository()
-    val moreInfoScreenViewModel: MoreInfoScreenViewModel = MoreInfoScreenViewModel(fakeDb, fk)
+    val fakeUserDB = FakeUserDB()
+    val moreInfoScreenViewModel: MoreInfoScreenViewModel =
+        MoreInfoScreenViewModel(fakeDb, fk, fakeUserDB)
     val fakeActivity =
         Activity("a", 10, activityType = ActivityType.CLIMBING, difficulty = Difficulty.EASY)
     val fakeActivity2 =
@@ -56,7 +59,9 @@ class MoreInfoScreenViewModelTest {
   fun testMoreInfoMarker() {
     val fakeDb = FakeActivityRepository()
     val fk = FakeActivitiesDBRepository()
-    val moreInfoScreenViewModel: MoreInfoScreenViewModel = MoreInfoScreenViewModel(fakeDb, fk)
+    val fakeUserDB = FakeUserDB()
+    val moreInfoScreenViewModel: MoreInfoScreenViewModel =
+        MoreInfoScreenViewModel(fakeDb, fk, fakeUserDB)
     val fakeActivity =
         Activity("a", 10, activityType = ActivityType.CLIMBING, difficulty = Difficulty.EASY)
     val fakeActivity2 =

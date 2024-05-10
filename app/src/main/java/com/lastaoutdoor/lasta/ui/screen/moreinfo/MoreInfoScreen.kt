@@ -77,14 +77,16 @@ fun MoreInfoScreen(
     updatePermission: (Boolean) -> Unit,
     initialPosition: LatLng,
     initialZoom: Float,
+    activities: List<Activity>,
+    updateActivity: (List<Activity>) -> Unit,
     updateMarkers: (LatLng, Double) -> Unit,
     updateSelectedMarker: (Marker?) -> Unit,
     clearSelectedItinerary: () -> Unit,
+    fetchActivities: () -> Unit,
     selectedZoom: Float,
     goToMarker: (Activity) -> Marker,
     usersList: List<UserModel?>,
     getUserModels: (List<String>) -> Unit,
-    ratings: List<Rating>,
     writeNewRating: (String, Rating, String) -> Unit,
     currentUser: UserModel?,
     weather: WeatherResponse?,
@@ -104,6 +106,7 @@ fun MoreInfoScreen(
             Spacer(modifier = Modifier.height(15.dp))
             // contains the top icon buttons
             TopBar {
+              fetchActivities()
               navigateBack()
               setWeatherBackToUserLoc()
             }
@@ -116,9 +119,10 @@ fun MoreInfoScreen(
                 isMapDisplayed,
                 isReviewing,
                 text,
-                ratings,
                 writeNewRating,
-                currentUser)
+                currentUser,
+                activities,
+                updateActivity)
             // filled with a spacer for the moment but will contain address + community
           }
           Column(
@@ -136,7 +140,9 @@ fun MoreInfoScreen(
     Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoMap")) {
       val marker = goToMarker(activityToDisplay)
       TopBar {
-        navigateBack()
+        fetchActivities()
+        println("end setWeatherBackToUserLoc")
+          navigateBack()
         setWeatherBackToUserLoc()
       }
       MapScreen(
@@ -191,14 +197,22 @@ fun MiddleZone(
     isMapDisplayed: MutableState<Boolean>,
     isReviewing: MutableState<Boolean>,
     text: MutableState<String>,
-    ratings: List<Rating>,
     writeNewRating: (String, Rating, String) -> Unit,
-    currentUser: UserModel?
+    currentUser: UserModel?,
+    activities: List<Activity>,
+    updateActivity: (List<Activity>) -> Unit
 ) {
   Row(
       modifier = Modifier.fillMaxWidth().testTag("MoreInfoMiddleZone"),
       horizontalArrangement = Arrangement.SpaceBetween) {
-        RatingLine(activityToDisplay, isReviewing, text, ratings, writeNewRating, currentUser)
+        RatingLine(
+            activityToDisplay,
+            isReviewing,
+            text,
+            writeNewRating,
+            currentUser,
+            activities,
+            updateActivity)
         ViewOnMapButton(isMapDisplayed)
       }
   SeparatorComponent()
@@ -234,9 +248,10 @@ fun RatingLine(
     activityToDisplay: Activity,
     isReviewing: MutableState<Boolean>,
     text: MutableState<String>,
-    ratings: List<Rating>,
     writeNewRating: (String, Rating, String) -> Unit,
-    currentUser: UserModel?
+    currentUser: UserModel?,
+    activities: List<Activity>,
+    updateActivity: (List<Activity>) -> Unit
 ) {
   Row(verticalAlignment = Alignment.CenterVertically) {
     DiffAndRating(activityToDisplay = activityToDisplay)
@@ -246,9 +261,10 @@ fun RatingLine(
         { isReviewing.value = true },
         isReviewing,
         text,
-        ratings,
         writeNewRating,
-        currentUser)
+        currentUser,
+        activities,
+        updateActivity)
   }
 }
 
@@ -431,9 +447,10 @@ fun AddRatingButton(
     onShowReviewModal: () -> Unit,
     isReviewing: MutableState<Boolean>,
     text: MutableState<String>,
-    ratings: List<Rating>,
     writeNewRating: (String, Rating, String) -> Unit,
-    currentUser: UserModel?
+    currentUser: UserModel?,
+    activities: List<Activity>,
+    updateActivity: (List<Activity>) -> Unit
 ) {
   if (isReviewing.value) {
     ModalBottomSheet(
@@ -467,16 +484,23 @@ fun AddRatingButton(
                 // Publish button
                 ElevatedButton(
                     onClick = {
-                      println("Ratings: ${activityToDisplay.ratings}")
                       var newMeanRating =
                           activityToDisplay.ratings.sumOf { it.rating.toInt() } +
                               selectedStarCount.intValue
-                      println("New mean rating: $newMeanRating")
                       val division =
                           newMeanRating.toDouble() / (activityToDisplay.ratings.size + 1.0)
-                      println("Division : $division")
                       val string = String.format("%.1f", division)
-                      println("String : $string")
+
+                      // Change activities list
+                      val newActivities = activities.toMutableList()
+                      val index =
+                          newActivities.indexOfFirst {
+                            it.activityId == activityToDisplay.activityId
+                          }
+                      newActivities[index] =
+                          activityToDisplay.copy(
+                              rating = division.toFloat(),
+                              numRatings = activityToDisplay.numRatings + 1)
 
                       if (currentUser != null) {
                         writeNewRating(
@@ -486,6 +510,7 @@ fun AddRatingButton(
                                 text.value,
                                 selectedStarCount.intValue.toString()),
                             string)
+                        updateActivity(newActivities)
                       }
                       isReviewing.value = false
                     },

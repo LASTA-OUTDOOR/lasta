@@ -14,6 +14,7 @@ import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.models.map.Marker
+import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.MainActivity
 import com.lastaoutdoor.lasta.viewmodel.MapState
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -38,17 +39,27 @@ class MoreInfoScreenTest {
     composeRule.activity.setContent {
       val fakeActivity = Activity("", 0L)
       val fakeMapState = MapState()
+      val activities = emptyList<Activity>()
+      val users = emptyList<UserModel>()
+      val currentUser = UserModel("")
       MoreInfoScreen(
           fakeActivity,
           fakeMapState,
           {},
           LatLng(0.0, 0.0),
           0f,
+          activities,
+          { _ -> },
           { _, _ -> },
+          {},
           {},
           {},
           0f,
           { a: Activity -> Marker(0L, "", LatLng(0.0, 0.0), "", 0, ActivityType.CLIMBING) },
+          users,
+          { _ -> },
+          { _, _, _ -> },
+          currentUser,
           null,
           emptyList(),
           null,

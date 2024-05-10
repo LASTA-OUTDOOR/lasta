@@ -125,7 +125,7 @@ class ActivitiesDBRepositoryImplTest {
     every { documentSnapshot1.getLong("osmId") } returns 0
     every { documentSnapshot1.getString("activityType") } returns "CLIMBING"
     every { documentSnapshot1.getString("name") } returns "name"
-    every { documentSnapshot1.getDouble("rating") } returns 5.0
+    every { (documentSnapshot1.getString("rating") ?: "5.0").toFloat() } returns 5.0F
     every { documentSnapshot1.getLong("numRatings") } returns 1
     every { documentSnapshot1.get("ratings") } returns
         listOf(hashMapOf("userId" to "userId", "comment" to "comment", "rating" to 5))
@@ -232,7 +232,7 @@ class ActivitiesDBRepositoryImplTest {
     every { documentSnapshot1.getLong("osmId") } returns 0
     every { documentSnapshot1.getString("activityType") } returns "CLIMBING"
     every { documentSnapshot1.getString("name") } returns "name"
-    every { documentSnapshot1.getDouble("rating") } returns 5.0
+    every { (documentSnapshot1.getString("rating") ?: "5").toFloat() } returns 5.0F
     every { documentSnapshot1.getLong("numRatings") } returns 1
     every { documentSnapshot1.get("ratings") } returns
         listOf(hashMapOf("userId" to "userId", "comment" to "comment", "rating" to 5))
@@ -256,7 +256,9 @@ class ActivitiesDBRepositoryImplTest {
     every { documentSnapshot1.getLong("osmId") } returns 0
     every { documentSnapshot1.getString("activityType") } returns "CLIMBING"
     every { documentSnapshot1.getString("name") } returns "name"
-    every { documentSnapshot1.getDouble("rating") } returns 5.0
+
+    /* TODO adapt tests for new rating system */
+
     every { documentSnapshot1.getLong("numRatings") } returns 1
     every { documentSnapshot1.get("ratings") } returns
         listOf(hashMapOf("userId" to "userId", "comment" to "comment", "rating" to 5))
