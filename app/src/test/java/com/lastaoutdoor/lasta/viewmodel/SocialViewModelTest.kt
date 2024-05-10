@@ -92,7 +92,6 @@ class SocialViewModelTest {
     viewModel.topButton
     viewModel.topButtonIcon
     viewModel.topButtonOnClick
-    viewModel.getNumberOfDays()
     val q = viewModel.friends
     val m = viewModel.messages
     viewModel.friendRequests
@@ -132,7 +131,6 @@ class SocialViewModelTest {
     viewModel.topButton
     viewModel.topButtonIcon
     viewModel.topButtonOnClick
-    viewModel.getNumberOfDays()
     val q = viewModel.friends
     val m = viewModel.messages
     viewModel.friendRequests
