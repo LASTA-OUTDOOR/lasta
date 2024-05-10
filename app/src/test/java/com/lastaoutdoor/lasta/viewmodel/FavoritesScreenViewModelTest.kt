@@ -22,6 +22,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
+// Tests for favorites viewModel, addded also some calls to ACtivityDAtabaseImpl to get more
+// coverage, asit's online 3 lines
 class FavoritesScreenViewModelTest {
   @ExperimentalCoroutinesApi val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
 
@@ -48,6 +50,9 @@ class FavoritesScreenViewModelTest {
   @Before
   fun setUp() {
     coEvery { dao.getAllActivities() } returns listOf(Activity("id", 10))
+    coEvery { dao.deleteActivity(any()) } returns Unit
+    coEvery { dao.insertActivity(any()) } returns Unit
+    coEvery { dao.getActivity(any()) } returns Activity("id", 10)
   }
 
   @Test
@@ -66,6 +71,9 @@ class FavoritesScreenViewModelTest {
   fun testFavoritesScreenViewModel_emptyFavorites() {
     runBlocking {
       val con = FakeConnectivityviewRepo()
+      loc.insertActivity(Activity("id", 10))
+      loc.deleteActivity(Activity("id", 10))
+      loc.getActivity("id")
       con.connectionState = flowOf(ConnectionState.OFFLINE)
       favoritesScreenViewModel =
           FavoritesScreenViewModel(preferencesRepository, activitiesRepo, loc, con)
