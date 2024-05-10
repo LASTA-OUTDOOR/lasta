@@ -25,6 +25,11 @@ class ConvertersTest {
     val result = converters.toClimbingSyle("Outdoor")
     assertEquals(ClimbingStyle.OUTDOOR, result)
   }
+  @Test
+  fun testToClimbingStyle2() {
+    val result = converters.toClimbingSyle("Indoor")
+    assertEquals(ClimbingStyle.INDOOR, result)
+  }
 
   @Test
   fun testFromDifficulty() {
@@ -37,6 +42,16 @@ class ConvertersTest {
   fun testToDifficulty() {
     val result = converters.toDifficulty("Easy")
     assertEquals(Difficulty.EASY, result)
+  }
+  @Test
+  fun testToDifficulty2() {
+    val result = converters.toDifficulty("Normal")
+    assertEquals(Difficulty.NORMAL, result)
+  }
+  @Test
+  fun testToDifficulty3() {
+    val result = converters.toDifficulty("Hard")
+    assertEquals(Difficulty.HARD, result)
   }
 
   @Test
@@ -51,13 +66,24 @@ class ConvertersTest {
     val result = converters.toActivity("BIKING")
     assertEquals(ActivityType.BIKING, result)
   }
+  @Test
+  fun testToActivity2() {
+    val result = converters.toActivity("HIKING")
+    assertEquals(ActivityType.HIKING, result)
+  }
+  @Test
+  fun testToActivity3() {
+    val result = converters.toActivity("CLIMBING")
+    assertEquals(ActivityType.CLIMBING, result)
+  }
+
 
   @Test
   fun testFromListR() {
-    val ratings = listOf(Rating("", "", 4), Rating("", "", 3))
+    val ratings = listOf(Rating("", "", ""), Rating("", "", ""))
     val result = converters.fromListR(ratings)
     val expected =
-        "[{\"userId\":\"\",\"comment\":\"\",\"rating\":4},{\"userId\":\"\",\"comment\":\"\",\"rating\":3}]"
+        "[{\"userId\":\"\",\"comment\":\"\",\"rating\":\"\"},{\"userId\":\"\",\"comment\":\"\",\"rating\":\"\"}]"
     assertEquals(expected, result)
   }
 
