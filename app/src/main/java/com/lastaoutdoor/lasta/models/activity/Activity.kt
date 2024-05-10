@@ -64,20 +64,4 @@ data class Activity(
   }
 }
 
-@Entity
-class OActivity(
-    @PrimaryKey val activityId: String,
-    @ColumnInfo(name = "name") val name: String = "",
-    @ColumnInfo(name = "lat") val lat: Double = 0.0,
-    @ColumnInfo(name = "lon") val lon: Double = 0.0,
-    @ColumnInfo(name = "osmId") val osmId: Long = 0L,
-    @ColumnInfo(name = "rating") val rating: Float = 1.0f,
-    @ColumnInfo(name = "numRatings") val numRatings: Int = 0,
-    @ColumnInfo(name = "difficulty") val difficulty: Difficulty = Difficulty.EASY,
-    @ColumnInfo(name = "imageUrl") val activityImageUrl: String = "",
-    @ColumnInfo(name = "climbingStyle") val climbingStyle: ClimbingStyle = ClimbingStyle.OUTDOOR,
-    @ColumnInfo(name = "elevationTotal") val elevationTotal: Float = 0f,
-    @ColumnInfo(name = "from") val from: String = "",
-    @ColumnInfo(name = "to") val to: String = "",
-    @ColumnInfo(name = "distance") val distance: Float = 0f
-)
+
