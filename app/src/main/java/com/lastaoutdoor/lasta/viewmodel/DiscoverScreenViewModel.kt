@@ -123,9 +123,7 @@ constructor(
   }
 
   fun fetchActivities(rad: Double = 10000.0, centerLocation: LatLng = LatLng(46.519962, 6.633597)) {
-    println("Fetching activities")
     viewModelScope.launch {
-        println("INSIDE LAUNCH1")
       _isLoading.value = true
       _activities.value = ArrayList()
       _activityIds.value = ArrayList()
@@ -141,9 +139,8 @@ constructor(
                 repository.getBikingRoutesInfo(
                     rad.toInt(), centerLocation.latitude, centerLocation.longitude)
           }
-        println("INSIDE LAUNCH2")
 
-        val osmData =
+      val osmData =
           when (response) {
             is Response.Failure -> {
               response.e.printStackTrace()
@@ -156,9 +153,7 @@ constructor(
               emptyList<OSMData>()
             }
           }
-        println("INSIDE LAUNCH3")
-        println("_selectedActivityType.value: ${_selectedActivityType.value}")
-        osmData.map { point ->
+      osmData.map { point ->
         when (_selectedActivityType.value) {
           ActivityType.CLIMBING -> {
             val castedPoint = point as NodeWay
@@ -192,17 +187,14 @@ constructor(
                     distance = point.tags.distance.toFloat()))
           }
         }
-        }
-        println("INSIDE LAUNCH4")
+      }
 
-        _activities.value =
+      _activities.value =
           activitiesDB.getActivitiesByOSMIds(activityIds.value, false) as ArrayList<Activity>
       _markerList.value = activitiesToMarkers(activities.value)
       // order the activities by the selected ordering
       updateActivitiesByOrdering()
-        println("INSIDE LAUNCH5")
-
-        _isLoading.value = false
+      _isLoading.value = false
     }
   }
 

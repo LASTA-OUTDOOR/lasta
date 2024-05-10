@@ -122,7 +122,8 @@ fun MoreInfoScreen(
                 writeNewRating,
                 currentUser,
                 activities,
-                updateActivity)
+                updateActivity,
+                fetchActivities)
             // filled with a spacer for the moment but will contain address + community
           }
           Column(
@@ -141,8 +142,7 @@ fun MoreInfoScreen(
       val marker = goToMarker(activityToDisplay)
       TopBar {
         fetchActivities()
-        println("end setWeatherBackToUserLoc")
-          navigateBack()
+        navigateBack()
         setWeatherBackToUserLoc()
       }
       MapScreen(
@@ -200,7 +200,8 @@ fun MiddleZone(
     writeNewRating: (String, Rating, String) -> Unit,
     currentUser: UserModel?,
     activities: List<Activity>,
-    updateActivity: (List<Activity>) -> Unit
+    updateActivity: (List<Activity>) -> Unit,
+    fetchActivities: () -> Unit
 ) {
   Row(
       modifier = Modifier.fillMaxWidth().testTag("MoreInfoMiddleZone"),
@@ -212,7 +213,8 @@ fun MiddleZone(
             writeNewRating,
             currentUser,
             activities,
-            updateActivity)
+            updateActivity,
+            fetchActivities)
         ViewOnMapButton(isMapDisplayed)
       }
   SeparatorComponent()
@@ -251,7 +253,8 @@ fun RatingLine(
     writeNewRating: (String, Rating, String) -> Unit,
     currentUser: UserModel?,
     activities: List<Activity>,
-    updateActivity: (List<Activity>) -> Unit
+    updateActivity: (List<Activity>) -> Unit,
+    fetchActivities: () -> Unit
 ) {
   Row(verticalAlignment = Alignment.CenterVertically) {
     DiffAndRating(activityToDisplay = activityToDisplay)
@@ -264,7 +267,8 @@ fun RatingLine(
         writeNewRating,
         currentUser,
         activities,
-        updateActivity)
+        updateActivity,
+        fetchActivities)
   }
 }
 
@@ -450,13 +454,14 @@ fun AddRatingButton(
     writeNewRating: (String, Rating, String) -> Unit,
     currentUser: UserModel?,
     activities: List<Activity>,
-    updateActivity: (List<Activity>) -> Unit
+    updateActivity: (List<Activity>) -> Unit,
+    fetchActivities: () -> Unit
 ) {
   if (isReviewing.value) {
     ModalBottomSheet(
         onDismissRequest = { isReviewing.value = false }, modifier = Modifier.fillMaxWidth()) {
           Column(
-              modifier = Modifier.padding(30.dp),
+              modifier = Modifier.padding(30.dp).testTag("ModalBottomSheet"),
               horizontalAlignment = Alignment.CenterHorizontally) {
                 val selectedStarCount = remember { mutableIntStateOf(1) }
                 Text(
@@ -497,24 +502,27 @@ fun AddRatingButton(
                           newActivities.indexOfFirst {
                             it.activityId == activityToDisplay.activityId
                           }
-                      newActivities[index] =
-                          activityToDisplay.copy(
-                              rating = division.toFloat(),
-                              numRatings = activityToDisplay.numRatings + 1)
+                      if (index != -1) {
+                        newActivities[index] =
+                            activityToDisplay.copy(
+                                rating = division.toFloat(),
+                                numRatings = activityToDisplay.numRatings + 1)
 
-                      if (currentUser != null) {
-                        writeNewRating(
-                            activityToDisplay.activityId,
-                            Rating(
-                                currentUser.userId,
-                                text.value,
-                                selectedStarCount.intValue.toString()),
-                            string)
-                        updateActivity(newActivities)
+                        if (currentUser != null) {
+                          writeNewRating(
+                              activityToDisplay.activityId,
+                              Rating(
+                                  currentUser.userId,
+                                  text.value,
+                                  selectedStarCount.intValue.toString()),
+                              string)
+                          updateActivity(newActivities)
+                        }
                       }
                       isReviewing.value = false
                     },
-                    modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
+                    modifier =
+                        Modifier.fillMaxWidth().padding(top = 10.dp).testTag("PublishButton"),
                     colors =
                         ButtonDefaults.buttonColors(
                             containerColor = PrimaryBlue, contentColor = Color.White)) {
@@ -533,7 +541,7 @@ fun AddRatingButton(
                 contentColor = Color.Black,
                 disabledContentColor = Color.Yellow,
                 disabledContainerColor = Color.Black),
-        modifier = Modifier.size(25.dp)) {
+        modifier = Modifier.size(25.dp).testTag("AddRatingButton")) {
           Icon(
               painter = painterResource(id = R.drawable.plus),
               contentDescription = "Add Rating",
@@ -546,20 +554,22 @@ fun AddRatingButton(
 
 @Composable
 fun StarButtons(selectedStarCount: MutableState<Int>) {
-  Row(modifier = Modifier.padding(2.dp), verticalAlignment = Alignment.CenterVertically) {
-    for (i in 1..5) {
-      val isSelected = i <= selectedStarCount.value
-      IconButton(onClick = { selectedStarCount.value = i }, modifier = Modifier.size(25.dp)) {
-        Icon(
-            painter =
-                painterResource(
-                    id = if (isSelected) R.drawable.filled_star else R.drawable.empty_star),
-            contentDescription = "Star $i",
-            modifier = Modifier.width(16.dp).height(16.dp),
-            tint = if (isSelected) MaterialTheme.colorScheme.primary else Color.Black)
+  Row(
+      modifier = Modifier.padding(2.dp).testTag("StarButtons"),
+      verticalAlignment = Alignment.CenterVertically) {
+        for (i in 1..5) {
+          val isSelected = i <= selectedStarCount.value
+          IconButton(onClick = { selectedStarCount.value = i }, modifier = Modifier.size(25.dp)) {
+            Icon(
+                painter =
+                    painterResource(
+                        id = if (isSelected) R.drawable.filled_star else R.drawable.empty_star),
+                contentDescription = "Star $i",
+                modifier = Modifier.width(16.dp).height(16.dp),
+                tint = if (isSelected) MaterialTheme.colorScheme.primary else Color.Black)
+          }
+        }
       }
-    }
-  }
 }
 
 @Composable
@@ -569,7 +579,7 @@ fun RatingCard(rating: Rating, usersList: List<UserModel?>) {
           Modifier.fillMaxWidth()
               .padding(vertical = 8.dp, horizontal = 16.dp)
               .clickable(onClick = {})
-              .testTag("/* TODO */"),
+              .testTag("RatingCard"),
       shape = RoundedCornerShape(8.dp),
       elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
       colors =
