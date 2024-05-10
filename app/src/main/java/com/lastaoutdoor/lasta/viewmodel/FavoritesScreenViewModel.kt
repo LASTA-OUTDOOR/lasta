@@ -2,9 +2,9 @@ package com.lastaoutdoor.lasta.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lastaoutdoor.lasta.data.connectivity.ConnectivityRepositoryImpl
 import com.lastaoutdoor.lasta.data.offline.ActivityDatabaseImpl
 import com.lastaoutdoor.lasta.models.activity.Activity
+import com.lastaoutdoor.lasta.repository.app.ConnectivityRepository
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
 import com.lastaoutdoor.lasta.utils.ConnectionState
@@ -22,13 +22,13 @@ constructor(
     private val preferences: PreferencesRepository,
     private val activitiesDB: ActivitiesDBRepository,
     private val offlineActivityDB: ActivityDatabaseImpl,
-    private val connectivityRepositoryImpl: ConnectivityRepositoryImpl
+    private val connectivityRepositoryImpl: ConnectivityRepository
 ) : ViewModel() {
   private val _isLoading = MutableStateFlow(true)
   val isLoading = _isLoading
   var isConnected =
       connectivityRepositoryImpl.connectionState.stateIn(
-          initialValue = ConnectionState.OFFLINE,
+          initialValue = ConnectionState.CONNECTED,
           scope = viewModelScope,
           started = SharingStarted.WhileSubscribed(5000))
 
