@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.tasks.factory.dependsOn
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -312,6 +313,7 @@ tasks.register("jacocoTestReport", JacocoReport::class) {
     }
 }
 
+
 tasks.register("submitAndCheck", GradleBuild::class) {
     dependsOn("ktfmtFormat", "testDebugUnitTest", "connectedDebugAndroidTest", "jacocoTestReport")
 }
@@ -319,8 +321,6 @@ tasks.register("submitAndCheck", GradleBuild::class) {
 kapt {
     correctErrorTypes = true
 }
-afterEvaluate{
-    
-    project.tasks["hiltJavaCompileDebug"].dependsOn("copyRoomSchemas")
-
+afterEvaluate {
+    project.tasks.getByName("copyRoomSchemas").mustRunAfter(tasks)
 }
