@@ -323,4 +323,6 @@ kapt {
 }
 afterEvaluate {
     project.tasks.getByName("copyRoomSchemas").mustRunAfter( ":app:hiltJavaCompileRelease")
+    project.tasks.getByName("copyRoomSchemas").mustRunAfter( ":app:hiltJavaCompileDebug")
+
 }
