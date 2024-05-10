@@ -174,6 +174,7 @@ constructor(
                 repository.getBikingRoutesInfo(
                     rad.toInt(), centerLocation.latitude, centerLocation.longitude)
           }
+
       val osmData =
           when (response) {
             is Response.Failure -> {
@@ -222,6 +223,7 @@ constructor(
           }
         }
       }
+
       _activities.value =
           activitiesDB.getActivitiesByOSMIds(activityIds.value, false) as ArrayList<Activity>
       _markerList.value = activitiesToMarkers(activities.value)
