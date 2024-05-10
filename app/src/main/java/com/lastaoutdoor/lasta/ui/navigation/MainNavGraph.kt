@@ -188,6 +188,8 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
       val activityToDisplay = moreInfoScreenViewModel.activityToDisplay.value
+      val usersList = moreInfoScreenViewModel.usersList.collectAsState().value
+      val ratings = moreInfoScreenViewModel.ratings.collectAsState().value
       val weatherViewModel: WeatherViewModel = entry.sharedViewModel(navController)
       val weather = weatherViewModel.weather.observeAsState().value
       val mapState = discoverScreenViewModel.mapState.collectAsState().value
@@ -197,17 +199,27 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val selectedMarker = discoverScreenViewModel.selectedMarker.collectAsState().value
       val selectedItinerary = discoverScreenViewModel.selectedItinerary.collectAsState().value
       val markerList = discoverScreenViewModel.markerList.collectAsState().value
+      val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
+      val currentUser = preferencesViewModel.user.collectAsState(initial = UserModel("")).value
+      val activities = discoverScreenViewModel.activities.collectAsState().value
       MoreInfoScreen(
           activityToDisplay,
           mapState,
           discoverScreenViewModel::updatePermission,
           initialPosition,
           initialZoom,
+          activities,
+          discoverScreenViewModel::updateActivities,
           discoverScreenViewModel::updateMarkers,
           discoverScreenViewModel::updateSelectedMarker,
           discoverScreenViewModel::clearSelectedItinerary,
+          discoverScreenViewModel::fetchActivities,
           selectedZoom,
           moreInfoScreenViewModel::goToMarker,
+          usersList,
+          moreInfoScreenViewModel::getUserModels,
+          moreInfoScreenViewModel::writeNewRating,
+          currentUser,
           weather,
           markerList,
           selectedItinerary,

@@ -2,6 +2,7 @@ package com.lastaoutdoor.lasta.viewmodel.repo
 
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.activity.Rating
 import com.lastaoutdoor.lasta.models.api.Position
 import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
 
@@ -53,5 +54,9 @@ class FakeActivitiesDBRepository() : ActivitiesDBRepository {
 
   override suspend fun updateStartPosition(activityId: String, position: Position) {
     // do nothing
+  }
+
+  override fun addRating(activityId: String, rating: Rating, newMeanRating: String) {
+    TODO("Not yet implemented")
   }
 }
