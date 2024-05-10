@@ -312,4 +312,7 @@ kapt {
     correctErrorTypes = true
 }
 afterEvaluate{
-    project.tasks["copyRoomSchemas"].dependsOn("hiltJavaCompileDebug")}
+    
+    project.tasks["hiltJavaCompileDebug"].dependsOn("copyRoomSchemas")
+
+}
