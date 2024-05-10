@@ -6,7 +6,7 @@
     <string name="weather_api_url" translatable="false">https://api.openweathermap.org/data/2.5/</string>
     <string name="user_db_name" translatable="false">users</string>
     <string name="user_activities_db_name" translatable="false">user_activities</string>
-    <string name="activities_db_name" translatable="false">activitiesv2</string>
+    <string name="activities_db_name" translatable="false">activities</string>
     <string name="conversations_db_name" translatable="false">conversations</string>
 
     <!--Nav-->
