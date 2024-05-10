@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.user.BikingUserActivity
 import com.lastaoutdoor.lasta.models.user.ClimbingUserActivity
 import com.lastaoutdoor.lasta.models.user.HikingUserActivity
 import com.lastaoutdoor.lasta.models.user.UserActivity
@@ -374,7 +375,11 @@ fun Chart(activities: List<UserActivity>, timeFrame: TimeFrame, sport: ActivityT
                 LocalContext.current.getString(R.string.climbs),
                 modifier = Modifier.testTag("TestClimb"))
           }
-          ActivityType.BIKING -> {}
+          ActivityType.BIKING -> {
+            Text(
+                LocalContext.current.getString(R.string.ride),
+                modifier = Modifier.testTag("TestBiking"))
+          }
         }
       }
       when (sport) {
@@ -382,10 +387,10 @@ fun Chart(activities: List<UserActivity>, timeFrame: TimeFrame, sport: ActivityT
           val trailActivities = activities.filterIsInstance<HikingUserActivity>()
           Column {
             Text(
-                text = trailActivities.sumOf { it.distanceDone.toLong() }.toString(),
+                text = trailActivities.sumOf { it.elevationChange.toLong() }.toString(),
                 fontWeight = FontWeight.Bold,
                 style = TextStyle(fontSize = 20.sp))
-            Text(LocalContext.current.getString(R.string.calories))
+            Text(LocalContext.current.getString(R.string.elevation))
           }
         }
         ActivityType.CLIMBING -> {
@@ -398,7 +403,16 @@ fun Chart(activities: List<UserActivity>, timeFrame: TimeFrame, sport: ActivityT
             Text(LocalContext.current.getString(R.string.pitches))
           }
         }
-        ActivityType.BIKING -> {}
+        ActivityType.BIKING -> {
+          val trailActivities = activities.filterIsInstance<BikingUserActivity>()
+          Column {
+            Text(
+                text = trailActivities.sumOf { it.elevationChange.toLong() }.toString(),
+                fontWeight = FontWeight.Bold,
+                style = TextStyle(fontSize = 20.sp))
+            Text(LocalContext.current.getString(R.string.elevation))
+          }
+        }
       }
 
       Column {

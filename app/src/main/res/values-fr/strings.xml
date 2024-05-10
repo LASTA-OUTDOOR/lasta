@@ -104,4 +104,5 @@
     <string name="beginner">Débutant</string>
     <string name="intermediate">Intermédiaire</string>
     <string name="advanced">Avancé</string>
+    <string name="ride">Tour</string>
 </resources>
