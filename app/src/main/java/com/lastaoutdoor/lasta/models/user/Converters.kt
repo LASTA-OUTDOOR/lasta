@@ -51,7 +51,7 @@ class Converters {
     } else if (s.equals("HIKING")) {
       ActivityType.HIKING
     } else {
-      ActivityType.HIKING
+      ActivityType.CLIMBING
     }
   }
 
@@ -59,7 +59,7 @@ class Converters {
   fun toListR(s: String): List<Rating> {
     val gson = Gson()
 
-    return gson.fromJson(s, TypeToken.get(listOf<Rating>().javaClass))
+    return gson.fromJson(s, TypeToken.get(listOf(Rating("", "")).javaClass))
   }
 
   @TypeConverter
@@ -93,16 +93,4 @@ class Converters {
     val gson = Gson()
     return gson.toJson(u)
   }
-
-  fun m(): List<String> {
-    val f = listOf("id", "id2").toString()
-    print(f)
-    return toListS(f)
-  }
-}
-
-fun main() {
-  val c = Converters()
-  val l = c.m()
-  print(l)
 }
