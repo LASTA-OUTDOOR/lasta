@@ -25,6 +25,7 @@ class ConvertersTest {
     val result = converters.toClimbingSyle("Outdoor")
     assertEquals(ClimbingStyle.OUTDOOR, result)
   }
+
   @Test
   fun testToClimbingStyle2() {
     val result = converters.toClimbingSyle("Indoor")
@@ -43,11 +44,13 @@ class ConvertersTest {
     val result = converters.toDifficulty("Easy")
     assertEquals(Difficulty.EASY, result)
   }
+
   @Test
   fun testToDifficulty2() {
     val result = converters.toDifficulty("Normal")
     assertEquals(Difficulty.NORMAL, result)
   }
+
   @Test
   fun testToDifficulty3() {
     val result = converters.toDifficulty("Hard")
@@ -66,17 +69,18 @@ class ConvertersTest {
     val result = converters.toActivity("BIKING")
     assertEquals(ActivityType.BIKING, result)
   }
+
   @Test
   fun testToActivity2() {
     val result = converters.toActivity("HIKING")
     assertEquals(ActivityType.HIKING, result)
   }
+
   @Test
   fun testToActivity3() {
     val result = converters.toActivity("CLIMBING")
     assertEquals(ActivityType.CLIMBING, result)
   }
-
 
   @Test
   fun testFromListR() {

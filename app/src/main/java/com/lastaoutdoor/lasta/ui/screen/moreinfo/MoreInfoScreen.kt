@@ -106,9 +106,7 @@ fun MoreInfoScreen(
           Column(modifier = Modifier.padding(8.dp)) {
             Spacer(modifier = Modifier.height(15.dp))
             // contains the top icon buttons
-            TopBar(activityToDisplay,
-                downloadActivity  ) {
-
+            TopBar(activityToDisplay, downloadActivity) {
               fetchActivities()
               navigateBack()
               setWeatherBackToUserLoc()
