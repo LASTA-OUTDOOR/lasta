@@ -14,6 +14,7 @@ import com.lastaoutdoor.lasta.utils.Response
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivitiesDBRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivityRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
+import com.lastaoutdoor.lasta.viewmodel.repo.FakeRadarRepository
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.Dispatchers
@@ -50,6 +51,7 @@ class DiscoveryScreenViewModelTest() {
   private lateinit var repository: ActivityRepository
   private lateinit var activitiesDB: FakeActivitiesDBRepository
   private lateinit var prefRepo: FakePreferencesRepository
+  private lateinit var radarRepo: FakeRadarRepository
 
   @ExperimentalCoroutinesApi
   @Before
@@ -68,8 +70,9 @@ class DiscoveryScreenViewModelTest() {
   fun setUp() {
     repository = mockk(relaxed = true)
     prefRepo = FakePreferencesRepository()
+    radarRepo = FakeRadarRepository()
     activitiesDB = FakeActivitiesDBRepository()
-    viewModel = DiscoverScreenViewModel(repository, prefRepo, activitiesDB)
+    viewModel = DiscoverScreenViewModel(repository, prefRepo, activitiesDB, radarRepo)
     repo.currResponse = Response.Success(null)
   }
 
@@ -126,6 +129,7 @@ class DiscoveryScreenViewModelTest() {
     assertEquals(viewModel.activities.value.isEmpty(), true) // Check initial activities
     assertEquals(viewModel.screen.value, DiscoverDisplayType.LIST)
     assertEquals(viewModel.range.value, 10000.0)
+    assertEquals(viewModel.suggestions.value, emptyMap<String, LatLng>())
     assertEquals(
         viewModel.localities,
         listOf(
@@ -138,9 +142,11 @@ class DiscoveryScreenViewModelTest() {
   @Test
   fun testPUpdatePermissions() {
     viewModel.updatePermission(true)
-    assertEquals(viewModel.initialPosition, LatLng(46.519962, 6.633597))
+    assertEquals(viewModel.mapState.value.uiSettings.myLocationButtonEnabled, true)
+    assertEquals(viewModel.mapState.value.properties.isMyLocationEnabled, true)
     viewModel.updatePermission(false)
-    assertEquals(viewModel.initialPosition, LatLng(46.519962, 6.633597))
+    assertEquals(viewModel.mapState.value.properties.isMyLocationEnabled, false)
+    assertEquals(viewModel.mapState.value.uiSettings.myLocationButtonEnabled, false)
   }
 
   @ExperimentalCoroutinesApi
@@ -286,5 +292,51 @@ class DiscoveryScreenViewModelTest() {
     assertEquals(viewModel.orderingBy.value, OrderingBy.DIFFICULTYDESCENDING)
     viewModel.updateOrderingBy(OrderingBy.POPULARITY)
     assertEquals(viewModel.orderingBy.value, OrderingBy.POPULARITY)
+  }
+
+  // Test autocompletion part of the view model
+  @Test
+  fun testFetchSuggestionsAndClear() {
+    viewModel.fetchSuggestions("Test")
+    assert(viewModel.suggestions.value.isNotEmpty())
+    assert(viewModel.suggestions.value.size == 4)
+
+    viewModel.clearSuggestions()
+    assert(viewModel.suggestions.value.isEmpty())
+  }
+
+  @Test
+  fun testActivitiesToMarkers() {
+    val testActivity =
+        Activity(
+            "id",
+            1,
+            ActivityType.BIKING,
+            "description",
+            Position(0.0, 0.0),
+            1f,
+            5,
+            emptyList(),
+            Difficulty.EASY,
+            "url",
+            ClimbingStyle.OUTDOOR,
+            1f,
+            "from",
+            "to",
+            1f)
+    val marker = viewModel.activitiesToMarkers(listOf(testActivity))
+    assert(marker.isNotEmpty())
+    assert(marker.size == 1)
+    assert(marker.first().position == LatLng(0.0, 0.0))
+  }
+
+  @Test
+  fun randomSmallChecks() {
+    viewModel.setSelectedActivityType(ActivityType.BIKING)
+    assert(viewModel.selectedActivityType.value == ActivityType.BIKING)
+
+    assert(viewModel.selectedZoom == 13f)
+    assert(viewModel.initialPosition.value == LatLng(46.519962, 6.633597))
+    assert(viewModel.initialZoom == 11f)
   }
 }

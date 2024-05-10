@@ -36,6 +36,8 @@ kaspresso = "1.5.5"
 materialVersion = "1.6.4"
 mockk = "1.12.0"
 navigationCompose = "2.7.7"
+places = "3.4.0"
+placesKtx = "3.1.1"
 playServicesLocation = "21.2.0"
 playServicesMaps = "18.2.0"
 retrofit = "2.9.0"
@@ -94,6 +96,8 @@ kaspresso = { group = "com.kaspersky.android-components", name = "kaspresso", ve
 kaspresso-compose = { group = "com.kaspersky.android-components", name = "kaspresso-compose-support", version.ref = "kaspresso" }
 
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+places = { module = "com.google.android.libraries.places:places", version.ref = "places" }
+places-ktx = { module = "com.google.maps.android:places-ktx", version.ref = "placesKtx" }
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -24,6 +25,7 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -40,11 +42,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.google.android.gms.maps.CameraUpdate
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.SphericalUtil
 import com.lastaoutdoor.lasta.R
@@ -56,13 +62,13 @@ import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
 import com.lastaoutdoor.lasta.ui.components.LoadingAnim
-import com.lastaoutdoor.lasta.ui.components.SearchBarComponent
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
 import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
 import com.lastaoutdoor.lasta.ui.components.WeatherReportSmall
+import com.lastaoutdoor.lasta.ui.components.searchBarComponent
 import com.lastaoutdoor.lasta.ui.screen.discover.components.ModalUpperSheet
 import com.lastaoutdoor.lasta.ui.screen.discover.components.RangeSearchComposable
-import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
+import com.lastaoutdoor.lasta.ui.screen.map.mapScreen
 import com.lastaoutdoor.lasta.utils.OrderingBy
 import com.lastaoutdoor.lasta.viewmodel.DiscoverDisplayType
 import com.lastaoutdoor.lasta.viewmodel.MapState
@@ -100,7 +106,11 @@ fun DiscoverScreen(
     markerList: List<Marker>,
     orderingBy: OrderingBy,
     updateOrderingBy: (OrderingBy) -> Unit,
-    clearSelectedMarker: () -> Unit
+    clearSelectedMarker: () -> Unit,
+    fetchSuggestion: (String) -> Unit,
+    suggestions: Map<String, LatLng>,
+    clearSuggestions: () -> Unit,
+    updateInitialPosition: (LatLng) -> Unit
 ) {
 
   var isRangePopup by rememberSaveable { mutableStateOf(false) }
@@ -117,6 +127,8 @@ fun DiscoverScreen(
         isRangePopup = false
       }
 
+  var moveCamera: (CameraUpdate) -> Unit by remember { mutableStateOf({ _ -> }) }
+
   if (screen == DiscoverDisplayType.LIST) {
     Column(
         modifier =
@@ -130,7 +142,14 @@ fun DiscoverScreen(
               navigateToFilter,
               orderingBy,
               updateOrderingBy,
-              weather)
+              weather,
+              fetchSuggestion,
+              suggestions,
+              setSelectedLocality,
+              fetchActivities,
+              clearSuggestions,
+              updateInitialPosition,
+              moveCamera)
 
           if (isLoading) {
             LoadingAnim(width = 35, tag = "LoadingBarDiscover")
@@ -163,21 +182,29 @@ fun DiscoverScreen(
           navigateToFilter,
           orderingBy,
           updateOrderingBy,
-          weather)
+          weather,
+          fetchSuggestion,
+          suggestions,
+          setSelectedLocality,
+          fetchActivities,
+          clearSuggestions,
+          updateInitialPosition,
+          moveCamera)
       Box(modifier = Modifier.fillMaxHeight().testTag("mapScreenDiscover")) {
-        MapScreen(
-            state,
-            updatePermission,
-            initialPosition,
-            initialZoom,
-            updateMarkers,
-            updateSelectedMarker,
-            clearSelectedItinerary,
-            selectedZoom,
-            selectedMarker,
-            selectedItinerary,
-            markerList,
-            clearSelectedMarker)
+        moveCamera =
+            mapScreen(
+                state,
+                updatePermission,
+                initialPosition,
+                initialZoom,
+                updateMarkers,
+                updateSelectedMarker,
+                clearSelectedItinerary,
+                selectedZoom,
+                selectedMarker,
+                selectedItinerary,
+                markerList,
+                clearSelectedMarker)
       }
     }
   }
@@ -186,6 +213,7 @@ fun DiscoverScreen(
   ModalUpperSheet(isRangePopup = isRangePopup)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HeaderComposable(
     screen: DiscoverDisplayType,
@@ -196,8 +224,19 @@ fun HeaderComposable(
     navigateToFilter: () -> Unit,
     orderingBy: OrderingBy,
     updateOrderingBy: (OrderingBy) -> Unit,
-    weather: WeatherResponse?
+    weather: WeatherResponse?,
+    fetchSuggestion: (String) -> Unit,
+    suggestions: Map<String, LatLng>,
+    setSelectedLocality: (Pair<String, LatLng>) -> Unit,
+    fetchActivities: (Double, LatLng) -> Unit,
+    clearSuggestions: () -> Unit,
+    updateInitialPosition: (LatLng) -> Unit,
+    moveCamera: (CameraUpdate) -> Unit
 ) {
+
+  // Initialise the map, otherwise the icon functionality won't work
+  MapsInitializer.initialize(LocalContext.current)
+
   // Dropdown menu boolean
   val iconSize = 48.dp // Adjust icon size as needed
   val displayWeather = remember { mutableStateOf(false) }
@@ -243,14 +282,18 @@ fun HeaderComposable(
               }
 
           // Search bar with toggle buttons
+          var changeText = { _: String -> }
           Row(
               modifier =
                   Modifier.fillMaxWidth()
                       .padding(horizontal = 16.dp, vertical = 8.dp)
                       .testTag("searchBar"),
               verticalAlignment = Alignment.CenterVertically) {
-                SearchBarComponent(
-                    Modifier.weight(1f).testTag("searchBarComponent"), onSearch = { /*TODO*/})
+                changeText =
+                    searchBarComponent(
+                        Modifier.weight(1f).testTag("searchBarComponent"),
+                        onSearch = { fetchSuggestion(it) })
+
                 Spacer(modifier = Modifier.width(8.dp))
                 IconButton(
                     onClick = { navigateToFilter() },
@@ -260,6 +303,32 @@ fun HeaderComposable(
                           contentDescription = "Filter button",
                           modifier = Modifier.size(24.dp).testTag("filterIcon"))
                     }
+              }
+
+          val fManager = LocalFocusManager.current
+          // Suggestions for the places
+
+          LazyColumn(
+              modifier =
+                  Modifier.fillMaxWidth()
+                      .padding(horizontal = 16.dp, vertical = 8.dp)
+                      .heightIn(0.dp, 130.dp)) {
+                items(suggestions.count()) { i ->
+                  val suggestion = suggestions.entries.elementAt(i)
+                  Card(
+                      modifier =
+                          Modifier.fillMaxWidth().padding(4.dp).testTag("suggestion").clickable {
+                            fManager.clearFocus()
+                            setSelectedLocality(Pair(suggestion.key, suggestion.value))
+                            fetchActivities(range, suggestion.value)
+                            changeText(suggestion.key)
+                            updateInitialPosition(suggestion.value)
+                            moveCamera(CameraUpdateFactory.newLatLng(suggestion.value))
+                            clearSuggestions()
+                          }) {
+                        Text(modifier = Modifier.padding(8.dp).height(20.dp), text = suggestion.key)
+                      }
+                }
               }
           Row(
               modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
