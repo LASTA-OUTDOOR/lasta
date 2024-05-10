@@ -61,6 +61,7 @@ class ProfileScreenViewModelTest {
     viewModel.isCurrentUser.value = false
     viewModel.activities.value = emptyList()
     viewModel.user.value = UserModel("")
+    viewModel.addFakeActivity()
     assertEquals(viewModel.user.value, UserModel(""))
     assertEquals(viewModel.isCurrentUser.value, false)
     assertEquals(viewModel.activities.value, emptyList<UserActivity>())

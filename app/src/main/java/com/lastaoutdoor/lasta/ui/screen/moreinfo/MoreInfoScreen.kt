@@ -61,7 +61,7 @@ import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
 import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
-import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
+import com.lastaoutdoor.lasta.ui.screen.map.mapScreen
 import com.lastaoutdoor.lasta.ui.theme.Black
 import com.lastaoutdoor.lasta.ui.theme.GreenDifficulty
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
@@ -145,7 +145,7 @@ fun MoreInfoScreen(
         navigateBack()
         setWeatherBackToUserLoc()
       }
-      MapScreen(
+      mapScreen(
           state,
           updatePermission,
           initialPosition,

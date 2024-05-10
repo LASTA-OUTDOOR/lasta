@@ -1,28 +1,34 @@
 package com.lastaoutdoor.lasta.models.user
 
+import android.content.Context
+import com.lastaoutdoor.lasta.R
+import io.mockk.clearAllMocks
+import io.mockk.every
+import io.mockk.mockk
+import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Test
 
 class LanguageTest {
+  private val context: Context = mockk()
 
-  @Test
-  fun language_toString() {
-    assertEquals("German", Language.GERMAN.toString())
-    assertEquals("English", Language.ENGLISH.toString())
-    assertEquals("French", Language.FRENCH.toString())
+  @Before
+  fun setUp() {
+    every { context.getString(R.string.english) } returns "English"
+    every { context.getString(R.string.french) } returns "French"
+    every { context.getString(R.string.german) } returns "German"
+  }
+
+  @After
+  fun tearDown() {
+    clearAllMocks()
   }
 
   @Test
-  fun language_getFrenchName() {
-    assertEquals("Allemand", Language.GERMAN.getFrenchName())
-    assertEquals("Anglais", Language.ENGLISH.getFrenchName())
-    assertEquals("Français", Language.FRENCH.getFrenchName())
-  }
-
-  @Test
-  fun language_getGermanName() {
-    assertEquals("Deutsch", Language.GERMAN.getGermanName())
-    assertEquals("Englisch", Language.ENGLISH.getGermanName())
-    assertEquals("Französisch", Language.FRENCH.getGermanName())
+  fun language_resourcesToString() {
+    assertEquals("English", Language.ENGLISH.resourcesToString(context))
+    assertEquals("French", Language.FRENCH.resourcesToString(context))
+    assertEquals("German", Language.GERMAN.resourcesToString(context))
   }
 }

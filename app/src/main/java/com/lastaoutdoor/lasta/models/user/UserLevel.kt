@@ -1,13 +1,17 @@
 package com.lastaoutdoor.lasta.models.user
 
-/** Enum class for hiking levels */
-enum class UserLevel {
-  BEGINNER,
-  INTERMEDIATE,
-  ADVANCED;
+import android.content.Context
+import androidx.annotation.StringRes
+import com.lastaoutdoor.lasta.R
 
-  override fun toString(): String {
-    return name.lowercase().replaceFirstChar { it.uppercase() }
+/** Enum class for hiking levels */
+enum class UserLevel(@StringRes val levelText: Int) {
+  BEGINNER(R.string.beginner),
+  INTERMEDIATE(R.string.intermediate),
+  ADVANCED(R.string.advanced);
+
+  fun resourcesToString(context: Context): String {
+    return context.getString(this.levelText)
   }
 }
 
