@@ -8,7 +8,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.models.activity.ActivityType
-import com.lastaoutdoor.lasta.models.user.BikinUserActivity
+import com.lastaoutdoor.lasta.models.user.BikingUserActivity
 import com.lastaoutdoor.lasta.models.user.HikingUserActivity
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.MainActivity
@@ -67,7 +67,7 @@ class ProfileScreenTest {
   fun chart_isDisplayed() {
     composeRule.activity.setContent {
       Chart(
-          activities = listOf(BikinUserActivity()),
+          activities = listOf(BikingUserActivity()),
           timeFrame = TimeFrame.W,
           sport = ActivityType.HIKING)
     }
