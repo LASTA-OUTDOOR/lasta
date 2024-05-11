@@ -26,9 +26,9 @@ constructor(
 ) : ViewModel() {
   private val _isLoading = MutableStateFlow(true)
   val isLoading = _isLoading
-  var isConnected =
+  private val _isConnected =
       connectivityRepositoryImpl.connectionState.stateIn(
-          initialValue = ConnectionState.CONNECTED,
+          initialValue = ConnectionState.OFFLINE,
           scope = viewModelScope,
           started = SharingStarted.WhileSubscribed(5000))
 
@@ -40,36 +40,34 @@ constructor(
 
   init {
 
-    if (isConnected.value == ConnectionState.CONNECTED) {
-      fetchFavorites()
-    } else {
-      fetchOfflineFavorites()
-    }
+    fetchFavorites()
   }
 
   private fun fetchFavorites() {
     _isLoading.value = true
+
     viewModelScope.launch {
-      preferences.userPreferencesFlow.collect { userPreferences ->
-        val favoritesIds = userPreferences.user.favorites
-        _favoritesIds.value = favoritesIds
-        if (favoritesIds.isNotEmpty()) {
-          val favorites = activitiesDB.getActivitiesByIds(favoritesIds)
-          _favorites.value = favorites
-        } else {
-          _favorites.value = emptyList()
+      _isConnected.collect {
+        when (it) {
+          ConnectionState.CONNECTED -> {
+            preferences.userPreferencesFlow.collect { userPreferences ->
+              val favoritesIds = userPreferences.user.favorites
+              _favoritesIds.value = favoritesIds
+              if (favoritesIds.isNotEmpty()) {
+                val favorites = activitiesDB.getActivitiesByIds(favoritesIds)
+                _favorites.value = favorites
+              } else {
+                _favorites.value = emptyList()
+              }
+            }
+          }
+          ConnectionState.OFFLINE -> {
+            val act = offlineActivityDB.getAllActivities()
+            _favoritesIds.value = act.map { it.activityId }
+            _favorites.value = act
+          }
         }
       }
-    }
-    _isLoading.value = false
-  }
-
-  private fun fetchOfflineFavorites() {
-    _isLoading.value = true
-    viewModelScope.launch {
-      val act = offlineActivityDB.getAllActivities()
-      _favoritesIds.value = act.map { it.activityId }
-      _favorites.value = act
     }
 
     _isLoading.value = false
