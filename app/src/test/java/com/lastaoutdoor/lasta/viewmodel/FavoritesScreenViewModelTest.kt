@@ -77,11 +77,7 @@ class FavoritesScreenViewModelTest {
       con.connectionState = flowOf(ConnectionState.OFFLINE)
       favoritesScreenViewModel =
           FavoritesScreenViewModel(preferencesRepository, activitiesRepo, loc, con)
-      val f =
-          FavoritesScreenViewModel::javaClass.get(favoritesScreenViewModel)
-              .getDeclaredMethod("fetchOfflineFavorites")
-      f.isAccessible = true
-      f.invoke(favoritesScreenViewModel)
+
       assert(favoritesScreenViewModel.favorites.value.isNotEmpty())
       favoritesScreenViewModel.viewModelScope.cancel("")
     }
