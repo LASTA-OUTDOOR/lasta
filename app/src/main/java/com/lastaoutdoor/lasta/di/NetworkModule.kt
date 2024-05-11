@@ -92,11 +92,11 @@ object NetworkModule {
   @Singleton
   @Provides
   fun provideRadarApiService(@ApplicationContext context: Context): RadarApiService =
-    Retrofit.Builder()
-      .baseUrl(context.getString(R.string.radar_api_url))
-      .addConverterFactory(GsonConverterFactory.create())
-      .build()
-      .create(RadarApiService::class.java)
+      Retrofit.Builder()
+          .baseUrl(context.getString(R.string.radar_api_url))
+          .addConverterFactory(GsonConverterFactory.create())
+          .build()
+          .create(RadarApiService::class.java)
 
   @Singleton
   @Provides

@@ -60,25 +60,29 @@ class NetworkModuleTest {
 
   @Test
   fun `Activities repository is provided`() {
-    val activityRepository = NetworkModule.provideActivitiesRepository(NetworkModule.provideOSMAPIService(context))
+    val activityRepository =
+        NetworkModule.provideActivitiesRepository(NetworkModule.provideOSMAPIService(context))
     assertNotNull(activityRepository)
   }
 
   @Test
   fun `Weather repository is provided`() {
-    val weatherRepository = NetworkModule.provideWeatherRepository(NetworkModule.provideWeatherAPIService(context))
+    val weatherRepository =
+        NetworkModule.provideWeatherRepository(NetworkModule.provideWeatherAPIService(context))
     assertNotNull(weatherRepository)
   }
 
   @Test
   fun `Radar repository is provided`() {
-    val radarRepository = NetworkModule.provideRadarRepository(NetworkModule.provideRadarApiService(context))
+    val radarRepository =
+        NetworkModule.provideRadarRepository(NetworkModule.provideRadarApiService(context))
     assertNotNull(radarRepository)
   }
 
   @Test
   fun `Auth repository is provided`() {
-    val authRepository = NetworkModule.provideAuthRepository(mockk(), mockk(), mockk(), mockk(), mockk())
+    val authRepository =
+        NetworkModule.provideAuthRepository(mockk(), mockk(), mockk(), mockk(), mockk())
     assertNotNull(authRepository)
   }
 
@@ -110,7 +114,8 @@ class NetworkModuleTest {
   fun `Social DB is provided`() {
     val database = mockk<FirebaseFirestore>()
     every { database.collection(any()) } returns mockk()
-    val socialDB = NetworkModule.provideSocialDBRepository(context, database, mockk(), mockk(), mockk())
+    val socialDB =
+        NetworkModule.provideSocialDBRepository(context, database, mockk(), mockk(), mockk())
     assertNotNull(socialDB)
   }
 }
