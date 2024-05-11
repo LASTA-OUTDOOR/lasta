@@ -379,7 +379,7 @@ fun Chart(activities: List<UserActivity>, timeFrame: TimeFrame, sport: ActivityT
           val trailActivities = activities.filterIsInstance<HikingUserActivity>()
           Column {
             Text(
-                text = trailActivities.sumOf { it.elevationChange.toLong() }.toString(),
+                text = trailActivities.sumOf { it.elevationChange.toLong() }.toString() + "m",
                 fontWeight = FontWeight.Bold,
                 style = TextStyle(fontSize = 20.sp))
             Text(LocalContext.current.getString(R.string.elevation))
@@ -399,7 +399,7 @@ fun Chart(activities: List<UserActivity>, timeFrame: TimeFrame, sport: ActivityT
           val trailActivities = activities.filterIsInstance<BikingUserActivity>()
           Column {
             Text(
-                text = trailActivities.sumOf { it.elevationChange.toLong() }.toString(),
+                text = trailActivities.sumOf { it.elevationChange.toLong() }.toString() + "m",
                 fontWeight = FontWeight.Bold,
                 style = TextStyle(fontSize = 20.sp))
             Text(LocalContext.current.getString(R.string.elevation))
