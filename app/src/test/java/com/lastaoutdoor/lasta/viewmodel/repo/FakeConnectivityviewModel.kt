@@ -6,5 +6,5 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
 class FakeConnectivityviewRepo() : ConnectivityRepository {
-  override val connectionState: Flow<ConnectionState> = flowOf(ConnectionState.CONNECTED)
+  override var connectionState: Flow<ConnectionState> = flowOf(ConnectionState.CONNECTED)
 }
