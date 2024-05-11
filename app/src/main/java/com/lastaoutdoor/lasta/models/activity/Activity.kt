@@ -1,13 +1,17 @@
 package com.lastaoutdoor.lasta.models.activity
 
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.lastaoutdoor.lasta.models.api.Position
 
+@Entity
 data class Activity(
-    val activityId: String,
+    @PrimaryKey val activityId: String,
     val osmId: Long,
     val activityType: ActivityType = ActivityType.CLIMBING,
     val name: String = "",
-    val startPosition: Position = Position(0.0, 0.0),
+    @Embedded val startPosition: Position = Position(0.0, 0.0),
     val rating: Float = 1.0f,
     val numRatings: Int = 0,
     val ratings: List<Rating> = emptyList(),
@@ -19,6 +23,7 @@ data class Activity(
     val to: String = "",
     val distance: Float = 0f
 ) {
+
   fun copy(activityId: String): Activity {
     return Activity(
         activityId,

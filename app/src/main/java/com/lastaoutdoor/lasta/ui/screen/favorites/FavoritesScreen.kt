@@ -31,7 +31,7 @@ fun FavoritesScreen(
     changeActivityToDisplay: (Activity) -> Unit,
     changeWeatherTarget: (Activity) -> Unit,
     flipFavorite: (String) -> Unit,
-    navigateToMoreInfo: () -> Unit
+    navigateToMoreInfo: () -> Unit,
 ) {
   Column(modifier = Modifier.testTag("FavoritesScreen")) {
     Box(

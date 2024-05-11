@@ -106,12 +106,14 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val discoverScreenViewModel: DiscoverScreenViewModel = entry.sharedViewModel(navController)
       val favoritesScreenViewModel: FavoritesScreenViewModel = hiltViewModel(entry)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
+
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
       val isLoading = favoritesScreenViewModel.isLoading.collectAsState().value
       val favorites = favoritesScreenViewModel.favorites.collectAsState().value
       val centerPoint = discoverScreenViewModel.selectedLocality.collectAsState().value.second
       val favoriteIds = favoritesScreenViewModel.favoritesIds.collectAsState().value
       val weatherViewModel: WeatherViewModel = entry.sharedViewModel(navController)
+
       FavoritesScreen(
           isLoading,
           favorites,
@@ -222,6 +224,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           markerList,
           selectedItinerary,
           { navController.navigateUp() },
+          moreInfoScreenViewModel::downloadActivity,
           weatherViewModel::fetchWeatherWithUserLoc)
     }
     composable(DestinationRoute.Filter.route) { entry ->

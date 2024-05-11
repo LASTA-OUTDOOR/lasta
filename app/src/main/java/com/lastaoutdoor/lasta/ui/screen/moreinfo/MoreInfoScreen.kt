@@ -93,6 +93,7 @@ fun MoreInfoScreen(
     markerList: List<Marker>,
     selectedItinerary: MapItinerary?,
     navigateBack: () -> Unit,
+    downloadActivity: (Activity) -> Unit,
     setWeatherBackToUserLoc: () -> Unit
 ) {
   val isMapDisplayed = remember { mutableStateOf(false) }
@@ -105,7 +106,7 @@ fun MoreInfoScreen(
           Column(modifier = Modifier.padding(8.dp)) {
             Spacer(modifier = Modifier.height(15.dp))
             // contains the top icon buttons
-            TopBar {
+            TopBar(activityToDisplay, downloadActivity) {
               fetchActivities()
               navigateBack()
               setWeatherBackToUserLoc()
@@ -140,7 +141,7 @@ fun MoreInfoScreen(
   } else {
     Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoMap")) {
       val marker = goToMarker(activityToDisplay)
-      TopBar {
+      TopBar(activityToDisplay, downloadActivity) {
         fetchActivities()
         navigateBack()
         setWeatherBackToUserLoc()
@@ -354,11 +355,15 @@ fun ElevatedDifficultyDisplay(activityToDisplay: Activity) {
 
 // Top Bar that displays the four clickable logos with distinct usages
 @Composable
-fun TopBar(navigateBack: () -> Unit) {
+fun TopBar(
+    activityToDisplay: Activity,
+    downloadActivity: (Activity) -> kotlin.Unit,
+    navigateBack: () -> Unit
+) {
   Row(modifier = Modifier.fillMaxWidth().testTag("Top Bar")) {
     TopBarLogo(R.drawable.arrow_back) { navigateBack() }
     Spacer(modifier = Modifier.weight(1f))
-    TopBarLogo(R.drawable.download_button) {}
+    TopBarLogo(R.drawable.download_button) { downloadActivity(activityToDisplay) }
     TopBarLogo(R.drawable.share) {}
     TopBarLogo(R.drawable.favourite) {}
   }
