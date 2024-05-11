@@ -2,10 +2,14 @@
 
 package com.lastaoutdoor.lasta.ui.screen.discover
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -19,6 +23,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -43,11 +49,12 @@ import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
+import com.lastaoutdoor.lasta.ui.screen.discover.components.ToggleButton
 import com.lastaoutdoor.lasta.ui.theme.AccentGreen
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
 import kotlinx.coroutines.flow.StateFlow
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun FilterScreen(
     selectedLevels: StateFlow<UserActivitiesLevel>,
@@ -85,28 +92,42 @@ fun FilterScreen(
   }
 
   Column(
-      modifier = Modifier.fillMaxSize().padding(16.dp).testTag("filterScreen"),
-      horizontalAlignment = Alignment.CenterHorizontally) {
+      modifier = Modifier
+          .fillMaxSize()
+          .padding(horizontal = 16.dp, vertical = 0.dp)
+          .testTag("filterScreen")) {
 
-        // return button to go back to the discovery screen
-        TopAppBar(
-            title = { Text(text = stringResource(id = R.string.filter_options)) },
-            navigationIcon = {
-              IconButton(onClick = { navigateBack() }) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+      MediumTopAppBar(
+          title = {
+              Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                  Text(
+                      text = stringResource(id = R.string.filter_options),
+                      style = MaterialTheme.typography.titleLarge,
+                      color = MaterialTheme.colorScheme.onBackground)
               }
-            })
 
-        Spacer(modifier = Modifier.height(16.dp))
+          },
+          navigationIcon = {
+              IconButton(onClick = { navigateBack() }) {
+                  Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+              }
+          }
+      )
+
+      HorizontalDivider(modifier = Modifier.fillMaxWidth())
+
 
         // Filter by activity type
         Text(
             text = stringResource(id = R.string.filter_activity_type),
-            style = TextStyle(fontSize = 20.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-          activities.forEachIndexed { index, activityType ->
-            RadioButton(selected = index == selectedIndex, onClick = { selectedIndex = index })
-            Text(text = activityType.toString())
+            style = MaterialTheme.typography.headlineMedium
+        )
+        FlowRow(modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(4.dp), horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+          activities.forEach {
+              activity ->
+                ToggleButton(activity.resourcesToString(LocalContext.current), {})
           }
         }
 
@@ -193,7 +214,10 @@ fun FilterScreen(
               setSelectedActivityType(activities[selectedIndex])
               navigateBack()
             },
-            modifier = Modifier.width(305.dp).height(48.dp).testTag("applyFilterOptionsButton"),
+            modifier = Modifier
+                .width(305.dp)
+                .height(48.dp)
+                .testTag("applyFilterOptionsButton"),
             colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
               Text(
                   LocalContext.current.getString(R.string.apply),
