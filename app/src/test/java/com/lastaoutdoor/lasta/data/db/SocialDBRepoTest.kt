@@ -12,16 +12,20 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.MockTask
+import com.lastaoutdoor.lasta.data.time.TimeProvider
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.social.ConversationModel
 import com.lastaoutdoor.lasta.models.social.MessageModel
 import com.lastaoutdoor.lasta.models.user.Language
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
+import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivitiesDBRepository
+import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserActivityRepo
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import java.time.LocalDate
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -45,6 +49,10 @@ class SocialDBRepoTest {
   private val query2: Query = mockk()
 
   private val querySN: QuerySnapshot = mockk()
+
+  private val mockTimeProvider = mockk<TimeProvider>()
+  private val userActDb = FakeUserActivityRepo()
+  private val actDb = FakeActivitiesDBRepository()
 
   private val documentSnapshot: DocumentSnapshot = mockk()
   private lateinit var activitiesRepository: SocialDBRepositoryImpl
@@ -104,7 +112,11 @@ class SocialDBRepoTest {
     every { task3.exception } returns null
     every { task3.await() } returns documentSnapshot
     expectedUser = UserModel(userId = "friend")
-    activitiesRepository = SocialDBRepositoryImpl(context, firestore)
+
+    every { mockTimeProvider.currentDate() } returns LocalDate.of(2022, 4, 15)
+
+    activitiesRepository =
+        SocialDBRepositoryImpl(context, firestore, userActDb, mockTimeProvider, actDb)
   }
 
   @Test
@@ -348,4 +360,21 @@ class SocialDBRepoTest {
       coVerify { documentReference.update(any() as String, any()) }
     }
   }
+
+  /*
+  @Test
+  fun getLatestFriendActivities() {
+    runBlocking{
+      val activities = listOf(userActDb.fakeActivity)
+      // For example, April 15, 2022 Friday
+      every { filterTrailsByTimeFrame(activities, TimeFrame.W, mockTimeProvider) } returns activities
+      every { calculateTimeRangeUntilNow(any(), mockTimeProvider) } returns Pair(Timestamp(0, 0), Timestamp(0, 0))
+      every { }
+      val a = activitiesRepository.getLatestFriendActivities("userId", TimeFrame.W, listOf(UserModel("friends")))
+      val expected = listOf(FriendsActivities(UserModel("friends"), userActDb.fakeActivity, Activity("", 3)))
+        assertEquals(expected, a)
+    }
+  }
+
+   */
 }

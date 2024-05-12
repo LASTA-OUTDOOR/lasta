@@ -13,7 +13,9 @@ import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.activity.Difficulty
+import com.lastaoutdoor.lasta.models.activity.Rating
 import com.lastaoutdoor.lasta.models.map.Marker
+import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.MainActivity
 import com.lastaoutdoor.lasta.viewmodel.MapState
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -36,32 +38,47 @@ class MoreInfoScreenTest {
   fun setUp() {
     hiltRule.inject()
     composeRule.activity.setContent {
-      val fakeActivity = Activity("", 0L)
       val fakeMapState = MapState()
+      val activities = emptyList<Activity>()
+      val currentUser = UserModel("")
+      val fakeRatings = listOf(Rating("123", "genial", "5"))
+      val fakeUsersList = listOf(UserModel("123"))
+      val fakeActivity = Activity("", 0L, ratings = fakeRatings)
+
       MoreInfoScreen(
           fakeActivity,
           fakeMapState,
-          {},
           LatLng(0.0, 0.0),
           0f,
+          activities,
+          { _ -> },
           { _, _ -> },
+          {},
           {},
           {},
           0f,
           { a: Activity -> Marker(0L, "", LatLng(0.0, 0.0), "", 0, ActivityType.CLIMBING) },
+          fakeUsersList,
+          { _ -> },
+          { _, _, _ -> },
+          currentUser,
           null,
           emptyList(),
           null,
           {},
+          { a: Activity -> Unit },
           setWeatherBackToUserLoc = {})
     }
   }
 
   // Test that the top bar is displayed
   @Test
-  fun topBar_isDisplayed() {
+  fun topBar_isDisplayedAndClicked() {
     composeRule.onNodeWithTag("Top Bar").assertIsDisplayed()
-    composeRule.onNodeWithContentDescription("Top Bar logo ${R.drawable.download_button}")
+    composeRule
+        .onNodeWithContentDescription("Top Bar logo ${R.drawable.download_button}")
+        .assertIsDisplayed()
+    composeRule.onNodeWithContentDescription("Top Bar logo ${R.drawable.arrow_back}").performClick()
   }
 
   // Test that the more info screen is displayed
@@ -80,12 +97,28 @@ class MoreInfoScreenTest {
   }
 
   @Test
+  fun ratingCard_isDisplayed() {
+    composeRule.onNodeWithTag("RatingCard").assertIsDisplayed()
+  }
+
+  @Test
   fun moreInfoMapIsDisplayed() {
     composeRule.onNodeWithTag("viewOnMapButton").performClick()
   }
 
   @Test
-  fun elevateddiff_isDisplayed() {
+  fun bottomSheet_isDisplayed() {
+    composeRule.onNodeWithTag("AddRatingButton").assertIsDisplayed()
+    composeRule.onNodeWithTag("AddRatingButton").performClick()
+    composeRule.onNodeWithTag("ModalBottomSheet").assertIsDisplayed()
+    composeRule.onNodeWithTag("StarButtons").assertIsDisplayed()
+    composeRule.onNodeWithTag("StarButtons").performClick()
+    composeRule.onNodeWithTag("PublishButton").assertIsDisplayed()
+    composeRule.onNodeWithTag("PublishButton").performClick()
+  }
+
+  @Test
+  fun elevateDiff_isDisplayed() {
     composeRule.activity.setContent {
       ElevatedDifficultyDisplay(
           activityToDisplay = Activity("", 0L, difficulty = Difficulty.NORMAL))

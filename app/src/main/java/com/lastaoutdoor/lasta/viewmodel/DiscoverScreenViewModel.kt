@@ -12,12 +12,14 @@ import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.models.api.NodeWay
 import com.lastaoutdoor.lasta.models.api.OSMData
+import com.lastaoutdoor.lasta.models.api.RadarSuggestion
 import com.lastaoutdoor.lasta.models.api.Relation
 import com.lastaoutdoor.lasta.models.map.MapItinerary
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
+import com.lastaoutdoor.lasta.repository.api.RadarRepository
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
 import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
@@ -39,6 +41,7 @@ constructor(
     private val repository: ActivityRepository,
     private val preferencesRepository: PreferencesRepository,
     private val activitiesDB: ActivitiesDBRepository,
+    private val radarRepository: RadarRepository,
     private val tokenDBRepository: TokenDBRepository
 ) : ViewModel() {
 
@@ -70,8 +73,10 @@ constructor(
 
   private val _range = MutableStateFlow(10000.0)
   val range: StateFlow<Double> = _range
-  // if the user has not agreed to share his location, the map will be centered on Lausanne
-  val initialPosition = LatLng(46.519962, 6.633597)
+
+  // Position of the map when it is first displayed
+  private val _initialPosition = MutableStateFlow(LatLng(46.519962, 6.633597))
+  val initialPosition: StateFlow<LatLng> = _initialPosition
 
   // initial zoom level of the map
   val initialZoom = 11f
@@ -84,6 +89,10 @@ constructor(
   // List of markers to display on the map
   private val _markerList = MutableStateFlow<List<Marker>>(emptyList())
   val markerList: StateFlow<List<Marker>> = _markerList
+
+  // Map of suggestions from the radar API with the locality as key and the LatLng as value
+  private val _suggestions = MutableStateFlow<Map<String, LatLng>>(emptyMap())
+  val suggestions: StateFlow<Map<String, LatLng>> = _suggestions
 
   // Displayed itinerary
   private val _selectedItinerary = MutableStateFlow<MapItinerary?>(null)
@@ -131,6 +140,31 @@ constructor(
     }
   }
 
+  // Fetch the suggestions from the radar API (called when the user types in the search bar)
+  fun fetchSuggestions(query: String) {
+    viewModelScope.launch {
+      val suggestions =
+          when (val response = radarRepository.getSuggestions(query)) {
+            is Response.Failure -> {
+              response.e.printStackTrace()
+              return@launch
+            }
+            is Response.Success -> {
+              response.data ?: emptyList()
+            }
+            is Response.Loading -> {
+              emptyList<RadarSuggestion>()
+            }
+          }
+      _suggestions.value = suggestions.map { it.getSuggestion() to it.getPosition() }.toMap()
+    }
+  }
+
+  // Clears the list of suggestions
+  fun clearSuggestions() {
+    _suggestions.value = emptyMap()
+  }
+
   fun fetchActivities(rad: Double = 10000.0, centerLocation: LatLng = LatLng(46.519962, 6.633597)) {
     viewModelScope.launch {
       _isLoading.value = true
@@ -148,6 +182,7 @@ constructor(
                 repository.getBikingRoutesInfo(
                     rad.toInt(), centerLocation.latitude, centerLocation.longitude)
           }
+
       val osmData =
           when (response) {
             is Response.Failure -> {
@@ -196,6 +231,7 @@ constructor(
           }
         }
       }
+
       _activities.value =
           activitiesDB.getActivitiesByOSMIds(activityIds.value, false) as ArrayList<Activity>
       _markerList.value = activitiesToMarkers(activities.value)
@@ -217,6 +253,7 @@ constructor(
   // Set the selected locality
   fun setSelectedLocality(locality: Pair<String, LatLng>) {
     _selectedLocality.value = locality
+    _initialPosition.value = locality.second
   }
 
   fun setSelectedActivityType(activityType: ActivityType) {
@@ -246,6 +283,11 @@ constructor(
 
   fun clearSelectedMarker() {
     _selectedMarker.value = null
+  }
+
+  // change the default place on the map
+  fun updateInitialPosition(position: LatLng) {
+    _initialPosition.value = position
   }
 
   private fun showHikingItinerary(id: Long) {

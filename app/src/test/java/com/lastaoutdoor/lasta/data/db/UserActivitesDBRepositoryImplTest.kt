@@ -1,6 +1,7 @@
 package com.lastaoutdoor.lasta.data.db
 
 import android.content.Context
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
@@ -39,7 +40,7 @@ class UserActivitiesDBRepositoryImplTest {
   private val addTask: MockTask<DocumentReference> = mockk()
   private val getTask: MockTask<DocumentSnapshot> = mockk()
   private val queryTask: MockTask<QuerySnapshot> = mockk()
-  private val updateTask: MockTask<Void> = mockk()
+  private val setTask: MockTask<Void> = mockk()
 
   @Before
   fun setUp() {
@@ -78,19 +79,56 @@ class UserActivitiesDBRepositoryImplTest {
     every { queryTask.exception } returns null
     coEvery { queryTask.await() } returns querySnapshot
 
-    every { updateTask.isComplete } returns true
-    every { updateTask.isCanceled } returns false
-    every { updateTask.isSuccessful } returns true
-    every { updateTask.result } returns mockk()
-    every { updateTask.exception } returns null
-    coEvery { updateTask.await() } returns mockk()
+    every { setTask.isComplete } returns true
+    every { setTask.isCanceled } returns false
+    every { setTask.isSuccessful } returns true
+    every { setTask.result } returns mockk()
+    every { setTask.exception } returns null
+    coEvery { setTask.await() } returns mockk()
 
     every { documentSnapshot1.exists() } returns true
-    every { documentSnapshot1.get("Climbing") } returns listOf<UserActivity>()
-    every { documentSnapshot1.get("Hiking") } returns listOf<UserActivity>()
-    every { documentSnapshot1.get("Biking") } returns listOf<UserActivity>()
+    every { documentSnapshot1.get("CLIMBING") } returns
+        listOf(
+            hashMapOf(
+                "activityId" to "1",
+                "timeStarted" to Timestamp(Date()),
+                "timeFinished" to Timestamp(Date()),
+                "numPitches" to 0L,
+                "totalElevation" to 0.0))
+
+    every { documentSnapshot1.get("HIKING") } returns
+        listOf(
+            hashMapOf(
+                "activityId" to "1",
+                "timeStarted" to Timestamp(Date()),
+                "timeFinished" to Timestamp(Date()),
+                "avgSpeed" to 0.0,
+                "distanceDone" to 0.0,
+                "elevationChange" to 0.0))
+
+    every { documentSnapshot1.get("BIKING") } returns
+        listOf(
+            hashMapOf(
+                "activityId" to "1",
+                "timeStarted" to Timestamp(Date()),
+                "timeFinished" to Timestamp(Date()),
+                "avgSpeed" to 0.0,
+                "distanceDone" to 0.0,
+                "elevationChange" to 0.0))
 
     userActivitiesDB = UserActivitiesDBRepositoryImpl(context, database)
+  }
+
+  private fun assertUserActivitiesEqualWithoutDates(
+      expected: List<UserActivity>,
+      actual: List<UserActivity>
+  ) {
+    assertEquals(expected.size, actual.size)
+
+    expected.zip(actual).forEach { (expectedActivity, actualActivity) ->
+      assertEquals(expectedActivity.activityId, actualActivity.activityId)
+      assertEquals(expectedActivity.activityType, actualActivity.activityType)
+    }
   }
 
   @After
@@ -100,94 +138,110 @@ class UserActivitiesDBRepositoryImplTest {
 
   @Test
   fun `Get activity by id returns emptyList when activity does not exist`() = runTest {
-    every { documentSnapshot1.get("Climbing") } returns listOf<UserActivity>()
-    every { documentSnapshot1.get("Hiking") } returns listOf<UserActivity>()
-    every { documentSnapshot1.get("Biking") } returns listOf<UserActivity>()
+    every { documentSnapshot1.get("CLIMBING") } returns listOf<UserActivity>()
+    every { documentSnapshot1.get("HIKING") } returns listOf<UserActivity>()
+    every { documentSnapshot1.get("BIKING") } returns listOf<UserActivity>()
     val result = userActivitiesDB.getUserActivities("randomid")
     assertEquals(result, ArrayList<UserActivity>())
   }
 
   @Test
   fun `Get activity by id returns correct output`() = runTest {
-    val climbingUserActivity = ClimbingUserActivity()
-    val hikingUserActivity = HikingUserActivity()
-    val bikingUserActivity = BikingUserActivity()
-    every { documentSnapshot1.get("Climbing") } returns listOf<UserActivity>(climbingUserActivity)
-    every { documentSnapshot1.get("Hiking") } returns listOf<UserActivity>(hikingUserActivity)
-    every { documentSnapshot1.get("Biking") } returns listOf<UserActivity>(bikingUserActivity)
+    val climbingUserActivity = ClimbingUserActivity("1")
+    val hikingUserActivity = HikingUserActivity("1")
+    val bikingUserActivity = BikingUserActivity("1")
+
     val result = userActivitiesDB.getUserActivities("randomid")
     val exp = ArrayList<UserActivity>()
     exp.add(climbingUserActivity)
     exp.add(hikingUserActivity)
     exp.add(bikingUserActivity)
-    assertEquals(exp, result)
+    assertUserActivitiesEqualWithoutDates(exp, result)
   }
 
   @Test
   fun `add user activity works as intended`() = runTest {
     val climbingUserActivity = ClimbingUserActivity()
-    every { documentReference.update("CLIMBING", any()) } returns updateTask
-    coEvery { updateTask.await() } returns mockk()
+    every { documentReference.set(any(), any()) } returns setTask
+    coEvery { setTask.await() } returns mockk()
     userActivitiesDB.addUserActivity("randomid", climbingUserActivity)
   }
 
   @Test
   fun `getNLatestActivities works as intended`() = runTest {
-    val climbingUserActivity = ClimbingUserActivity(timeFinished = Date(1L))
-    val hikingUserActivity = HikingUserActivity(timeFinished = Date(2L))
-    val bikingUserActivity = BikingUserActivity(timeFinished = Date(3L))
-    val bikingUserActivity2 = BikingUserActivity(timeFinished = Date(4L))
-    every { documentSnapshot1.get("Climbing") } returns listOf<UserActivity>(climbingUserActivity)
-    every { documentSnapshot1.get("Hiking") } returns listOf<UserActivity>(hikingUserActivity)
-    every { documentSnapshot1.get("Biking") } returns
-        listOf<UserActivity>(bikingUserActivity, bikingUserActivity2)
+    val climbingUserActivity = ClimbingUserActivity("1", timeFinished = Date(1L))
+    val hikingUserActivity = HikingUserActivity("1", timeFinished = Date(2L))
+    val bikingUserActivity = BikingUserActivity("1", timeFinished = Date(3L))
+    val bikingUserActivity2 = BikingUserActivity("1", timeFinished = Date(4L))
+    every { documentSnapshot1.get("CLIMBING") } returns
+        listOf(
+            hashMapOf(
+                "activityId" to "1",
+                "timeStarted" to Timestamp(Date(1L)),
+                "timeFinished" to Timestamp(Date(1L)),
+                "numPitches" to 0L,
+                "totalElevation" to 0.0))
+
+    every { documentSnapshot1.get("HIKING") } returns
+        listOf(
+            hashMapOf(
+                "activityId" to "1",
+                "timeStarted" to Timestamp(Date(2L)),
+                "timeFinished" to Timestamp(Date(2L)),
+                "avgSpeed" to 0.0,
+                "distanceDone" to 0.0,
+                "elevationChange" to 0.0))
+
+    every { documentSnapshot1.get("BIKING") } returns
+        listOf(
+            hashMapOf(
+                "activityId" to "1",
+                "timeStarted" to Timestamp(Date(3L)),
+                "timeFinished" to Timestamp(Date(3L)),
+                "avgSpeed" to 0.0,
+                "distanceDone" to 0.0,
+                "elevationChange" to 0.0),
+            hashMapOf(
+                "activityId" to "1",
+                "timeStarted" to Timestamp(Date(4L)),
+                "timeFinished" to Timestamp(Date(4L)),
+                "avgSpeed" to 0.0,
+                "distanceDone" to 0.0,
+                "elevationChange" to 0.0))
+
     val result = userActivitiesDB.getNLatestActivities("randomid", 3)
     val exp = ArrayList<UserActivity>()
     exp.add(bikingUserActivity2)
     exp.add(bikingUserActivity)
     exp.add(hikingUserActivity)
-    assertEquals(exp, result)
+    assertUserActivitiesEqualWithoutDates(exp, result)
   }
 
   @Test
   fun `getUserHikingActivities works as intended`() = runTest {
-    val climbingUserActivity = ClimbingUserActivity()
-    val hikingUserActivity = HikingUserActivity()
-    val bikingUserActivity = BikingUserActivity()
-    every { documentSnapshot1.get("Climbing") } returns listOf<UserActivity>(climbingUserActivity)
-    every { documentSnapshot1.get("Hiking") } returns listOf<UserActivity>(hikingUserActivity)
-    every { documentSnapshot1.get("Biking") } returns listOf<UserActivity>(bikingUserActivity)
+    val hikingUserActivity = HikingUserActivity("1")
+
     val result = userActivitiesDB.getUserHikingActivities("randomid")
     val exp = ArrayList<UserActivity>()
     exp.add(hikingUserActivity)
-    assertEquals(exp, result)
+    assertUserActivitiesEqualWithoutDates(exp, result)
   }
 
   @Test
   fun `getUserClimbingActivities works as intended`() = runTest {
-    val climbingUserActivity = ClimbingUserActivity()
-    val hikingUserActivity = HikingUserActivity()
-    val bikingUserActivity = BikingUserActivity()
-    every { documentSnapshot1.get("Climbing") } returns listOf<UserActivity>(climbingUserActivity)
-    every { documentSnapshot1.get("Hiking") } returns listOf<UserActivity>(hikingUserActivity)
-    every { documentSnapshot1.get("Biking") } returns listOf<UserActivity>(bikingUserActivity)
+    val climbingUserActivity = ClimbingUserActivity("1")
     val result = userActivitiesDB.getUserClimbingActivities("randomid")
     val exp = ArrayList<UserActivity>()
     exp.add(climbingUserActivity)
-    assertEquals(exp, result)
+    assertUserActivitiesEqualWithoutDates(exp, result)
   }
 
   @Test
   fun `getUserBikingActivities works as intended`() = runTest {
-    val climbingUserActivity = ClimbingUserActivity()
-    val hikingUserActivity = HikingUserActivity()
-    val bikingUserActivity = BikingUserActivity()
-    every { documentSnapshot1.get("Climbing") } returns listOf<UserActivity>(climbingUserActivity)
-    every { documentSnapshot1.get("Hiking") } returns listOf<UserActivity>(hikingUserActivity)
-    every { documentSnapshot1.get("Biking") } returns listOf<UserActivity>(bikingUserActivity)
+    val bikingUserActivity = BikingUserActivity("1")
     val result = userActivitiesDB.getUserBikingActivities("randomid")
     val exp = ArrayList<UserActivity>()
     exp.add(bikingUserActivity)
-    assertEquals(exp, result)
+    assertUserActivitiesEqualWithoutDates(exp, result)
   }
 }

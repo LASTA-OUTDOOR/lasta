@@ -11,13 +11,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.social.ConversationModel
-import com.lastaoutdoor.lasta.models.user.UserActivity
+import com.lastaoutdoor.lasta.models.social.FriendsActivities
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.app.ConnectivityRepository
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import com.lastaoutdoor.lasta.utils.ConnectionState
+import com.lastaoutdoor.lasta.utils.TimeFrame
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -51,7 +52,7 @@ constructor(
   var hasFriendRequest: Boolean = friendRequests.isNotEmpty()
 
   // number of days to consider for the latest activities
-  private val numberOfDays = 7
+  private val timeFrame = TimeFrame.W
 
   // is the top button visible
   var topButton by mutableStateOf(false)
@@ -69,7 +70,7 @@ constructor(
   var messages: List<ConversationModel> by mutableStateOf(emptyList())
 
   // returns all the activities done by friends in the last 7 days
-  val latestFriendActivities: List<UserActivity> by mutableStateOf(emptyList())
+  var latestFriendActivities: List<FriendsActivities> by mutableStateOf(emptyList())
 
   // Fetch connection info from the repository, set isConnected to true if connected, false
   // otherwise
@@ -83,16 +84,11 @@ constructor(
   var topButtonOnClick by mutableStateOf({})
 
   init {
-    viewModelScope.launch {
-      preferences.userPreferencesFlow.collect { user = it.user }
-      refreshFriends()
-      refreshFriendRequests()
-      refreshMessages()
-    }
-  }
-
-  fun getNumberOfDays(): Int {
-    return numberOfDays
+    viewModelScope.launch { preferences.userPreferencesFlow.collect { user = it.user } }
+    refreshFriends()
+    refreshFriendRequests()
+    refreshMessages()
+    refreshFriendsActivities()
   }
 
   fun showTopButton(ico: ImageVector, onClick: () -> Unit) {
@@ -141,6 +137,7 @@ constructor(
       refreshFriendRequests()
       // update the list of friends
       refreshFriends()
+      refreshFriendsActivities()
     }
   }
 
@@ -198,5 +195,11 @@ constructor(
   // Clear the feedback message for the friend request
   fun clearFriendRequestFeedback() {
     friendRequestFeedback = ""
+  }
+
+  fun refreshFriendsActivities() {
+    viewModelScope.launch {
+      latestFriendActivities = repository.getLatestFriendActivities(user.userId, timeFrame, friends)
+    }
   }
 }

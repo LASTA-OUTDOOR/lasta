@@ -20,17 +20,17 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.social.ConversationModel
-import com.lastaoutdoor.lasta.models.user.UserActivity
+import com.lastaoutdoor.lasta.models.social.FriendsActivities
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.utils.ConnectionState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TabMenu(
-    isConnedted: ConnectionState,
+    isConnected: ConnectionState,
     friends: List<UserModel>,
     messages: List<ConversationModel>,
-    latestFriendActivities: List<UserActivity>,
+    latestFriendActivities: List<FriendsActivities>,
     addFriendDialog: Boolean,
     friendRequestFeedback: String,
     isDisplayedFriendPicker: Boolean,
@@ -46,7 +46,8 @@ fun TabMenu(
     hideFriendPicker: () -> Unit,
     changeDisplayFriendPicker: () -> Unit,
     navigateToConversation: (String) -> Unit,
-    navigateToFriendProfile: (String) -> Unit
+    navigateToFriendProfile: (String) -> Unit,
+    refreshFriendsActivities: () -> Unit
 ) {
 
   var state by remember { mutableIntStateOf(0) }
@@ -72,12 +73,13 @@ fun TabMenu(
   when (state) {
     0 -> {
       hideTopButton()
-      FriendsActivityList(isConnedted, latestFriendActivities)
+      refreshFriendsActivities()
+      FriendsActivityList(isConnected, latestFriendActivities)
     }
     1 -> {
       showTopButton(Icons.Filled.Add) { displayAddFriendDialog() }
       FriendsList(
-          isConnedted,
+          isConnected,
           friends,
           addFriendDialog,
           friendRequestFeedback,
@@ -90,7 +92,7 @@ fun TabMenu(
     2 -> {
       showTopButton(Icons.Filled.Email) { displayFriendPicker() }
       MessageList(
-          isConnedted,
+          isConnected,
           messages,
           refreshMessages,
           friends,

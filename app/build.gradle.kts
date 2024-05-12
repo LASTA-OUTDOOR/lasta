@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.tasks.factory.dependsOn
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -10,6 +11,7 @@ plugins {
     id("com.google.gms.google-services")
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
+    id("androidx.room")
 }
 
 android {
@@ -35,12 +37,25 @@ android {
 
         //return empty key in case something goes wrong
         val apiKey = properties.getProperty("WEATHER_API_KEY") ?: ""
-
         buildConfigField(
             type = "String",
             name = "WEATHER_API_KEY",
             value = apiKey
         )
+
+        room {
+            schemaDirectory("$projectDir/schemas")
+
+        }
+
+        
+        val radarApiKey = properties.getProperty("RADAR_API_KEY") ?: ""
+        buildConfigField(
+            type = "String",
+            name = "RADAR_API_KEY",
+            value = radarApiKey
+        )
+
     }
 
     val keystorePropertiesFile = project.rootProject.file("./keystore.properties")
@@ -240,9 +255,15 @@ dependencies {
 
     globalTestImplementation(libs.mockk)
 
+
     //Android Testing
     androidTestImplementation(libs.hilt.android.testing)
     kaptAndroidTest(libs.hilt.android.compiler)
+
+    //Android room
+    val room_version = "2.6.1"
+    implementation (libs.androidx.room.ktx)
+    kapt ("androidx.room:room-compiler:$room_version")
 
 
 }
@@ -294,10 +315,16 @@ tasks.register("jacocoTestReport", JacocoReport::class) {
     }
 }
 
+
 tasks.register("submitAndCheck", GradleBuild::class) {
     dependsOn("ktfmtFormat", "testDebugUnitTest", "connectedDebugAndroidTest", "jacocoTestReport")
 }
 
 kapt {
     correctErrorTypes = true
+}
+afterEvaluate {
+    project.tasks.getByName("copyRoomSchemas").mustRunAfter( ":app:hiltJavaCompileRelease")
+    project.tasks.getByName("copyRoomSchemas").mustRunAfter( ":app:hiltJavaCompileDebug")
+
 }

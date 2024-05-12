@@ -7,22 +7,35 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.data.time.TimeProvider
+import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.social.ConversationModel
+import com.lastaoutdoor.lasta.models.social.FriendsActivities
 import com.lastaoutdoor.lasta.models.social.MessageModel
 import com.lastaoutdoor.lasta.models.user.Language
 import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
-import com.lastaoutdoor.lasta.models.user.UserActivity
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
+import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
 import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
+import com.lastaoutdoor.lasta.repository.db.UserActivitiesDBRepository
+import com.lastaoutdoor.lasta.utils.TimeFrame
+import com.lastaoutdoor.lasta.utils.filterTrailsByTimeFrame
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.tasks.await
 
 @Singleton
-class SocialDBRepositoryImpl @Inject constructor(context: Context, database: FirebaseFirestore) :
-    SocialDBRepository {
+class SocialDBRepositoryImpl
+@Inject
+constructor(
+    context: Context,
+    database: FirebaseFirestore,
+    private val userActivitiesDBRepository: UserActivitiesDBRepository,
+    private val timeProvider: TimeProvider,
+    private val activitiesDBRepository: ActivitiesDBRepository
+) : SocialDBRepository {
   private val userCollection = database.collection(context.getString(R.string.user_db_name))
   private val conversationCollection =
       database.collection(context.getString(R.string.conversations_db_name))
@@ -124,8 +137,25 @@ class SocialDBRepositoryImpl @Inject constructor(context: Context, database: Fir
     return friendRequests
   }
 
-  override suspend fun getLatestFriendActivities(userId: String, days: Int): List<UserActivity> {
-    return emptyList()
+  override suspend fun getLatestFriendActivities(
+      userId: String,
+      timeFrame: TimeFrame,
+      friends: List<UserModel>
+  ): List<FriendsActivities> {
+    val activities: ArrayList<FriendsActivities> = ArrayList()
+    for (friend in friends) {
+      val friendActivities = userActivitiesDBRepository.getUserActivities(friend.userId)
+      val filteredActivities = filterTrailsByTimeFrame(friendActivities, timeFrame, timeProvider)
+      for (activity in filteredActivities) {
+        activities.add(
+            FriendsActivities(
+                friend,
+                activity,
+                activitiesDBRepository.getActivityById(activity.activityId) as Activity))
+      }
+    }
+
+    return activities.sortedByDescending { it.userActivity.timeStarted }
   }
 
   override suspend fun getConversation(

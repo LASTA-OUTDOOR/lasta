@@ -11,9 +11,13 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.google.firebase.Timestamp
 import com.lastaoutdoor.lasta.di.AppModule
+import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.social.ConversationModel
+import com.lastaoutdoor.lasta.models.social.FriendsActivities
 import com.lastaoutdoor.lasta.models.social.MessageModel
+import com.lastaoutdoor.lasta.models.user.BikingUserActivity
 import com.lastaoutdoor.lasta.models.user.ClimbingUserActivity
+import com.lastaoutdoor.lasta.models.user.HikingUserActivity
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.MainActivity
 import com.lastaoutdoor.lasta.ui.screen.social.components.MessageMissing
@@ -56,7 +60,7 @@ class SocialTest {
           topButtonOnClick = { /*TODO*/},
           refreshFriendRequests = { /*TODO*/},
           navigateToNotifications = { /*TODO*/},
-          isConnedted = ConnectionState.CONNECTED,
+          isConnected = ConnectionState.CONNECTED,
           friends =
               List(1) {
                 UserModel(
@@ -83,9 +87,9 @@ class SocialTest {
           hideFriendPicker = { /*TODO*/},
           changeDisplayFriendPicker = { /*TODO*/},
           navigateToConversation = { /*TODO*/},
-      ) {
-        // This is a fake function, so we do nothing here.
-      }
+          navigateToFriendProfile = { /*TODO*/},
+          refreshFriendsActivities = { /*TODO*/},
+      )
     }
     composeRule.onNodeWithTag("SocialScreen").assertIsDisplayed()
     // Header (title)
@@ -108,7 +112,7 @@ class SocialTest {
           topButtonOnClick = { /*TODO*/},
           refreshFriendRequests = { /*TODO*/},
           navigateToNotifications = { /*TODO*/},
-          isConnedted = ConnectionState.CONNECTED,
+          isConnected = ConnectionState.CONNECTED,
           friends =
               List(1) {
                 UserModel(
@@ -135,9 +139,9 @@ class SocialTest {
           hideFriendPicker = { /*TODO*/},
           changeDisplayFriendPicker = { /*TODO*/},
           navigateToConversation = { /*TODO*/},
-      ) {
-        // This is a fake function, so we do nothing here.
-      }
+          navigateToFriendProfile = { /*TODO*/},
+          refreshFriendsActivities = { /*TODO*/},
+      )
     }
     composeRule.onNodeWithTag("SocialScreen").assertIsDisplayed()
     // Header (title)
@@ -173,7 +177,7 @@ class SocialTest {
           topButtonOnClick = { /*TODO*/},
           refreshFriendRequests = { /*TODO*/},
           navigateToNotifications = { /*TODO*/},
-          isConnedted = ConnectionState.CONNECTED,
+          isConnected = ConnectionState.CONNECTED,
           friends =
               List(1) {
                 UserModel(
@@ -205,9 +209,9 @@ class SocialTest {
           hideFriendPicker = { /*TODO*/},
           changeDisplayFriendPicker = { /*TODO*/},
           navigateToConversation = { /*TODO*/},
-      ) {
-        // This is a fake function, so we do nothing here.
-      }
+          navigateToFriendProfile = { /*TODO*/},
+          refreshFriendsActivities = { /*TODO*/},
+      )
     }
     composeRule.onNodeWithTag("SocialScreen").assertIsDisplayed()
     // Header (title)
@@ -232,7 +236,7 @@ class SocialTest {
           topButtonOnClick = { /*TODO*/},
           refreshFriendRequests = { /*TODO*/},
           navigateToNotifications = { /*TODO*/},
-          isConnedted = ConnectionState.OFFLINE,
+          isConnected = ConnectionState.OFFLINE,
           friends =
               List(1) {
                 UserModel(
@@ -264,9 +268,9 @@ class SocialTest {
           hideFriendPicker = { /*TODO*/},
           changeDisplayFriendPicker = { /*TODO*/},
           navigateToConversation = { /*TODO*/},
-      ) {
-        // This is a fake function, so we do nothing here.
-      }
+          navigateToFriendProfile = { /*TODO*/},
+          refreshFriendsActivities = { /*TODO*/},
+      )
     }
     composeRule.onNodeWithTag("SocialScreen").assertIsDisplayed()
     // Header (title)
@@ -292,7 +296,7 @@ class SocialTest {
           topButtonOnClick = { /*TODO*/},
           refreshFriendRequests = { /*TODO*/},
           navigateToNotifications = { /*TODO*/},
-          isConnedted = ConnectionState.CONNECTED,
+          isConnected = ConnectionState.CONNECTED,
           friends =
               List(1) {
                 UserModel(
@@ -303,7 +307,11 @@ class SocialTest {
                 )
               },
           messages = emptyList(),
-          latestFriendActivities = listOf(ClimbingUserActivity(1)),
+          latestFriendActivities =
+              listOf(
+                  FriendsActivities(UserModel("1"), ClimbingUserActivity("1"), Activity("1", 3)),
+                  FriendsActivities(UserModel("1"), HikingUserActivity("2"), Activity("2", 3)),
+                  FriendsActivities(UserModel("1"), BikingUserActivity("3"), Activity("2", 3))),
           addFriendDialog = true,
           friendRequestFeedback = "Hi!",
           isDisplayedFriendPicker = true,
@@ -319,15 +327,17 @@ class SocialTest {
           hideFriendPicker = { /*TODO*/},
           changeDisplayFriendPicker = { /*TODO*/},
           navigateToConversation = { /*TODO*/},
-      ) {
-        // This is a fake function, so we do nothing here.
-      }
+          navigateToFriendProfile = { /*TODO*/},
+          refreshFriendsActivities = { /*TODO*/},
+      )
     }
     composeRule.onNodeWithTag("SocialScreen").assertIsDisplayed()
     // Header (title)
     composeRule.onNodeWithTag("SocialScreenHeader").assertIsDisplayed()
     // go to messages tab
     composeRule.onNodeWithTag("TabNumber0").performClick()
-    composeRule.onNodeWithTag("FriendActivityCard").assertIsDisplayed()
+    composeRule.onNodeWithTag("FriendActivityCard1").assertIsDisplayed()
+    composeRule.onNodeWithTag("FriendActivityCard2").assertIsDisplayed()
+    composeRule.onNodeWithTag("FriendActivityCard3").assertIsDisplayed()
   }
 }
