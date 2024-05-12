@@ -437,7 +437,7 @@ fun RecentActivities(
 ) {
 
   Text(
-      "Recent Activities",
+      LocalContext.current.getString(R.string.recent_activities),
       style = MaterialTheme.typography.displaySmall,
       fontWeight = FontWeight.Bold,
       modifier = Modifier.padding(horizontal = 16.dp, vertical = 0.dp))
