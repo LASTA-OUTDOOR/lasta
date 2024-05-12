@@ -136,4 +136,6 @@
     <string name="beginner">Beginner</string>
     <string name="intermediate">Intermediate</string>
     <string name="advanced">Advanced</string>
+    <string name="ride">Ride</string>
+    <string name="recent_activities">Recent Activities</string>
 </resources>

@@ -104,4 +104,6 @@
     <string name="beginner">Anfänger</string>
     <string name="intermediate">Fortgeschritten</string>
     <string name="advanced">Erweitert</string>
+    <string name="ride">Radtour</string>
+    <string name="recent_activities">Neueste Aktivitäten</string>
 </resources>
