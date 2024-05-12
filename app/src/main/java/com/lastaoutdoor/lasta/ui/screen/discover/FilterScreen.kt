@@ -28,7 +28,6 @@ import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -92,42 +91,38 @@ fun FilterScreen(
   }
 
   Column(
-      modifier = Modifier
-          .fillMaxSize()
-          .padding(horizontal = 16.dp, vertical = 0.dp)
-          .testTag("filterScreen")) {
-
-      MediumTopAppBar(
-          title = {
+      modifier =
+          Modifier.fillMaxSize()
+              .padding(horizontal = 16.dp, vertical = 0.dp)
+              .testTag("filterScreen")) {
+        MediumTopAppBar(
+            title = {
               Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                  Text(
-                      text = stringResource(id = R.string.filter_options),
-                      style = MaterialTheme.typography.titleLarge,
-                      color = MaterialTheme.colorScheme.onBackground)
+                Text(
+                    text = stringResource(id = R.string.filter_options),
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onBackground)
               }
-
-          },
-          navigationIcon = {
+            },
+            navigationIcon = {
               IconButton(onClick = { navigateBack() }) {
-                  Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
               }
-          }
-      )
+            })
 
-      HorizontalDivider(modifier = Modifier.fillMaxWidth())
-
+        HorizontalDivider(modifier = Modifier.fillMaxWidth())
 
         // Filter by activity type
         Text(
             text = stringResource(id = R.string.filter_activity_type),
-            style = MaterialTheme.typography.headlineMedium
-        )
-        FlowRow(modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(4.dp), horizontalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-          activities.forEach {
-              activity ->
-                ToggleButton(activity.resourcesToString(LocalContext.current), {})
+            style = MaterialTheme.typography.headlineMedium)
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+          activities.forEach { activity ->
+            ToggleButton(activity.resourcesToString(LocalContext.current), {})
           }
         }
 
@@ -214,10 +209,7 @@ fun FilterScreen(
               setSelectedActivityType(activities[selectedIndex])
               navigateBack()
             },
-            modifier = Modifier
-                .width(305.dp)
-                .height(48.dp)
-                .testTag("applyFilterOptionsButton"),
+            modifier = Modifier.width(305.dp).height(48.dp).testTag("applyFilterOptionsButton"),
             colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
               Text(
                   LocalContext.current.getString(R.string.apply),
