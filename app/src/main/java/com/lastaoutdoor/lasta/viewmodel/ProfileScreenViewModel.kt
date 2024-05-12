@@ -2,17 +2,20 @@ package com.lastaoutdoor.lasta.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.Timestamp
 import com.lastaoutdoor.lasta.data.time.TimeProvider
 import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.user.ClimbingUserActivity
 import com.lastaoutdoor.lasta.models.user.UserActivity
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.db.UserActivitiesDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import com.lastaoutdoor.lasta.utils.TimeFrame
-import com.lastaoutdoor.lasta.utils.calculateTimeRangeUntilNow
+import com.lastaoutdoor.lasta.utils.filterTrailsByTimeFrame
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.time.LocalDate
+import java.time.ZoneId
+import java.util.Date
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -63,7 +66,8 @@ constructor(
   /** Initializes the ViewModel by fetching the current user and user activities. */
   init {
     fetchCurrentUser()
-    // fetchUserActivities()
+    fetchUserSingeSportActivities(sport.value)
+    // addFakeActivity()
   }
 
   /** Fetches the current user from the preferences. */
@@ -72,6 +76,29 @@ constructor(
       preferences.userPreferencesFlow.collect { userPreferences ->
         _user.value = userPreferences.user
       }
+    }
+  }
+
+  fun addFakeActivity() {
+    viewModelScope.launch {
+      repository.addUserActivity(
+          "mqROPreWZScUdFi0AOPTUcsNRn72",
+          ClimbingUserActivity(
+              activityId = "yK9p3WUklEfPd9U1RHlM",
+              timeStarted =
+                  Date.from(
+                      LocalDate.of(2024, 5, 7)
+                          .atTime(16, 32, 45)
+                          .atZone(ZoneId.systemDefault())
+                          .toInstant()),
+              timeFinished =
+                  Date.from(
+                      LocalDate.of(2024, 5, 7)
+                          .atTime(17, 21, 45)
+                          .atZone(ZoneId.systemDefault())
+                          .toInstant()),
+              numPitches = 5,
+              totalElevation = 449.3f))
     }
   }
 
@@ -84,35 +111,27 @@ constructor(
     }
   }
 
-  /** Applies the selected filters to the activities fetched from the repository. */
-  private fun applyFilters() {
-    _filteredActivities.value = filterTrailsByTimeFrame(_activitiesCache.value, _time.value)
+  private fun fetchUserSingeSportActivities(activityType: ActivityType) {
+    viewModelScope.launch {
+      when (activityType) {
+        ActivityType.CLIMBING ->
+            _activitiesCache.value =
+                repository.getUserClimbingActivities(_user.value.userId).sortedBy { it.timeStarted }
+        ActivityType.HIKING ->
+            _activitiesCache.value =
+                repository.getUserHikingActivities(_user.value.userId).sortedBy { it.timeStarted }
+        ActivityType.BIKING ->
+            _activitiesCache.value =
+                repository.getUserBikingActivities(_user.value.userId).sortedBy { it.timeStarted }
+      }
+      applyFilters()
+    }
   }
 
-  /**
-   * Filters the activities by the selected time frame.
-   *
-   * @param activities The list of activities to filter.
-   * @param timeFrame The selected time frame.
-   * @return The filtered list of activities.
-   */
-  private fun filterTrailsByTimeFrame(
-      activities: List<UserActivity>,
-      timeFrame: TimeFrame
-  ): List<UserActivity> {
-    return when (timeFrame) {
-      TimeFrame.W,
-      TimeFrame.M,
-      TimeFrame.Y -> {
-        val frame = calculateTimeRangeUntilNow(timeFrame, timeProvider)
-        activities.filter { activity ->
-          val trailStart = Timestamp(activity.timeStarted)
-          val trailEnd = Timestamp(activity.timeFinished)
-          trailStart > frame.first && trailEnd < frame.second
-        }
-      }
-      TimeFrame.ALL -> activities
-    }
+  /** Applies the selected filters to the activities fetched from the repository. */
+  private fun applyFilters() {
+    _filteredActivities.value =
+        filterTrailsByTimeFrame(_activitiesCache.value, _time.value, timeProvider)
   }
 
   /**
@@ -132,7 +151,7 @@ constructor(
    */
   fun setSport(s: ActivityType) {
     _sport.value = s
-    fetchUserActivities()
+    fetchUserSingeSportActivities(s)
   }
 
   /**
@@ -140,7 +159,7 @@ constructor(
    *
    * @param user The new user.
    */
-  fun updateUser(user: UserModel) {
+  private fun updateUser(user: UserModel) {
     if (user != _user.value) {
       _user.value = user
       fetchUserActivities()
@@ -153,7 +172,7 @@ constructor(
   /**
    * Updates the current user by fetching the user from the database.
    *
-   * @param uid The user id of the new user.
+   * @param userId The user id of the new user.
    */
   fun updateUser(userId: String) {
     viewModelScope.launch {

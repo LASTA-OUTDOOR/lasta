@@ -8,14 +8,17 @@ import com.google.maps.android.SphericalUtil
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.models.api.NodeWay
 import com.lastaoutdoor.lasta.models.api.OSMData
+import com.lastaoutdoor.lasta.models.api.RadarSuggestion
 import com.lastaoutdoor.lasta.models.api.Relation
 import com.lastaoutdoor.lasta.models.map.MapItinerary
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
+import com.lastaoutdoor.lasta.repository.api.RadarRepository
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
 import com.lastaoutdoor.lasta.utils.OrderingBy
@@ -34,7 +37,8 @@ class DiscoverScreenViewModel
 constructor(
     private val repository: ActivityRepository,
     private val preferencesRepository: PreferencesRepository,
-    private val activitiesDB: ActivitiesDBRepository
+    private val activitiesDB: ActivitiesDBRepository,
+    private val radarRepository: RadarRepository
 ) : ViewModel() {
 
   private val _isLoading = MutableStateFlow(true)
@@ -46,7 +50,7 @@ constructor(
   private val _activityIds = MutableStateFlow<ArrayList<Long>>(ArrayList())
   val activityIds: StateFlow<List<Long>> = _activityIds
 
-  private val _orderingBy = MutableStateFlow(OrderingBy.DISTANCEASCENDING)
+  private val _orderingBy = MutableStateFlow(OrderingBy.DISTANCE)
   val orderingBy: StateFlow<OrderingBy> = _orderingBy
 
   private val _selectedActivityType = MutableStateFlow(ActivityType.CLIMBING)
@@ -65,8 +69,10 @@ constructor(
 
   private val _range = MutableStateFlow(10000.0)
   val range: StateFlow<Double> = _range
-  // if the user has not agreed to share his location, the map will be centered on Lausanne
-  val initialPosition = LatLng(46.519962, 6.633597)
+
+  // Position of the map when it is first displayed
+  private val _initialPosition = MutableStateFlow(LatLng(46.519962, 6.633597))
+  val initialPosition: StateFlow<LatLng> = _initialPosition
 
   // initial zoom level of the map
   val initialZoom = 11f
@@ -79,6 +85,10 @@ constructor(
   // List of markers to display on the map
   private val _markerList = MutableStateFlow<List<Marker>>(emptyList())
   val markerList: StateFlow<List<Marker>> = _markerList
+
+  // Map of suggestions from the radar API with the locality as key and the LatLng as value
+  private val _suggestions = MutableStateFlow<Map<String, LatLng>>(emptyMap())
+  val suggestions: StateFlow<Map<String, LatLng>> = _suggestions
 
   // Displayed itinerary
   private val _selectedItinerary = MutableStateFlow<MapItinerary?>(null)
@@ -110,7 +120,7 @@ constructor(
     }
   }
 
-  private fun activitiesToMarkers(activities: List<Activity>): List<Marker> {
+  fun activitiesToMarkers(activities: List<Activity>): List<Marker> {
     return activities.map { activity ->
       Marker(
           activity.osmId,
@@ -120,6 +130,31 @@ constructor(
           R.drawable.hiking_icon,
           ActivityType.HIKING)
     }
+  }
+
+  // Fetch the suggestions from the radar API (called when the user types in the search bar)
+  fun fetchSuggestions(query: String) {
+    viewModelScope.launch {
+      val suggestions =
+          when (val response = radarRepository.getSuggestions(query)) {
+            is Response.Failure -> {
+              response.e.printStackTrace()
+              return@launch
+            }
+            is Response.Success -> {
+              response.data ?: emptyList()
+            }
+            is Response.Loading -> {
+              emptyList<RadarSuggestion>()
+            }
+          }
+      _suggestions.value = suggestions.map { it.getSuggestion() to it.getPosition() }.toMap()
+    }
+  }
+
+  // Clears the list of suggestions
+  fun clearSuggestions() {
+    _suggestions.value = emptyMap()
   }
 
   fun fetchActivities(rad: Double = 10000.0, centerLocation: LatLng = LatLng(46.519962, 6.633597)) {
@@ -139,6 +174,7 @@ constructor(
                 repository.getBikingRoutesInfo(
                     rad.toInt(), centerLocation.latitude, centerLocation.longitude)
           }
+
       val osmData =
           when (response) {
             is Response.Failure -> {
@@ -187,6 +223,7 @@ constructor(
           }
         }
       }
+
       _activities.value =
           activitiesDB.getActivitiesByOSMIds(activityIds.value, false) as ArrayList<Activity>
       _markerList.value = activitiesToMarkers(activities.value)
@@ -208,10 +245,12 @@ constructor(
   // Set the selected locality
   fun setSelectedLocality(locality: Pair<String, LatLng>) {
     _selectedLocality.value = locality
+    _initialPosition.value = locality.second
   }
 
   fun setSelectedActivityType(activityType: ActivityType) {
     _selectedActivityType.value = activityType
+    updateActivitiesByOrdering()
   }
 
   fun setSelectedLevels(levels: UserActivitiesLevel) {
@@ -236,6 +275,11 @@ constructor(
 
   fun clearSelectedMarker() {
     _selectedMarker.value = null
+  }
+
+  // change the default place on the map
+  fun updateInitialPosition(position: LatLng) {
+    _initialPosition.value = position
   }
 
   private fun showHikingItinerary(id: Long) {
@@ -269,8 +313,7 @@ constructor(
   private fun updateActivitiesByOrdering() {
     if (_activities.value.isEmpty()) return
     when (_orderingBy.value) {
-      OrderingBy.DISTANCEASCENDING,
-      OrderingBy.DISTANCEDESCENDING -> {
+      OrderingBy.DISTANCE -> {
         val distances =
             _activities.value.map {
               SphericalUtil.computeDistanceBetween(
@@ -278,10 +321,7 @@ constructor(
             }
         val sortedActivities =
             _activities.value.sortedBy { distances[_activities.value.indexOf(it)] }
-        _activities.value =
-            if (_orderingBy.value == OrderingBy.DISTANCEDESCENDING)
-                ArrayList(sortedActivities.reversed())
-            else ArrayList(sortedActivities)
+        _activities.value = ArrayList(sortedActivities)
       }
       OrderingBy.RATING -> {
         _activities.value = ArrayList(_activities.value.sortedBy { it.rating }.reversed())
@@ -296,6 +336,24 @@ constructor(
         _activities.value = ArrayList(_activities.value.sortedBy { it.difficulty }.reversed())
       }
     }
+    _activities.value =
+        _activities.value.filter {
+          filterWithDiff(_selectedActivityType.value, _selectedLevels.value.bikingLevel, it)
+        } as ArrayList<Activity>
+  }
+
+  fun filterWithDiff(
+      activityType: ActivityType,
+      difficulty: UserLevel,
+      activity: Activity
+  ): Boolean {
+    return if (activityType == activity.activityType)
+        when (difficulty) {
+          UserLevel.BEGINNER -> activity.difficulty == Difficulty.EASY
+          UserLevel.INTERMEDIATE -> activity.difficulty == Difficulty.NORMAL
+          UserLevel.ADVANCED -> activity.difficulty == Difficulty.HARD
+        }
+    else false
   }
 
   fun updateOrderingBy(orderingBy: OrderingBy) {

@@ -5,13 +5,13 @@ import java.util.Date
 
 sealed class UserActivity(
     val activityType: ActivityType,
-    open val activityId: Long = 0L,
+    open val activityId: String = "",
     open val timeStarted: Date = Date(),
     open val timeFinished: Date = Date()
 )
 
 data class ClimbingUserActivity(
-    override val activityId: Long = 0L,
+    override val activityId: String = "",
     override val timeStarted: Date = Date(),
     override val timeFinished: Date = Date(),
     val numPitches: Int = 0,
@@ -19,7 +19,7 @@ data class ClimbingUserActivity(
 ) : UserActivity(ActivityType.CLIMBING, activityId, timeStarted, timeFinished)
 
 data class HikingUserActivity(
-    override val activityId: Long = 0L,
+    override val activityId: String = "",
     override val timeStarted: Date = Date(),
     override val timeFinished: Date = Date(),
     val avgSpeed: Float = 0f,
@@ -27,8 +27,8 @@ data class HikingUserActivity(
     val elevationChange: Float = 0f
 ) : UserActivity(ActivityType.HIKING, activityId, timeStarted, timeFinished)
 
-data class BikinUserActivity(
-    override val activityId: Long = 0L,
+data class BikingUserActivity(
+    override val activityId: String = "",
     override val timeStarted: Date = Date(),
     override val timeFinished: Date = Date(),
     val avgSpeed: Float = 0f,

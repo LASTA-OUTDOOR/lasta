@@ -106,7 +106,7 @@ class ActivitiesDBRepositoryImplTest {
     every { querySnapshot.isEmpty } returns true
     val result =
         activitiesDB.addActivityIfNonExisting(
-            Activity("", 0, ratings = listOf(Rating("userId", "comment", 5))))
+            Activity("", 0, ratings = listOf(Rating("userId", "comment", "5"))))
     assert(result)
   }
 
@@ -125,10 +125,10 @@ class ActivitiesDBRepositoryImplTest {
     every { documentSnapshot1.getLong("osmId") } returns 0
     every { documentSnapshot1.getString("activityType") } returns "CLIMBING"
     every { documentSnapshot1.getString("name") } returns "name"
-    every { documentSnapshot1.getDouble("rating") } returns 5.0
+    every { (documentSnapshot1.getString("rating") ?: "5") } returns "5"
     every { documentSnapshot1.getLong("numRatings") } returns 1
     every { documentSnapshot1.get("ratings") } returns
-        listOf(hashMapOf("userId" to "userId", "comment" to "comment", "rating" to 5))
+        listOf(hashMapOf("userId" to "userId", "comment" to "comment", "rating" to "5"))
     every { documentSnapshot1.getString("difficulty") } returns "EASY"
     every { documentSnapshot1.getString("activityImageUrl") } returns "activityImageUrl"
     every { documentSnapshot1.getString("climbingStyle") } returns "OUTDOOR"
@@ -148,7 +148,7 @@ class ActivitiesDBRepositoryImplTest {
     assert(result.ratings.size == 1)
     assert(result.ratings[0].userId == "userId")
     assert(result.ratings[0].comment == "comment")
-    assert(result.ratings[0].rating == 5)
+    assert(result.ratings[0].rating == "5")
     assert(result.difficulty == Difficulty.EASY)
     assert(result.activityImageUrl == "activityImageUrl")
     assert(result.climbingStyle == ClimbingStyle.OUTDOOR)
@@ -232,10 +232,10 @@ class ActivitiesDBRepositoryImplTest {
     every { documentSnapshot1.getLong("osmId") } returns 0
     every { documentSnapshot1.getString("activityType") } returns "CLIMBING"
     every { documentSnapshot1.getString("name") } returns "name"
-    every { documentSnapshot1.getDouble("rating") } returns 5.0
+    every { (documentSnapshot1.getString("rating") ?: "5") } returns "5"
     every { documentSnapshot1.getLong("numRatings") } returns 1
     every { documentSnapshot1.get("ratings") } returns
-        listOf(hashMapOf("userId" to "userId", "comment" to "comment", "rating" to 5))
+        listOf(hashMapOf("userId" to "userId", "comment" to "comment", "rating" to "5"))
     every { documentSnapshot1.getString("difficulty") } returns "EASY"
     every { documentSnapshot1.getString("activityImageUrl") } returns "activityImageUrl"
     every { documentSnapshot1.getString("climbingStyle") } returns "OUTDOOR"
@@ -256,10 +256,12 @@ class ActivitiesDBRepositoryImplTest {
     every { documentSnapshot1.getLong("osmId") } returns 0
     every { documentSnapshot1.getString("activityType") } returns "CLIMBING"
     every { documentSnapshot1.getString("name") } returns "name"
-    every { documentSnapshot1.getDouble("rating") } returns 5.0
+
+    every { documentSnapshot1.getString("rating") ?: "5" } returns "5"
+
     every { documentSnapshot1.getLong("numRatings") } returns 1
     every { documentSnapshot1.get("ratings") } returns
-        listOf(hashMapOf("userId" to "userId", "comment" to "comment", "rating" to 5))
+        listOf(hashMapOf("userId" to "userId", "comment" to "comment", "rating" to "5"))
     every { documentSnapshot1.getString("difficulty") } returns "EASY"
     every { documentSnapshot1.getString("activityImageUrl") } returns "activityImageUrl"
     every { documentSnapshot1.getString("climbingStyle") } returns "OUTDOOR"
@@ -272,10 +274,10 @@ class ActivitiesDBRepositoryImplTest {
     every { documentSnapshot2.getLong("osmId") } returns 0
     every { documentSnapshot2.getString("activityType") } returns "CLIMBING"
     every { documentSnapshot2.getString("name") } returns "name"
-    every { documentSnapshot2.getDouble("rating") } returns 5.0
+    every { documentSnapshot2.getString("rating") ?: "5" } returns "5"
     every { documentSnapshot2.getLong("numRatings") } returns 1
     every { documentSnapshot2.get("ratings") } returns
-        listOf(hashMapOf("userId" to "userId", "comment" to "comment", "rating" to 5))
+        listOf(hashMapOf("userId" to "userId", "comment" to "comment", "rating" to "5"))
     every { documentSnapshot2.getString("difficulty") } returns "EASY"
     every { documentSnapshot2.getString("activityImageUrl") } returns "activityImageUrl"
     every { documentSnapshot2.getString("climbingStyle") } returns "OUTDOOR"
@@ -292,5 +294,14 @@ class ActivitiesDBRepositoryImplTest {
     coEvery { documentReference.update(any() as String, any()) } returns updateTask
     activitiesDB.updateStartPosition("activityId", Position(0.0, 0.0))
     coVerify(exactly = 1) { documentReference.update(any() as String, any()) }
+  }
+
+  @Test
+  fun `Add rating works fine`() = runTest {
+    coEvery { documentReference.update(any() as String, any()) } returns updateTask
+    activitiesDB.addRating("activityId", Rating("userId", "comment", "5"), "5")
+    coVerify(exactly = 1) { documentReference.update("ratings", any()) }
+    coVerify(exactly = 1) { documentReference.update("numRatings", any()) }
+    coVerify(exactly = 1) { documentReference.update("rating", any()) }
   }
 }

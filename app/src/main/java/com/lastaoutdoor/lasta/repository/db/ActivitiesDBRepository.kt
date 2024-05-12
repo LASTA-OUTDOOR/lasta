@@ -1,6 +1,7 @@
 package com.lastaoutdoor.lasta.repository.db
 
 import com.lastaoutdoor.lasta.models.activity.Activity
+import com.lastaoutdoor.lasta.models.activity.Rating
 import com.lastaoutdoor.lasta.models.api.Position
 
 /** Repository for activities in the database. */
@@ -50,6 +51,8 @@ interface ActivitiesDBRepository {
    * @param position The new start position.
    */
   suspend fun updateStartPosition(activityId: String, position: Position)
+
+  fun addRating(activityId: String, rating: Rating, newMeanRating: String)
 
   // suspend fun addRating(activity: Activity, rating: Rating)
 

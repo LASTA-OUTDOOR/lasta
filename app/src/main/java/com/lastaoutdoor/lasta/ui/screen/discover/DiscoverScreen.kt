@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -24,7 +25,8 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -40,11 +42,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.google.android.gms.maps.CameraUpdate
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.SphericalUtil
 import com.lastaoutdoor.lasta.R
@@ -54,14 +60,15 @@ import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.map.MapItinerary
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
+import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
 import com.lastaoutdoor.lasta.ui.components.LoadingAnim
-import com.lastaoutdoor.lasta.ui.components.SearchBarComponent
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
 import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
 import com.lastaoutdoor.lasta.ui.components.WeatherReportSmall
+import com.lastaoutdoor.lasta.ui.components.searchBarComponent
 import com.lastaoutdoor.lasta.ui.screen.discover.components.ModalUpperSheet
 import com.lastaoutdoor.lasta.ui.screen.discover.components.RangeSearchComposable
-import com.lastaoutdoor.lasta.ui.screen.map.MapScreen
+import com.lastaoutdoor.lasta.ui.screen.map.mapScreen
 import com.lastaoutdoor.lasta.utils.OrderingBy
 import com.lastaoutdoor.lasta.viewmodel.DiscoverDisplayType
 import com.lastaoutdoor.lasta.viewmodel.MapState
@@ -84,6 +91,7 @@ fun DiscoverScreen(
     navigateToFilter: () -> Unit,
     navigateToMoreInfo: () -> Unit,
     changeActivityToDisplay: (Activity) -> Unit,
+    changeWeatherTarget: (Activity) -> Unit,
     weather: WeatherResponse?,
     state: MapState,
     updatePermission: (Boolean) -> Unit,
@@ -98,7 +106,11 @@ fun DiscoverScreen(
     markerList: List<Marker>,
     orderingBy: OrderingBy,
     updateOrderingBy: (OrderingBy) -> Unit,
-    clearSelectedMarker: () -> Unit
+    clearSelectedMarker: () -> Unit,
+    fetchSuggestion: (String) -> Unit,
+    suggestions: Map<String, LatLng>,
+    clearSuggestions: () -> Unit,
+    updateInitialPosition: (LatLng) -> Unit
 ) {
 
   var isRangePopup by rememberSaveable { mutableStateOf(false) }
@@ -115,6 +127,8 @@ fun DiscoverScreen(
         isRangePopup = false
       }
 
+  var moveCamera: (CameraUpdate) -> Unit by remember { mutableStateOf({ _ -> }) }
+
   if (screen == DiscoverDisplayType.LIST) {
     Column(
         modifier =
@@ -128,9 +142,15 @@ fun DiscoverScreen(
               navigateToFilter,
               orderingBy,
               updateOrderingBy,
-              weather)
+              weather,
+              fetchSuggestion,
+              suggestions,
+              setSelectedLocality,
+              fetchActivities,
+              clearSuggestions,
+              updateInitialPosition,
+              moveCamera)
 
-          Spacer(modifier = Modifier.height(8.dp))
           if (isLoading) {
             LoadingAnim(width = 35, tag = "LoadingBarDiscover")
           } else if (activities.isEmpty()) {
@@ -138,13 +158,15 @@ fun DiscoverScreen(
           } else {
             LazyColumn {
               item {
+                Spacer(modifier = Modifier.height(8.dp))
                 ActivitiesDisplay(
                     activities,
                     centerPoint,
                     favorites,
                     changeActivityToDisplay,
-                    flipFavorite,
-                    navigateToMoreInfo)
+                    flipFavorite = flipFavorite,
+                    navigateToMoreInfo = navigateToMoreInfo,
+                    changeWeatherTarget = changeWeatherTarget)
               }
             }
           }
@@ -160,21 +182,29 @@ fun DiscoverScreen(
           navigateToFilter,
           orderingBy,
           updateOrderingBy,
-          weather)
+          weather,
+          fetchSuggestion,
+          suggestions,
+          setSelectedLocality,
+          fetchActivities,
+          clearSuggestions,
+          updateInitialPosition,
+          moveCamera)
       Box(modifier = Modifier.fillMaxHeight().testTag("mapScreenDiscover")) {
-        MapScreen(
-            state,
-            updatePermission,
-            initialPosition,
-            initialZoom,
-            updateMarkers,
-            updateSelectedMarker,
-            clearSelectedItinerary,
-            selectedZoom,
-            selectedMarker,
-            selectedItinerary,
-            markerList,
-            clearSelectedMarker)
+        moveCamera =
+            mapScreen(
+                state,
+                updatePermission,
+                initialPosition,
+                initialZoom,
+                updateMarkers,
+                updateSelectedMarker,
+                clearSelectedItinerary,
+                selectedZoom,
+                selectedMarker,
+                selectedItinerary,
+                markerList,
+                clearSelectedMarker)
       }
     }
   }
@@ -183,6 +213,7 @@ fun DiscoverScreen(
   ModalUpperSheet(isRangePopup = isRangePopup)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HeaderComposable(
     screen: DiscoverDisplayType,
@@ -193,11 +224,20 @@ fun HeaderComposable(
     navigateToFilter: () -> Unit,
     orderingBy: OrderingBy,
     updateOrderingBy: (OrderingBy) -> Unit,
-    weather: WeatherResponse?
+    weather: WeatherResponse?,
+    fetchSuggestion: (String) -> Unit,
+    suggestions: Map<String, LatLng>,
+    setSelectedLocality: (Pair<String, LatLng>) -> Unit,
+    fetchActivities: (Double, LatLng) -> Unit,
+    clearSuggestions: () -> Unit,
+    updateInitialPosition: (LatLng) -> Unit,
+    moveCamera: (CameraUpdate) -> Unit
 ) {
-  // Dropdown menu boolean
-  var showMenu by remember { mutableStateOf(false) }
 
+  // Initialise the map, otherwise the icon functionality won't work
+  MapsInitializer.initialize(LocalContext.current)
+
+  // Dropdown menu boolean
   val iconSize = 48.dp // Adjust icon size as needed
   val displayWeather = remember { mutableStateOf(false) }
   if (displayWeather.value) {
@@ -207,15 +247,14 @@ fun HeaderComposable(
   }
   Surface(
       modifier = Modifier.fillMaxWidth().testTag("header"),
-      color = MaterialTheme.colorScheme.background,
-      shadowElevation = 3.dp) {
+      color = MaterialTheme.colorScheme.background) {
         Column {
           // Location bar
           Row(
               modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
               verticalAlignment = Alignment.CenterVertically) {
                 Column {
-                  Row {
+                  Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = selectedLocality.first,
                         style = MaterialTheme.typography.bodyMedium,
@@ -243,14 +282,18 @@ fun HeaderComposable(
               }
 
           // Search bar with toggle buttons
+          var changeText = { _: String -> }
           Row(
               modifier =
                   Modifier.fillMaxWidth()
                       .padding(horizontal = 16.dp, vertical = 8.dp)
                       .testTag("searchBar"),
               verticalAlignment = Alignment.CenterVertically) {
-                SearchBarComponent(
-                    Modifier.weight(1f).testTag("searchBarComponent"), onSearch = { /*TODO*/})
+                changeText =
+                    searchBarComponent(
+                        Modifier.weight(1f).testTag("searchBarComponent"),
+                        onSearch = { fetchSuggestion(it) })
+
                 Spacer(modifier = Modifier.width(8.dp))
                 IconButton(
                     onClick = { navigateToFilter() },
@@ -260,6 +303,32 @@ fun HeaderComposable(
                           contentDescription = "Filter button",
                           modifier = Modifier.size(24.dp).testTag("filterIcon"))
                     }
+              }
+
+          val fManager = LocalFocusManager.current
+          // Suggestions for the places
+
+          LazyColumn(
+              modifier =
+                  Modifier.fillMaxWidth()
+                      .padding(horizontal = 16.dp, vertical = 8.dp)
+                      .heightIn(0.dp, 130.dp)) {
+                items(suggestions.count()) { i ->
+                  val suggestion = suggestions.entries.elementAt(i)
+                  Card(
+                      modifier =
+                          Modifier.fillMaxWidth().padding(4.dp).testTag("suggestion").clickable {
+                            fManager.clearFocus()
+                            setSelectedLocality(Pair(suggestion.key, suggestion.value))
+                            fetchActivities(range, suggestion.value)
+                            changeText(suggestion.key)
+                            updateInitialPosition(suggestion.value)
+                            moveCamera(CameraUpdateFactory.newLatLng(suggestion.value))
+                            clearSuggestions()
+                          }) {
+                        Text(modifier = Modifier.padding(8.dp).height(20.dp), text = suggestion.key)
+                      }
+                }
               }
           Row(
               modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
@@ -275,46 +344,20 @@ fun HeaderComposable(
             Row(
                 modifier =
                     Modifier.fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .padding(16.dp, 8.dp, 16.dp, 8.dp)
                         .testTag("sortingText"),
                 verticalAlignment = Alignment.CenterVertically) {
-                  Text(
-                      LocalContext.current.getString(R.string.filter_by),
-                      style = MaterialTheme.typography.bodyMedium)
-                  Spacer(modifier = Modifier.width(8.dp))
-                  Text(
-                      text = LocalContext.current.getString(orderingBy.orderText),
-                      modifier = Modifier.testTag("sortingTextValue"),
-                      style = MaterialTheme.typography.bodyMedium,
-                      color = MaterialTheme.colorScheme.primary)
-
-                  IconButton(
-                      onClick = { showMenu = showMenu.not() },
-                      modifier = Modifier.size(24.dp).testTag("sortingButton")) {
-                        Icon(
-                            Icons.Outlined.KeyboardArrowDown,
-                            contentDescription = "Ordering button",
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(24.dp).testTag("sortingIcon"))
-                      }
+                  DropDownMenuComponent(
+                      items = OrderingBy.values().toList(),
+                      selectedItem = orderingBy,
+                      onItemSelected = { o -> updateOrderingBy(o) },
+                      toStr = { o -> o.resourcesToString(LocalContext.current) },
+                      fieldText = LocalContext.current.getString(R.string.filter_by))
                 }
           }
+          HorizontalDivider()
         }
       }
-
-  if (showMenu) {
-    OrderingBy.values().forEach { order ->
-      DropdownMenuItem(
-          text = { Text(text = LocalContext.current.getString(order.orderText)) },
-          onClick = {
-            if (order != orderingBy) {
-              updateOrderingBy(order)
-            }
-            showMenu = false
-          },
-          modifier = Modifier.testTag("sortingItem" + order.name))
-    }
-  }
 }
 
 @Composable
@@ -323,6 +366,7 @@ fun ActivitiesDisplay(
     centerPoint: LatLng,
     favorites: List<String>,
     changeActivityToDisplay: (Activity) -> Unit,
+    changeWeatherTarget: (Activity) -> Unit,
     flipFavorite: (String) -> Unit,
     navigateToMoreInfo: () -> Unit
 ) {
@@ -336,72 +380,78 @@ fun ActivitiesDisplay(
                 .clickable(
                     onClick = {
                       changeActivityToDisplay(a)
+                      changeWeatherTarget(a)
                       navigateToMoreInfo()
                     })
                 .testTag("${a.activityId}activityCard"),
         shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-    ) {
-      Column {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween) {
-              Box(
-                  modifier =
-                      Modifier.shadow(4.dp, RoundedCornerShape(30))
-                          .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
-                          .padding(PaddingValues(8.dp))) {
-                    Text(
-                        text =
-                            LocalContext.current.getString(
-                                when (a.activityType) {
-                                  ActivityType.HIKING -> R.string.hiking
-                                  ActivityType.CLIMBING -> R.string.climbing
-                                  ActivityType.BIKING -> R.string.biking
-                                }),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onPrimary)
-                  }
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)) {
+          Column {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween) {
+                  Box(
+                      modifier =
+                          Modifier.shadow(4.dp, RoundedCornerShape(30))
+                              .background(
+                                  MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
+                              .padding(PaddingValues(8.dp))) {
+                        Text(
+                            text =
+                                LocalContext.current.getString(
+                                    when (a.activityType) {
+                                      ActivityType.HIKING -> R.string.hiking
+                                      ActivityType.CLIMBING -> R.string.climbing
+                                      ActivityType.BIKING -> R.string.biking
+                                    }),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onPrimary)
+                      }
 
-              IconButton(
-                  onClick = { flipFavorite(a.activityId) },
-                  modifier = Modifier.size(24.dp).testTag("${a.activityId}favoriteButton")) {
-                    Icon(
-                        imageVector =
-                            if (favorites.contains(a.activityId)) Icons.Filled.Favorite
-                            else Icons.Filled.FavoriteBorder,
-                        contentDescription = "Favorite Button",
-                        modifier = Modifier.size(24.dp))
-                  }
-            }
+                  IconButton(
+                      onClick = { flipFavorite(a.activityId) },
+                      modifier = Modifier.size(24.dp).testTag("${a.activityId}favoriteButton")) {
+                        Icon(
+                            imageVector =
+                                if (favorites.contains(a.activityId)) Icons.Filled.Favorite
+                                else Icons.Filled.FavoriteBorder,
+                            contentDescription = "Favorite Button",
+                            tint =
+                                if (favorites.contains(a.activityId))
+                                    MaterialTheme.colorScheme.primary
+                                else MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.size(24.dp))
+                      }
+                }
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically) {
-              Text(
-                  text = a.name,
-                  style = MaterialTheme.typography.titleMedium,
-                  fontWeight = FontWeight.Bold)
-            }
-        SeparatorComponent()
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically) {
-              Icon(
-                  imageVector = Icons.Default.Star,
-                  contentDescription = "Rating",
-                  tint = MaterialTheme.colorScheme.primary)
-              Text(text = "${a.rating} (${a.numRatings})")
-              Spacer(modifier = Modifier.width(8.dp))
-              Text(text = "Difficulty: ${a.difficulty}")
-              Spacer(modifier = Modifier.width(16.dp))
-              Text(
-                  text =
-                      "${String.format("%.1f", SphericalUtil.computeDistanceBetween(centerPoint, LatLng(a.startPosition.lat, a.startPosition.lon)) / 1000)} km")
-            }
-      }
-    }
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically) {
+                  Text(
+                      text = a.name,
+                      style = MaterialTheme.typography.titleMedium,
+                      fontWeight = FontWeight.Bold)
+                }
+            SeparatorComponent()
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween) {
+                  Icon(
+                      imageVector = Icons.Default.Star,
+                      contentDescription = "Rating",
+                      tint = MaterialTheme.colorScheme.primary)
+                  Text(text = "${a.rating} (${a.numRatings})")
+                  Spacer(modifier = Modifier.width(8.dp))
+                  Text(text = "Difficulty: ${a.difficulty}")
+                  Spacer(modifier = Modifier.width(16.dp))
+                  Text(
+                      text =
+                          "${String.format("%.1f", SphericalUtil.computeDistanceBetween(centerPoint, LatLng(a.startPosition.lat, a.startPosition.lon)) / 1000)} km")
+                }
+          }
+        }
   }
 }
