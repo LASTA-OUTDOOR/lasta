@@ -36,10 +36,11 @@ class ActivityRepositoryImplTest {
     val mockCall = mockk<Call<APIResponse<NodeWay>>>()
 
     every { osmApiService.getClimbingPointsInfo(any()) } returns mockCall
-    every { mockCall.enqueue(any()) } answers {
-      val callback = arg<Callback<APIResponse<NodeWay>>>(0)
-      callback.onResponse(mockCall, Response.success(APIResponse(listOf())))
-    }
+    every { mockCall.enqueue(any()) } answers
+        {
+          val callback = arg<Callback<APIResponse<NodeWay>>>(0)
+          callback.onResponse(mockCall, Response.success(APIResponse(listOf())))
+        }
 
     runTest {
       val response = repository.getClimbingPointsInfo(10, 0.0, 0.0)
@@ -54,10 +55,11 @@ class ActivityRepositoryImplTest {
 
     every { osmApiService.getClimbingPointsInfo(any()) } returns mockCall
     every { res.isSuccessful } returns false
-    every { mockCall.enqueue(any()) } answers {
-      val callback = arg<Callback<APIResponse<NodeWay>>>(0)
-      callback.onResponse(mockCall, res)
-    }
+    every { mockCall.enqueue(any()) } answers
+        {
+          val callback = arg<Callback<APIResponse<NodeWay>>>(0)
+          callback.onResponse(mockCall, res)
+        }
 
     runTest {
       val response = repository.getClimbingPointsInfo(10, 0.0, 0.0)
@@ -70,10 +72,11 @@ class ActivityRepositoryImplTest {
     val mockCall = mockk<Call<APIResponse<NodeWay>>>()
 
     every { osmApiService.getClimbingPointsInfo(any()) } returns mockCall
-    every { mockCall.enqueue(any()) } answers {
-      val callback = arg<Callback<APIResponse<NodeWay>>>(0)
-      callback.onFailure(mockCall, Throwable("Error"))
-    }
+    every { mockCall.enqueue(any()) } answers
+        {
+          val callback = arg<Callback<APIResponse<NodeWay>>>(0)
+          callback.onFailure(mockCall, Throwable("Error"))
+        }
 
     runTest {
       val response = repository.getClimbingPointsInfo(10, 0.0, 0.0)
@@ -86,10 +89,13 @@ class ActivityRepositoryImplTest {
     val mockCall = mockk<Call<APIResponse<NodeWay>>>()
 
     every { osmApiService.getClimbingPointById(any()) } returns mockCall
-    every { mockCall.enqueue(any()) } answers {
-      val callback = arg<Callback<APIResponse<NodeWay>>>(0)
-      callback.onResponse(mockCall, Response.success(APIResponse(listOf(NodeWay("node", 0L, null, null, null, Tags())))))
-    }
+    every { mockCall.enqueue(any()) } answers
+        {
+          val callback = arg<Callback<APIResponse<NodeWay>>>(0)
+          callback.onResponse(
+              mockCall,
+              Response.success(APIResponse(listOf(NodeWay("node", 0L, null, null, null, Tags())))))
+        }
 
     runTest {
       val response = repository.getClimbingPointById(10)
@@ -104,10 +110,11 @@ class ActivityRepositoryImplTest {
 
     every { osmApiService.getClimbingPointById(any()) } returns mockCall
     every { res.isSuccessful } returns false
-    every { mockCall.enqueue(any()) } answers {
-      val callback = arg<Callback<APIResponse<NodeWay>>>(0)
-      callback.onResponse(mockCall, res)
-    }
+    every { mockCall.enqueue(any()) } answers
+        {
+          val callback = arg<Callback<APIResponse<NodeWay>>>(0)
+          callback.onResponse(mockCall, res)
+        }
 
     runTest {
       val response = repository.getClimbingPointById(10)
@@ -120,10 +127,11 @@ class ActivityRepositoryImplTest {
     val mockCall = mockk<Call<APIResponse<NodeWay>>>()
 
     every { osmApiService.getClimbingPointById(any()) } returns mockCall
-    every { mockCall.enqueue(any()) } answers {
-      val callback = arg<Callback<APIResponse<NodeWay>>>(0)
-      callback.onFailure(mockCall, Throwable("Error"))
-    }
+    every { mockCall.enqueue(any()) } answers
+        {
+          val callback = arg<Callback<APIResponse<NodeWay>>>(0)
+          callback.onFailure(mockCall, Throwable("Error"))
+        }
 
     runTest {
       val response = repository.getClimbingPointById(10)
@@ -136,10 +144,11 @@ class ActivityRepositoryImplTest {
     val mockCall = mockk<Call<APIResponse<Relation>>>()
 
     every { osmApiService.getHikingRoutesInfo(any()) } returns mockCall
-    every { mockCall.enqueue(any()) } answers {
-      val callback = arg<Callback<APIResponse<Relation>>>(0)
-      callback.onResponse(mockCall, Response.success(APIResponse(listOf())))
-    }
+    every { mockCall.enqueue(any()) } answers
+        {
+          val callback = arg<Callback<APIResponse<Relation>>>(0)
+          callback.onResponse(mockCall, Response.success(APIResponse(listOf())))
+        }
 
     runTest {
       val response = repository.getHikingRoutesInfo(10, 0.0, 0.0)
@@ -154,10 +163,11 @@ class ActivityRepositoryImplTest {
 
     every { osmApiService.getHikingRoutesInfo(any()) } returns mockCall
     every { res.isSuccessful } returns false
-    every { mockCall.enqueue(any()) } answers {
-      val callback = arg<Callback<APIResponse<Relation>>>(0)
-      callback.onResponse(mockCall, res)
-    }
+    every { mockCall.enqueue(any()) } answers
+        {
+          val callback = arg<Callback<APIResponse<Relation>>>(0)
+          callback.onResponse(mockCall, res)
+        }
 
     runTest {
       val response = repository.getHikingRoutesInfo(10, 0.0, 0.0)
@@ -170,10 +180,11 @@ class ActivityRepositoryImplTest {
     val mockCall = mockk<Call<APIResponse<Relation>>>()
 
     every { osmApiService.getHikingRoutesInfo(any()) } returns mockCall
-    every { mockCall.enqueue(any()) } answers {
-      val callback = arg<Callback<APIResponse<Relation>>>(0)
-      callback.onFailure(mockCall, Throwable("Error"))
-    }
+    every { mockCall.enqueue(any()) } answers
+        {
+          val callback = arg<Callback<APIResponse<Relation>>>(0)
+          callback.onFailure(mockCall, Throwable("Error"))
+        }
 
     runTest {
       val response = repository.getHikingRoutesInfo(10, 0.0, 0.0)
@@ -186,10 +197,11 @@ class ActivityRepositoryImplTest {
     val mockCall = mockk<Call<APIResponse<Relation>>>()
 
     every { osmApiService.getBikingRoutesInfo(any()) } returns mockCall
-    every { mockCall.enqueue(any()) } answers {
-      val callback = arg<Callback<APIResponse<Relation>>>(0)
-      callback.onResponse(mockCall, Response.success(APIResponse(listOf())))
-    }
+    every { mockCall.enqueue(any()) } answers
+        {
+          val callback = arg<Callback<APIResponse<Relation>>>(0)
+          callback.onResponse(mockCall, Response.success(APIResponse(listOf())))
+        }
 
     runTest {
       val response = repository.getBikingRoutesInfo(10, 0.0, 0.0)
@@ -204,10 +216,11 @@ class ActivityRepositoryImplTest {
 
     every { osmApiService.getBikingRoutesInfo(any()) } returns mockCall
     every { res.isSuccessful } returns false
-    every { mockCall.enqueue(any()) } answers {
-      val callback = arg<Callback<APIResponse<Relation>>>(0)
-      callback.onResponse(mockCall, res)
-    }
+    every { mockCall.enqueue(any()) } answers
+        {
+          val callback = arg<Callback<APIResponse<Relation>>>(0)
+          callback.onResponse(mockCall, res)
+        }
 
     runTest {
       val response = repository.getBikingRoutesInfo(10, 0.0, 0.0)
@@ -220,10 +233,11 @@ class ActivityRepositoryImplTest {
     val mockCall = mockk<Call<APIResponse<Relation>>>()
 
     every { osmApiService.getBikingRoutesInfo(any()) } returns mockCall
-    every { mockCall.enqueue(any()) } answers {
-      val callback = arg<Callback<APIResponse<Relation>>>(0)
-      callback.onFailure(mockCall, Throwable("Error"))
-    }
+    every { mockCall.enqueue(any()) } answers
+        {
+          val callback = arg<Callback<APIResponse<Relation>>>(0)
+          callback.onFailure(mockCall, Throwable("Error"))
+        }
 
     runTest {
       val response = repository.getBikingRoutesInfo(10, 0.0, 0.0)
@@ -236,10 +250,13 @@ class ActivityRepositoryImplTest {
     val mockCall = mockk<Call<APIResponse<Relation>>>()
 
     every { osmApiService.getHikingRouteById(any()) } returns mockCall
-    every { mockCall.enqueue(any()) } answers {
-      val callback = arg<Callback<APIResponse<Relation>>>(0)
-      callback.onResponse(mockCall, Response.success(APIResponse(listOf(Relation("relation", 0L, Tags(), null)))))
-    }
+    every { mockCall.enqueue(any()) } answers
+        {
+          val callback = arg<Callback<APIResponse<Relation>>>(0)
+          callback.onResponse(
+              mockCall,
+              Response.success(APIResponse(listOf(Relation("relation", 0L, Tags(), null)))))
+        }
 
     runTest {
       val response = repository.getHikingRouteById(10)
@@ -254,10 +271,11 @@ class ActivityRepositoryImplTest {
 
     every { osmApiService.getHikingRouteById(any()) } returns mockCall
     every { res.isSuccessful } returns false
-    every { mockCall.enqueue(any()) } answers {
-      val callback = arg<Callback<APIResponse<Relation>>>(0)
-      callback.onResponse(mockCall, res)
-    }
+    every { mockCall.enqueue(any()) } answers
+        {
+          val callback = arg<Callback<APIResponse<Relation>>>(0)
+          callback.onResponse(mockCall, res)
+        }
 
     runTest {
       val response = repository.getHikingRouteById(10)
@@ -270,10 +288,11 @@ class ActivityRepositoryImplTest {
     val mockCall = mockk<Call<APIResponse<Relation>>>()
 
     every { osmApiService.getHikingRouteById(any()) } returns mockCall
-    every { mockCall.enqueue(any()) } answers {
-      val callback = arg<Callback<APIResponse<Relation>>>(0)
-      callback.onFailure(mockCall, Throwable("Error"))
-    }
+    every { mockCall.enqueue(any()) } answers
+        {
+          val callback = arg<Callback<APIResponse<Relation>>>(0)
+          callback.onFailure(mockCall, Throwable("Error"))
+        }
 
     runTest {
       val response = repository.getHikingRouteById(10)
@@ -286,10 +305,13 @@ class ActivityRepositoryImplTest {
     val mockCall = mockk<Call<APIResponse<Relation>>>()
 
     every { osmApiService.getBikingRouteById(any()) } returns mockCall
-    every { mockCall.enqueue(any()) } answers {
-      val callback = arg<Callback<APIResponse<Relation>>>(0)
-      callback.onResponse(mockCall, Response.success(APIResponse(listOf(Relation("relation", 0L, Tags(), null)))))
-    }
+    every { mockCall.enqueue(any()) } answers
+        {
+          val callback = arg<Callback<APIResponse<Relation>>>(0)
+          callback.onResponse(
+              mockCall,
+              Response.success(APIResponse(listOf(Relation("relation", 0L, Tags(), null)))))
+        }
 
     runTest {
       val response = repository.getBikingRouteById(10)
@@ -304,10 +326,11 @@ class ActivityRepositoryImplTest {
 
     every { osmApiService.getBikingRouteById(any()) } returns mockCall
     every { res.isSuccessful } returns false
-    every { mockCall.enqueue(any()) } answers {
-      val callback = arg<Callback<APIResponse<Relation>>>(0)
-      callback.onResponse(mockCall, res)
-    }
+    every { mockCall.enqueue(any()) } answers
+        {
+          val callback = arg<Callback<APIResponse<Relation>>>(0)
+          callback.onResponse(mockCall, res)
+        }
 
     runTest {
       val response = repository.getBikingRouteById(10)
@@ -320,10 +343,11 @@ class ActivityRepositoryImplTest {
     val mockCall = mockk<Call<APIResponse<Relation>>>()
 
     every { osmApiService.getBikingRouteById(any()) } returns mockCall
-    every { mockCall.enqueue(any()) } answers {
-      val callback = arg<Callback<APIResponse<Relation>>>(0)
-      callback.onFailure(mockCall, Throwable("Error"))
-    }
+    every { mockCall.enqueue(any()) } answers
+        {
+          val callback = arg<Callback<APIResponse<Relation>>>(0)
+          callback.onFailure(mockCall, Throwable("Error"))
+        }
 
     runTest {
       val response = repository.getBikingRouteById(10)
