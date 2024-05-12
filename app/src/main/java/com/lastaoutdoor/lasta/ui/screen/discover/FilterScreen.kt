@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
@@ -25,18 +26,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -48,177 +48,183 @@ import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
+import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
 import com.lastaoutdoor.lasta.ui.screen.discover.components.ToggleButton
 import com.lastaoutdoor.lasta.ui.theme.AccentGreen
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filter
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun FilterScreen(
     selectedLevels: StateFlow<UserActivitiesLevel>,
     setSelectedLevels: (UserActivitiesLevel) -> Unit,
-    selectedActivityType: StateFlow<ActivityType>,
-    setSelectedActivityType: (ActivityType) -> Unit,
+    selectedActivitiesType: StateFlow<List<ActivityType>>,
+    setSelectedActivitiesType: (List<ActivityType>) -> Unit,
     navigateBack: () -> Unit
 ) {
-  var fromDistance by remember { mutableStateOf(0) }
-  var toDistance by remember { mutableStateOf(1000) }
 
-  var activities = ActivityType.values()
-  var initialSelectedActivityType = selectedActivityType.collectAsState().value
-  var selectedActivity by remember { mutableStateOf(initialSelectedActivityType) }
-  var selectedIndex by remember { mutableIntStateOf(activities.indexOf(selectedActivity)) }
+  val activities = ActivityType.values()
 
-  var initialSelectedLevels = selectedLevels.collectAsState().value
-  var selectedLevels = initialSelectedLevels
+  val selectedLevels = selectedLevels.collectAsState().value
 
-  var activitiesLevelArray =
-      arrayOf(
-          selectedLevels.climbingLevel,
-          selectedLevels.hikingLevel,
-          selectedLevels.bikingLevel,
-      )
-
-  var checkedBox by remember { mutableStateOf(true) }
-
-  fun userLevelToDifficultyLevel(userLevel: UserLevel): String {
-    return when (userLevel) {
-      UserLevel.BEGINNER -> "Easy"
-      UserLevel.INTERMEDIATE -> "Medium"
-      UserLevel.ADVANCED -> "Hard"
-    }
+  val activitiesLevelArray = remember { mutableStateListOf(
+      selectedLevels.climbingLevel,
+      selectedLevels.hikingLevel,
+      selectedLevels.bikingLevel)
   }
+
+    val selectedActivitiesTypes = remember { mutableStateListOf(selectedActivitiesType.value.first()) }
+
+    var checkedBox by remember { mutableStateOf(true) }
+
 
   Column(
       modifier =
-          Modifier.fillMaxSize()
-              .padding(horizontal = 16.dp, vertical = 0.dp)
-              .testTag("filterScreen")) {
-        MediumTopAppBar(
-            title = {
+      Modifier
+          .fillMaxSize()
+          .testTag("filterScreen")) {
+      MediumTopAppBar(
+          title = {
               Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                Text(
-                    text = stringResource(id = R.string.filter_options),
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onBackground)
+                  Text(
+                      text = stringResource(id = R.string.filter_options),
+                      style = MaterialTheme.typography.titleLarge,
+                      color = MaterialTheme.colorScheme.onBackground
+                  )
               }
-            },
-            navigationIcon = {
+          },
+          navigationIcon = {
               IconButton(onClick = { navigateBack() }) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+                  Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
               }
-            })
+          })
 
-        HorizontalDivider(modifier = Modifier.fillMaxWidth())
+      HorizontalDivider(modifier = Modifier.fillMaxWidth())
 
-        // Filter by activity type
-        Text(
-            text = stringResource(id = R.string.filter_activity_type),
-            style = MaterialTheme.typography.headlineMedium)
-        FlowRow(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-          activities.forEach { activity ->
-            ToggleButton(activity.resourcesToString(LocalContext.current), {})
-          }
-        }
+      Spacer(modifier = Modifier.height(16.dp))
 
-        Spacer(modifier = Modifier.height(4.dp))
-        HorizontalDivider(thickness = 2.dp, color = PrimaryBlue)
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Filter by difficulty level
-        Text(
-            text = stringResource(id = R.string.filter_difficulty_level),
-            style = TextStyle(fontSize = 20.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-          UserLevel.values().forEach { levelItem ->
-            RadioButton(
-                selected = activitiesLevelArray[selectedIndex] == levelItem,
-                onClick = {
-                  activitiesLevelArray[selectedIndex] = levelItem
-                  setSelectedLevels(
-                      UserActivitiesLevel(
-                          climbingLevel = activitiesLevelArray[0],
-                          hikingLevel = activitiesLevelArray[1],
-                          bikingLevel = activitiesLevelArray[2]))
-                })
-            Text(text = userLevelToDifficultyLevel(levelItem))
-          }
-        }
-
-        Spacer(modifier = Modifier.height(4.dp))
-        HorizontalDivider(thickness = 2.dp, color = PrimaryBlue)
-        Spacer(modifier = Modifier.height(4.dp))
-
-        // Enable the user to see or not his/her completed activities
-        Row(verticalAlignment = Alignment.CenterVertically) {
-          Checkbox(
-              checked = checkedBox,
-              onCheckedChange = { checkedBox = it },
-              colors =
-                  CheckboxDefaults.colors(uncheckedColor = AccentGreen, checkedColor = AccentGreen))
+      // Filter by activity type
+      Column(
+          modifier = Modifier
+              .fillMaxWidth()
+              .padding(16.dp),
+          horizontalAlignment = Alignment.CenterHorizontally,
+          verticalArrangement = Arrangement.Center
+      ) {
           Text(
-              text = stringResource(id = R.string.show_completed_activities),
-              style =
+              text = stringResource(id = R.string.filter_activity_type),
+              style = MaterialTheme.typography.headlineSmall,
+              fontWeight = FontWeight.Bold,
+              modifier = Modifier.align(Alignment.Start)
+          )
+
+          Spacer(modifier = Modifier.height(16.dp))
+
+
+          FlowRow(
+              verticalArrangement = Arrangement.spacedBy(4.dp),
+              horizontalArrangement = Arrangement.spacedBy(16.dp),
+          ) {
+              activities.forEach { activity ->
+                  ToggleButton(activity.resourcesToString(LocalContext.current), isSelected = selectedActivitiesTypes.contains(activity)) {
+                      if(!selectedActivitiesTypes.contains(activity)){
+                          selectedActivitiesTypes.add(activity)
+                      } else {
+                          selectedActivitiesTypes.remove(activity)
+                      }
+                  }
+              }
+
+          }
+
+          Spacer(modifier = Modifier.height(16.dp))
+
+          // Filter by difficulty level
+          Text(
+              text = stringResource(id = R.string.filter_difficulty_level),
+              style = MaterialTheme.typography.headlineSmall,
+              fontWeight = FontWeight.Bold,
+              modifier = Modifier.align(Alignment.Start)
+          )
+
+          Column(modifier = Modifier
+              .padding(vertical = 8.dp, horizontal = 8.dp)
+              .align(Alignment.Start)) {
+              ActivityType.values().forEachIndexed { index, activityType ->
+                  Row(modifier = Modifier.padding(vertical = 8.dp)){
+                      val isEnabled = selectedActivitiesTypes.contains(activityType)
+                      Button(
+                          onClick = {},
+                          enabled = isEnabled,
+                          shape = MaterialTheme.shapes.small,
+                          colors = ButtonDefaults.buttonColors(
+                              containerColor = MaterialTheme.colorScheme.background,
+                              contentColor = MaterialTheme.colorScheme.onBackground,
+                              disabledContainerColor = Color.LightGray.copy(alpha = 0.6f),
+                              disabledContentColor = Color.Black.copy(alpha = 0.3f),
+
+                          ),
+                          elevation = ButtonDefaults.elevatedButtonElevation(1.dp)){
+
+                          DropDownMenuComponent(
+                              items = UserLevel.values().toList(),
+                              selectedItem = activitiesLevelArray[index],
+                              onItemSelected = { activitiesLevelArray[index] = it},
+                              toStr = { level -> level.resourcesToString(LocalContext.current) },
+                              fieldText = activityType.resourcesToString(LocalContext.current),
+                              isEnabled = isEnabled
+                          )
+                      }
+                  }
+              }
+          }
+
+
+          // Enable the user to see or not his/her completed activities
+          Row(verticalAlignment = Alignment.CenterVertically) {
+              Checkbox(
+                  checked = checkedBox,
+                  onCheckedChange = { checkedBox = it },
+                  colors =
+                  CheckboxDefaults.colors(uncheckedColor = AccentGreen, checkedColor = AccentGreen)
+              )
+              Text(
+                  text = stringResource(id = R.string.show_completed_activities),
+                  style =
                   TextStyle(
                       fontSize = 20.sp,
                       lineHeight = 24.sp,
                       fontWeight = FontWeight(500),
-                      color = AccentGreen))
-        }
+                      color = AccentGreen
+                  )
+              )
+          }
 
-        Spacer(modifier = Modifier.height(4.dp))
-        HorizontalDivider(thickness = 2.dp, color = PrimaryBlue)
-        Spacer(modifier = Modifier.height(12.dp))
 
-        // Filter by distance range
-        Text(
-            text = stringResource(id = R.string.filter_distance_range),
-            style = TextStyle(fontSize = 20.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
-        Spacer(modifier = Modifier.height(12.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-          Text(text = stringResource(id = R.string.from))
-          Spacer(modifier = Modifier.width(12.dp))
-          // input field for the user to input the distance range lo
-          TextField(
-              value = fromDistance.toString(),
-              onValueChange = { fromDistance = it.toIntOrNull() ?: 0 },
-              modifier = Modifier.width(50.dp))
-          Spacer(modifier = Modifier.width(12.dp))
-          Text(text = stringResource(id = R.string.to))
-          Spacer(modifier = Modifier.width(12.dp))
-          // input field for the user to input the distance range hi
-          TextField(
-              value = toDistance.toString(),
-              onValueChange = { toDistance = it.toIntOrNull() ?: 0 },
-              modifier = Modifier.width(100.dp))
-          Spacer(modifier = Modifier.width(12.dp))
-          Text(text = "km")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-        HorizontalDivider(thickness = 2.dp, color = PrimaryBlue)
-        Spacer(modifier = Modifier.height(12.dp))
-        // Apply the filter options
-        ElevatedButton(
-            onClick = {
-              setSelectedActivityType(activities[selectedIndex])
-              navigateBack()
-            },
-            modifier = Modifier.width(305.dp).height(48.dp).testTag("applyFilterOptionsButton"),
-            colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
+          // Apply the filter options
+          ElevatedButton(
+              onClick = {
+                  //setSelectedActivityType(activities[selectedIndex])
+                  navigateBack()
+              },
+              modifier = Modifier
+                  .width(305.dp)
+                  .height(48.dp)
+                  .testTag("applyFilterOptionsButton"),
+              colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)
+          ) {
               Text(
                   LocalContext.current.getString(R.string.apply),
                   style =
-                      TextStyle(
-                          fontSize = 22.sp,
-                          lineHeight = 28.sp,
-                          fontWeight = FontWeight(400),
-                      ))
-            }
+                  TextStyle(
+                      fontSize = 22.sp,
+                      lineHeight = 28.sp,
+                      fontWeight = FontWeight(400),
+                  )
+              )
+          }
       }
+  }
 }

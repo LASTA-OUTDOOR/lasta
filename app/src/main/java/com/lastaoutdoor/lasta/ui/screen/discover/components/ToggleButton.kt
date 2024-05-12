@@ -12,8 +12,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ToggleButton(text: String, onClick: () -> Unit) {
-  var isSelected by remember { mutableStateOf(false) }
+fun ToggleButton(text: String, isSelected: Boolean = false, onClick: () -> Unit) {
+  var enabled by remember { mutableStateOf(isSelected) }
   val backgroundColor =
       if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.background
   val contentColor =
@@ -22,7 +22,7 @@ fun ToggleButton(text: String, onClick: () -> Unit) {
 
   Button(
       onClick = {
-        isSelected = !isSelected
+          enabled = !enabled
         onClick()
       },
       colors =
@@ -30,6 +30,6 @@ fun ToggleButton(text: String, onClick: () -> Unit) {
               containerColor = backgroundColor, contentColor = contentColor),
       shape = MaterialTheme.shapes.small,
       elevation = ButtonDefaults.elevatedButtonElevation(3.dp)) {
-        Text(text = text)
+        Text(text = text, style = MaterialTheme.typography.bodyMedium)
       }
 }

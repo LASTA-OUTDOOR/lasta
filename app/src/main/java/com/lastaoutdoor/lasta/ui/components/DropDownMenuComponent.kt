@@ -40,12 +40,13 @@ fun <T> DropDownMenuComponent(
     onItemSelected: (T) -> Unit, // Callback to invoke when an item is selected
     toStr: @Composable (T) -> String,
     fieldText: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isEnabled: Boolean = true
 ) {
   var expanded by remember { mutableStateOf(false) }
 
   Row(
-      modifier = modifier.clickable(onClick = { expanded = true }).testTag("textValueRow"),
+      modifier = modifier.clickable(onClick = { if(isEnabled) expanded = true }).testTag("textValueRow"),
       verticalAlignment = Alignment.CenterVertically) {
         Text(
             "$fieldText:",
@@ -64,11 +65,11 @@ fun <T> DropDownMenuComponent(
             Icon(
                 imageVector = Icons.Outlined.KeyboardArrowDown,
                 contentDescription = "Dropdown",
-                modifier = Modifier.clickable(onClick = { expanded = true }).testTag("spinnerIcon"),
+                modifier = Modifier.clickable(onClick = { if(isEnabled) expanded = true }).testTag("spinnerIcon"),
                 tint = MaterialTheme.colorScheme.primary)
           }
 
-          DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+          DropdownMenu(expanded = expanded, onDismissRequest = { if(isEnabled) expanded = false }) {
             items.forEachIndexed { index, label ->
               DropdownMenuItem(
                   modifier = Modifier.testTag("DropdownItem$index").wrapContentWidth(),
