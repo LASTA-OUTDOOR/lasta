@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.user.BikingUserActivity
 import com.lastaoutdoor.lasta.models.user.ClimbingUserActivity
 import com.lastaoutdoor.lasta.models.user.HikingUserActivity
 import com.lastaoutdoor.lasta.models.user.UserActivity
@@ -100,10 +101,7 @@ fun ProfileScreen(
             UserInfo(isCurrentUser, user, updateDescription, navigateToSettings)
           }
     }
-    item {
-      Box(modifier = Modifier.padding(16.dp)) { SportSelection(sport, setSport) }
-      Spacer(modifier = Modifier.height(16.dp))
-    }
+    item { Box(modifier = Modifier.padding(16.dp)) { SportSelection(sport, setSport) } }
 
     item {
       Box(modifier = Modifier.padding(16.dp)) {
@@ -112,14 +110,9 @@ fun ProfileScreen(
               TimeFrame.values().toList(), timeFrame, setTimeFrame, TimeFrame::toString)
         }
       }
-
-      Spacer(modifier = Modifier.height(16.dp))
     }
-    item {
-      Box(modifier = Modifier.padding(16.dp)) { Chart(activities, timeFrame, sport) }
-      Spacer(modifier = Modifier.height(16.dp))
-    }
-    item { Box(modifier = Modifier.padding(16.dp)) { RecentActivities(activities = activities) } }
+    item { Box(modifier = Modifier.padding(16.dp)) { Chart(activities, timeFrame, sport) } }
+    item { RecentActivities(activities = activities) }
   }
 }
 
@@ -374,7 +367,11 @@ fun Chart(activities: List<UserActivity>, timeFrame: TimeFrame, sport: ActivityT
                 LocalContext.current.getString(R.string.climbs),
                 modifier = Modifier.testTag("TestClimb"))
           }
-          ActivityType.BIKING -> {}
+          ActivityType.BIKING -> {
+            Text(
+                LocalContext.current.getString(R.string.ride),
+                modifier = Modifier.testTag("TestBiking"))
+          }
         }
       }
       when (sport) {
@@ -382,10 +379,10 @@ fun Chart(activities: List<UserActivity>, timeFrame: TimeFrame, sport: ActivityT
           val trailActivities = activities.filterIsInstance<HikingUserActivity>()
           Column {
             Text(
-                text = trailActivities.sumOf { it.distanceDone.toLong() }.toString(),
+                text = trailActivities.sumOf { it.elevationChange.toLong() }.toString() + "m",
                 fontWeight = FontWeight.Bold,
                 style = TextStyle(fontSize = 20.sp))
-            Text(LocalContext.current.getString(R.string.calories))
+            Text(LocalContext.current.getString(R.string.elevation))
           }
         }
         ActivityType.CLIMBING -> {
@@ -398,7 +395,16 @@ fun Chart(activities: List<UserActivity>, timeFrame: TimeFrame, sport: ActivityT
             Text(LocalContext.current.getString(R.string.pitches))
           }
         }
-        ActivityType.BIKING -> {}
+        ActivityType.BIKING -> {
+          val trailActivities = activities.filterIsInstance<BikingUserActivity>()
+          Column {
+            Text(
+                text = trailActivities.sumOf { it.elevationChange.toLong() }.toString() + "m",
+                fontWeight = FontWeight.Bold,
+                style = TextStyle(fontSize = 20.sp))
+            Text(LocalContext.current.getString(R.string.elevation))
+          }
+        }
       }
 
       Column {
@@ -429,89 +435,99 @@ fun Chart(activities: List<UserActivity>, timeFrame: TimeFrame, sport: ActivityT
 fun RecentActivities(
     activities: List<UserActivity>,
 ) {
-  Text("Recent Activities", style = TextStyle(fontSize = 20.sp), fontWeight = FontWeight.Bold)
-  for (a in activities.reversed()) {
-    val sport = a.activityType
-    Card(
-        modifier = Modifier.padding(12.dp).fillMaxWidth().testTag("RecentActivitiesItem"),
-        elevation = CardDefaults.cardElevation(4.dp),
-        shape = RoundedCornerShape(8.dp)) {
-          Row(
-              modifier = Modifier.padding(8.dp, 0.dp),
-              verticalAlignment = Alignment.CenterVertically) {
-                // Image on the left
-                Box(modifier = Modifier.size(100.dp).padding(8.dp)) {
-                  /*
-                  Image(
-                      bitmap = imageBitmap,
-                      contentDescription = "Trail Image",
-                      contentScale = ContentScale.Crop,
-                  )
-                   */
+
+  Text(
+      LocalContext.current.getString(R.string.recent_activities),
+      style = MaterialTheme.typography.displaySmall,
+      fontWeight = FontWeight.Bold,
+      modifier = Modifier.padding(horizontal = 16.dp, vertical = 0.dp))
+  Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+    for (a in activities.reversed()) {
+      val sport = a.activityType
+      Card(
+          modifier = Modifier.padding(8.dp).fillMaxWidth().testTag("RecentActivitiesItem"),
+          elevation = CardDefaults.cardElevation(4.dp),
+          shape = RoundedCornerShape(8.dp)) {
+            Row(
+                modifier = Modifier.padding(8.dp, 0.dp),
+                verticalAlignment = Alignment.CenterVertically) {
+                  // Image on the left
+                  Box(modifier = Modifier.size(100.dp).padding(8.dp)) {
+                    /*
+                    Image(
+                        bitmap = imageBitmap,
+                        contentDescription = "Trail Image",
+                        contentScale = ContentScale.Crop,
+                    )
+                     */
+                  }
+
+                  // Spacer between the image and the text
+                  Spacer(modifier = Modifier.width(8.dp))
+
+                  Column { Text(text = formatDate(a.timeStarted), fontWeight = FontWeight.Bold) }
                 }
+            // Text information on the right
 
-                // Spacer between the image and the text
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Column { Text(text = formatDate(a.timeStarted), fontWeight = FontWeight.Bold) }
-              }
-          // Text information on the right
-
-          Row(
-              modifier = Modifier.fillMaxWidth().padding(16.dp),
-              horizontalArrangement = Arrangement.SpaceBetween) {
-                Column {
-                  when (sport) {
-                    ActivityType.HIKING -> {
-                      val trail = a as HikingUserActivity
-                      Text(
-                          text =
-                              String.format(
-                                  "%.2f", metersToKilometers(trail.distanceDone.toLong())),
-                          fontWeight = FontWeight.Bold)
-                      Text(text = "Km")
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween) {
+                  Column {
+                    when (sport) {
+                      ActivityType.HIKING -> {
+                        val trail = a as HikingUserActivity
+                        Text(
+                            text =
+                                String.format(
+                                    "%.2f", metersToKilometers(trail.distanceDone.toLong())),
+                            fontWeight = FontWeight.Bold)
+                        Text(text = "Km")
+                      }
+                      ActivityType.CLIMBING -> {
+                        val climb = a as ClimbingUserActivity
+                        Text(
+                            text =
+                                String.format(
+                                    "%.2f", metersToKilometers(climb.totalElevation.toLong())),
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.testTag("TestAndrew1"))
+                        Text(text = LocalContext.current.getString(R.string.elevation))
+                      }
+                      ActivityType.BIKING -> {}
                     }
-                    ActivityType.CLIMBING -> {
-                      val climb = a as ClimbingUserActivity
-                      Text(
-                          text =
-                              String.format(
-                                  "%.2f", metersToKilometers(climb.totalElevation.toLong())),
-                          fontWeight = FontWeight.Bold,
-                          modifier = Modifier.testTag("TestAndrew1"))
-                      Text(text = LocalContext.current.getString(R.string.elevation))
+                  }
+
+                  Column {
+                    when (sport) {
+                      ActivityType.HIKING -> {
+                        val trail = a as HikingUserActivity
+                        Text(
+                            text = trail.elevationChange.toString() + "m",
+                            fontWeight = FontWeight.Bold)
+                        Text(text = LocalContext.current.getString(R.string.elevation))
+                      }
+                      ActivityType.CLIMBING -> {
+                        val climb = a as ClimbingUserActivity
+                        Text(
+                            text =
+                                String.format(
+                                    "%.2f", metersToKilometers(climb.numPitches.toLong())),
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.testTag("TestAndrew2"))
+                        Text(text = LocalContext.current.getString(R.string.pitches))
+                      }
+                      ActivityType.BIKING -> {}
                     }
-                    ActivityType.BIKING -> {}
+                  }
+
+                  Column {
+                    Text(
+                        text = timeFromMillis(timeFromActivityInMillis(listOf(a))),
+                        fontWeight = FontWeight.Bold)
+                    Text(text = LocalContext.current.getString(R.string.time))
                   }
                 }
-
-                Column {
-                  when (sport) {
-                    ActivityType.HIKING -> {
-                      val trail = a as HikingUserActivity
-                      Text(text = trail.elevationChange.toString(), fontWeight = FontWeight.Bold)
-                      Text(text = LocalContext.current.getString(R.string.elevation))
-                    }
-                    ActivityType.CLIMBING -> {
-                      val climb = a as ClimbingUserActivity
-                      Text(
-                          text =
-                              String.format("%.2f", metersToKilometers(climb.numPitches.toLong())),
-                          fontWeight = FontWeight.Bold,
-                          modifier = Modifier.testTag("TestAndrew2"))
-                      Text(text = LocalContext.current.getString(R.string.pitches))
-                    }
-                    ActivityType.BIKING -> {}
-                  }
-                }
-
-                Column {
-                  Text(
-                      text = timeFromMillis(timeFromActivityInMillis(listOf(a))),
-                      fontWeight = FontWeight.Bold)
-                  Text(text = LocalContext.current.getString(R.string.time))
-                }
-              }
-        }
+          }
+    }
   }
 }
