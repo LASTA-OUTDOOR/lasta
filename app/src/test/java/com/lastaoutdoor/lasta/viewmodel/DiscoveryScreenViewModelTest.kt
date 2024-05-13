@@ -7,6 +7,7 @@ import com.lastaoutdoor.lasta.models.activity.ClimbingStyle
 import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.models.api.Position
 import com.lastaoutdoor.lasta.models.map.Marker
+import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
 import com.lastaoutdoor.lasta.utils.OrderingBy
@@ -80,7 +81,7 @@ class DiscoveryScreenViewModelTest() {
   @Test
   fun fetchBikingActivities() {
     runBlocking {
-      viewModel.updateActivityType(ActivityType.BIKING)
+      viewModel.updateActivityType(listOf(ActivityType.BIKING))
       viewModel.fetchActivities()
       assertEquals(viewModel.activities.value, emptyList<Activity>())
     }
@@ -90,7 +91,7 @@ class DiscoveryScreenViewModelTest() {
   @Test
   fun fetchHikingActivities() {
     runBlocking {
-      viewModel.updateActivityType(ActivityType.HIKING)
+      viewModel.updateActivityType(listOf(ActivityType.HIKING))
       viewModel.fetchActivities()
       assertEquals(viewModel.activities.value, emptyList<Activity>())
     }
@@ -100,7 +101,7 @@ class DiscoveryScreenViewModelTest() {
   @Test
   fun fetchClimbingActivities() {
     runBlocking {
-      viewModel.updateActivityType(ActivityType.CLIMBING)
+      viewModel.updateActivityType(listOf(ActivityType.CLIMBING))
       viewModel.fetchActivities()
       assertEquals(viewModel.activities.value, emptyList<Activity>())
     }
@@ -178,22 +179,29 @@ class DiscoveryScreenViewModelTest() {
 
   @Test
   fun filterWithDiff_worksAsIntended() {
-    var res = viewModel.filterWithDiff(ActivityType.BIKING, UserLevel.BEGINNER, Activity("", 0L))
-    assertEquals(false, res)
-    res = viewModel.filterWithDiff(ActivityType.CLIMBING, UserLevel.BEGINNER, Activity("", 0L))
+    val userActivitiesLevel =
+        UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.ADVANCED, UserLevel.INTERMEDIATE)
+
+    var res = viewModel.filterWithDiff(userActivitiesLevel, Activity("", 0L))
     assertEquals(true, res)
+
     res =
         viewModel.filterWithDiff(
-            ActivityType.BIKING,
-            UserLevel.INTERMEDIATE,
-            Activity("", 0L, activityType = ActivityType.BIKING))
+            userActivitiesLevel,
+            Activity("", 0L, activityType = ActivityType.BIKING, difficulty = Difficulty.HARD))
     assertEquals(false, res)
+
     res =
         viewModel.filterWithDiff(
-            ActivityType.HIKING,
-            UserLevel.ADVANCED,
-            Activity("", 0L, activityType = ActivityType.HIKING))
-    assertEquals(false, res)
+            userActivitiesLevel,
+            Activity("", 0L, activityType = ActivityType.BIKING, difficulty = Difficulty.NORMAL))
+    assertEquals(true, res)
+
+    res =
+        viewModel.filterWithDiff(
+            userActivitiesLevel,
+            Activity("", 0L, activityType = ActivityType.HIKING, difficulty = Difficulty.HARD))
+    assertEquals(true, res)
   }
 
   @Test
@@ -332,8 +340,8 @@ class DiscoveryScreenViewModelTest() {
 
   @Test
   fun randomSmallChecks() {
-    viewModel.setSelectedActivityType(ActivityType.BIKING)
-    assert(viewModel.selectedActivityType.value == ActivityType.BIKING)
+    viewModel.setSelectedActivitiesType(listOf(ActivityType.BIKING))
+    assert(viewModel.selectedActivityType.value.contains(ActivityType.BIKING))
 
     assert(viewModel.selectedZoom == 13f)
     assert(viewModel.initialPosition.value == LatLng(46.519962, 6.633597))

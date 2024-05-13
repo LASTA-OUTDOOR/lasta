@@ -30,14 +30,15 @@ class FilterScreenTest {
   fun setUp() {
     hiltRule.inject()
 
-    var selectedActivityType: StateFlow<ActivityType> = MutableStateFlow(ActivityType.CLIMBING)
-    var selectedLevels =
+    val selectedActivityType: StateFlow<List<ActivityType>> =
+        MutableStateFlow(listOf(ActivityType.CLIMBING))
+    val selectedLevels =
         MutableStateFlow(
             UserActivitiesLevel(UserLevel.INTERMEDIATE, UserLevel.ADVANCED, UserLevel.ADVANCED))
     composeRule.activity.setContent {
       FilterScreen(
-          selectedActivityType = selectedActivityType,
-          setSelectedActivityType = {},
+          selectedActivitiesType = selectedActivityType,
+          setSelectedActivitiesType = {},
           selectedLevels = selectedLevels,
           setSelectedLevels = {},
       ) {}
