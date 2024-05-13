@@ -32,9 +32,11 @@ class FilterScreenTest {
 
     val selectedActivityType: StateFlow<List<ActivityType>> =
         MutableStateFlow(listOf(ActivityType.CLIMBING))
+
     val selectedLevels =
         MutableStateFlow(
             UserActivitiesLevel(UserLevel.INTERMEDIATE, UserLevel.ADVANCED, UserLevel.ADVANCED))
+
     composeRule.activity.setContent {
       FilterScreen(
           selectedActivitiesType = selectedActivityType,
