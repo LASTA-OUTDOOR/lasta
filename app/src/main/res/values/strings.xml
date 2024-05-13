@@ -140,6 +140,7 @@
     <string name="recent_activities">Recent Activities</string>
 
     <!--Step Counting-->
+    <string name="step_count">Step Count</string>
     <string name="step_count_unavailable">Step Counter Not Available</string>
     <string name="step_count_unsupported">This device does not support step counting.</string>
 </resources>
