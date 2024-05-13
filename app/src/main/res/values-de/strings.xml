@@ -106,4 +106,6 @@
     <string name="advanced">Erweitert</string>
     <string name="show_completed_activities_description">Durch Aktivieren dieser Option werden alle zuvor abgeschlossenen Aktivitäten angezeigt.</string>
     <string name="erase_options">Alles löschen</string>
+    <string name="ride">Radtour</string>
+    <string name="recent_activities">Neueste Aktivitäten</string>
 </resources>

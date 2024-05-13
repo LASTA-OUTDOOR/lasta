@@ -106,4 +106,6 @@
     <string name="advanced">Avancé</string>
     <string name="show_completed_activities_description">L\'activation de cette option affichera toutes les activités précédemment complétées</string>
     <string name="erase_options">Tout effacer</string>
+    <string name="ride">Tour</string>
+    <string name="recent_activities">Activités récentes</string>
 </resources>
