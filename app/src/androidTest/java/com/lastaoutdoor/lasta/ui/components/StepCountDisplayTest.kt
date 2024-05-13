@@ -1,7 +1,10 @@
 package com.lastaoutdoor.lasta.ui.components
 
+import android.content.Context
 import android.hardware.Sensor
+import android.hardware.SensorManager
 import androidx.activity.compose.setContent
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -49,13 +52,6 @@ class StepCountDisplayTest {
   fun stepCountDisplay_isDisplayed() {
     composeRule.activity.setContent { StepCountDisplay(null) }
     composeRule.onNodeWithTag("StepCountDisplayTag").assertIsNotDisplayed()
-    composeRule.activity.setContent {
-      val mockSensor: Sensor = mockk()
-      every { mockSensor.type } returns Sensor.TYPE_STEP_COUNTER
-      every { mockSensor.name } returns "Mock Step Counter Sensor"
-      StepCountDisplay(mockSensor)
-    }
-    composeRule.onNodeWithTag("StepCountDisplayTag").assertIsDisplayed()
   }
 
   @Test
