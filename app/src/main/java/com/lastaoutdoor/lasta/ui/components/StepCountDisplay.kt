@@ -26,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -34,8 +35,11 @@ import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.ui.theme.Black
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
 
+// Remark : you can get the step counter sensor from the sensor manager using the following code:
+// val stepCounterSensor =
+// context.getSystemService(Context.SENSOR_SERVICE).getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
 @Composable
-fun StepCountDisplay() {
+fun StepCountDisplay(stepCounterSensor: Sensor?) {
 
   // internal mutable variables to keep track of the current step count
 
@@ -67,7 +71,6 @@ fun StepCountDisplay() {
 
   val context = LocalContext.current
   val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-  val stepCounterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
 
   var sensorEventListener: SensorEventListener? = null
 
@@ -98,7 +101,7 @@ fun StepCountDisplay() {
       }
       onDispose { sensorManager.unregisterListener(sensorEventListener) }
     }
-
+    Modifier.testTag("StepCountDisplayTag")
     StepsTakenField(globalStepCount)
   }
 }
@@ -106,7 +109,7 @@ fun StepCountDisplay() {
 @Composable
 fun UnavailableStepCounter() {
   Column(
-      modifier = Modifier.fillMaxSize(),
+      modifier = Modifier.fillMaxSize().testTag("UnavailableStepCounterTag"),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally) {
         Text(LocalContext.current.getString(R.string.step_count_unavailable))
@@ -123,18 +126,19 @@ fun StepsTakenField(globalStepCount: Int) {
         Text(
             LocalContext.current.getString(R.string.step_count),
             color = PrimaryBlue,
-            modifier = Modifier.width(99.dp).height(26.dp))
+            modifier = Modifier.width(99.dp).height(26.dp).testTag("StepCountTag"))
         Text(
             text = "$globalStepCount",
             color = Black,
             fontSize = 38.sp,
             fontWeight = FontWeight(600),
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
+            modifier =
+                Modifier.padding(horizontal = 16.dp, vertical = 8.dp).testTag("GlobalStepCountTag"))
       }
 }
 
-private fun registerSensorListener(
-    sensorManager: SensorManager,
+fun registerSensorListener(
+    sensorManager: SensorManager?,
     sensor: Sensor?,
     onStepCountChanged: (Int) -> Unit
 ): SensorEventListener {
@@ -151,6 +155,6 @@ private fun registerSensorListener(
           // Do nothing
         }
       }
-  sensorManager.registerListener(sensorEventListener, sensor, SensorManager.SENSOR_DELAY_NORMAL)
+  sensorManager?.registerListener(sensorEventListener, sensor, SensorManager.SENSOR_DELAY_NORMAL)
   return sensorEventListener
 }
