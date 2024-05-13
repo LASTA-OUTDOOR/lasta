@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import com.lastaoutdoor.lasta.R
 
 @Composable
 fun StepCountDisplay() {
@@ -72,8 +73,8 @@ fun StepCountDisplay() {
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
-          Text("Step Counter Not Available")
-          Text("This device does not support step counting.")
+          Text(LocalContext.current.getString(R.string.step_count_unavailable))
+          Text(LocalContext.current.getString(R.string.step_count_unsupported))
         }
   } else {
     // Step counter sensor available
