@@ -15,14 +15,14 @@ import androidx.compose.ui.unit.dp
 fun ToggleButton(text: String, isSelected: Boolean = false, onClick: () -> Unit) {
   var enabled by remember { mutableStateOf(isSelected) }
   val backgroundColor =
-      if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.background
+      if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
   val contentColor =
       if (isSelected) MaterialTheme.colorScheme.onPrimary
       else MaterialTheme.colorScheme.onBackground
 
   Button(
       onClick = {
-          enabled = !enabled
+        enabled = !enabled
         onClick()
       },
       colors =
