@@ -1,10 +1,6 @@
 package com.lastaoutdoor.lasta.ui.components
 
-import android.content.Context
-import android.hardware.Sensor
-import android.hardware.SensorManager
 import androidx.activity.compose.setContent
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -14,8 +10,6 @@ import com.lastaoutdoor.lasta.ui.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import io.mockk.every
-import io.mockk.mockk
 import org.junit.Assert.assertNotEquals
 import org.junit.Before
 import org.junit.Rule
