@@ -79,7 +79,8 @@ fun SettingsScreen(
             updatePrefActivity = updatePrefActivity,
             updateClimbingLevel = updateClimbingLevel,
             updateHikingLevel = updateHikingLevel,
-            updateBikingLevel = updateBikingLevel)
+            updateBikingLevel = updateBikingLevel,
+            setUpOrSetting = "Settings")
 
         Spacer(modifier = Modifier.height(24.dp))
 

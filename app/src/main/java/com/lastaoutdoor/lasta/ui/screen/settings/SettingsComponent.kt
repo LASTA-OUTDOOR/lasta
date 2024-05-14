@@ -7,9 +7,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,9 +41,10 @@ fun SettingsComponent(
     updateClimbingLevel: (UserLevel) -> Unit,
     updateHikingLevel: (UserLevel) -> Unit,
     updateBikingLevel: (UserLevel) -> Unit,
+    setUpOrSetting: String // "Setup" or "Settings"
 ) {
   Column(horizontalAlignment = Alignment.CenterHorizontally) {
-    TitleComponent() // Title of the screen
+    TitleComponent(setUpOrSetting = setUpOrSetting) // Title of the screen
     Spacer(modifier = Modifier.height(24.dp))
     SettingsHeader(type = "General") // Header for General Settings
     Spacer(modifier = Modifier.height(24.dp))
@@ -78,13 +83,34 @@ fun SettingsHeader(type: String) {
 }
 
 @Composable
-fun TitleComponent() {
-  Text(
-      text = LocalContext.current.getString(R.string.Account_settings),
-      fontWeight = FontWeight.Bold,
-      style = MaterialTheme.typography.displayLarge,
-      modifier = Modifier.testTag("settingsTitle"),
-      textAlign = TextAlign.Center)
+fun TitleComponent(setUpOrSetting: String) {
+    Row {
+        //put a small setting icon in secondary color
+        Icon(
+            imageVector = Icons.Default.Settings,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.secondary,
+            modifier = Modifier.padding(8.dp)
+        )
+        Text(
+            text = when (setUpOrSetting) {
+                "Settings" -> LocalContext.current.getString(R.string.Account_settings)
+                "Setup" -> LocalContext.current.getString(R.string.Account_setup)
+                else -> LocalContext.current.getString(R.string.Account_settings)
+            },
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.displayLarge,
+            modifier = Modifier.testTag("settingsTitle"),
+            textAlign = TextAlign.Center
+        )
+        //put a small setting icon in secondary color
+        Icon(
+            imageVector = Icons.Default.Settings,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.secondary,
+            modifier = Modifier.padding(8.dp)
+        )
+    }
 }
 
 @Composable
@@ -163,6 +189,11 @@ fun ActivityLevelsComponent(
     updateBikingLevel: (UserLevel) -> Unit,
 ) {
   Column(horizontalAlignment = Alignment.CenterHorizontally) {
+      Text(
+          text = LocalContext.current.getString(R.string.select_lev_activity),
+          style = MaterialTheme.typography.headlineMedium,
+          color = MaterialTheme.colorScheme.onBackground)
+      Spacer(modifier = Modifier.height(12.dp))
     for (activity in ActivityType.values()) {
       val activityLevel =
           when (activity) {
@@ -170,39 +201,44 @@ fun ActivityLevelsComponent(
             ActivityType.HIKING -> levels.hikingLevel
             ActivityType.BIKING -> levels.bikingLevel
           }
-      Text(
-          text = activity.resourcesToString(LocalContext.current),
-          color = MaterialTheme.colorScheme.primary,
-          fontWeight = FontWeight.Bold,
-          style = MaterialTheme.typography.headlineMedium)
-      Spacer(modifier = Modifier.height(8.dp))
-        Button(
-            onClick = {},
-            modifier = Modifier.testTag("languageDropDownButton"),
-            enabled = true,
-            shape = MaterialTheme.shapes.small,
-            colors =
-            ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-                contentColor = MaterialTheme.colorScheme.onBackground,
-                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                disabledContentColor =
-                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
-            ),
-            elevation = ButtonDefaults.elevatedButtonElevation(1.dp)) {
-            DropDownMenuComponent(
-                items = UserLevel.values().toList(),
-                selectedItem = activityLevel,
-                onItemSelected = { newLevel: UserLevel ->
-                    when (activity) {
-                        ActivityType.CLIMBING -> updateClimbingLevel(newLevel)
-                        ActivityType.HIKING -> updateHikingLevel(newLevel)
-                        ActivityType.BIKING -> updateBikingLevel(newLevel)
-                    }
-                },
-                toStr = { level -> level.resourcesToString(LocalContext.current) },
-                fieldText = LocalContext.current.getString(R.string.sport_level),
-                modifier = Modifier.testTag("settings${activity.name}Level"))
+        Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = activity.resourcesToString(LocalContext.current) + " :",
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.headlineMedium
+            )
+            Spacer(modifier = Modifier.width(20.dp))
+            Button(
+                onClick = {},
+                modifier = Modifier.testTag("languageDropDownButton"),
+                enabled = true,
+                shape = MaterialTheme.shapes.small,
+                colors =
+                ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onBackground,
+                    disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    disabledContentColor =
+                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
+                ),
+                elevation = ButtonDefaults.elevatedButtonElevation(1.dp)
+            ) {
+                DropDownMenuComponent(
+                    items = UserLevel.values().toList(),
+                    selectedItem = activityLevel,
+                    onItemSelected = { newLevel: UserLevel ->
+                        when (activity) {
+                            ActivityType.CLIMBING -> updateClimbingLevel(newLevel)
+                            ActivityType.HIKING -> updateHikingLevel(newLevel)
+                            ActivityType.BIKING -> updateBikingLevel(newLevel)
+                        }
+                    },
+                    toStr = { level -> level.resourcesToString(LocalContext.current) },
+                    fieldText = LocalContext.current.getString(R.string.sport_level),
+                    modifier = Modifier.testTag("settings${activity.name}Level")
+                )
+            }
         }
       Spacer(modifier = Modifier.height(16.dp))
     }

@@ -114,4 +114,6 @@
     <string name="step_count_unsupported">Dieses Gerät unterstützt keine Schrittzählung.</string>
     <string name="general_settings">Allgemeine Einstellungen</string>
     <string name="activity_settings">"Aktivitätseinstellungen "</string>
+    <string name = "select_lev_activity">Wählen Sie Ihr Nivaue in diese Aktivität</string>
+    <string name = "Account_setup">Einstellungen</string>
 </resources>

@@ -114,4 +114,6 @@
     <string name="step_count_unsupported">Cet appareil ne prend pas en charge le comptage de pas </string>
     <string name="general_settings">Paramètres généraux</string>
     <string name="activity_settings">Paramètres d\'activités</string>
+    <string name = "select_lev_activity">Sélectionnez votre niveau dans l\'activité</string>
+    <string name = "Account_setup">Configuration</string>
 </resources>
