@@ -106,4 +106,6 @@
     <string name="advanced">Erweitert</string>
     <string name="ride">Radtour</string>
     <string name="recent_activities">Neueste Aktivitäten</string>
+    <string name="share_title">Lasta : Aktivitäten teilen</string>
+    <string name="share_body">Hallo ! sieh dir diese Aktivität auf Lasta an :</string>
 </resources>

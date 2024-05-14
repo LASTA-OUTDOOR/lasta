@@ -139,4 +139,6 @@
     <string name="advanced">Advanced</string>
     <string name="ride">Ride</string>
     <string name="recent_activities">Recent Activities</string>
+    <string name="share_title">Lasta : Activity Sharing</string>
+    <string name="share_body">"Hi ! Check out this activity on Lasta : "</string>
 </resources>
