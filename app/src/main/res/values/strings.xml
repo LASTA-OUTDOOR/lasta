@@ -141,4 +141,9 @@
     <string name="recent_activities">Recent Activities</string>
     <string name="share_title">Lasta : Activity Sharing</string>
     <string name="share_body">"Hi ! Check out this activity on Lasta : "</string>
+
+    <!--Step Counting-->
+    <string name="step_count">Step Count</string>
+    <string name="step_count_unavailable">Step Counter Not Available</string>
+    <string name="step_count_unsupported">This device does not support step counting.</string>
 </resources>
