@@ -1,5 +1,6 @@
 package com.lastaoutdoor.lasta.ui.screen.settings
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,7 +11,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -55,28 +55,26 @@ fun SettingsComponent(
 
 @Composable
 fun SettingsHeader(type: String) {
-  Surface(
-      modifier = Modifier.fillMaxWidth(),
-      color = MaterialTheme.colorScheme.secondaryContainer,
-  ) {
+
     Column {
-      HorizontalDivider()
-      Spacer(modifier = Modifier.height(8.dp))
-      Text(
-          text =
-              when (type) {
-                "General" -> LocalContext.current.getString(R.string.general_settings)
-                "Activity" -> LocalContext.current.getString(R.string.activity_settings)
-                else -> LocalContext.current.getString(R.string.Account_settings)
-              },
-          fontWeight = FontWeight.Bold,
-          style = MaterialTheme.typography.displaySmall,
-          modifier = Modifier.padding(horizontal = 16.dp),
-          textAlign = TextAlign.Justify)
+        Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
+            Text(
+                text =
+                when (type) {
+                    "General" -> LocalContext.current.getString(R.string.general_settings)
+                    "Activity" -> LocalContext.current.getString(R.string.activity_settings)
+                    else -> LocalContext.current.getString(R.string.Account_settings)
+                },
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(horizontal = 16.dp),
+                textAlign = TextAlign.Justify
+            )
+        }
       Spacer(modifier = Modifier.height(8.dp))
     }
-  }
-  HorizontalDivider()
+  HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 1f))
 }
 
 @Composable
@@ -140,7 +138,9 @@ fun FavoriteActivityComponent(
       for (activity in ActivityType.values()) {
         val tag = "settings${activity.name}"
         Button(
-            modifier = Modifier.padding(1.dp).testTag(tag),
+            modifier = Modifier
+                .padding(1.dp)
+                .testTag(tag),
             onClick = { updatePrefActivity(activity) },
             colors =
                 ButtonDefaults.buttonColors(
