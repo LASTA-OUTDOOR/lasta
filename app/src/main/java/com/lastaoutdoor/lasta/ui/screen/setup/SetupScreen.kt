@@ -8,14 +8,18 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.Language
@@ -37,6 +41,28 @@ fun SetupScreen(
     updateBikingLevel: (UserLevel) -> Unit,
     navigateToMain: () -> Unit,
 ) {
+
+  val showSubmitDialog = remember { mutableStateOf(false) }
+
+  if (showSubmitDialog.value) {
+    AlertDialog(
+        modifier = Modifier.testTag("setupSubmitDialog"),
+        onDismissRequest = { showSubmitDialog.value = false },
+        title = { Text(text = LocalContext.current.getString(R.string.submit_settings)) },
+        text = { Text(text = LocalContext.current.getString(R.string.submit_settings_prompt)) },
+        confirmButton = {
+          Button(
+              onClick = {
+                showSubmitDialog.value = false
+                navigateToMain()
+              },
+              modifier = Modifier.testTag("setupSubmitButton")) {
+                Text("Yes")
+              }
+        },
+        dismissButton = { Button(onClick = { showSubmitDialog.value = false }) { Text("No") } },
+        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false))
+  }
 
   Column(
       modifier =
@@ -61,7 +87,7 @@ fun SetupScreen(
         Row(verticalAlignment = Alignment.CenterVertically) {
           Button(
               modifier = Modifier.testTag("setupFinishButton"),
-              onClick = { navigateToMain() },
+              onClick = { showSubmitDialog.value = true },
           ) {
             Text(text = LocalContext.current.getString(R.string.finish))
           }

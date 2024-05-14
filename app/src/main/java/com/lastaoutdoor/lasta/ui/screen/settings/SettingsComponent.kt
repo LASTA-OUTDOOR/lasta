@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -61,56 +62,73 @@ fun SettingsComponent(
 @Composable
 fun SettingsHeader(type: String) {
 
-    Column {
-        Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
-            Text(
-                text =
-                when (type) {
-                    "General" -> LocalContext.current.getString(R.string.general_settings)
-                    "Activity" -> LocalContext.current.getString(R.string.activity_settings)
-                    else -> LocalContext.current.getString(R.string.Account_settings)
-                },
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(horizontal = 16.dp),
-                textAlign = TextAlign.Justify
-            )
-        }
-      Spacer(modifier = Modifier.height(8.dp))
+  Column {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
+      Text(
+          text =
+              when (type) {
+                "General" -> LocalContext.current.getString(R.string.general_settings)
+                "Activity" -> LocalContext.current.getString(R.string.activity_settings)
+                else -> {
+                  LocalContext.current.getString(R.string.general_settings)
+                }
+              },
+          fontWeight = FontWeight.Bold,
+          color = MaterialTheme.colorScheme.primary,
+          style = MaterialTheme.typography.bodySmall,
+          modifier = Modifier.padding(horizontal = 16.dp).testTag("settingsHeader"),
+          textAlign = TextAlign.Justify)
     }
+    Spacer(modifier = Modifier.height(8.dp))
+  }
   HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 1f))
 }
 
 @Composable
 fun TitleComponent(setUpOrSetting: String) {
-    Row {
-        //put a small setting icon in secondary color
-        Icon(
-            imageVector = Icons.Default.Settings,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.secondary,
-            modifier = Modifier.padding(8.dp)
-        )
-        Text(
-            text = when (setUpOrSetting) {
-                "Settings" -> LocalContext.current.getString(R.string.Account_settings)
-                "Setup" -> LocalContext.current.getString(R.string.Account_setup)
-                else -> LocalContext.current.getString(R.string.Account_settings)
-            },
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.displayLarge,
-            modifier = Modifier.testTag("settingsTitle"),
-            textAlign = TextAlign.Center
-        )
-        //put a small setting icon in secondary color
-        Icon(
-            imageVector = Icons.Default.Settings,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.secondary,
-            modifier = Modifier.padding(8.dp)
-        )
+  Row {
+    if (setUpOrSetting == "Setup") {
+      // put a small setting icon in secondary color
+      Icon(
+          imageVector = Icons.Default.Build,
+          contentDescription = null,
+          tint = MaterialTheme.colorScheme.secondary,
+          modifier = Modifier.padding(8.dp))
+    } else {
+      // put a small setting icon in secondary color
+      Icon(
+          imageVector = Icons.Default.Settings,
+          contentDescription = null,
+          tint = MaterialTheme.colorScheme.secondary,
+          modifier = Modifier.padding(8.dp))
     }
+    Text(
+        text =
+            when (setUpOrSetting) {
+              "Settings" -> LocalContext.current.getString(R.string.Account_settings)
+              "Setup" -> LocalContext.current.getString(R.string.Account_setup)
+              else -> LocalContext.current.getString(R.string.Account_settings)
+            },
+        fontWeight = FontWeight.Bold,
+        style = MaterialTheme.typography.displayLarge,
+        modifier = Modifier.testTag("settingsTitle"),
+        textAlign = TextAlign.Center)
+    if (setUpOrSetting == "Setup") {
+      // put a small setting icon in secondary color
+      Icon(
+          imageVector = Icons.Default.Build,
+          contentDescription = null,
+          tint = MaterialTheme.colorScheme.secondary,
+          modifier = Modifier.padding(8.dp))
+    } else {
+      // put a small setting icon in secondary color
+      Icon(
+          imageVector = Icons.Default.Settings,
+          contentDescription = null,
+          tint = MaterialTheme.colorScheme.secondary,
+          modifier = Modifier.padding(8.dp))
+    }
+  }
 }
 
 @Composable
@@ -124,20 +142,20 @@ fun LanguageSelectionComponent(
         style = MaterialTheme.typography.headlineMedium,
         color = MaterialTheme.colorScheme.onBackground)
     Spacer(modifier = Modifier.height(8.dp))
-      Button(
-          onClick = {},
-          modifier = Modifier.testTag("languageDropDownButton"),
-          enabled = true,
-          shape = MaterialTheme.shapes.small,
-          colors =
-          ButtonDefaults.buttonColors(
-              containerColor = MaterialTheme.colorScheme.surface,
-              contentColor = MaterialTheme.colorScheme.onBackground,
-              disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-              disabledContentColor =
-              MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
-          ),
-          elevation = ButtonDefaults.elevatedButtonElevation(1.dp)) {
+    Button(
+        onClick = {},
+        modifier = Modifier.testTag("languageDropDownButton"),
+        enabled = true,
+        shape = MaterialTheme.shapes.small,
+        colors =
+            ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.onBackground,
+                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                disabledContentColor =
+                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
+            ),
+        elevation = ButtonDefaults.elevatedButtonElevation(1.dp)) {
           DropDownMenuComponent(
               items = Language.values().toList(),
               selectedItem = language,
@@ -145,7 +163,7 @@ fun LanguageSelectionComponent(
               toStr = { language -> language.resourcesToString(LocalContext.current) },
               fieldText = LocalContext.current.getString(R.string.languague),
               modifier = Modifier.testTag("settingsLanguage"))
-      }
+        }
   }
 }
 
@@ -160,13 +178,11 @@ fun FavoriteActivityComponent(
         style = MaterialTheme.typography.headlineMedium,
         color = MaterialTheme.colorScheme.onBackground)
     Spacer(modifier = Modifier.height(8.dp))
-    Row {
+    Row(modifier = Modifier.testTag("settingsFavActivity")) {
       for (activity in ActivityType.values()) {
         val tag = "settings${activity.name}"
         Button(
-            modifier = Modifier
-                .padding(1.dp)
-                .testTag(tag),
+            modifier = Modifier.padding(1.dp).testTag(tag),
             onClick = { updatePrefActivity(activity) },
             colors =
                 ButtonDefaults.buttonColors(
@@ -189,11 +205,11 @@ fun ActivityLevelsComponent(
     updateBikingLevel: (UserLevel) -> Unit,
 ) {
   Column(horizontalAlignment = Alignment.CenterHorizontally) {
-      Text(
-          text = LocalContext.current.getString(R.string.select_lev_activity),
-          style = MaterialTheme.typography.headlineMedium,
-          color = MaterialTheme.colorScheme.onBackground)
-      Spacer(modifier = Modifier.height(12.dp))
+    Text(
+        text = LocalContext.current.getString(R.string.select_lev_activity),
+        style = MaterialTheme.typography.headlineMedium,
+        color = MaterialTheme.colorScheme.onBackground)
+    Spacer(modifier = Modifier.height(12.dp))
     for (activity in ActivityType.values()) {
       val activityLevel =
           when (activity) {
@@ -201,45 +217,45 @@ fun ActivityLevelsComponent(
             ActivityType.HIKING -> levels.hikingLevel
             ActivityType.BIKING -> levels.bikingLevel
           }
-        Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+      Row(
+          modifier = Modifier.fillMaxWidth(),
+          horizontalArrangement = Arrangement.SpaceBetween,
+          verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = activity.resourcesToString(LocalContext.current) + " :",
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.headlineMedium
-            )
+                style = MaterialTheme.typography.headlineMedium)
             Spacer(modifier = Modifier.width(20.dp))
             Button(
                 onClick = {},
-                modifier = Modifier.testTag("languageDropDownButton"),
+                modifier = Modifier.testTag("activityDropDownButton${activity.name}"),
                 enabled = true,
                 shape = MaterialTheme.shapes.small,
                 colors =
-                ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    contentColor = MaterialTheme.colorScheme.onBackground,
-                    disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    disabledContentColor =
-                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
-                ),
-                elevation = ButtonDefaults.elevatedButtonElevation(1.dp)
-            ) {
-                DropDownMenuComponent(
-                    items = UserLevel.values().toList(),
-                    selectedItem = activityLevel,
-                    onItemSelected = { newLevel: UserLevel ->
+                    ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        contentColor = MaterialTheme.colorScheme.onBackground,
+                        disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        disabledContentColor =
+                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
+                    ),
+                elevation = ButtonDefaults.elevatedButtonElevation(1.dp)) {
+                  DropDownMenuComponent(
+                      items = UserLevel.values().toList(),
+                      selectedItem = activityLevel,
+                      onItemSelected = { newLevel: UserLevel ->
                         when (activity) {
-                            ActivityType.CLIMBING -> updateClimbingLevel(newLevel)
-                            ActivityType.HIKING -> updateHikingLevel(newLevel)
-                            ActivityType.BIKING -> updateBikingLevel(newLevel)
+                          ActivityType.CLIMBING -> updateClimbingLevel(newLevel)
+                          ActivityType.HIKING -> updateHikingLevel(newLevel)
+                          ActivityType.BIKING -> updateBikingLevel(newLevel)
                         }
-                    },
-                    toStr = { level -> level.resourcesToString(LocalContext.current) },
-                    fieldText = LocalContext.current.getString(R.string.sport_level),
-                    modifier = Modifier.testTag("settings${activity.name}Level")
-                )
-            }
-        }
+                      },
+                      toStr = { level -> level.resourcesToString(LocalContext.current) },
+                      fieldText = LocalContext.current.getString(R.string.sport_level),
+                      modifier = Modifier.testTag("settings${activity.name}Level"))
+                }
+          }
       Spacer(modifier = Modifier.height(16.dp))
     }
   }

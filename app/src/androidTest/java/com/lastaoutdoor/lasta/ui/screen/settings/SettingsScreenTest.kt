@@ -106,9 +106,10 @@ class SettingsScreenTest {
       SettingsScreen(
           language, prefActivity, levels, { _ -> }, { _ -> }, { _ -> }, { _ -> }, { _ -> }, {}, {})
     }
-    composeRule.onNodeWithTag("settingsHiking").assertIsDisplayed()
-    composeRule.onNodeWithTag("settingsHiking").performClick()
-    composeRule.onNodeWithTag("settingsHiking").assertIsDisplayed()
+    composeRule.onNodeWithTag("settingsFavActivity").assertIsDisplayed()
+    composeRule.onNodeWithTag("settingsHIKING").assertIsDisplayed()
+    composeRule.onNodeWithTag("settingsHIKING").performClick()
+    composeRule.onNodeWithTag("settingsHIKING").assertIsDisplayed()
   }
 
   @Test
@@ -120,9 +121,9 @@ class SettingsScreenTest {
       SettingsScreen(
           language, prefActivity, levels, { _ -> }, { _ -> }, { _ -> }, { _ -> }, { _ -> }, {}, {})
     }
-    composeRule.onNodeWithTag("settingsClimbing").assertIsDisplayed()
-    composeRule.onNodeWithTag("settingsClimbing").performClick()
-    composeRule.onNodeWithTag("settingsClimbing").assertIsDisplayed()
+    composeRule.onNodeWithTag("settingsCLIMBING").assertIsDisplayed()
+    composeRule.onNodeWithTag("settingsCLIMBING").performClick()
+    composeRule.onNodeWithTag("settingsCLIMBING").assertIsDisplayed()
   }
 
   @Test
@@ -134,9 +135,9 @@ class SettingsScreenTest {
       SettingsScreen(
           language, prefActivity, levels, { _ -> }, { _ -> }, { _ -> }, { _ -> }, { _ -> }, {}, {})
     }
-    composeRule.onNodeWithTag("settingsBiking").assertIsDisplayed()
-    composeRule.onNodeWithTag("settingsBiking").performClick()
-    composeRule.onNodeWithTag("settingsBiking").assertIsDisplayed()
+    composeRule.onNodeWithTag("settingsBIKING").assertIsDisplayed()
+    composeRule.onNodeWithTag("settingsBIKING").performClick()
+    composeRule.onNodeWithTag("settingsBIKING").assertIsDisplayed()
   }
 
   @Test
@@ -179,6 +180,33 @@ class SettingsScreenTest {
     composeRule.onNodeWithTag("settingsBIKINGLevel").assertIsDisplayed()
     composeRule.onNodeWithTag("settingsBIKINGLevel").performClick()
     composeRule.onNodeWithText("Intermediate").performClick()
+  }
+
+  @Test
+  fun test_settingHeaderWithOtherStrings() {
+    composeRule.activity.setContent { SettingsHeader("other") }
+    composeRule.onNodeWithTag("settingsHeader").assertIsDisplayed()
+  }
+
+  @Test
+  fun test_buttons() {
+    composeRule.activity.setContent {
+      SettingsScreen(
+          Language.ENGLISH,
+          ActivityType.HIKING,
+          UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER),
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          {},
+          {})
+    }
+    composeRule.onNodeWithTag("languageDropDownButton").assertIsDisplayed()
+    composeRule.onNodeWithTag("activityDropDownButtonHIKING").assertIsDisplayed()
+    composeRule.onNodeWithTag("activityDropDownButtonCLIMBING").assertIsDisplayed()
+    composeRule.onNodeWithTag("activityDropDownButtonBIKING").assertIsDisplayed()
   }
 
   /*

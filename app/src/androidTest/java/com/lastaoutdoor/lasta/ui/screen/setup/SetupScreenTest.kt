@@ -88,6 +88,32 @@ class SetupScreenTest {
     composeRule.onNodeWithTag("settingsLanguage").assertIsDisplayed()
   }
 
+  @Test
+  fun setupScreen_clickSubmitButton() {
+    var userId = "123"
+    var language = Language.ENGLISH
+    var prefActivity = ActivityType.HIKING
+    var levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
+
+    composeRule.activity.setContent {
+      LastaTheme(darkTheme = false) {
+        SetupScreen(
+            userId,
+            language,
+            prefActivity,
+            levels,
+            { _ -> },
+            { _ -> },
+            { _ -> },
+            { _ -> },
+            { _ -> },
+            {},
+        )
+      }
+    }
+    composeRule.onNodeWithText("setupSubmitDialog").assertIsDisplayed()
+  }
+
   /*@Test
   fun setupScreen_changeToClimbing() {
     var userId = "123"

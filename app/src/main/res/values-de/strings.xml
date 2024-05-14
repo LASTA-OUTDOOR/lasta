@@ -116,4 +116,6 @@
     <string name="activity_settings">"Aktivitätseinstellungen "</string>
     <string name = "select_lev_activity">Wählen Sie Ihr Nivaue in diese Aktivität</string>
     <string name = "Account_setup">Einstellungen</string>
+    <string name="submit_settings">Ausgewählte Einstellungen senden</string>
+    <string name="submit_settings_prompt">Sind Sie sicher, dass Sie diese Einstellungen übermitteln möchten? (Hinweis: Sie können Ihre Präferenzen weiterhin in den Einstellungen der Profilseite ändern.)</string>
 </resources>

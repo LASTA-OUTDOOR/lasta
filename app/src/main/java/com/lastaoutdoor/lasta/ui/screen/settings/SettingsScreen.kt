@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.Language
@@ -55,11 +56,13 @@ fun SettingsScreen(
               onClick = {
                 showDeleteDialog.value = false
                 signOutAndNavigate()
-              }) {
+              },
+              modifier = Modifier.testTag("settingsDeleteButton")) {
                 Text("Yes")
               }
         },
-        dismissButton = { Button(onClick = { showDeleteDialog.value = false }) { Text("No") } })
+        dismissButton = { Button(onClick = { showDeleteDialog.value = false }) { Text("No") } },
+        properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = false))
   }
 
   TopBarLogo(logoPainterId = R.drawable.arrow_back) { navigateBack() }
