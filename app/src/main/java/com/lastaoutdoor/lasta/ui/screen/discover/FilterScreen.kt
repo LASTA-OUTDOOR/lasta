@@ -141,6 +141,7 @@ fun FilterScreen(
                       val isEnabled = selectedActivitiesTypes.contains(activityType)
                       Button(
                           onClick = {},
+                          modifier = Modifier.testTag("difficultyLevelButton$index"),
                           enabled = isEnabled,
                           shape = MaterialTheme.shapes.small,
                           colors =
@@ -197,6 +198,7 @@ fun FilterScreen(
               horizontalArrangement = Arrangement.SpaceAround) {
                 Button(
                     onClick = { /* TODO */},
+                    modifier = Modifier.testTag("EraseButton"),
                     colors =
                         ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.background,

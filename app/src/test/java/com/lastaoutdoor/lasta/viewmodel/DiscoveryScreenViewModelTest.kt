@@ -16,6 +16,7 @@ import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivitiesDBRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivityRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeRadarRepository
+import io.mockk.coEvery
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.Dispatchers
@@ -37,8 +38,6 @@ class MainDispatcherRule(val dispatcher: TestDispatcher = StandardTestDispatcher
     TestWatcher() {
   @ExperimentalCoroutinesApi
   override fun starting(description: Description?) = Dispatchers.setMain(dispatcher)
-
-  class DiscoveryScreenViewModelTest()
 
   override fun finished(description: Description?) = Dispatchers.resetMain()
 }
@@ -81,9 +80,26 @@ class DiscoveryScreenViewModelTest() {
   @Test
   fun fetchBikingActivities() {
     runBlocking {
+      val fakeRel = FakeActivityRepository().fakeRel
+      coEvery { repository.getBikingRoutesInfo(any(), any(), any()) } returns
+          Response.Success(listOf(fakeRel))
+
       viewModel.updateActivityType(listOf(ActivityType.BIKING))
-      viewModel.fetchActivities()
-      assertEquals(viewModel.activities.value, emptyList<Activity>())
+
+      assertEquals(viewModel.selectedActivityType.value, listOf(ActivityType.BIKING))
+
+      assertEquals(
+          viewModel.activities.value,
+          listOf(
+              Activity(
+                  "id",
+                  1,
+                  ActivityType.BIKING,
+                  "activityImageUrl",
+                  Position(0.0, 0.0),
+                  2f,
+                  3,
+              )))
     }
   }
 
@@ -91,9 +107,26 @@ class DiscoveryScreenViewModelTest() {
   @Test
   fun fetchHikingActivities() {
     runBlocking {
+      val fakeRel = FakeActivityRepository().fakeRel
+      coEvery { repository.getHikingRoutesInfo(any(), any(), any()) } returns
+          Response.Success(listOf(fakeRel))
+
       viewModel.updateActivityType(listOf(ActivityType.HIKING))
-      viewModel.fetchActivities()
-      assertEquals(viewModel.activities.value, emptyList<Activity>())
+
+      assertEquals(viewModel.selectedActivityType.value, listOf(ActivityType.HIKING))
+
+      assertEquals(
+          viewModel.activities.value,
+          listOf(
+              Activity(
+                  "id",
+                  1,
+                  ActivityType.BIKING,
+                  "activityImageUrl",
+                  Position(0.0, 0.0),
+                  2f,
+                  3,
+              )))
     }
   }
 
@@ -101,9 +134,26 @@ class DiscoveryScreenViewModelTest() {
   @Test
   fun fetchClimbingActivities() {
     runBlocking {
+      val fakeNode = FakeActivityRepository().fakeNode
+      coEvery { repository.getClimbingPointsInfo(any(), any(), any()) } returns
+          Response.Success(listOf(fakeNode))
+
       viewModel.updateActivityType(listOf(ActivityType.CLIMBING))
-      viewModel.fetchActivities()
-      assertEquals(viewModel.activities.value, emptyList<Activity>())
+
+      assertEquals(viewModel.selectedActivityType.value, listOf(ActivityType.CLIMBING))
+
+      assertEquals(
+          viewModel.activities.value,
+          listOf(
+              Activity(
+                  "id",
+                  1,
+                  ActivityType.BIKING,
+                  "activityImageUrl",
+                  Position(0.0, 0.0),
+                  2f,
+                  3,
+              )))
     }
   }
 
@@ -152,7 +202,7 @@ class DiscoveryScreenViewModelTest() {
 
   @ExperimentalCoroutinesApi
   @Test
-  fun setRnage() {
+  fun setRange() {
     runBlocking {
       viewModel.setRange(0.0)
       assertEquals(viewModel.range.value, 0.0)

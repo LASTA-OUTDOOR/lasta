@@ -4,6 +4,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
@@ -50,5 +51,20 @@ class FilterScreenTest {
   @Test
   fun filterScreen_isDisplayed() {
     composeRule.onNodeWithTag("filterScreen").assertIsDisplayed()
+  }
+
+  @Test
+  fun buttons_areWorking() {
+    composeRule.onNodeWithTag("ToggleButtonClimbing").performClick()
+    composeRule.onNodeWithTag("ToggleButtonHiking").performClick()
+    composeRule.onNodeWithTag("ToggleButtonBiking").performClick()
+    composeRule.onNodeWithTag("ToggleButtonClimbing").performClick()
+    composeRule.onNodeWithTag("ToggleButtonHiking").performClick()
+
+    composeRule.onNodeWithTag("difficultyLevelButton0").performClick()
+
+    composeRule.onNodeWithTag("EraseButton").performClick()
+
+    composeRule.onNodeWithTag("applyFilterOptionsButton").performClick()
   }
 }

@@ -213,6 +213,8 @@ constructor(
             ActivityType.BIKING -> {
               val castedPoint = point as Relation
               _activityIds.value.add(castedPoint.id)
+              val distance =
+                  if (point.tags.distance.isEmpty()) 0f else point.tags.distance.toFloat()
               activitiesDB.addActivityIfNonExisting(
                   Activity(
                       "",
@@ -221,13 +223,12 @@ constructor(
                       point.tags.name,
                       from = point.tags.from,
                       to = point.tags.to,
-                      distance = point.tags.distance.toFloat()))
+                      distance = distance))
             }
           }
         }
 
-        _activities.value.addAll(
-            activitiesDB.getActivitiesByOSMIds(activityIds.value, false) as ArrayList<Activity>)
+        _activities.value.addAll(activitiesDB.getActivitiesByOSMIds(activityIds.value, false))
         _markerList.value.union(activitiesToMarkers(activities.value))
       }
 

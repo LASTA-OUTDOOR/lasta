@@ -9,6 +9,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -29,7 +31,8 @@ fun ToggleButton(text: String, isSelected: Boolean = false, onClick: () -> Unit)
           ButtonDefaults.buttonColors(
               containerColor = backgroundColor, contentColor = contentColor),
       shape = MaterialTheme.shapes.small,
-      elevation = ButtonDefaults.elevatedButtonElevation(3.dp)) {
+      elevation = ButtonDefaults.elevatedButtonElevation(3.dp),
+      modifier = Modifier.testTag("ToggleButton${text}")) {
         Text(text = text, style = MaterialTheme.typography.bodyMedium)
       }
 }
