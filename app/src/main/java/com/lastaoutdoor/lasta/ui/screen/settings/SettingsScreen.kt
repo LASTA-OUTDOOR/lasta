@@ -9,11 +9,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -39,6 +42,30 @@ fun SettingsScreen(
     navigateBack: () -> Unit,
     signOutAndNavigate: () -> Unit
 ) {
+
+    val showDeleteDialog = remember { mutableStateOf(false) }
+
+    if (showDeleteDialog.value) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog.value = false },
+            title = { Text(text = LocalContext.current.getString(R.string.delete_account)) },
+            text = { Text(text = "Are you sure you want to delete your account?") },
+            confirmButton = {
+                Button(onClick = {
+                    showDeleteDialog.value = false
+                    signOutAndNavigate()
+                }) {
+                    Text("Yes")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showDeleteDialog.value = false }) {
+                    Text("No")
+                }
+            }
+        )
+    }
+
   TopBarLogo(logoPainterId = R.drawable.arrow_back) { navigateBack() }
 
   Column(
@@ -60,7 +87,7 @@ fun SettingsScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
           Button(
               onClick = { signOutAndNavigate() }, modifier = Modifier.testTag("settingsSignOut")) {
                 Text(
@@ -71,7 +98,7 @@ fun SettingsScreen(
           Spacer(modifier = Modifier.width(16.dp))
           Button(
               modifier = Modifier.testTag("settingsDeleteAccount"),
-              onClick = { signOutAndNavigate() },
+              onClick = { showDeleteDialog.value = true },
               colors =
                   ButtonDefaults.buttonColors(
                       containerColor = MaterialTheme.colorScheme.error,
