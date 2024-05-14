@@ -41,7 +41,7 @@
     <string name="search">"Rechercher "</string>
     <string name="select_dist_radius">Seléctionnez le rayon de recherche</string>
     <string name="use_curr_loc">Utiliser ma location actuelle</string>
-    <string name="apply">Appliquer - A faire</string>
+    <string name="apply">Appliquer</string>
     <string name="activity_title">Titre de l\'activité</string>
     <string name="friend">Ami</string>
     <string name="no_friend">Vous n\'avez pas encore de demande d\'amis</string>
@@ -104,6 +104,8 @@
     <string name="beginner">Débutant</string>
     <string name="intermediate">Intermédiaire</string>
     <string name="advanced">Avancé</string>
+    <string name="show_completed_activities_description">L\'activation de cette option affichera toutes les activités précédemment complétées</string>
+    <string name="erase_options">Tout effacer</string>
     <string name="ride">Tour</string>
     <string name="recent_activities">Activités récentes</string>
     <string name="share_title">Lasta : Partage d\'activité</string>

@@ -40,12 +40,18 @@ fun <T> DropDownMenuComponent(
     onItemSelected: (T) -> Unit, // Callback to invoke when an item is selected
     toStr: @Composable (T) -> String,
     fieldText: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isEnabled: Boolean = true
 ) {
   var expanded by remember { mutableStateOf(false) }
 
+  val color =
+      if (isEnabled) MaterialTheme.colorScheme.primary
+      else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+
   Row(
-      modifier = modifier.clickable(onClick = { expanded = true }).testTag("textValueRow"),
+      modifier =
+          modifier.clickable(onClick = { if (isEnabled) expanded = true }).testTag("textValueRow"),
       verticalAlignment = Alignment.CenterVertically) {
         Text(
             "$fieldText:",
@@ -58,27 +64,30 @@ fun <T> DropDownMenuComponent(
             Text(
                 toStr(selectedItem),
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.primary,
+                color = color,
                 modifier = Modifier.testTag("selectedTextValue"))
 
             Icon(
                 imageVector = Icons.Outlined.KeyboardArrowDown,
                 contentDescription = "Dropdown",
-                modifier = Modifier.clickable(onClick = { expanded = true }).testTag("spinnerIcon"),
-                tint = MaterialTheme.colorScheme.primary)
+                modifier =
+                    Modifier.clickable(onClick = { if (isEnabled) expanded = true })
+                        .testTag("spinnerIcon"),
+                tint = color)
           }
 
-          DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            items.forEachIndexed { index, label ->
-              DropdownMenuItem(
-                  modifier = Modifier.testTag("DropdownItem$index").wrapContentWidth(),
-                  text = { Text(toStr(label)) },
-                  onClick = {
-                    onItemSelected(label)
-                    expanded = false
-                  })
-            }
-          }
+          DropdownMenu(
+              expanded = expanded, onDismissRequest = { if (isEnabled) expanded = false }) {
+                items.forEachIndexed { index, label ->
+                  DropdownMenuItem(
+                      modifier = Modifier.testTag("DropdownItem$index").wrapContentWidth(),
+                      text = { Text(toStr(label)) },
+                      onClick = {
+                        onItemSelected(label)
+                        expanded = false
+                      })
+                }
+              }
         }
       }
 }
