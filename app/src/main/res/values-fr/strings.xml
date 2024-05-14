@@ -108,4 +108,7 @@
     <string name="erase_options">Tout effacer</string>
     <string name="ride">Tour</string>
     <string name="recent_activities">Activités récentes</string>
+    <string name="step_count">Nombre de pas</string>
+    <string name="step_count_unavailable">Compteur de pas indisponible</string>
+    <string name="step_count_unsupported">Cet appareil ne prend pas en charge le comptage de pas </string>
 </resources>

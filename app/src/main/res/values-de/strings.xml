@@ -108,4 +108,7 @@
     <string name="erase_options">Alles löschen</string>
     <string name="ride">Radtour</string>
     <string name="recent_activities">Neueste Aktivitäten</string>
+    <string name="step_count">Schrittzahl</string>
+    <string name="step_count_unavailable">Schrittzähler Nicht verfügbar</string>
+    <string name="step_count_unsupported">Dieses Gerät unterstützt keine Schrittzählung.</string>
 </resources>
