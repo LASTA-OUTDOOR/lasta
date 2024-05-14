@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun SeparatorComponent() {
   HorizontalDivider(
-      color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
+      color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
       thickness = 1.dp,
       modifier = Modifier.padding(vertical = 4.dp) // Add padding as needed
       )

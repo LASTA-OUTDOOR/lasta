@@ -106,4 +106,6 @@
     <string name="advanced">Erweitert</string>
     <string name="ride">Radtour</string>
     <string name="recent_activities">Neueste Aktivitäten</string>
+    <string name="general_settings">Allgemeine Einstellungen</string>
+    <string name="activity_settings">"Aktivitätseinstellungen "</string>
 </resources>

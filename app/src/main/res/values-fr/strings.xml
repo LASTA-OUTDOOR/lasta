@@ -106,4 +106,6 @@
     <string name="advanced">Avancé</string>
     <string name="ride">Tour</string>
     <string name="recent_activities">Activités récentes</string>
+    <string name="general_settings">Paramètres généraux</string>
+    <string name="activity_settings">Paramètres d\'activités</string>
 </resources>

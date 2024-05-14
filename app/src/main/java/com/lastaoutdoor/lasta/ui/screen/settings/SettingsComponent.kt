@@ -1,11 +1,18 @@
 package com.lastaoutdoor.lasta.ui.screen.settings
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -32,130 +39,145 @@ fun SettingsComponent(
     updateHikingLevel: (UserLevel) -> Unit,
     updateBikingLevel: (UserLevel) -> Unit,
 ) {
-  var selectedLanguage = language
-  var selectedActivity = prefActivity
-
-  var climbingLevel = levels.climbingLevel
-  var hikingLevel = levels.hikingLevel
-  var bikingLevel = levels.bikingLevel
-
-  // Title "Settings"
-  Row {
-    Text(
-        text = LocalContext.current.getString(R.string.Account_settings),
-        fontWeight = FontWeight.Bold,
-        style = MaterialTheme.typography.displayLarge,
-        modifier = Modifier.testTag("settingsTitle"),
-        textAlign = TextAlign.Center)
+  Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    TitleComponent() // Title of the screen
+    Spacer(modifier = Modifier.height(24.dp))
+    SettingsHeader(type = "General") // Header for General Settings
+    Spacer(modifier = Modifier.height(24.dp))
+    LanguageSelectionComponent(language, updateLanguage)
+    Spacer(modifier = Modifier.height(24.dp))
+    SettingsHeader(type = "Activity") // Header for Activity settings
+    Spacer(modifier = Modifier.height(24.dp))
+    FavoriteActivityComponent(prefActivity, updatePrefActivity) // Favorite Activity Selection
+    Spacer(modifier = Modifier.height(24.dp))
+    SeparatorComponent()
+    Spacer(modifier = Modifier.height(24.dp))
+    ActivityLevelsComponent(levels, updateClimbingLevel, updateHikingLevel, updateBikingLevel)
   }
+}
 
-  SeparatorComponent()
-
-  Row {
-    // Language selection
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-      Text(
-          text = LocalContext.current.getString(R.string.select_languague),
-          style = MaterialTheme.typography.headlineMedium,
-          color = MaterialTheme.colorScheme.onBackground)
-
+@Composable
+fun SettingsHeader(type: String) {
+  Surface(
+      modifier = Modifier.fillMaxWidth(),
+      color = MaterialTheme.colorScheme.secondaryContainer,
+  ) {
+    Column {
+      HorizontalDivider()
       Spacer(modifier = Modifier.height(8.dp))
-      Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-        DropDownMenuComponent(
-            items = Language.values().toList(),
-            selectedItem = selectedLanguage,
-            onItemSelected = { newLanguage: Language ->
-              selectedLanguage = newLanguage
-              updateLanguage(newLanguage)
-            },
-            toStr = { language -> language.resourcesToString(LocalContext.current) },
-            fieldText = LocalContext.current.getString(R.string.languague),
-            modifier = Modifier.testTag("settingsLanguage"))
-      }
+      Text(
+          text =
+              when (type) {
+                "General" -> LocalContext.current.getString(R.string.general_settings)
+                "Activity" -> LocalContext.current.getString(R.string.activity_settings)
+                else -> LocalContext.current.getString(R.string.Account_settings)
+              },
+          fontWeight = FontWeight.Bold,
+          style = MaterialTheme.typography.displaySmall,
+          modifier = Modifier.padding(horizontal = 16.dp),
+          textAlign = TextAlign.Justify)
+      Spacer(modifier = Modifier.height(8.dp))
     }
   }
+  HorizontalDivider()
+}
 
-  Row {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-      // Outdoor activity selection
-      Text(
-          text = LocalContext.current.getString(R.string.select_fav_activity),
-          style = MaterialTheme.typography.headlineMedium,
-          color = MaterialTheme.colorScheme.onBackground)
+@Composable
+fun TitleComponent() {
+  Text(
+      text = LocalContext.current.getString(R.string.Account_settings),
+      fontWeight = FontWeight.Bold,
+      style = MaterialTheme.typography.displayLarge,
+      modifier = Modifier.testTag("settingsTitle"),
+      textAlign = TextAlign.Center)
+}
 
-      Spacer(modifier = Modifier.height(8.dp))
+@Composable
+fun LanguageSelectionComponent(
+    language: Language,
+    updateLanguage: (Language) -> Unit,
+) {
+  Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Text(
+        text = LocalContext.current.getString(R.string.select_languague),
+        style = MaterialTheme.typography.headlineMedium,
+        color = MaterialTheme.colorScheme.onBackground)
+    Spacer(modifier = Modifier.height(8.dp))
+    DropDownMenuComponent(
+        items = Language.values().toList(),
+        selectedItem = language,
+        onItemSelected = { newLanguage: Language -> updateLanguage(newLanguage) },
+        toStr = { language -> language.resourcesToString(LocalContext.current) },
+        fieldText = LocalContext.current.getString(R.string.languague),
+        modifier = Modifier.testTag("settingsLanguage"))
+  }
+}
+
+@Composable
+fun FavoriteActivityComponent(
+    prefActivity: ActivityType,
+    updatePrefActivity: (ActivityType) -> Unit,
+) {
+  Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Text(
+        text = LocalContext.current.getString(R.string.select_fav_activity),
+        style = MaterialTheme.typography.headlineMedium,
+        color = MaterialTheme.colorScheme.onBackground)
+    Spacer(modifier = Modifier.height(8.dp))
+    Row {
       for (activity in ActivityType.values()) {
-        val tag =
-            when (activity) {
-              ActivityType.CLIMBING -> "settingsClimbing"
-              ActivityType.HIKING -> "settingsHiking"
-              ActivityType.BIKING -> "settingsBiking"
-            }
+        val tag = "settings${activity.name}"
         Button(
             modifier = Modifier.padding(1.dp).testTag(tag),
-            onClick = {
-              selectedActivity = activity
-              updatePrefActivity(activity)
-            },
+            onClick = { updatePrefActivity(activity) },
             colors =
                 ButtonDefaults.buttonColors(
                     containerColor =
-                        if (selectedActivity == activity) MaterialTheme.colorScheme.primary
+                        if (prefActivity == activity) MaterialTheme.colorScheme.primary
                         else MaterialTheme.colorScheme.secondaryContainer,
                     contentColor = MaterialTheme.colorScheme.onPrimary)) {
-              val sport =
-                  when (activity) {
-                    ActivityType.CLIMBING -> LocalContext.current.getString(R.string.climbing)
-                    ActivityType.HIKING -> LocalContext.current.getString(R.string.hiking)
-                    ActivityType.BIKING -> LocalContext.current.getString(R.string.biking)
-                  }
-              Text(text = sport)
+              Text(text = activity.resourcesToString(LocalContext.current))
             }
       }
     }
   }
+}
 
-  Row {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-      for (activity in ActivityType.values()) {
-        Text(
-            text = activity.resourcesToString(LocalContext.current),
-            color = MaterialTheme.colorScheme.primary,
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.headlineMedium)
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        DropDownMenuComponent(
-            items = UserLevel.values().toList(),
-            selectedItem =
-                when (activity) {
-                  ActivityType.CLIMBING -> climbingLevel
-                  ActivityType.HIKING -> hikingLevel
-                  ActivityType.BIKING -> bikingLevel
-                },
-            onItemSelected = { newLevel: UserLevel ->
-              when (activity) {
-                ActivityType.CLIMBING -> {
-                  climbingLevel = newLevel
-                  updateClimbingLevel(newLevel)
-                }
-                ActivityType.HIKING -> {
-                  hikingLevel = newLevel
-                  updateHikingLevel(newLevel)
-                }
-                ActivityType.BIKING -> {
-                  bikingLevel = newLevel
-                  updateBikingLevel(newLevel)
-                }
-              }
-            },
-            toStr = { level -> level.resourcesToString(LocalContext.current) },
-            fieldText = LocalContext.current.getString(R.string.sport_level),
-            modifier = Modifier.testTag("settings${activity.name}Level"))
-
-        Spacer(modifier = Modifier.height(24.dp))
-      }
+@Composable
+fun ActivityLevelsComponent(
+    levels: UserActivitiesLevel,
+    updateClimbingLevel: (UserLevel) -> Unit,
+    updateHikingLevel: (UserLevel) -> Unit,
+    updateBikingLevel: (UserLevel) -> Unit,
+) {
+  Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    for (activity in ActivityType.values()) {
+      val activityLevel =
+          when (activity) {
+            ActivityType.CLIMBING -> levels.climbingLevel
+            ActivityType.HIKING -> levels.hikingLevel
+            ActivityType.BIKING -> levels.bikingLevel
+          }
+      Text(
+          text = activity.resourcesToString(LocalContext.current),
+          color = MaterialTheme.colorScheme.primary,
+          fontWeight = FontWeight.Bold,
+          style = MaterialTheme.typography.headlineMedium)
+      Spacer(modifier = Modifier.height(8.dp))
+      DropDownMenuComponent(
+          items = UserLevel.values().toList(),
+          selectedItem = activityLevel,
+          onItemSelected = { newLevel: UserLevel ->
+            when (activity) {
+              ActivityType.CLIMBING -> updateClimbingLevel(newLevel)
+              ActivityType.HIKING -> updateHikingLevel(newLevel)
+              ActivityType.BIKING -> updateBikingLevel(newLevel)
+            }
+          },
+          toStr = { level -> level.resourcesToString(LocalContext.current) },
+          fieldText = LocalContext.current.getString(R.string.sport_level),
+          modifier = Modifier.testTag("settings${activity.name}Level"))
+      Spacer(modifier = Modifier.height(24.dp))
     }
   }
 }
