@@ -215,6 +215,21 @@ class SettingsScreenTest {
     composeRule.onNodeWithTag("activityDropDownButtonBIKING").assertIsDisplayed()
   }
 
+  @Test
+  fun settingsScreen_deleteAccount() {
+    val language = Language.ENGLISH
+    val prefActivity = ActivityType.HIKING
+    val levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
+    composeRule.activity.setContent {
+      SettingsScreen(
+          language, prefActivity, levels, { _ -> }, { _ -> }, { _ -> }, { _ -> }, { _ -> }, {}, {})
+    }
+    composeRule.onNodeWithTag("settingsDeleteAccount").assertIsDisplayed()
+    composeRule.onNodeWithTag("settingsDeleteAccount").performClick()
+    composeRule.onNodeWithTag("settingsDeleteDialog").assertIsDisplayed()
+    composeRule.onNodeWithTag("settingsDeleteButton").performClick()
+  }
+
   /*
   @Test
   fun settingsScreen_signOut() {

@@ -48,6 +48,7 @@ fun SettingsScreen(
 
   if (showDeleteDialog.value) {
     AlertDialog(
+        modifier = Modifier.testTag("settingsDeleteDialog"),
         onDismissRequest = { showDeleteDialog.value = false },
         title = { Text(text = LocalContext.current.getString(R.string.delete_account)) },
         text = { Text(text = LocalContext.current.getString(R.string.delete_account_prompt)) },

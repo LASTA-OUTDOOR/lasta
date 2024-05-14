@@ -111,7 +111,9 @@ class SetupScreenTest {
         )
       }
     }
-    composeRule.onNodeWithText("setupSubmitDialog").assertIsDisplayed()
+    composeRule.onNodeWithTag("setupFinishButton").performClick()
+    composeRule.onNodeWithTag("setupSubmitDialog").assertIsDisplayed()
+    composeRule.onNodeWithTag("setupSubmitButton").performClick()
   }
 
   /*@Test
