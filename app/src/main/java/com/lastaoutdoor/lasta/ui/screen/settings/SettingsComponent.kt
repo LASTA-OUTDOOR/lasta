@@ -26,7 +26,6 @@ import com.lastaoutdoor.lasta.models.user.Language
 import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
-import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
 
 @Composable
 fun SettingsComponent(
@@ -49,8 +48,6 @@ fun SettingsComponent(
     SettingsHeader(type = "Activity") // Header for Activity settings
     Spacer(modifier = Modifier.height(24.dp))
     FavoriteActivityComponent(prefActivity, updatePrefActivity) // Favorite Activity Selection
-    Spacer(modifier = Modifier.height(24.dp))
-    SeparatorComponent()
     Spacer(modifier = Modifier.height(24.dp))
     ActivityLevelsComponent(levels, updateClimbingLevel, updateHikingLevel, updateBikingLevel)
   }
@@ -103,13 +100,28 @@ fun LanguageSelectionComponent(
         style = MaterialTheme.typography.headlineMedium,
         color = MaterialTheme.colorScheme.onBackground)
     Spacer(modifier = Modifier.height(8.dp))
-    DropDownMenuComponent(
-        items = Language.values().toList(),
-        selectedItem = language,
-        onItemSelected = { newLanguage: Language -> updateLanguage(newLanguage) },
-        toStr = { language -> language.resourcesToString(LocalContext.current) },
-        fieldText = LocalContext.current.getString(R.string.languague),
-        modifier = Modifier.testTag("settingsLanguage"))
+      Button(
+          onClick = {},
+          modifier = Modifier.testTag("languageDropDownButton"),
+          enabled = true,
+          shape = MaterialTheme.shapes.small,
+          colors =
+          ButtonDefaults.buttonColors(
+              containerColor = MaterialTheme.colorScheme.surface,
+              contentColor = MaterialTheme.colorScheme.onBackground,
+              disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+              disabledContentColor =
+              MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
+          ),
+          elevation = ButtonDefaults.elevatedButtonElevation(1.dp)) {
+          DropDownMenuComponent(
+              items = Language.values().toList(),
+              selectedItem = language,
+              onItemSelected = { newLanguage: Language -> updateLanguage(newLanguage) },
+              toStr = { language -> language.resourcesToString(LocalContext.current) },
+              fieldText = LocalContext.current.getString(R.string.languague),
+              modifier = Modifier.testTag("settingsLanguage"))
+      }
   }
 }
 
@@ -164,20 +176,35 @@ fun ActivityLevelsComponent(
           fontWeight = FontWeight.Bold,
           style = MaterialTheme.typography.headlineMedium)
       Spacer(modifier = Modifier.height(8.dp))
-      DropDownMenuComponent(
-          items = UserLevel.values().toList(),
-          selectedItem = activityLevel,
-          onItemSelected = { newLevel: UserLevel ->
-            when (activity) {
-              ActivityType.CLIMBING -> updateClimbingLevel(newLevel)
-              ActivityType.HIKING -> updateHikingLevel(newLevel)
-              ActivityType.BIKING -> updateBikingLevel(newLevel)
-            }
-          },
-          toStr = { level -> level.resourcesToString(LocalContext.current) },
-          fieldText = LocalContext.current.getString(R.string.sport_level),
-          modifier = Modifier.testTag("settings${activity.name}Level"))
-      Spacer(modifier = Modifier.height(24.dp))
+        Button(
+            onClick = {},
+            modifier = Modifier.testTag("languageDropDownButton"),
+            enabled = true,
+            shape = MaterialTheme.shapes.small,
+            colors =
+            ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.onBackground,
+                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                disabledContentColor =
+                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
+            ),
+            elevation = ButtonDefaults.elevatedButtonElevation(1.dp)) {
+            DropDownMenuComponent(
+                items = UserLevel.values().toList(),
+                selectedItem = activityLevel,
+                onItemSelected = { newLevel: UserLevel ->
+                    when (activity) {
+                        ActivityType.CLIMBING -> updateClimbingLevel(newLevel)
+                        ActivityType.HIKING -> updateHikingLevel(newLevel)
+                        ActivityType.BIKING -> updateBikingLevel(newLevel)
+                    }
+                },
+                toStr = { level -> level.resourcesToString(LocalContext.current) },
+                fieldText = LocalContext.current.getString(R.string.sport_level),
+                modifier = Modifier.testTag("settings${activity.name}Level"))
+        }
+      Spacer(modifier = Modifier.height(16.dp))
     }
   }
 }

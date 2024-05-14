@@ -85,6 +85,7 @@
     <string name="send_message">Senden</string>
     <string name="Account_settings">Kontoeinstellungen</string>
     <string name="delete_account">Konto löschen</string>
+    <string name="delete_account_prompt">Möchten Sie Ihr Konto wirklich löschen?</string>
     <string name="tab_favorites">Favoriten</string>
     <string name="tab_socials">Freunde</string>
     <string name="sport_level">Niveau</string>

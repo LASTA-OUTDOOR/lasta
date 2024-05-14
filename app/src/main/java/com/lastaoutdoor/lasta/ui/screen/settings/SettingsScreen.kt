@@ -49,7 +49,7 @@ fun SettingsScreen(
     AlertDialog(
         onDismissRequest = { showDeleteDialog.value = false },
         title = { Text(text = LocalContext.current.getString(R.string.delete_account)) },
-        text = { Text(text = "Are you sure you want to delete your account?") },
+        text = { Text(text = LocalContext.current.getString(R.string.delete_account_prompt)) },
         confirmButton = {
           Button(
               onClick = {
