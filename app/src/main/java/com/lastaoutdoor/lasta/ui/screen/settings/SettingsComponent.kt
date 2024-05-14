@@ -86,7 +86,7 @@ fun SettingsHeader(type: String) {
 
 @Composable
 fun TitleComponent(setUpOrSetting: String) {
-  Row {
+  Row(modifier = Modifier.testTag("settingsTitleHeader")) {
     if (setUpOrSetting == "Setup") {
       // put a small setting icon in secondary color
       Icon(
