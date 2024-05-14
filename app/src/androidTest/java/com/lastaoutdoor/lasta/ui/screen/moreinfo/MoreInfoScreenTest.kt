@@ -76,22 +76,24 @@ class MoreInfoScreenTest {
   @Test
   fun topBar_isDisplayedAndClicked() {
     composeRule.onNodeWithTag("Top Bar").assertIsDisplayed()
-    //download button
+    // download button
     composeRule
         .onNodeWithContentDescription("Top Bar logo ${R.drawable.download_button}")
         .assertIsDisplayed()
-    composeRule.onNodeWithContentDescription("Top Bar logo ${R.drawable.download_button}").performClick()
+    composeRule
+        .onNodeWithContentDescription("Top Bar logo ${R.drawable.download_button}")
+        .performClick()
 
-    //back button
+    // back button
     composeRule
         .onNodeWithContentDescription("Top Bar logo ${R.drawable.arrow_back}")
         .assertIsDisplayed()
     composeRule.onNodeWithContentDescription("Top Bar logo ${R.drawable.arrow_back}").performClick()
 
-    //share button
-    composeRule
-        .onNodeWithContentDescription("Top Bar logo ${R.drawable.share}")
-        .assertIsDisplayed()
+    // share button
+    composeRule.onNodeWithContentDescription("Top Bar logo ${R.drawable.share}").assertIsDisplayed()
+
+    composeRule.onNodeWithContentDescription("Top Bar logo ${R.drawable.share}").performClick()
   }
 
   // Test that the more info screen is displayed
