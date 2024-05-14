@@ -146,4 +146,5 @@
     <string name="step_count">Step Count</string>
     <string name="step_count_unavailable">Step Counter Not Available</string>
     <string name="step_count_unsupported">This device does not support step counting.</string>
+    <string name="share_base_url" translatable="false">https://lasta.jerem.ch/activity/</string>
 </resources>
