@@ -183,18 +183,6 @@ class SettingsScreenTest {
   }
 
   @Test
-  fun test_settingHeaderWithOtherStrings() {
-    composeRule.activity.setContent { SettingsHeader("other") }
-    composeRule.onNodeWithTag("settingsHeader").assertIsDisplayed()
-  }
-
-  @Test
-  fun test_titleHeaderWithOtherStrings() {
-    composeRule.activity.setContent { TitleComponent("other") }
-    composeRule.onNodeWithTag("settingsTitleHeader").assertIsDisplayed()
-  }
-
-  @Test
   fun test_buttons() {
     composeRule.activity.setContent {
       SettingsScreen(

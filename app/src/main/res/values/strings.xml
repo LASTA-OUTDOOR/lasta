@@ -151,6 +151,8 @@
     <string name="recent_activities">Recent Activities</string>
     <string name="share_title">Lasta : Activity Sharing</string>
     <string name="share_body">"Hi ! Check out this activity on Lasta : "</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
     <!--Step Counting-->
     <string name="step_count">Step Count</string>

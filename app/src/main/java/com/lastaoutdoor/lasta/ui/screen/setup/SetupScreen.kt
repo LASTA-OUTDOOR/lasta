@@ -57,10 +57,14 @@ fun SetupScreen(
                 navigateToMain()
               },
               modifier = Modifier.testTag("setupSubmitButton")) {
-                Text("Yes")
+                Text(text = LocalContext.current.getString(R.string.yes))
               }
         },
-        dismissButton = { Button(onClick = { showSubmitDialog.value = false }) { Text("No") } },
+        dismissButton = {
+          Button(onClick = { showSubmitDialog.value = false }) {
+            Text(text = LocalContext.current.getString(R.string.no))
+          }
+        },
         properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false))
   }
 
@@ -80,7 +84,7 @@ fun SetupScreen(
             updateClimbingLevel = updateClimbingLevel,
             updateHikingLevel = updateHikingLevel,
             updateBikingLevel = updateBikingLevel,
-            setUpOrSetting = "Setup")
+            setUpOrSetting = true)
 
         Spacer(modifier = Modifier.height(24.dp))
 

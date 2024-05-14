@@ -59,7 +59,7 @@ fun SettingsScreen(
                 signOutAndNavigate()
               },
               modifier = Modifier.testTag("settingsDeleteButton")) {
-                Text("Yes")
+                Text(LocalContext.current.getString(R.string.yes))
               }
         },
         dismissButton = { Button(onClick = { showDeleteDialog.value = false }) { Text("No") } },
@@ -84,7 +84,7 @@ fun SettingsScreen(
             updateClimbingLevel = updateClimbingLevel,
             updateHikingLevel = updateHikingLevel,
             updateBikingLevel = updateBikingLevel,
-            setUpOrSetting = "Settings")
+            setUpOrSetting = false)
 
         Spacer(modifier = Modifier.height(24.dp))
 

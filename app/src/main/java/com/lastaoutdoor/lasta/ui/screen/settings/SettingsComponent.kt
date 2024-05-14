@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.Language
+import com.lastaoutdoor.lasta.models.user.SettingsType
 import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
@@ -42,16 +43,16 @@ fun SettingsComponent(
     updateClimbingLevel: (UserLevel) -> Unit,
     updateHikingLevel: (UserLevel) -> Unit,
     updateBikingLevel: (UserLevel) -> Unit,
-    setUpOrSetting: String // "Setup" or "Settings"
+    setUpOrSetting: Boolean // Setup if true, Settings if false
 ) {
   Column(horizontalAlignment = Alignment.CenterHorizontally) {
     TitleComponent(setUpOrSetting = setUpOrSetting) // Title of the screen
     Spacer(modifier = Modifier.height(24.dp))
-    SettingsHeader(type = "General") // Header for General Settings
+    SettingsHeader(SettingsType.GENERAL) // Header for General Settings
     Spacer(modifier = Modifier.height(24.dp))
     LanguageSelectionComponent(language, updateLanguage)
     Spacer(modifier = Modifier.height(24.dp))
-    SettingsHeader(type = "Activity") // Header for Activity settings
+    SettingsHeader(SettingsType.ACTIVITY) // Header for Activity settings
     Spacer(modifier = Modifier.height(24.dp))
     FavoriteActivityComponent(prefActivity, updatePrefActivity) // Favorite Activity Selection
     Spacer(modifier = Modifier.height(24.dp))
@@ -60,18 +61,15 @@ fun SettingsComponent(
 }
 
 @Composable
-fun SettingsHeader(type: String) {
+fun SettingsHeader(setUpOrSetting: SettingsType) {
 
   Column {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
       Text(
           text =
-              when (type) {
-                "General" -> LocalContext.current.getString(R.string.general_settings)
-                "Activity" -> LocalContext.current.getString(R.string.activity_settings)
-                else -> {
-                  LocalContext.current.getString(R.string.general_settings)
-                }
+              when (setUpOrSetting) {
+                SettingsType.GENERAL -> LocalContext.current.getString(R.string.general_settings)
+                SettingsType.ACTIVITY -> LocalContext.current.getString(R.string.activity_settings)
               },
           fontWeight = FontWeight.Bold,
           color = MaterialTheme.colorScheme.primary,
@@ -85,9 +83,9 @@ fun SettingsHeader(type: String) {
 }
 
 @Composable
-fun TitleComponent(setUpOrSetting: String) {
+fun TitleComponent(setUpOrSetting: Boolean) {
   Row(modifier = Modifier.testTag("settingsTitleHeader")) {
-    if (setUpOrSetting == "Setup") {
+    if (setUpOrSetting) {
       // put a small setting icon in secondary color
       Icon(
           imageVector = Icons.Default.Build,
@@ -104,16 +102,16 @@ fun TitleComponent(setUpOrSetting: String) {
     }
     Text(
         text =
-            when (setUpOrSetting) {
-              "Settings" -> LocalContext.current.getString(R.string.Account_settings)
-              "Setup" -> LocalContext.current.getString(R.string.Account_setup)
-              else -> LocalContext.current.getString(R.string.Account_settings)
+            if (setUpOrSetting) {
+              LocalContext.current.getString(R.string.Account_setup)
+            } else {
+              LocalContext.current.getString(R.string.Account_settings)
             },
         fontWeight = FontWeight.Bold,
         style = MaterialTheme.typography.displayLarge,
         modifier = Modifier.testTag("settingsTitle"),
         textAlign = TextAlign.Center)
-    if (setUpOrSetting == "Setup") {
+    if (setUpOrSetting) {
       // put a small setting icon in secondary color
       Icon(
           imageVector = Icons.Default.Build,
