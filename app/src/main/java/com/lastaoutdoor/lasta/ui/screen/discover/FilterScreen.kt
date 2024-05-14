@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -94,25 +94,21 @@ fun FilterScreen(
 
     HorizontalDivider(modifier = Modifier.fillMaxWidth())
 
-    Spacer(modifier = Modifier.height(16.dp))
+    Spacer(modifier = Modifier.fillMaxHeight(0.025f))
 
     // Filter by activity type
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
-        horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.SpaceBetween) {
+        modifier = Modifier.fillMaxSize().padding(16.dp), horizontalAlignment = Alignment.Start) {
           Column {
             Text(
                 text = stringResource(id = R.string.filter_activity_type),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold)
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             FlowRow(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.padding(horizontal = 8.dp)) {
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp).fillMaxWidth()) {
                   activities.forEach { activity ->
                     ToggleButton(
                         activity.resourcesToString(LocalContext.current),
@@ -127,44 +123,46 @@ fun FilterScreen(
                 }
           }
 
+          Spacer(modifier = Modifier.fillMaxHeight(0.05f))
+          // Filter by difficulty level
           Column {
-            // Filter by difficulty level
             Text(
                 text = stringResource(id = R.string.filter_difficulty_level),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold)
 
-            Column(
-                modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 0.dp)) {
-                  ActivityType.values().forEachIndexed { index, activityType ->
-                    Row(modifier = Modifier.padding(vertical = 8.dp)) {
-                      val isEnabled = selectedActivitiesTypes.contains(activityType)
-                      Button(
-                          onClick = {},
-                          modifier = Modifier.testTag("difficultyLevelButton$index"),
-                          enabled = isEnabled,
-                          shape = MaterialTheme.shapes.small,
-                          colors =
-                              ButtonDefaults.buttonColors(
-                                  containerColor = MaterialTheme.colorScheme.surface,
-                                  contentColor = MaterialTheme.colorScheme.onBackground,
-                                  disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                                  disabledContentColor =
-                                      MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
-                              ),
-                          elevation = ButtonDefaults.elevatedButtonElevation(1.dp)) {
-                            DropDownMenuComponent(
-                                items = UserLevel.values().toList(),
-                                selectedItem = activitiesLevelArray[index],
-                                onItemSelected = { activitiesLevelArray[index] = it },
-                                toStr = { level -> level.resourcesToString(LocalContext.current) },
-                                fieldText = activityType.resourcesToString(LocalContext.current),
-                                isEnabled = isEnabled)
-                          }
-                    }
-                  }
+            Column(modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp)) {
+              ActivityType.values().forEachIndexed { index, activityType ->
+                Row(modifier = Modifier.padding(vertical = 8.dp)) {
+                  val isEnabled = selectedActivitiesTypes.contains(activityType)
+                  Button(
+                      onClick = {},
+                      modifier = Modifier.testTag("difficultyLevelButton$index"),
+                      enabled = isEnabled,
+                      shape = MaterialTheme.shapes.small,
+                      colors =
+                          ButtonDefaults.buttonColors(
+                              containerColor = MaterialTheme.colorScheme.surface,
+                              contentColor = MaterialTheme.colorScheme.onBackground,
+                              disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                              disabledContentColor =
+                                  MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
+                          ),
+                      elevation = ButtonDefaults.elevatedButtonElevation(1.dp)) {
+                        DropDownMenuComponent(
+                            items = UserLevel.values().toList(),
+                            selectedItem = activitiesLevelArray[index],
+                            onItemSelected = { activitiesLevelArray[index] = it },
+                            toStr = { level -> level.resourcesToString(LocalContext.current) },
+                            fieldText = activityType.resourcesToString(LocalContext.current),
+                            isEnabled = isEnabled)
+                      }
                 }
+              }
+            }
           }
+
+          Spacer(modifier = Modifier.fillMaxHeight(0.05f))
 
           // Enable the user to see or not his/her completed activities
           Column {
@@ -189,39 +187,39 @@ fun FilterScreen(
                   Text(
                       text = stringResource(id = R.string.show_completed_activities_description),
                       style = MaterialTheme.typography.bodyMedium,
-                      color = Color.LightGray,
+                      color = Color.Gray,
                   )
                 }
           }
-          Row(
-              modifier = Modifier.fillMaxWidth().padding(8.dp),
-              horizontalArrangement = Arrangement.SpaceAround) {
-                Button(
-                    onClick = { /* TODO */},
-                    modifier = Modifier.testTag("EraseButton"),
-                    colors =
-                        ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.background,
-                            contentColor =
-                                MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f))) {
-                      Text(
-                          stringResource(id = R.string.erase_options),
-                          style = MaterialTheme.typography.headlineSmall)
-                    }
-                // Apply the filter options
-                ElevatedButton(
-                    onClick = {
-                      { /* TODO */}
-                      navigateBack()
-                    },
-                    elevation = ButtonDefaults.elevatedButtonElevation(3.dp),
-                    modifier = Modifier.testTag("applyFilterOptionsButton"),
-                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
-                      Text(
-                          LocalContext.current.getString(R.string.apply),
-                          style = MaterialTheme.typography.headlineMedium)
-                    }
-              }
+          Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
+            Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+              Button(
+                  onClick = { /* TODO */},
+                  modifier = Modifier.testTag("EraseButton"),
+                  colors =
+                      ButtonDefaults.buttonColors(
+                          containerColor = MaterialTheme.colorScheme.background,
+                          contentColor =
+                              MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f))) {
+                    Text(
+                        stringResource(id = R.string.erase_options),
+                        style = MaterialTheme.typography.headlineSmall)
+                  }
+              // Apply the filter options
+              ElevatedButton(
+                  onClick = {
+                    { /* TODO */}
+                    navigateBack()
+                  },
+                  elevation = ButtonDefaults.elevatedButtonElevation(3.dp),
+                  modifier = Modifier.testTag("applyFilterOptionsButton").weight(0.6f),
+                  colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
+                    Text(
+                        LocalContext.current.getString(R.string.apply),
+                        style = MaterialTheme.typography.headlineMedium)
+                  }
+            }
+          }
         }
   }
 }
