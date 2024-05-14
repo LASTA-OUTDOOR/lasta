@@ -43,28 +43,24 @@ fun SettingsScreen(
     signOutAndNavigate: () -> Unit
 ) {
 
-    val showDeleteDialog = remember { mutableStateOf(false) }
+  val showDeleteDialog = remember { mutableStateOf(false) }
 
-    if (showDeleteDialog.value) {
-        AlertDialog(
-            onDismissRequest = { showDeleteDialog.value = false },
-            title = { Text(text = LocalContext.current.getString(R.string.delete_account)) },
-            text = { Text(text = "Are you sure you want to delete your account?") },
-            confirmButton = {
-                Button(onClick = {
-                    showDeleteDialog.value = false
-                    signOutAndNavigate()
-                }) {
-                    Text("Yes")
-                }
-            },
-            dismissButton = {
-                Button(onClick = { showDeleteDialog.value = false }) {
-                    Text("No")
-                }
-            }
-        )
-    }
+  if (showDeleteDialog.value) {
+    AlertDialog(
+        onDismissRequest = { showDeleteDialog.value = false },
+        title = { Text(text = LocalContext.current.getString(R.string.delete_account)) },
+        text = { Text(text = "Are you sure you want to delete your account?") },
+        confirmButton = {
+          Button(
+              onClick = {
+                showDeleteDialog.value = false
+                signOutAndNavigate()
+              }) {
+                Text("Yes")
+              }
+        },
+        dismissButton = { Button(onClick = { showDeleteDialog.value = false }) { Text("No") } })
+  }
 
   TopBarLogo(logoPainterId = R.drawable.arrow_back) { navigateBack() }
 
