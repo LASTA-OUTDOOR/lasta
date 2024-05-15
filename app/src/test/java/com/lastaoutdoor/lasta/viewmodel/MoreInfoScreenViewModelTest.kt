@@ -2,6 +2,7 @@ package com.lastaoutdoor.lasta.viewmodel
 
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.data.offline.ActivityDatabaseImpl
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.activity.Difficulty
@@ -11,6 +12,7 @@ import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivitiesDBRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivityRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserDB
+import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -41,9 +43,10 @@ class MoreInfoScreenViewModelTest {
   fun testFetchDiff() {
     val fakeDb = FakeActivityRepository()
     val fk = FakeActivitiesDBRepository()
+
     val fakeUserDB = FakeUserDB()
     val moreInfoScreenViewModel: MoreInfoScreenViewModel =
-        MoreInfoScreenViewModel(fakeDb, fk, fakeUserDB)
+        MoreInfoScreenViewModel(fakeDb, fk, ActivityDatabaseImpl(mockk()), fakeUserDB)
     val fakeActivity =
         Activity("a", 10, activityType = ActivityType.CLIMBING, difficulty = Difficulty.EASY)
     val fakeActivity2 =
@@ -61,9 +64,10 @@ class MoreInfoScreenViewModelTest {
   fun testMoreInfoMarker() {
     val fakeDb = FakeActivityRepository()
     val fk = FakeActivitiesDBRepository()
+
     val fakeUserDB = FakeUserDB()
     val moreInfoScreenViewModel: MoreInfoScreenViewModel =
-        MoreInfoScreenViewModel(fakeDb, fk, fakeUserDB)
+        MoreInfoScreenViewModel(fakeDb, fk, ActivityDatabaseImpl(mockk()), fakeUserDB)
     val fakeActivity =
         Activity("a", 10, activityType = ActivityType.CLIMBING, difficulty = Difficulty.EASY)
     val fakeActivity2 =
@@ -89,7 +93,8 @@ class MoreInfoScreenViewModelTest {
     fakeUserDB.updateUser(UserModel("1"))
     fakeUserDB.updateUser(UserModel("2"))
     fakeUserDB.updateUser(UserModel("3"))
-    val moreInfoScreenViewModel = MoreInfoScreenViewModel(fakeDb, fk, fakeUserDB)
+    val moreInfoScreenViewModel =
+        MoreInfoScreenViewModel(fakeDb, fk, ActivityDatabaseImpl(mockk()), fakeUserDB)
     moreInfoScreenViewModel.getUserModels(listOf("1", "2", "3"))
     assertEquals(moreInfoScreenViewModel.usersList.value.size, 3)
     assertEquals(moreInfoScreenViewModel.usersList.value[0]!!.userId, "1")
@@ -103,7 +108,8 @@ class MoreInfoScreenViewModelTest {
     val fk = FakeActivitiesDBRepository()
     val fakeUserDB = FakeUserDB()
     fakeUserDB.updateUser(UserModel("1"))
-    val moreInfoScreenViewModel = MoreInfoScreenViewModel(fakeDb, fk, fakeUserDB)
+    val moreInfoScreenViewModel =
+        MoreInfoScreenViewModel(fakeDb, fk, ActivityDatabaseImpl(mockk()), fakeUserDB)
     moreInfoScreenViewModel.writeNewRating("a", Rating("1", "genial", "5"), "5")
     assertEquals(moreInfoScreenViewModel.ratings.value.size, 1)
     assertEquals(moreInfoScreenViewModel.ratings.value[0].userId, "1")

@@ -66,7 +66,7 @@ constructor(
   /** Initializes the ViewModel by fetching the current user and user activities. */
   init {
     fetchCurrentUser()
-    fetchUserActivities()
+    fetchUserSingeSportActivities(sport.value)
     // addFakeActivity()
   }
 
@@ -111,6 +111,23 @@ constructor(
     }
   }
 
+  private fun fetchUserSingeSportActivities(activityType: ActivityType) {
+    viewModelScope.launch {
+      when (activityType) {
+        ActivityType.CLIMBING ->
+            _activitiesCache.value =
+                repository.getUserClimbingActivities(_user.value.userId).sortedBy { it.timeStarted }
+        ActivityType.HIKING ->
+            _activitiesCache.value =
+                repository.getUserHikingActivities(_user.value.userId).sortedBy { it.timeStarted }
+        ActivityType.BIKING ->
+            _activitiesCache.value =
+                repository.getUserBikingActivities(_user.value.userId).sortedBy { it.timeStarted }
+      }
+      applyFilters()
+    }
+  }
+
   /** Applies the selected filters to the activities fetched from the repository. */
   private fun applyFilters() {
     _filteredActivities.value =
@@ -134,7 +151,7 @@ constructor(
    */
   fun setSport(s: ActivityType) {
     _sport.value = s
-    fetchUserActivities()
+    fetchUserSingeSportActivities(s)
   }
 
   /**
