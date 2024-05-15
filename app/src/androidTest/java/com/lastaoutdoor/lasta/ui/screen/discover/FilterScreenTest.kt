@@ -66,7 +66,11 @@ class FilterScreenTest {
 
     composeRule.onNodeWithTag("EraseButton").performClick()
 
+    composeRule.onNodeWithTag("filterScreen").assertIsDisplayed()
+
     composeRule.onNodeWithTag("applyFilterOptionsButton").performClick()
+
+    composeRule.onNodeWithTag("filterScreen").assertIsDisplayed()
   }
 
   @Test
