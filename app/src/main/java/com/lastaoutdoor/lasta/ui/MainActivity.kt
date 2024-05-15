@@ -31,24 +31,24 @@ class MainActivity : ComponentActivity() {
     enableEdgeToEdge()
     super.onCreate(savedInstanceState)
 
-    val vm =
-        PreferencesViewModel(
-            PreferencesRepositoryImpl(applicationContext),
-            UserDBRepositoryImpl(applicationContext, provideFirebaseFirestore()))
-    val language =
-        vm.language.stateIn(
-            lifecycleScope,
-            started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue =
-                when (LocaleListCompat.getDefault().get(0)) {
-                  Locale.ENGLISH -> com.lastaoutdoor.lasta.models.user.Language.ENGLISH
-                  Locale.FRENCH -> com.lastaoutdoor.lasta.models.user.Language.FRENCH
-                  Locale.GERMAN -> com.lastaoutdoor.lasta.models.user.Language.GERMAN
-                  else -> com.lastaoutdoor.lasta.models.user.Language.ENGLISH
-                })
-
     lifecycleScope.launch {
       repeatOnLifecycle(Lifecycle.State.STARTED) {
+        val vm =
+            PreferencesViewModel(
+                PreferencesRepositoryImpl(applicationContext),
+                UserDBRepositoryImpl(applicationContext, provideFirebaseFirestore()))
+        val language =
+            vm.language.stateIn(
+                lifecycleScope,
+                started = SharingStarted.WhileSubscribed(5_000L),
+                initialValue =
+                    when (LocaleListCompat.getDefault().get(0)) {
+                      Locale.ENGLISH -> com.lastaoutdoor.lasta.models.user.Language.ENGLISH
+                      Locale.FRENCH -> com.lastaoutdoor.lasta.models.user.Language.FRENCH
+                      Locale.GERMAN -> com.lastaoutdoor.lasta.models.user.Language.GERMAN
+                      else -> com.lastaoutdoor.lasta.models.user.Language.ENGLISH
+                    })
+
         language.collect {
           val locale = getSystemService(LocaleManager::class.java).applicationLocales
           val newLocale = LocaleList(Locale.forLanguageTag(it.toLocale()))
