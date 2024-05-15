@@ -96,20 +96,18 @@ class SetupScreenTest {
     var levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
 
     composeRule.activity.setContent {
-      LastaTheme(darkTheme = false) {
-        SetupScreen(
-            userId,
-            language,
-            prefActivity,
-            levels,
-            { _ -> },
-            { _ -> },
-            { _ -> },
-            { _ -> },
-            { _ -> },
-            {},
-        )
-      }
+      SetupScreen(
+          userId,
+          language,
+          prefActivity,
+          levels,
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          { _ -> },
+          {},
+      )
     }
     composeRule.onNodeWithTag("setupFinishButton").performClick()
     composeRule.onNodeWithTag("setupSubmitDialog").assertIsDisplayed()
