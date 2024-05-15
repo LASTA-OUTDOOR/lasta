@@ -47,21 +47,21 @@ import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
 import com.lastaoutdoor.lasta.ui.screen.discover.components.ToggleButton
 import com.lastaoutdoor.lasta.ui.theme.AccentGreen
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
+import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenState
 import kotlinx.coroutines.flow.StateFlow
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun FilterScreen(
-    selectedLevels: StateFlow<UserActivitiesLevel>,
-    setSelectedLevels: (UserActivitiesLevel) -> Unit,
-    selectedActivitiesType: StateFlow<List<ActivityType>>,
-    setSelectedActivitiesType: (List<ActivityType>) -> Unit,
+    discoverScreenState: StateFlow<DiscoverScreenState>,
     navigateBack: () -> Unit
 ) {
 
+  val userSelectedLevels = discoverScreenState.collectAsState().value.selectedLevels
+  val selectedActivitiesType = discoverScreenState.collectAsState().value.selectedActivityTypes
+
   val activities = ActivityType.values()
 
-  val userSelectedLevels = selectedLevels.collectAsState().value
 
   val activitiesLevelArray = remember {
     mutableStateListOf(
@@ -71,12 +71,14 @@ fun FilterScreen(
   }
 
   val selectedActivitiesTypes = remember {
-    mutableStateListOf(selectedActivitiesType.value.first())
+    mutableStateListOf(selectedActivitiesType.first())
   }
 
   var checkedBox by remember { mutableStateOf(true) }
 
-  Column(modifier = Modifier.fillMaxSize().testTag("filterScreen")) {
+  Column(modifier = Modifier
+      .fillMaxSize()
+      .testTag("filterScreen")) {
     MediumTopAppBar(
         title = {
           Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
@@ -98,7 +100,9 @@ fun FilterScreen(
 
     // Filter by activity type
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp), horizontalAlignment = Alignment.Start) {
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp), horizontalAlignment = Alignment.Start) {
           Column {
             Text(
                 text = stringResource(id = R.string.filter_activity_type),
@@ -108,7 +112,9 @@ fun FilterScreen(
             FlowRow(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp).fillMaxWidth()) {
+                modifier = Modifier
+                    .padding(horizontal = 8.dp, vertical = 16.dp)
+                    .fillMaxWidth()) {
                   activities.forEach { activity ->
                     ToggleButton(
                         activity.resourcesToString(LocalContext.current),
@@ -192,7 +198,9 @@ fun FilterScreen(
                 }
           }
           Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
-            Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp)) {
               Button(
                   onClick = { /* TODO */},
                   modifier = Modifier.testTag("EraseButton"),
@@ -212,7 +220,9 @@ fun FilterScreen(
                     navigateBack()
                   },
                   elevation = ButtonDefaults.elevatedButtonElevation(3.dp),
-                  modifier = Modifier.testTag("applyFilterOptionsButton").weight(0.6f),
+                  modifier = Modifier
+                      .testTag("applyFilterOptionsButton")
+                      .weight(0.6f),
                   colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
                     Text(
                         LocalContext.current.getString(R.string.apply),

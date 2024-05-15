@@ -71,97 +71,71 @@ import com.lastaoutdoor.lasta.ui.screen.discover.components.RangeSearchComposabl
 import com.lastaoutdoor.lasta.ui.screen.map.mapScreen
 import com.lastaoutdoor.lasta.utils.OrderingBy
 import com.lastaoutdoor.lasta.viewmodel.DiscoverDisplayType
+import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenCallBacks
+import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenState
 import com.lastaoutdoor.lasta.viewmodel.MapState
 
 @Composable
 fun DiscoverScreen(
-    isLoading: Boolean,
-    activities: List<Activity>,
-    screen: DiscoverDisplayType,
-    range: Double,
-    centerPoint: LatLng,
+    discoverScreenState: DiscoverScreenState,
+    discoverScreenCallBacks: DiscoverScreenCallBacks,
     favorites: List<String>,
-    localities: List<Pair<String, LatLng>>,
-    selectedLocality: Pair<String, LatLng>,
-    fetchActivities: (Double, LatLng) -> Unit,
-    setScreen: (DiscoverDisplayType) -> Unit,
-    setRange: (Double) -> Unit,
-    setSelectedLocality: (Pair<String, LatLng>) -> Unit,
     flipFavorite: (String) -> Unit,
     navigateToFilter: () -> Unit,
     navigateToMoreInfo: () -> Unit,
     changeActivityToDisplay: (Activity) -> Unit,
     changeWeatherTarget: (Activity) -> Unit,
     weather: WeatherResponse?,
-    state: MapState,
-    updatePermission: (Boolean) -> Unit,
-    initialPosition: LatLng,
-    initialZoom: Float,
-    updateMarkers: (LatLng, Double) -> Unit,
-    updateSelectedMarker: (Marker?) -> Unit,
-    clearSelectedItinerary: () -> Unit,
-    selectedZoom: Float,
-    selectedMarker: Marker?,
-    selectedItinerary: MapItinerary?,
-    markerList: List<Marker>,
-    orderingBy: OrderingBy,
-    updateOrderingBy: (OrderingBy) -> Unit,
-    clearSelectedMarker: () -> Unit,
-    fetchSuggestion: (String) -> Unit,
-    suggestions: Map<String, LatLng>,
-    clearSuggestions: () -> Unit,
-    updateInitialPosition: (LatLng) -> Unit
-) {
-
+){
   var isRangePopup by rememberSaveable { mutableStateOf(false) }
 
   RangeSearchComposable(
-      screen,
-      range,
-      localities,
-      selectedLocality,
-      setRange,
-      setSelectedLocality,
-      fetchActivities,
+      discoverScreenState.screen,
+      discoverScreenState.range,
+      discoverScreenState.localities,
+      discoverScreenState.selectedLocality,
+      discoverScreenCallBacks.setRange,
+      discoverScreenCallBacks.setSelectedLocality,
+      discoverScreenCallBacks.fetchActivities,
       isRangePopup) {
         isRangePopup = false
       }
 
   var moveCamera: (CameraUpdate) -> Unit by remember { mutableStateOf({ _ -> }) }
 
-  if (screen == DiscoverDisplayType.LIST) {
+  if (discoverScreenState.screen == DiscoverDisplayType.LIST) {
     Column(
         modifier =
             Modifier.testTag("discoveryScreen").background(MaterialTheme.colorScheme.background)) {
           HeaderComposable(
-              screen,
-              range,
-              selectedLocality,
-              setScreen,
+              discoverScreenState. screen,
+              discoverScreenState.range,
+              discoverScreenState.selectedLocality,
+              discoverScreenCallBacks.setScreen,
               { isRangePopup = true },
               navigateToFilter,
-              orderingBy,
-              updateOrderingBy,
+              discoverScreenState.orderingBy,
+              discoverScreenCallBacks.updateOrderingBy,
               weather,
-              fetchSuggestion,
-              suggestions,
-              setSelectedLocality,
-              fetchActivities,
-              clearSuggestions,
-              updateInitialPosition,
+              discoverScreenCallBacks.fetchSuggestion,
+              discoverScreenState.suggestions,
+              discoverScreenCallBacks.setSelectedLocality,
+              discoverScreenCallBacks.fetchActivities,
+              discoverScreenCallBacks.clearSuggestions,
+              discoverScreenCallBacks.updateInitialPosition,
               moveCamera)
 
-          if (isLoading) {
+          if (discoverScreenState.isLoading) {
             LoadingAnim(width = 35, tag = "LoadingBarDiscover")
-          } else if (activities.isEmpty()) {
+          } else if (discoverScreenState.activities.isEmpty()) {
             /* TODO */
           } else {
             LazyColumn {
               item {
                 Spacer(modifier = Modifier.height(8.dp))
                 ActivitiesDisplay(
-                    activities,
-                    centerPoint,
+                    discoverScreenState.activities,
+                    discoverScreenState.centerPoint,
                     favorites,
                     changeActivityToDisplay,
                     flipFavorite = flipFavorite,
@@ -171,40 +145,40 @@ fun DiscoverScreen(
             }
           }
         }
-  } else if (screen == DiscoverDisplayType.MAP) {
+  } else if (discoverScreenState.screen == DiscoverDisplayType.MAP) {
     Column {
       HeaderComposable(
-          screen,
-          range,
-          selectedLocality,
-          setScreen,
+          discoverScreenState.screen,
+          discoverScreenState.range,
+          discoverScreenState.selectedLocality,
+          discoverScreenCallBacks.setScreen,
           { isRangePopup = true },
           navigateToFilter,
-          orderingBy,
-          updateOrderingBy,
+          discoverScreenState.orderingBy,
+          discoverScreenCallBacks.updateOrderingBy,
           weather,
-          fetchSuggestion,
-          suggestions,
-          setSelectedLocality,
-          fetchActivities,
-          clearSuggestions,
-          updateInitialPosition,
+          discoverScreenCallBacks.fetchSuggestion,
+          discoverScreenState.suggestions,
+          discoverScreenCallBacks.setSelectedLocality,
+          discoverScreenCallBacks.fetchActivities,
+          discoverScreenCallBacks.clearSuggestions,
+          discoverScreenCallBacks.updateInitialPosition,
           moveCamera)
       Box(modifier = Modifier.fillMaxHeight().testTag("mapScreenDiscover")) {
         moveCamera =
             mapScreen(
-                state,
-                updatePermission,
-                initialPosition,
-                initialZoom,
-                updateMarkers,
-                updateSelectedMarker,
-                clearSelectedItinerary,
-                selectedZoom,
-                selectedMarker,
-                selectedItinerary,
-                markerList,
-                clearSelectedMarker)
+                discoverScreenState.mapState,
+                discoverScreenCallBacks.updatePermission,
+                discoverScreenState.initialPosition,
+                discoverScreenState.initialZoom,
+                discoverScreenCallBacks.updateMarkers,
+                discoverScreenCallBacks.updateSelectedMarker,
+                discoverScreenCallBacks.clearSelectedItinerary,
+                discoverScreenState.selectedZoom,
+                discoverScreenState.selectedMarker,
+                discoverScreenState.selectedItinerary,
+                discoverScreenState.markerList,
+                discoverScreenCallBacks.clearSelectedMarker)
       }
     }
   }

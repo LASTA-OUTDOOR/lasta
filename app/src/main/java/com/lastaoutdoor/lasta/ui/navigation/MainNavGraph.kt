@@ -29,6 +29,8 @@ import com.lastaoutdoor.lasta.ui.screen.social.SocialScreen
 import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 import com.lastaoutdoor.lasta.viewmodel.ConversationViewModel
+import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenCallBacks
+import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenState
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenViewModel
 import com.lastaoutdoor.lasta.viewmodel.FavoritesScreenViewModel
 import com.lastaoutdoor.lasta.viewmodel.MoreInfoScreenViewModel
@@ -39,70 +41,39 @@ import com.lastaoutdoor.lasta.viewmodel.WeatherViewModel
 
 @SuppressLint("StateFlowValueCalledInComposition")
 fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
+
   navigation(startDestination = DestinationRoute.Discover.route, route = BaseRoute.Main.route) {
+
+    //Discover Screen
     composable(DestinationRoute.Discover.route) { entry ->
+
       val discoverScreenViewModel: DiscoverScreenViewModel = entry.sharedViewModel(navController)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
-      val isLoading = discoverScreenViewModel.isLoading.collectAsState().value
-      val activities = discoverScreenViewModel.activities.collectAsState().value
-      val screen = discoverScreenViewModel.screen.collectAsState().value
-      val range = discoverScreenViewModel.range.collectAsState().value
-      val centerPoint = discoverScreenViewModel.selectedLocality.collectAsState().value.second
-      val localities = discoverScreenViewModel.localities
-      val selectedLocality = discoverScreenViewModel.selectedLocality.collectAsState().value
       val favorites = preferencesViewModel.favorites.collectAsState(initial = emptyList()).value
-      val mapState = discoverScreenViewModel.mapState.collectAsState().value
-      val initialZoom = discoverScreenViewModel.initialZoom
-      val selectedZoom = discoverScreenViewModel.selectedZoom
-      val selectedMarker = discoverScreenViewModel.selectedMarker.collectAsState().value
-      val selectedItinerary = discoverScreenViewModel.selectedItinerary.collectAsState().value
-      val markerList = discoverScreenViewModel.markerList.collectAsState().value
       val weatherViewModel: WeatherViewModel = entry.sharedViewModel(navController)
       val weather = weatherViewModel.weather.observeAsState().value
-      val suggestions = discoverScreenViewModel.suggestions.collectAsState().value
-      val initialPosition = discoverScreenViewModel.initialPosition.collectAsState().value
+
+      val discoverScreenState : DiscoverScreenState = discoverScreenViewModel.state.collectAsState().value
+      val discoverScreenCallBacks : DiscoverScreenCallBacks = discoverScreenViewModel.callbacks
 
       DiscoverScreen(
-          isLoading,
-          activities,
-          screen,
-          range,
-          centerPoint,
+          discoverScreenState,
+          discoverScreenCallBacks,
           favorites,
-          localities,
-          selectedLocality,
-          discoverScreenViewModel::fetchActivities,
-          discoverScreenViewModel::setScreen,
-          discoverScreenViewModel::setRange,
-          discoverScreenViewModel::setSelectedLocality,
           preferencesViewModel::flipFavorite,
           { navController.navigate(DestinationRoute.Filter.route) },
           { navController.navigate(DestinationRoute.MoreInfo.route) },
           moreInfoScreenViewModel::changeActivityToDisplay,
           weatherViewModel::changeLocOfWeather,
           weather,
-          mapState,
-          discoverScreenViewModel::updatePermission,
-          initialPosition,
-          initialZoom,
-          discoverScreenViewModel::updateMarkers,
-          discoverScreenViewModel::updateSelectedMarker,
-          discoverScreenViewModel::clearSelectedItinerary,
-          selectedZoom,
-          selectedMarker,
-          selectedItinerary,
-          markerList,
-          discoverScreenViewModel.orderingBy.collectAsState().value,
-          discoverScreenViewModel::updateOrderingBy,
-          discoverScreenViewModel::clearSelectedMarker,
-          discoverScreenViewModel::fetchSuggestions,
-          suggestions,
-          discoverScreenViewModel::clearSuggestions,
-          discoverScreenViewModel::updateInitialPosition,
       )
     }
+
+
+    //Favorites Screen
     composable(DestinationRoute.Favorites.route) { entry ->
+
       val discoverScreenViewModel: DiscoverScreenViewModel = entry.sharedViewModel(navController)
       val favoritesScreenViewModel: FavoritesScreenViewModel = hiltViewModel(entry)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
@@ -110,7 +81,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
       val isLoading = favoritesScreenViewModel.isLoading.collectAsState().value
       val favorites = favoritesScreenViewModel.favorites.collectAsState().value
-      val centerPoint = discoverScreenViewModel.selectedLocality.collectAsState().value.second
+      val centerPoint = discoverScreenViewModel.state.collectAsState().value.selectedLocality.second
       val favoriteIds = favoritesScreenViewModel.favoritesIds.collectAsState().value
       val weatherViewModel: WeatherViewModel = entry.sharedViewModel(navController)
 
@@ -125,7 +96,11 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
             navController.navigate(DestinationRoute.MoreInfo.route)
           }
     }
+
+
+    //Social Screen
     composable(DestinationRoute.Socials.route) { entry ->
+
       val socialViewModel: SocialViewModel = entry.sharedViewModel(navController)
       val isConnected = socialViewModel.isConnected.collectAsState().value
 
@@ -162,7 +137,11 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           },
           socialViewModel::refreshFriendsActivities)
     }
+
+
+    //Profile Screen
     composable(DestinationRoute.Profile.route) { entry ->
+
       val profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(entry)
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
 
@@ -171,7 +150,8 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val sport by profileScreenViewModel.sport.collectAsState()
       val isCurrentUser by profileScreenViewModel.isCurrentUser.collectAsState()
       val user = preferencesViewModel.user.collectAsState(initial = UserModel("")).value
-      ProfileScreen(
+
+        ProfileScreen(
           activities,
           timeFrame,
           sport,
@@ -184,63 +164,56 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           }
     }
 
+
+    //More Info Screen
     composable(DestinationRoute.MoreInfo.route) { entry ->
+
       val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
+
       val activityToDisplay = moreInfoScreenViewModel.activityToDisplay.value
       val usersList = moreInfoScreenViewModel.usersList.collectAsState().value
       val ratings = moreInfoScreenViewModel.ratings.collectAsState().value
       val weatherViewModel: WeatherViewModel = entry.sharedViewModel(navController)
       val weather = weatherViewModel.weather.observeAsState().value
-      val mapState = discoverScreenViewModel.mapState.collectAsState().value
-      val initialZoom = discoverScreenViewModel.initialZoom
-      val initialPosition = discoverScreenViewModel.initialPosition.collectAsState().value
-      val selectedZoom = discoverScreenViewModel.selectedZoom
-      val selectedMarker = discoverScreenViewModel.selectedMarker.collectAsState().value
-      val selectedItinerary = discoverScreenViewModel.selectedItinerary.collectAsState().value
-      val markerList = discoverScreenViewModel.markerList.collectAsState().value
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
       val currentUser = preferencesViewModel.user.collectAsState(initial = UserModel("")).value
-      val activities = discoverScreenViewModel.activities.collectAsState().value
+
+      val discoverScreenState : DiscoverScreenState = discoverScreenViewModel.state.collectAsState().value
+      val discoverScreenCallBacks : DiscoverScreenCallBacks = discoverScreenViewModel.callbacks
+
       MoreInfoScreen(
           activityToDisplay,
-          mapState,
-          discoverScreenViewModel::updatePermission,
-          initialPosition,
-          initialZoom,
-          activities,
-          discoverScreenViewModel::updateActivities,
-          discoverScreenViewModel::updateMarkers,
-          discoverScreenViewModel::updateSelectedMarker,
-          discoverScreenViewModel::clearSelectedItinerary,
-          discoverScreenViewModel::fetchActivities,
-          selectedZoom,
+          discoverScreenState,
+          discoverScreenCallBacks,
           moreInfoScreenViewModel::goToMarker,
           usersList,
           moreInfoScreenViewModel::getUserModels,
           moreInfoScreenViewModel::writeNewRating,
           currentUser,
           weather,
-          markerList,
-          selectedItinerary,
           { navController.navigateUp() },
           moreInfoScreenViewModel::downloadActivity,
           weatherViewModel::fetchWeatherWithUserLoc)
     }
+
+
+    //Filter Screen
     composable(DestinationRoute.Filter.route) { entry ->
+
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
       val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
 
+
       FilterScreen(
-          discoverScreenViewModel.selectedLevels,
-          discoverScreenViewModel::setSelectedLevels,
-          discoverScreenViewModel.selectedActivityType,
-          discoverScreenViewModel::setSelectedActivitiesType,
+          discoverScreenViewModel.state,
       ) {
         navController.popBackStack()
       }
     }
 
+
+    //Conversation Screen
     composable(
         DestinationRoute.Conversation.route + "/{userId}",
         arguments = listOf(navArgument("userId") { type = NavType.StringType })) { entry ->
@@ -255,6 +228,9 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
               conversationViewModel::send,
               navController::navigateUp)
         }
+
+
+    //Notifications Screen
     composable(DestinationRoute.Notifications.route) { entry ->
       val socialViewModel: SocialViewModel = entry.sharedViewModel(navController)
       val isConnected: ConnectionState = socialViewModel.isConnected.collectAsState().value
@@ -266,6 +242,9 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
             navController.navigateUp()
           }
     }
+
+
+    //Friend Profile Screen
     composable(DestinationRoute.FriendProfile.route + "/{friendId}") { entry ->
       val profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(entry)
 
@@ -290,6 +269,8 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           onBack = { navController.navigateUp() })
     }
 
+
+    //Settings Screen
     composable(DestinationRoute.Settings.route) { entry ->
       val authViewModel: AuthViewModel = hiltViewModel(entry)
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
