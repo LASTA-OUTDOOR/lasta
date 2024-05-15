@@ -127,8 +127,12 @@ constructor(
           activity.name,
           LatLng(activity.startPosition.lat, activity.startPosition.lon),
           "",
-          R.drawable.hiking_icon,
-          ActivityType.HIKING)
+          when (activity.activityType) {
+            ActivityType.CLIMBING -> R.drawable.climbing_icon
+            ActivityType.HIKING -> R.drawable.hiking_icon
+            ActivityType.BIKING -> R.drawable.biking_icon
+          },
+          activity.activityType)
     }
   }
 

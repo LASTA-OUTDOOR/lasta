@@ -79,7 +79,7 @@ constructor(
         when (activity.activityType) {
           ActivityType.CLIMBING -> R.drawable.climbing_icon
           ActivityType.HIKING -> R.drawable.hiking_icon
-          ActivityType.BIKING -> R.drawable.hiking_icon
+          ActivityType.BIKING -> R.drawable.biking_icon
         }
     return Marker(
         activity.osmId,
