@@ -62,9 +62,62 @@ class FilterScreenTest {
     composeRule.onNodeWithTag("ToggleButtonHiking").performClick()
 
     composeRule.onNodeWithTag("difficultyLevelButton0").performClick()
+    composeRule.onNodeWithTag("filterScreen").assertIsDisplayed()
 
     composeRule.onNodeWithTag("EraseButton").performClick()
 
     composeRule.onNodeWithTag("applyFilterOptionsButton").performClick()
+  }
+
+  @Test
+  fun variousNrOfActivities_areWorking() {
+    val selectedActivityType: StateFlow<List<ActivityType>> = MutableStateFlow(listOf())
+
+    val selectedLevels =
+        MutableStateFlow(
+            UserActivitiesLevel(UserLevel.INTERMEDIATE, UserLevel.ADVANCED, UserLevel.ADVANCED))
+
+    composeRule.activity.setContent {
+      FilterScreen(
+          selectedActivitiesType = selectedActivityType,
+          setSelectedActivitiesType = {},
+          selectedLevels = selectedLevels,
+          setSelectedLevels = {},
+      ) {}
+    }
+    composeRule.onNodeWithTag("filterScreen").assertIsDisplayed()
+    val selectedActivityType1: StateFlow<List<ActivityType>> =
+        MutableStateFlow(listOf(ActivityType.CLIMBING, ActivityType.HIKING))
+
+    val selectedLevels1 =
+        MutableStateFlow(
+            UserActivitiesLevel(UserLevel.INTERMEDIATE, UserLevel.ADVANCED, UserLevel.ADVANCED))
+
+    composeRule.activity.setContent {
+      FilterScreen(
+          selectedActivitiesType = selectedActivityType1,
+          setSelectedActivitiesType = {},
+          selectedLevels = selectedLevels1,
+          setSelectedLevels = {},
+      ) {}
+    }
+    composeRule.onNodeWithTag("filterScreen").assertIsDisplayed()
+    composeRule.onNodeWithTag("filterScreen").assertIsDisplayed()
+    val selectedActivityType2: StateFlow<List<ActivityType>> =
+        MutableStateFlow(listOf(ActivityType.CLIMBING, ActivityType.HIKING, ActivityType.BIKING))
+
+    val selectedLevels2 =
+        MutableStateFlow(
+            UserActivitiesLevel(UserLevel.INTERMEDIATE, UserLevel.ADVANCED, UserLevel.ADVANCED))
+
+    composeRule.activity.setContent {
+      FilterScreen(
+          selectedActivitiesType = selectedActivityType2,
+          setSelectedActivitiesType = {},
+          selectedLevels = selectedLevels2,
+          setSelectedLevels = {},
+      ) {}
+    }
+    composeRule.onNodeWithTag("filterScreen").assertIsDisplayed()
   }
 }
