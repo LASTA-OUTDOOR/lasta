@@ -12,7 +12,6 @@ import com.lastaoutdoor.lasta.viewmodel.repo.FakeConnectivityviewRepo
 import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserDB
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +30,6 @@ import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import java.util.regex.Pattern
 
 @ExperimentalCoroutinesApi
 class MainCoroutineRule(private val dispatcher: TestDispatcher = StandardTestDispatcher()) :
@@ -66,7 +64,8 @@ class SocialViewModelTest {
   @ExperimentalCoroutinesApi
   @Before
   fun setUp() {
-    viewModel = SocialViewModel(context, repoDB, userDB, connectRepo, prefRepo, tokenDBRepository, fcmAPI)
+    viewModel =
+        SocialViewModel(context, repoDB, userDB, connectRepo, prefRepo, tokenDBRepository, fcmAPI)
   }
 
   @ExperimentalCoroutinesApi val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()

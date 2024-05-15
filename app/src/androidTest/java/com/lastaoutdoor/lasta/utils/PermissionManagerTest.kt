@@ -7,8 +7,6 @@ import com.lastaoutdoor.lasta.ui.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -27,10 +25,6 @@ class PermissionManagerTest {
 
   @Test
   fun testPermissionManager() {
-    composeRule.activity.setContent {
-      PermissionManager {
-
-      }
-    }
+    composeRule.activity.setContent { PermissionManager {} }
   }
 }
