@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -45,7 +46,6 @@ fun SettingsComponent(
     updateClimbingLevel: (UserLevel) -> Unit,
     updateHikingLevel: (UserLevel) -> Unit,
     updateBikingLevel: (UserLevel) -> Unit,
-    setUpOrSetting: Boolean // Setup if true, Settings if false
 ) {
   Column(horizontalAlignment = Alignment.CenterHorizontally) {
     Spacer(modifier = Modifier.height(24.dp))
@@ -68,7 +68,7 @@ fun SettingsComponent(
  *   will be "Account settings"
  */
 @Composable
-fun TitleComponent(setUpOrSetting: Boolean) {
+fun TitleComponent(setUpOrSetting: Boolean) { // Setup if true, Settings if false
   Row(modifier = Modifier.testTag("settingsTitleHeader")) {
     if (setUpOrSetting) {
       // put a small setting icon in secondary color
@@ -141,35 +141,39 @@ fun LanguageSelectionComponent(
     language: Language,
     updateLanguage: (Language) -> Unit,
 ) {
-  Column(horizontalAlignment = Alignment.CenterHorizontally) {
-    Text(
-        text = LocalContext.current.getString(R.string.select_languague),
-        style = MaterialTheme.typography.headlineMedium,
-        color = MaterialTheme.colorScheme.onBackground)
-    Spacer(modifier = Modifier.height(8.dp))
-    Button(
-        onClick = {},
-        modifier = Modifier.testTag("languageDropDownButton"),
-        enabled = true,
-        shape = MaterialTheme.shapes.small,
-        colors =
-            ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-                contentColor = MaterialTheme.colorScheme.onBackground,
-                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                disabledContentColor =
-                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
-            ),
-        elevation = ButtonDefaults.elevatedButtonElevation(1.dp)) {
-          DropDownMenuComponent(
-              items = Language.values().toList(),
-              selectedItem = language,
-              onItemSelected = { newLanguage: Language -> updateLanguage(newLanguage) },
-              toStr = { language -> language.resourcesToString(LocalContext.current) },
-              fieldText = LocalContext.current.getString(R.string.languague),
-              modifier = Modifier.testTag("settingsLanguage"))
-        }
-  }
+  Row(
+      horizontalArrangement = Arrangement.SpaceBetween,
+      modifier = Modifier.fillMaxWidth(),
+      verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = LocalContext.current.getString(R.string.languague) + " :",
+            color = MaterialTheme.colorScheme.primary,
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.headlineMedium)
+        Spacer(modifier = Modifier.width(8.dp))
+        Button(
+            onClick = {},
+            modifier = Modifier.testTag("languageDropDownButton"),
+            enabled = true,
+            shape = MaterialTheme.shapes.small,
+            colors =
+                ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onBackground,
+                    disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    disabledContentColor =
+                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
+                ),
+            elevation = ButtonDefaults.elevatedButtonElevation(1.dp)) {
+              DropDownMenuComponent(
+                  items = Language.values().toList(),
+                  selectedItem = language,
+                  onItemSelected = { newLanguage: Language -> updateLanguage(newLanguage) },
+                  toStr = { language -> language.resourcesToString(LocalContext.current) },
+                  fieldText = LocalContext.current.getString(R.string.languague),
+                  modifier = Modifier.testTag("settingsLanguage"))
+            }
+      }
 }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -180,9 +184,9 @@ fun FavoriteActivityComponent(
 ) {
   Column(horizontalAlignment = Alignment.CenterHorizontally) {
     Text(
-        text = LocalContext.current.getString(R.string.select_fav_activity),
-        style = MaterialTheme.typography.headlineMedium,
-        color = MaterialTheme.colorScheme.onBackground)
+        text = stringResource(id = R.string.select_fav_activity),
+        style = MaterialTheme.typography.headlineSmall,
+        fontWeight = FontWeight.Bold)
     Spacer(modifier = Modifier.height(8.dp))
     FlowRow(modifier = Modifier.testTag("settingsFavActivity")) {
       for (activity in ActivityType.values()) {
@@ -212,9 +216,9 @@ fun ActivityLevelsComponent(
 ) {
   Column(horizontalAlignment = Alignment.CenterHorizontally) {
     Text(
-        text = LocalContext.current.getString(R.string.select_lev_activity),
-        style = MaterialTheme.typography.headlineMedium,
-        color = MaterialTheme.colorScheme.onBackground)
+        text = stringResource(id = R.string.select_lev_activity),
+        style = MaterialTheme.typography.headlineSmall,
+        fontWeight = FontWeight.Bold)
     Spacer(modifier = Modifier.height(12.dp))
     for (activity in ActivityType.values()) {
       val activityLevel =

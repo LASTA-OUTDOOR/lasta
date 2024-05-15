@@ -64,6 +64,10 @@ fun SettingsScreen(
                 showDeleteDialog.value = false
                 signOutAndNavigate()
               },
+              colors =
+                  ButtonDefaults.buttonColors(
+                      containerColor = MaterialTheme.colorScheme.error,
+                      contentColor = MaterialTheme.colorScheme.onError),
               modifier = Modifier.testTag("settingsDeleteButton")) {
                 Text(LocalContext.current.getString(R.string.yes))
               }
@@ -108,8 +112,7 @@ fun SettingsScreen(
               updatePrefActivity = updatePrefActivity,
               updateClimbingLevel = updateClimbingLevel,
               updateHikingLevel = updateHikingLevel,
-              updateBikingLevel = updateBikingLevel,
-              setUpOrSetting = false)
+              updateBikingLevel = updateBikingLevel)
         }
 
         item { Spacer(modifier = Modifier.fillMaxHeight(1f)) }
