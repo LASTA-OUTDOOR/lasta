@@ -53,6 +53,12 @@ class NetworkModuleTest {
   }
 
   @Test
+  fun `FCM API service is provided`() {
+    val fcmApiService = NetworkModule.provideFcmAPIService(context)
+    assertNotNull(fcmApiService)
+  }
+
+  @Test
   fun `Radar API service is provided`() {
     val radarApiService = NetworkModule.provideRadarApiService(context)
     assertNotNull(radarApiService)
