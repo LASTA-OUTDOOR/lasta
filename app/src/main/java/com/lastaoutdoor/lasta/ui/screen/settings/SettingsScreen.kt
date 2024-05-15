@@ -89,6 +89,7 @@ fun SettingsScreen(
       horizontalAlignment = Alignment.CenterHorizontally) {
         item {
           MediumTopAppBar(
+              modifier = Modifier.fillMaxWidth().testTag("settingsAppBar"),
               title = {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
