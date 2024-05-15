@@ -32,6 +32,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -72,26 +73,32 @@ fun FilterScreen(
         userSelectedLevels.bikingLevel)
   }
 
-  // really cumbersome way to get the number of activities but didn't want to break the rest of the
-  // code (implemented by someone else)
-  val nrOfActivities = selectedActivitiesType.value.size
-  val selectedActivitiesTypes =
-      when (nrOfActivities) {
-        0 -> remember { mutableStateListOf() }
-        1 -> remember { mutableStateListOf(selectedActivitiesType.value.first()) }
-        2 ->
-            remember {
-              mutableStateListOf(
-                  selectedActivitiesType.value.first(), selectedActivitiesType.value.last())
-            }
-        else ->
-            remember {
-              mutableStateListOf(
-                  selectedActivitiesType.value.first(),
-                  selectedActivitiesType.value[1],
-                  selectedActivitiesType.value.last())
-            }
-      }
+  // internal function to avoid code duplication
+  @Composable
+  fun collectSelectedActivitiesTypes(): SnapshotStateList<ActivityType> {
+    // really cumbersome way to get the number of activities but didn't want to break the rest of
+    // the
+    // code (implemented by someone else)
+    val nrOfActivities = selectedActivitiesType.value.size
+    return when (nrOfActivities) {
+      0 -> remember { mutableStateListOf() }
+      1 -> remember { mutableStateListOf(selectedActivitiesType.value.first()) }
+      2 ->
+          remember {
+            mutableStateListOf(
+                selectedActivitiesType.value.first(), selectedActivitiesType.value.last())
+          }
+      else ->
+          remember {
+            mutableStateListOf(
+                selectedActivitiesType.value.first(),
+                selectedActivitiesType.value[1],
+                selectedActivitiesType.value.last())
+          }
+    }
+  }
+  val selectedActivitiesTypes = collectSelectedActivitiesTypes()
+  val snapshotSelectedActivitiesTypes = collectSelectedActivitiesTypes()
 
   var checkedBox by remember { mutableStateOf(true) }
 
@@ -213,7 +220,14 @@ fun FilterScreen(
           Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
             Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
               Button(
-                  onClick = { /* TODO */},
+                  onClick = {
+                    // go back to snapshot values
+                    activitiesLevelArray[0] = userSelectedLevels.climbingLevel
+                    activitiesLevelArray[1] = userSelectedLevels.hikingLevel
+                    activitiesLevelArray[2] = userSelectedLevels.bikingLevel
+                    selectedActivitiesTypes.clear()
+                    selectedActivitiesTypes.addAll(snapshotSelectedActivitiesTypes)
+                  },
                   modifier = Modifier.testTag("EraseButton"),
                   colors =
                       ButtonDefaults.buttonColors(
@@ -227,7 +241,6 @@ fun FilterScreen(
               // Apply the filter options
               ElevatedButton(
                   onClick = {
-                    { /* TODO */}
                     setSelectedLevels(
                         UserActivitiesLevel(
                             activitiesLevelArray[0],

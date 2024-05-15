@@ -1,7 +1,6 @@
 package com.lastaoutdoor.lasta.ui.navigation
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
