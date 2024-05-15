@@ -36,13 +36,13 @@ import kotlinx.coroutines.launch
 class SocialViewModel
 @Inject
 constructor(
-  @ApplicationContext private val context: Context,
-  val repository: SocialDBRepository,
-  private val userDBRepo: UserDBRepository,
-  connectionRepo: ConnectivityRepository,
-  val preferences: PreferencesRepository,
-  private val tokenDBRepository: TokenDBRepository,
-  private val fcmAPI: FCMApi
+    @ApplicationContext private val context: Context,
+    val repository: SocialDBRepository,
+    private val userDBRepo: UserDBRepository,
+    connectionRepo: ConnectivityRepository,
+    val preferences: PreferencesRepository,
+    private val tokenDBRepository: TokenDBRepository,
+    private val fcmAPI: FCMApi
 ) : ViewModel() {
 
   // get the user id
@@ -128,11 +128,18 @@ constructor(
             } else if (friends.any { it.userId == friendId }) {
               context.getString(R.string.no_fr)
             } else {
-              repository.sendFriendRequest(userId, friendId)
-              tokenDBRepository.getUserTokenById(friendId)?.let {
-                fcmAPI.sendMessage(
-                  SendMessageDto(it, NotificationBody(context.getString(R.string.new_friend_request_notif), "${user.userName} ${context.getString(R.string.friend_request_notif)}"))
-                )
+              try {
+                repository.sendFriendRequest(userId, friendId)
+                tokenDBRepository.getUserTokenById(friendId)?.let {
+                  fcmAPI.sendMessage(
+                      SendMessageDto(
+                          it,
+                          NotificationBody(
+                              context.getString(R.string.new_friend_request_notif),
+                              "${user.userName} ${context.getString(R.string.friend_request_notif)}")))
+                }
+              } catch (e: Exception) {
+                e.printStackTrace()
               }
               context.getString(R.string.fr_req_sent)
             }
@@ -144,30 +151,42 @@ constructor(
 
   fun acceptFriend(friend: UserModel) {
     viewModelScope.launch {
-      repository.acceptFriendRequest(user.userId, friend.userId)
-      tokenDBRepository.getUserTokenById(friend.userId)?.let {
-        fcmAPI.sendMessage(
-          SendMessageDto(it, NotificationBody(user.userName, context.getString(R.string.friend_request_accepted_notif)))
-        )
+      try {
+        repository.acceptFriendRequest(user.userId, friend.userId)
+        tokenDBRepository.getUserTokenById(friend.userId)?.let {
+          fcmAPI.sendMessage(
+              SendMessageDto(
+                  it,
+                  NotificationBody(
+                      user.userName, context.getString(R.string.friend_request_accepted_notif))))
+        }
+        refreshFriendRequests()
+        // update the list of friends
+        refreshFriends()
+        refreshFriendsActivities()
+      } catch (e: Exception) {
+        e.printStackTrace()
       }
-      refreshFriendRequests()
-      // update the list of friends
-      refreshFriends()
-      refreshFriendsActivities()
     }
   }
 
   // Decline a friend request
   fun declineFriend(friend: UserModel) {
     viewModelScope.launch {
-      repository.declineFriendRequest(user.userId, friend.userId)
-      tokenDBRepository.getUserTokenById(friend.userId)?.let {
-        fcmAPI.sendMessage(
-          SendMessageDto(it, NotificationBody(user.userName, context.getString(R.string.friend_request_declined_notif)))
-        )
+      try {
+        repository.declineFriendRequest(user.userId, friend.userId)
+        tokenDBRepository.getUserTokenById(friend.userId)?.let {
+          fcmAPI.sendMessage(
+              SendMessageDto(
+                  it,
+                  NotificationBody(
+                      user.userName, context.getString(R.string.friend_request_declined_notif))))
+        }
+        // update the list of friends
+        refreshFriendRequests()
+      } catch (e: Exception) {
+        e.printStackTrace()
       }
-      // update the list of friends
-      refreshFriendRequests()
     }
   }
 

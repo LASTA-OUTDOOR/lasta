@@ -86,8 +86,7 @@ constructor(
           repository.sendMessage(userId, friendUserId, message)
           updateConversation()
           tokenDBRepo.getUserTokenById(friendUserId)?.let {
-            fcmAPI.sendMessage(
-                SendMessageDto(it, NotificationBody(user.value.userName, message)))
+            fcmAPI.sendMessage(SendMessageDto(it, NotificationBody(user.value.userName, message)))
           }
         } catch (e: Exception) {
           e.printStackTrace()

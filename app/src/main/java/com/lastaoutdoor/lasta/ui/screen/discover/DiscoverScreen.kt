@@ -70,7 +70,6 @@ import com.lastaoutdoor.lasta.ui.screen.discover.components.ModalUpperSheet
 import com.lastaoutdoor.lasta.ui.screen.discover.components.RangeSearchComposable
 import com.lastaoutdoor.lasta.ui.screen.map.mapScreen
 import com.lastaoutdoor.lasta.utils.OrderingBy
-import com.lastaoutdoor.lasta.utils.PermissionManager
 import com.lastaoutdoor.lasta.viewmodel.DiscoverDisplayType
 import com.lastaoutdoor.lasta.viewmodel.MapState
 
@@ -95,7 +94,6 @@ fun DiscoverScreen(
     changeWeatherTarget: (Activity) -> Unit,
     weather: WeatherResponse?,
     state: MapState,
-    updatePermission: (Boolean) -> Unit,
     initialPosition: LatLng,
     initialZoom: Float,
     updateMarkers: (LatLng, Double) -> Unit,
@@ -113,8 +111,6 @@ fun DiscoverScreen(
     clearSuggestions: () -> Unit,
     updateInitialPosition: (LatLng) -> Unit
 ) {
-
-  PermissionManager(updatePermission)
 
   var isRangePopup by rememberSaveable { mutableStateOf(false) }
 

@@ -171,15 +171,6 @@ object TestNetworkModule {
 
   @Singleton
   @Provides
-  fun provideRadarApiService(): RadarApiService =
-      Retrofit.Builder()
-          .baseUrl("https://api.radar.io/v1/search/")
-          .addConverterFactory(GsonConverterFactory.create())
-          .build()
-          .create(RadarApiService::class.java)
-
-  @Singleton
-  @Provides
   fun provideTokenDBRepository(
       @ApplicationContext context: Context,
       firestore: FirebaseFirestore
