@@ -407,7 +407,6 @@ fun TopBarLogo(logoPainterId: Int, isFriendProf: Boolean = false, f: () -> Unit)
 // Displays the title of the activity, its type and its duration
 @Composable
 fun ActivityTitleZone(activityToDisplay: Activity) {
-  Row { ElevatedActivityType(activityToDisplay) }
   Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
     Row(modifier = Modifier.padding(vertical = 5.dp, horizontal = 5.dp).weight(0.65f), verticalAlignment = Alignment.CenterVertically) {
       ActivityPicture(activityToDisplay)
@@ -468,31 +467,6 @@ fun ActivityTitleText(activityToDisplay: Activity) {
   }
 }
 
-@Composable
-fun ElevatedActivityType(activityToDisplay: Activity) {
-  ElevatedButton(
-      onClick = {},
-      contentPadding = PaddingValues(all = 3.dp),
-      modifier =
-      Modifier
-          .padding(3.dp)
-          .width(64.dp)
-          .height(20.dp)
-          .testTag("MoreInfoActivityTypeComposable"),
-      colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
-        Text(
-            text = activityToDisplay.activityType.resourcesToString(LocalContext.current),
-            style =
-                TextStyle(
-                    fontSize = 12.sp,
-                    lineHeight = 16.sp,
-                    fontWeight = FontWeight(500),
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    letterSpacing = 0.5.sp,
-                ))
-      }
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddRatingButton(
@@ -517,7 +491,8 @@ fun AddRatingButton(
                 val selectedStarCount = remember { mutableIntStateOf(1) }
                 Text(
                     text =  LocalContext.current.getString(R.string.add_review) + " " + activityToDisplay.name,
-                    style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold))
+                    maxLines = 1,
+                    style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold))
 
                 Spacer(modifier = Modifier.height(30.dp))
 

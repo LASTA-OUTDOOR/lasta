@@ -44,7 +44,7 @@ constructor(
   private val _isLoading = MutableStateFlow(true)
   val isLoading: StateFlow<Boolean> = _isLoading
 
-  private val _activities = MutableStateFlow<ArrayList<Activity>>(ArrayList())
+  private val _activities = MutableStateFlow<List<Activity>>(emptyList())
   val activities: StateFlow<List<Activity>> = _activities
 
   private val _activityIds = MutableStateFlow<ArrayList<Long>>(ArrayList())

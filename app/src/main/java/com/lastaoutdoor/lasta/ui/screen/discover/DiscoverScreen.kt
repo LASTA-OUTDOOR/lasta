@@ -110,7 +110,7 @@ fun DiscoverScreen(
     fetchSuggestion: (String) -> Unit,
     suggestions: Map<String, LatLng>,
     clearSuggestions: () -> Unit,
-    updateInitialPosition: (LatLng) -> Unit
+    updateInitialPosition: (LatLng) -> Unit,
 ) {
 
   var isRangePopup by rememberSaveable { mutableStateOf(false) }
