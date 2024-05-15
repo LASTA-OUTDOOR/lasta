@@ -21,6 +21,7 @@ import com.lastaoutdoor.lasta.ui.screen.loading.LoadingScreen
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.junit.Before
@@ -37,6 +38,16 @@ class FilterScreenTest {
 
   private lateinit var intermediate: String
   private lateinit var beginner: String
+
+  private val mockUserActivitiesLevel =
+      UserActivitiesLevel(
+          climbingLevel = UserLevel.BEGINNER,
+          hikingLevel = UserLevel.INTERMEDIATE,
+          bikingLevel = UserLevel.ADVANCED)
+
+  private val mockSelectedLevels = MutableStateFlow(mockUserActivitiesLevel)
+  private val mockSelectedActivitiesType = MutableStateFlow(listOf<ActivityType>())
+  private var navigateBackTriggered = false
 
   @Before
   fun setUp() {
@@ -154,5 +165,46 @@ class FilterScreenTest {
       ) {}
     }
     composeRule.onNodeWithTag("filterScreen").assertIsDisplayed()
+  }
+
+  @Test
+  fun testEraseButton() {
+    var updatedLevels: UserActivitiesLevel? = null
+    var updatedActivities: List<ActivityType>? = null
+
+    composeRule.activity.setContent {
+      FilterScreen(
+          selectedLevels = mockSelectedLevels,
+          setSelectedLevels = { updatedLevels = it },
+          selectedActivitiesType = mockSelectedActivitiesType,
+          setSelectedActivitiesType = { updatedActivities = it },
+          navigateBack = {})
+    }
+
+    composeRule.onNodeWithTag("EraseButton").performClick()
+
+    assertEquals(updatedLevels, null)
+    assertEquals(updatedActivities?.isEmpty(), null)
+  }
+
+  @Test
+  fun testApplyFilterOptionsButton() {
+    var updatedLevels: UserActivitiesLevel? = null
+    var updatedActivities: List<ActivityType>? = null
+
+    composeRule.activity.setContent {
+      FilterScreen(
+          selectedLevels = mockSelectedLevels,
+          setSelectedLevels = { updatedLevels = it },
+          selectedActivitiesType = mockSelectedActivitiesType,
+          setSelectedActivitiesType = { updatedActivities = it },
+          navigateBack = { navigateBackTriggered = true })
+    }
+
+    composeRule.onNodeWithTag("applyFilterOptionsButton").performClick()
+
+    assertEquals(updatedLevels, mockUserActivitiesLevel)
+    assertEquals(updatedActivities, mockSelectedActivitiesType.value)
+    assertEquals(navigateBackTriggered, true)
   }
 }
