@@ -230,9 +230,6 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
     }
     composable(DestinationRoute.Filter.route) { entry ->
       val discoverScreenViewModel: DiscoverScreenViewModel = entry.sharedViewModel(navController)
-      Log.d(
-          "perosdebug",
-          "selectedActivitiesType: ${discoverScreenViewModel.selectedActivityType.value}")
 
       FilterScreen(
           discoverScreenViewModel.selectedLevels,
