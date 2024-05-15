@@ -1,5 +1,6 @@
 package com.lastaoutdoor.lasta.ui.screen.discover
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -49,6 +50,7 @@ import com.lastaoutdoor.lasta.ui.theme.AccentGreen
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
 import kotlinx.coroutines.flow.StateFlow
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun FilterScreen(
@@ -70,9 +72,26 @@ fun FilterScreen(
         userSelectedLevels.bikingLevel)
   }
 
-  val selectedActivitiesTypes = remember {
-    mutableStateListOf(selectedActivitiesType.value.first())
-  }
+  // really cumbersome way to get the number of activities but didn't want to break the rest of the
+  // code (implemented by someone else)
+  val nrOfActivities = selectedActivitiesType.value.size
+  val selectedActivitiesTypes =
+      when (nrOfActivities) {
+        0 -> remember { mutableStateListOf() }
+        1 -> remember { mutableStateListOf(selectedActivitiesType.value.first()) }
+        2 ->
+            remember {
+              mutableStateListOf(
+                  selectedActivitiesType.value.first(), selectedActivitiesType.value.last())
+            }
+        else ->
+            remember {
+              mutableStateListOf(
+                  selectedActivitiesType.value.first(),
+                  selectedActivitiesType.value[1],
+                  selectedActivitiesType.value.last())
+            }
+      }
 
   var checkedBox by remember { mutableStateOf(true) }
 
@@ -209,6 +228,12 @@ fun FilterScreen(
               ElevatedButton(
                   onClick = {
                     { /* TODO */}
+                    setSelectedLevels(
+                        UserActivitiesLevel(
+                            activitiesLevelArray[0],
+                            activitiesLevelArray[1],
+                            activitiesLevelArray[2]))
+                    setSelectedActivitiesType(selectedActivitiesTypes.toList())
                     navigateBack()
                   },
                   elevation = ButtonDefaults.elevatedButtonElevation(3.dp),

@@ -1,6 +1,7 @@
 package com.lastaoutdoor.lasta.ui.navigation
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -228,8 +229,10 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           weatherViewModel::fetchWeatherWithUserLoc)
     }
     composable(DestinationRoute.Filter.route) { entry ->
-      val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
-      val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
+      val discoverScreenViewModel: DiscoverScreenViewModel = entry.sharedViewModel(navController)
+      Log.d(
+          "perosdebug",
+          "selectedActivitiesType: ${discoverScreenViewModel.selectedActivityType.value}")
 
       FilterScreen(
           discoverScreenViewModel.selectedLevels,
