@@ -8,6 +8,7 @@ import com.lastaoutdoor.lasta.data.api.notifications.FCMApi
 import com.lastaoutdoor.lasta.models.social.MessageModel
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
+import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeConnectivityviewRepo
 import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserDB
@@ -51,7 +52,7 @@ class SocialViewModelTest {
   @ExperimentalCoroutinesApi @get:Rule val mainDispatcherRule = MainDispatcherRule()
 
   private val repoDB = FakeSocialDB()
-  private val userDB = FakeUserDB()
+  private lateinit var userDB: UserDBRepository
   private val connectRepo = FakeConnectivityviewRepo()
   private val context: Context = mockk()
   private lateinit var viewModel: SocialViewModel
@@ -64,6 +65,7 @@ class SocialViewModelTest {
   @ExperimentalCoroutinesApi
   @Before
   fun setUp() {
+    userDB = FakeUserDB()
     viewModel =
         SocialViewModel(context, repoDB, userDB, connectRepo, prefRepo, tokenDBRepository, fcmAPI)
   }
@@ -157,5 +159,11 @@ class SocialViewModelTest {
     coEvery { tokenDBRepository.getUserTokenById(any() as String) } returns userToken
     coEvery { fcmAPI.sendMessage(any()) } returns Unit
     viewModel.requestFriend("test@email.com")
+  }
+
+  @Test
+  fun `test request friend with invalid email`() = runTest {
+    every { context.getString(any()) } returns "stringResource"
+    viewModel.requestFriend("test")
   }
 }

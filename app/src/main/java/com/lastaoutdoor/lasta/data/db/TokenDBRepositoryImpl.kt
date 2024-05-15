@@ -11,23 +11,22 @@ import kotlinx.coroutines.tasks.await
 class TokenDBRepositoryImpl(context: Context, database: FirebaseFirestore) : TokenDBRepository {
   private val tokenCollection = database.collection(context.getString(R.string.token_db_name))
 
-  override suspend fun uploadUserToken(userId: String, token: String) {
+  override fun uploadUserToken(userId: String, token: String) {
     if (token.isEmpty()) return
     if (userId.isEmpty()) return
     // Upload user token to database
     val document = tokenCollection.document(userId)
     val data = hashMapOf("token" to token, "timestamp" to FieldValue.serverTimestamp())
-    document.set(data, SetOptions.merge()).await()
+    document.set(data, SetOptions.merge())
   }
 
   override suspend fun getUserTokenById(userId: String): String? {
     if (userId.isEmpty()) return null
     // Get user token from database
     val document = tokenCollection.document(userId).get().await()
-    return document.getString("token") ?: ""
+    if (!document.exists()) return null
+    return document.getString("token")
   }
 
-  override suspend fun getTokensByIds(userIds: List<String>): List<String> {
-    TODO("Not yet implemented")
-  }
+  // override suspend fun getTokensByIds(userIds: List<String>): List<String> {}
 }
