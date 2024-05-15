@@ -4,6 +4,10 @@ package com.lastaoutdoor.lasta.ui.screen.map
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
@@ -27,10 +31,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.Dash
+import com.google.android.gms.maps.model.Dot
+import com.google.android.gms.maps.model.Gap
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.SphericalUtil
 import com.google.maps.android.compose.CameraPositionState
@@ -236,7 +245,8 @@ private fun GoogleMapComposable(
     if (selectedItinerary != null) {
       Polyline(
           points = selectedItinerary.points,
-          width = 6f,
+          color = Color.Blue,
+          width = 12f
       )
     }
 
@@ -245,7 +255,7 @@ private fun GoogleMapComposable(
       Marker(
           state = MarkerState(position = marker.position),
           title = marker.name,
-          icon = BitmapDescriptorFactory.fromResource(marker.icon),
+          icon = getScaledBitmapDescriptor(LocalContext.current, marker.icon, 150, 150),
           snippet = marker.description,
           onClick = {
             if (selectedMarker == null || selectedMarker.id != marker.id) {
@@ -264,4 +274,17 @@ private fun GoogleMapComposable(
       )
     }
   }
+
+}
+fun getScaledBitmapDescriptor(context: Context, vectorResId: Int, width: Int, height: Int): BitmapDescriptor? {
+    val vectorDrawable: Drawable = ContextCompat.getDrawable(context, vectorResId) ?: return null
+
+    // Scale the drawable
+    vectorDrawable.setBounds(0, 0, width, height)
+
+    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    vectorDrawable.draw(canvas)
+
+    return BitmapDescriptorFactory.fromBitmap(bitmap)
 }

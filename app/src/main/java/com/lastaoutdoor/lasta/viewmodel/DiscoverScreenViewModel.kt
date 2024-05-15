@@ -83,7 +83,7 @@ constructor(
   // Changes the map properties depending on the permission
 
   // List of markers to display on the map
-  private val _markerList = MutableStateFlow<List<Marker>>(emptyList())
+  private val _markerList = MutableStateFlow<ArrayList<Marker>>(ArrayList())
   val markerList: StateFlow<List<Marker>> = _markerList
 
   // Map of suggestions from the radar API with the locality as key and the LatLng as value
@@ -233,7 +233,7 @@ constructor(
         }
 
         _activities.value.addAll(activitiesDB.getActivitiesByOSMIds(activityIds.value, false))
-        _markerList.value.union(activitiesToMarkers(activities.value))
+        _markerList.value.addAll(activitiesToMarkers(activities.value))
       }
 
       // order the activities by the selected ordering
