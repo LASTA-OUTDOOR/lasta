@@ -36,6 +36,7 @@ class FilterScreenTest {
   @get:Rule(order = 1) val composeRule = createAndroidComposeRule<MainActivity>()
 
   private lateinit var intermediate: String
+  private lateinit var beginner: String
 
   @Before
   fun setUp() {
@@ -50,6 +51,7 @@ class FilterScreenTest {
 
     composeRule.activity.setContent {
       intermediate = stringResource(id = R.string.filter_difficulty_level)
+      beginner = stringResource(id = R.string.beginner)
       val navController = rememberNavController()
       NavHost(navController = navController, startDestination = "filterScreen") {
         composable("filterScreen") {
@@ -85,7 +87,7 @@ class FilterScreenTest {
     composeRule.onNodeWithTag("DropdownItem0").performClick()
     composeRule.onNodeWithTag("applyFilterOptionsButton").performClick()
 
-    composeRule.onNodeWithText("Beginner").assertIsNotDisplayed()
+    composeRule.onNodeWithText(beginner).assertIsNotDisplayed()
   }
 
   @Test
