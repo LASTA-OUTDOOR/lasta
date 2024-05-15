@@ -139,4 +139,9 @@
     <string name="advanced">Advanced</string>
     <string name="ride">Ride</string>
     <string name="recent_activities">Recent Activities</string>
+    <string name="add_review">Review:</string>
+    <string name="ask_rating">Please rate (out of 5 stars): </string>
+    <string name="ask_comment">Write your comment here: </string>
+    <string name="no_duration">No duration</string>
+    <string name="publish">Publish!</string>
 </resources>

@@ -106,4 +106,9 @@
     <string name="advanced">Erweitert</string>
     <string name="ride">Radtour</string>
     <string name="recent_activities">Neueste Aktivitäten</string>
+    <string name="add_review">Review:</string>
+    <string name="ask_rating">Bitte bewerten Sie (von 5 Sternen): </string>
+    <string name="ask_comment">Schreiben Sie hier Ihren Kommentar: </string>
+    <string name="no_duration">Keine Dauer</string>
+    <string name="publish">Veröffentlichen!</string>
 </resources>
