@@ -103,6 +103,15 @@ object NetworkModule {
 
   @Singleton
   @Provides
+  fun provideRadarApiService(@ApplicationContext context: Context): RadarApiService =
+      Retrofit.Builder()
+          .baseUrl(context.getString(R.string.radar_api_url))
+          .addConverterFactory(GsonConverterFactory.create())
+          .build()
+          .create(RadarApiService::class.java)
+
+  @Singleton
+  @Provides
   fun provideActivitiesRepository(osmApiService: OSMApiService): ActivityRepository =
       ActivityRepositoryImpl(osmApiService)
 
@@ -110,15 +119,6 @@ object NetworkModule {
   @Provides
   fun provideWeatherRepository(weatherApiService: WeatherApiService): WeatherRepository =
       WeatherRepositoryImpl(weatherApiService)
-
-  @Singleton
-  @Provides
-  fun provideRadarApiService(): RadarApiService =
-      Retrofit.Builder()
-          .baseUrl("https://api.radar.io/v1/search/")
-          .addConverterFactory(GsonConverterFactory.create())
-          .build()
-          .create(RadarApiService::class.java)
 
   @Singleton
   @Provides
