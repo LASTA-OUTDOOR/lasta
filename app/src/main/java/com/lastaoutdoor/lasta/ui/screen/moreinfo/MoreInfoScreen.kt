@@ -60,6 +60,7 @@ import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
 import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
+import com.lastaoutdoor.lasta.ui.components.shareActivity
 import com.lastaoutdoor.lasta.ui.screen.map.mapScreen
 import com.lastaoutdoor.lasta.ui.theme.Black
 import com.lastaoutdoor.lasta.ui.theme.GreenDifficulty
@@ -378,13 +379,14 @@ fun TopBar(
     downloadActivity: (Activity) -> Unit,
     navigateBack: () -> Unit
 ) {
-  Row(modifier = Modifier
-      .fillMaxWidth()
-      .testTag("Top Bar")) {
+
+  val context = LocalContext.current
+
+  Row(modifier = Modifier.fillMaxWidth().testTag("Top Bar")) {
     TopBarLogo(R.drawable.arrow_back) { navigateBack() }
     Spacer(modifier = Modifier.weight(1f))
     TopBarLogo(R.drawable.download_button) { downloadActivity(activityToDisplay) }
-    TopBarLogo(R.drawable.share) {}
+    TopBarLogo(R.drawable.share) { shareActivity(activityToDisplay, context) }
     TopBarLogo(R.drawable.favourite) {}
   }
 }

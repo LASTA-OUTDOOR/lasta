@@ -41,7 +41,7 @@
     <string name="search">"Suchen "</string>
     <string name="select_dist_radius">Wählen Sie den Suchradius aus</string>
     <string name="use_curr_loc">Meinen aktuellen Standort verwenden</string>
-    <string name="apply">Anwenden - Zu implementieren</string>
+    <string name="apply">Anwenden</string>
     <string name="activity_title">Activitättitel</string>
     <string name="friend">Freunde</string>
     <string name="no_friend">Sie haben noch keine Freundschaftsanfrage</string>
@@ -104,6 +104,8 @@
     <string name="beginner">Anfänger</string>
     <string name="intermediate">Fortgeschritten</string>
     <string name="advanced">Erweitert</string>
+    <string name="show_completed_activities_description">Durch Aktivieren dieser Option werden alle zuvor abgeschlossenen Aktivitäten angezeigt.</string>
+    <string name="erase_options">Alles löschen</string>
     <string name="ride">Radtour</string>
     <string name="recent_activities">Neueste Aktivitäten</string>
     <string name="add_review">Review:</string>
@@ -111,4 +113,9 @@
     <string name="ask_comment">Schreiben Sie hier Ihren Kommentar: </string>
     <string name="no_duration">Keine Dauer</string>
     <string name="publish">Veröffentlichen!</string>
+    <string name="share_title">Lasta : Aktivitäten teilen</string>
+    <string name="share_body">Hallo ! Sieh dir diese Aktivität auf Lasta an :</string>
+    <string name="step_count">Schrittzahl</string>
+    <string name="step_count_unavailable">Schrittzähler Nicht verfügbar</string>
+    <string name="step_count_unsupported">Dieses Gerät unterstützt keine Schrittzählung.</string>
 </resources>

@@ -320,7 +320,6 @@ fun HeaderComposable(
                           Modifier.fillMaxWidth().padding(4.dp).testTag("suggestion").clickable {
                             fManager.clearFocus()
                             setSelectedLocality(Pair(suggestion.key, suggestion.value))
-                            fetchActivities(range, suggestion.value)
                             changeText(suggestion.key)
                             updateInitialPosition(suggestion.value)
                             moveCamera(CameraUpdateFactory.newLatLng(suggestion.value))

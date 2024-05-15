@@ -47,14 +47,14 @@ constructor(
   private val _activities = MutableStateFlow<List<Activity>>(emptyList())
   val activities: StateFlow<List<Activity>> = _activities
 
-  private val _activityIds = MutableStateFlow<ArrayList<Long>>(ArrayList())
+  private val _activityIds = MutableStateFlow<List<Long>>(emptyList())
   val activityIds: StateFlow<List<Long>> = _activityIds
 
   private val _orderingBy = MutableStateFlow(OrderingBy.DISTANCE)
   val orderingBy: StateFlow<OrderingBy> = _orderingBy
 
-  private val _selectedActivityType = MutableStateFlow(ActivityType.CLIMBING)
-  val selectedActivityType: StateFlow<ActivityType> = _selectedActivityType
+  private val _selectedActivityTypes = MutableStateFlow(listOf(ActivityType.HIKING))
+  val selectedActivityType: StateFlow<List<ActivityType>> = _selectedActivityTypes
 
   private val _selectedLevels =
       MutableStateFlow(
@@ -111,8 +111,8 @@ constructor(
 
   init {
     viewModelScope.launch {
-      _selectedActivityType.value =
-          preferencesRepository.userPreferencesFlow.map { it.user.prefActivity }.first()
+      _selectedActivityTypes.value =
+          preferencesRepository.userPreferencesFlow.map { listOf(it.user.prefActivity) }.first()
 
       _selectedLevels.value =
           preferencesRepository.userPreferencesFlow.map { it.user.levels }.first()
@@ -158,79 +158,96 @@ constructor(
   }
 
   fun fetchActivities(rad: Double = 10000.0, centerLocation: LatLng = LatLng(46.519962, 6.633597)) {
+    println("Start fetching activities")
     viewModelScope.launch {
+      println("Launch 1")
       _isLoading.value = true
-      _activities.value = ArrayList()
-      _activityIds.value = ArrayList()
-      val response =
-          when (_selectedActivityType.value) {
-            ActivityType.CLIMBING ->
-                repository.getClimbingPointsInfo(
-                    rad.toInt(), centerLocation.latitude, centerLocation.longitude)
-            ActivityType.HIKING ->
-                repository.getHikingRoutesInfo(
-                    rad.toInt(), centerLocation.latitude, centerLocation.longitude)
-            ActivityType.BIKING ->
-                repository.getBikingRoutesInfo(
-                    rad.toInt(), centerLocation.latitude, centerLocation.longitude)
-          }
-
-      val osmData =
-          when (response) {
-            is Response.Failure -> {
-              response.e.printStackTrace()
-              return@launch
+      val activitiesHolder: ArrayList<Activity> = ArrayList()
+      val activitiesIdsHolder: ArrayList<Long> = ArrayList()
+      val markerListHolder: ArrayList<Marker> = ArrayList()
+      for (activityType in _selectedActivityTypes.value) {
+        val response =
+            when (activityType) {
+              ActivityType.CLIMBING ->
+                  repository.getClimbingPointsInfo(
+                      rad.toInt(), centerLocation.latitude, centerLocation.longitude)
+              ActivityType.HIKING ->
+                  repository.getHikingRoutesInfo(
+                      rad.toInt(), centerLocation.latitude, centerLocation.longitude)
+              ActivityType.BIKING ->
+                  repository.getBikingRoutesInfo(
+                      rad.toInt(), centerLocation.latitude, centerLocation.longitude)
             }
-            is Response.Success -> {
-              response.data ?: emptyList()
+        println("Launch 2")
+        val osmData =
+            when (response) {
+              is Response.Failure -> {
+                response.e.printStackTrace()
+                return@launch
+              }
+              is Response.Success -> {
+                response.data ?: emptyList()
+              }
+              is Response.Loading -> {
+                emptyList<OSMData>()
+              }
             }
-            is Response.Loading -> {
-              emptyList<OSMData>()
+        println("Launch 3")
+        osmData.map { point ->
+          when (activityType) {
+            ActivityType.CLIMBING -> {
+              val castedPoint = point as NodeWay
+              activitiesIdsHolder.add(castedPoint.id)
+              activitiesDB.addActivityIfNonExisting(
+                  Activity("", point.id, ActivityType.CLIMBING, point.tags.name))
             }
-          }
-      osmData.map { point ->
-        when (_selectedActivityType.value) {
-          ActivityType.CLIMBING -> {
-            val castedPoint = point as NodeWay
-            _activityIds.value.add(castedPoint.id)
-            activitiesDB.addActivityIfNonExisting(
-                Activity("", point.id, ActivityType.CLIMBING, point.tags.name))
-          }
-          ActivityType.HIKING -> {
-            val castedPoint = point as Relation
-            _activityIds.value.add(castedPoint.id)
-            activitiesDB.addActivityIfNonExisting(
-                Activity(
-                    "",
-                    point.id,
-                    ActivityType.HIKING,
-                    point.tags.name,
-                    from = point.tags.from,
-                    to = point.tags.to))
-          }
-          ActivityType.BIKING -> {
-            val castedPoint = point as Relation
-            _activityIds.value.add(castedPoint.id)
-            activitiesDB.addActivityIfNonExisting(
-                Activity(
-                    "",
-                    point.id,
-                    ActivityType.BIKING,
-                    point.tags.name,
-                    from = point.tags.from,
-                    to = point.tags.to,
-                    distance = point.tags.distance.toFloat()))
+            ActivityType.HIKING -> {
+              val castedPoint = point as Relation
+              activitiesIdsHolder.add(castedPoint.id)
+              println("3.5")
+              activitiesDB.addActivityIfNonExisting(
+                  Activity(
+                      "",
+                      point.id,
+                      ActivityType.HIKING,
+                      point.tags.name,
+                      from = point.tags.from,
+                      to = point.tags.to))
+            }
+            ActivityType.BIKING -> {
+              val castedPoint = point as Relation
+              activitiesIdsHolder.add(castedPoint.id)
+              val distance =
+                  if (point.tags.distance.isEmpty()) 0f else point.tags.distance.toFloat()
+              activitiesDB.addActivityIfNonExisting(
+                  Activity(
+                      "",
+                      point.id,
+                      ActivityType.BIKING,
+                      point.tags.name,
+                      from = point.tags.from,
+                      to = point.tags.to,
+                      distance = distance))
+            }
           }
         }
+        println("Launch 4")
+        activitiesHolder.addAll(activitiesDB.getActivitiesByOSMIds(activitiesIdsHolder, false))
+        markerListHolder.addAll(activitiesToMarkers(activitiesHolder))
       }
 
-      _activities.value =
-          activitiesDB.getActivitiesByOSMIds(activityIds.value, false) as ArrayList<Activity>
-      _markerList.value = activitiesToMarkers(activities.value)
+      println("activitiesHolder: ${activitiesHolder.size}")
+        println("activitiesIdsHolder: ${activitiesIdsHolder.size}")
+        println("markerListHolder: $markerListHolder")
+
+        _activities.value = activitiesHolder
+        _activityIds.value = activitiesIdsHolder
+        _markerList.value = markerListHolder
       // order the activities by the selected ordering
       updateActivitiesByOrdering()
       _isLoading.value = false
     }
+    println("Before leaving")
   }
 
   fun setScreen(screen: DiscoverDisplayType) {
@@ -248,8 +265,8 @@ constructor(
     _initialPosition.value = locality.second
   }
 
-  fun setSelectedActivityType(activityType: ActivityType) {
-    _selectedActivityType.value = activityType
+  fun setSelectedActivitiesType(activitiesType: List<ActivityType>) {
+    _selectedActivityTypes.value = activitiesType
     updateActivitiesByOrdering()
   }
 
@@ -300,14 +317,14 @@ constructor(
     }
   }
 
-  fun updateActivityType(activityType: ActivityType) {
-    _selectedActivityType.value = activityType
+  fun updateActivityType(activitiesType: List<ActivityType>) {
+    _selectedActivityTypes.value = activitiesType
     fetchActivities()
   }
 
   // function used only for testing purposes
   fun updateActivities(activities: List<Activity>) {
-    _activities.value = ArrayList(activities)
+    _activities.value = activities
   }
 
   private fun updateActivitiesByOrdering() {
@@ -321,39 +338,45 @@ constructor(
             }
         val sortedActivities =
             _activities.value.sortedBy { distances[_activities.value.indexOf(it)] }
-        _activities.value = ArrayList(sortedActivities)
+        _activities.value = sortedActivities
       }
       OrderingBy.RATING -> {
-        _activities.value = ArrayList(_activities.value.sortedBy { it.rating }.reversed())
+        _activities.value = _activities.value.sortedBy { it.rating }.reversed()
       }
       OrderingBy.POPULARITY -> {
-        _activities.value = ArrayList(_activities.value.sortedBy { it.numRatings }.reversed())
+        _activities.value = _activities.value.sortedBy { it.numRatings }.reversed()
       }
       OrderingBy.DIFFICULTYASCENDING -> {
-        _activities.value = ArrayList(_activities.value.sortedBy { it.difficulty })
+        _activities.value = _activities.value.sortedBy { it.difficulty }
       }
       OrderingBy.DIFFICULTYDESCENDING -> {
-        _activities.value = ArrayList(_activities.value.sortedBy { it.difficulty }.reversed())
+        _activities.value = _activities.value.sortedBy { it.difficulty }.reversed()
       }
     }
     _activities.value =
-        _activities.value.filter {
-          filterWithDiff(_selectedActivityType.value, _selectedLevels.value.bikingLevel, it)
-        } as ArrayList<Activity>
+        _activities.value.filter { filterWithDiff(_selectedLevels.value, it) }
   }
 
-  fun filterWithDiff(
-      activityType: ActivityType,
-      difficulty: UserLevel,
-      activity: Activity
-  ): Boolean {
-    return if (activityType == activity.activityType)
-        when (difficulty) {
-          UserLevel.BEGINNER -> activity.difficulty == Difficulty.EASY
-          UserLevel.INTERMEDIATE -> activity.difficulty == Difficulty.NORMAL
-          UserLevel.ADVANCED -> activity.difficulty == Difficulty.HARD
-        }
-    else false
+  fun filterWithDiff(difficulties: UserActivitiesLevel, activity: Activity): Boolean {
+    return when (activity.activityType) {
+      ActivityType.CLIMBING -> {
+        activity.difficulty <= userLevelToDifficulty(difficulties.climbingLevel)
+      }
+      ActivityType.HIKING -> {
+        activity.difficulty <= userLevelToDifficulty(difficulties.hikingLevel)
+      }
+      ActivityType.BIKING -> {
+        activity.difficulty <= userLevelToDifficulty(difficulties.bikingLevel)
+      }
+    }
+  }
+
+  private fun userLevelToDifficulty(userLevel: UserLevel): Difficulty {
+    return when (userLevel) {
+      UserLevel.BEGINNER -> Difficulty.EASY
+      UserLevel.INTERMEDIATE -> Difficulty.NORMAL
+      UserLevel.ADVANCED -> Difficulty.HARD
+    }
   }
 
   fun updateOrderingBy(orderingBy: OrderingBy) {
