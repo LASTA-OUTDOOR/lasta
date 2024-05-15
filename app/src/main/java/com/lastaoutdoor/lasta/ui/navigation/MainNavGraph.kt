@@ -238,7 +238,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           discoverScreenViewModel.selectedLevels,
           discoverScreenViewModel::setSelectedLevels,
           discoverScreenViewModel.selectedActivityType,
-          discoverScreenViewModel::setSelectedActivityType,
+          discoverScreenViewModel::setSelectedActivitiesType,
       ) {
         navController.popBackStack()
       }

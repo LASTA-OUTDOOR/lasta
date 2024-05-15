@@ -4,6 +4,7 @@
     <string name="web_client_id" translatable="false">720666228102-mtt8qsp3fuljeatb9128qss6c2qf91t2.apps.googleusercontent.com</string>
     <string name="osm_base_url" translatable="false">https://overpass.osm.ch/api/</string>
     <string name="weather_api_url" translatable="false">https://api.openweathermap.org/data/2.5/</string>
+    <string name="radar_api_url" translatable="false">https://api.radar.io/v1/search/</string>
     <string name="user_db_name" translatable="false">users</string>
     <string name="user_activities_db_name" translatable="false">user_activities</string>
     <string name="activities_db_name" translatable="false">activities</string>
@@ -85,7 +86,7 @@
     <string name = "search">Search</string>
     <string name = "select_dist_radius">Select the search radius</string>
     <string name = "use_curr_loc">Use my current location</string>
-    <string name = "apply">Apply - To be done</string>
+    <string name = "apply">"Apply "</string>
     <!--Friends-->
     <string name = "activity_title">Activity Title</string>
     <string name = "friend">Friend</string>
@@ -136,6 +137,16 @@
     <string name="beginner">Beginner</string>
     <string name="intermediate">Intermediate</string>
     <string name="advanced">Advanced</string>
+    <string name="show_completed_activities_description">Enabling this option will display all previously completed activities</string>
+    <string name="erase_options">Clear all</string>
     <string name="ride">Ride</string>
     <string name="recent_activities">Recent Activities</string>
+    <string name="share_title">Lasta : Activity Sharing</string>
+    <string name="share_body">"Hi ! Check out this activity on Lasta : "</string>
+
+    <!--Step Counting-->
+    <string name="step_count">Step Count</string>
+    <string name="step_count_unavailable">Step Counter Not Available</string>
+    <string name="step_count_unsupported">This device does not support step counting.</string>
+    <string name="share_base_url" translatable="false">https://lasta.jerem.ch/activity/</string>
 </resources>

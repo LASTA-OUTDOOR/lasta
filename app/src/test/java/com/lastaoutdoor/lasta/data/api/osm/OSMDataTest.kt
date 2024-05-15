@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta
+package com.lastaoutdoor.lasta.data.api.osm
 
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType

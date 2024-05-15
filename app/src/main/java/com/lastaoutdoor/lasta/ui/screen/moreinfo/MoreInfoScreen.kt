@@ -32,11 +32,9 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -61,6 +59,7 @@ import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
 import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
+import com.lastaoutdoor.lasta.ui.components.shareActivity
 import com.lastaoutdoor.lasta.ui.screen.map.mapScreen
 import com.lastaoutdoor.lasta.ui.theme.Black
 import com.lastaoutdoor.lasta.ui.theme.GreenDifficulty
@@ -359,11 +358,14 @@ fun TopBar(
     downloadActivity: (Activity) -> kotlin.Unit,
     navigateBack: () -> Unit
 ) {
+
+  val context = LocalContext.current
+
   Row(modifier = Modifier.fillMaxWidth().testTag("Top Bar")) {
     TopBarLogo(R.drawable.arrow_back) { navigateBack() }
     Spacer(modifier = Modifier.weight(1f))
     TopBarLogo(R.drawable.download_button) { downloadActivity(activityToDisplay) }
-    TopBarLogo(R.drawable.share) {}
+    TopBarLogo(R.drawable.share) { shareActivity(activityToDisplay, context) }
     TopBarLogo(R.drawable.favourite) {}
   }
 }
