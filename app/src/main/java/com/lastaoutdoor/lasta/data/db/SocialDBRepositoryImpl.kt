@@ -207,7 +207,7 @@ constructor(
     return ConversationModel(
         members = listOf(user, friend),
         messages = messages,
-        lastMessage = if (messages.isEmpty()) null else messages.last())
+        lastMessage = if (messages.isEmpty()) null else messages.first())
   }
 
   override suspend fun getAllConversations(userId: String): List<ConversationModel> {
