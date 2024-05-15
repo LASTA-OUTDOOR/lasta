@@ -4,6 +4,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.models.activity.ActivityType
@@ -62,15 +63,25 @@ class FilterScreenTest {
     composeRule.onNodeWithTag("ToggleButtonHiking").performClick()
 
     composeRule.onNodeWithTag("difficultyLevelButton0").performClick()
-    composeRule.onNodeWithTag("filterScreen").assertIsDisplayed()
+    composeRule.onNodeWithTag("DropdownItem0").performClick()
+    composeRule.onNodeWithTag("applyFilterOptionsButton").performClick()
+
+    composeRule.onNodeWithText("Beginner").assertIsDisplayed()
+    composeRule.onNodeWithTag("EraseButton").performClick()
+  }
+
+  @Test
+  fun eraseButton_isWorking() {
+    composeRule.onNodeWithTag("ToggleButtonClimbing").performClick()
+    composeRule.onNodeWithTag("ToggleButtonHiking").performClick()
+    composeRule.onNodeWithTag("ToggleButtonClimbing").performClick()
+
+    composeRule.onNodeWithTag("difficultyLevelButton0").performClick()
+    composeRule.onNodeWithTag("DropdownItem0").performClick()
 
     composeRule.onNodeWithTag("EraseButton").performClick()
 
-    composeRule.onNodeWithTag("filterScreen").assertIsDisplayed()
-
-    composeRule.onNodeWithTag("applyFilterOptionsButton").performClick()
-
-    composeRule.onNodeWithTag("filterScreen").assertIsDisplayed()
+    composeRule.onNodeWithText("Intermediate").assertIsDisplayed()
   }
 
   @Test
