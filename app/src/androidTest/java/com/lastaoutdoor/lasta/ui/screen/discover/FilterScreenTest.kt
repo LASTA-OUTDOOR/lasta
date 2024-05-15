@@ -3,16 +3,21 @@ package com.lastaoutdoor.lasta.ui.screen.discover
 import androidx.activity.compose.setContent
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.ui.MainActivity
+import com.lastaoutdoor.lasta.ui.screen.loading.LoadingScreen
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -45,12 +50,21 @@ class FilterScreenTest {
 
     composeRule.activity.setContent {
       intermediate = stringResource(id = R.string.filter_difficulty_level)
-      FilterScreen(
-          selectedActivitiesType = selectedActivityType,
-          setSelectedActivitiesType = {},
-          selectedLevels = selectedLevels,
-          setSelectedLevels = {},
-      ) {}
+      val navController = rememberNavController()
+      NavHost(navController = navController, startDestination = "filterScreen") {
+        composable("filterScreen") {
+          FilterScreen(
+              selectedActivitiesType = selectedActivityType,
+              setSelectedActivitiesType = {},
+              selectedLevels = selectedLevels,
+              setSelectedLevels = {},
+          ) {
+            // go to loading
+            navController.navigate("loading")
+          }
+        }
+        composable("loading") { LoadingScreen(null, {}, {}) }
+      }
     }
   }
 
@@ -71,8 +85,7 @@ class FilterScreenTest {
     composeRule.onNodeWithTag("DropdownItem0").performClick()
     composeRule.onNodeWithTag("applyFilterOptionsButton").performClick()
 
-    composeRule.onNodeWithText("Beginner").assertIsDisplayed()
-    composeRule.onNodeWithTag("EraseButton").performClick()
+    composeRule.onNodeWithText("Beginner").assertIsNotDisplayed()
   }
 
   @Test
