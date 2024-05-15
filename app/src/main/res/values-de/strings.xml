@@ -113,4 +113,8 @@
     <string name="step_count">Schrittzahl</string>
     <string name="step_count_unavailable">Schrittzähler Nicht verfügbar</string>
     <string name="step_count_unsupported">Dieses Gerät unterstützt keine Schrittzählung.</string>
+    <string name="new_friend_request_notif">Neue Freundesanfrage</string>
+    <string name="friend_request_notif">möchte dein Freund sein!</string>
+    <string name="friend_request_accepted_notif">hat deine Freundesanfrage angenommen!</string>
+    <string name="friend_request_declined_notif">hat deine Freundesanfrage abgelehnt!</string>
 </resources>

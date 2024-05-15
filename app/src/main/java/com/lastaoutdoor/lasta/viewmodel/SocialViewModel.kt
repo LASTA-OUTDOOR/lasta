@@ -10,12 +10,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.data.api.notifications.FCMApi
+import com.lastaoutdoor.lasta.models.notifications.NotificationBody
+import com.lastaoutdoor.lasta.models.notifications.SendMessageDto
 import com.lastaoutdoor.lasta.models.social.ConversationModel
 import com.lastaoutdoor.lasta.models.social.FriendsActivities
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.app.ConnectivityRepository
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
+import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.utils.TimeFrame
@@ -32,11 +36,13 @@ import kotlinx.coroutines.launch
 class SocialViewModel
 @Inject
 constructor(
-    @ApplicationContext private val context: Context,
-    val repository: SocialDBRepository,
-    private val userDBRepo: UserDBRepository,
-    connectionRepo: ConnectivityRepository,
-    val preferences: PreferencesRepository
+  @ApplicationContext private val context: Context,
+  val repository: SocialDBRepository,
+  private val userDBRepo: UserDBRepository,
+  connectionRepo: ConnectivityRepository,
+  val preferences: PreferencesRepository,
+  private val tokenDBRepository: TokenDBRepository,
+  private val fcmAPI: FCMApi
 ) : ViewModel() {
 
   // get the user id
@@ -123,6 +129,11 @@ constructor(
               context.getString(R.string.no_fr)
             } else {
               repository.sendFriendRequest(userId, friendId)
+              tokenDBRepository.getUserTokenById(friendId)?.let {
+                fcmAPI.sendMessage(
+                  SendMessageDto(it, NotificationBody(context.getString(R.string.new_friend_request_notif), "${user.userName} ${context.getString(R.string.friend_request_notif)}"))
+                )
+              }
               context.getString(R.string.fr_req_sent)
             }
           } else {
@@ -134,6 +145,11 @@ constructor(
   fun acceptFriend(friend: UserModel) {
     viewModelScope.launch {
       repository.acceptFriendRequest(user.userId, friend.userId)
+      tokenDBRepository.getUserTokenById(friend.userId)?.let {
+        fcmAPI.sendMessage(
+          SendMessageDto(it, NotificationBody(user.userName, context.getString(R.string.friend_request_accepted_notif)))
+        )
+      }
       refreshFriendRequests()
       // update the list of friends
       refreshFriends()
@@ -145,6 +161,11 @@ constructor(
   fun declineFriend(friend: UserModel) {
     viewModelScope.launch {
       repository.declineFriendRequest(user.userId, friend.userId)
+      tokenDBRepository.getUserTokenById(friend.userId)?.let {
+        fcmAPI.sendMessage(
+          SendMessageDto(it, NotificationBody(user.userName, context.getString(R.string.friend_request_declined_notif)))
+        )
+      }
       // update the list of friends
       refreshFriendRequests()
     }

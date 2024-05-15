@@ -85,10 +85,9 @@ constructor(
         try {
           repository.sendMessage(userId, friendUserId, message)
           updateConversation()
-          val friendToken = tokenDBRepo.getUserTokenById(friendUserId)
-          if (friendToken != null) {
+          tokenDBRepo.getUserTokenById(friendUserId)?.let {
             fcmAPI.sendMessage(
-                SendMessageDto(friendToken, NotificationBody(user.value.userName, message)))
+                SendMessageDto(it, NotificationBody(user.value.userName, message)))
           }
         } catch (e: Exception) {
           e.printStackTrace()

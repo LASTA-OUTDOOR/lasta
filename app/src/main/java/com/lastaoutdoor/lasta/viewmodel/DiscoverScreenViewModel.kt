@@ -116,8 +116,6 @@ constructor(
   init {
     viewModelScope.launch {
       val userId = preferencesRepository.userPreferencesFlow.map { it.user.userId }.first()
-      _selectedActivityType.value =
-          preferencesRepository.userPreferencesFlow.map { it.user.prefActivity }.first()
       _selectedActivityTypes.value =
           preferencesRepository.userPreferencesFlow.map { listOf(it.user.prefActivity) }.first()
 

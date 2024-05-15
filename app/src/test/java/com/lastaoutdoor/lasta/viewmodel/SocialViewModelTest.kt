@@ -54,7 +54,7 @@ class SocialViewModelTest {
   @ExperimentalCoroutinesApi
   @Before
   fun setUp() {
-    viewModel = SocialViewModel(context, repoDB, userDB, connectRepo, prefRepo)
+    viewModel = SocialViewModel(context, repoDB, userDB, connectRepo, prefRepo, mockk(), mockk())
   }
 
   @ExperimentalCoroutinesApi val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
