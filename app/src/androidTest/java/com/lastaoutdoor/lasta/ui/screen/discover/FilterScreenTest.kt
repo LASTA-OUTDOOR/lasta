@@ -1,11 +1,13 @@
 package com.lastaoutdoor.lasta.ui.screen.discover
 
 import androidx.activity.compose.setContent
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
@@ -28,6 +30,8 @@ class FilterScreenTest {
 
   @get:Rule(order = 1) val composeRule = createAndroidComposeRule<MainActivity>()
 
+  private lateinit var intermediate: String
+
   @Before
   fun setUp() {
     hiltRule.inject()
@@ -40,6 +44,7 @@ class FilterScreenTest {
             UserActivitiesLevel(UserLevel.INTERMEDIATE, UserLevel.ADVANCED, UserLevel.ADVANCED))
 
     composeRule.activity.setContent {
+      intermediate = stringResource(id = R.string.filter_difficulty_level)
       FilterScreen(
           selectedActivitiesType = selectedActivityType,
           setSelectedActivitiesType = {},
@@ -81,7 +86,7 @@ class FilterScreenTest {
 
     composeRule.onNodeWithTag("EraseButton").performClick()
 
-    composeRule.onNodeWithText("Intermediate").assertIsDisplayed()
+    composeRule.onNodeWithText(intermediate).assertIsDisplayed()
   }
 
   @Test
