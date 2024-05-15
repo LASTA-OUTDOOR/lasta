@@ -2,6 +2,8 @@ package com.lastaoutdoor.lasta.ui.screen.settings
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -46,7 +48,6 @@ fun SettingsComponent(
     setUpOrSetting: Boolean // Setup if true, Settings if false
 ) {
   Column(horizontalAlignment = Alignment.CenterHorizontally) {
-    TitleComponent(setUpOrSetting = setUpOrSetting) // Title of the screen
     Spacer(modifier = Modifier.height(24.dp))
     SettingsHeader(SettingsType.GENERAL) // Header for General Settings
     Spacer(modifier = Modifier.height(24.dp))
@@ -60,28 +61,12 @@ fun SettingsComponent(
   }
 }
 
-@Composable
-fun SettingsHeader(setUpOrSetting: SettingsType) {
-
-  Column {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
-      Text(
-          text =
-              when (setUpOrSetting) {
-                SettingsType.GENERAL -> LocalContext.current.getString(R.string.general_settings)
-                SettingsType.ACTIVITY -> LocalContext.current.getString(R.string.activity_settings)
-              },
-          fontWeight = FontWeight.Bold,
-          color = MaterialTheme.colorScheme.primary,
-          style = MaterialTheme.typography.bodySmall,
-          modifier = Modifier.padding(horizontal = 16.dp).testTag("settingsHeader"),
-          textAlign = TextAlign.Justify)
-    }
-    Spacer(modifier = Modifier.height(8.dp))
-  }
-  HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 1f))
-}
-
+/**
+ * TitleComponent is a composable that displays the title of the settings screen
+ *
+ * @param setUpOrSetting: Boolean, if true, the title will be "Account setup", if false, the title
+ *   will be "Account settings"
+ */
 @Composable
 fun TitleComponent(setUpOrSetting: Boolean) {
   Row(modifier = Modifier.testTag("settingsTitleHeader")) {
@@ -130,6 +115,28 @@ fun TitleComponent(setUpOrSetting: Boolean) {
 }
 
 @Composable
+fun SettingsHeader(setUpOrSetting: SettingsType) {
+
+  Column {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
+      Text(
+          text =
+              when (setUpOrSetting) {
+                SettingsType.GENERAL -> LocalContext.current.getString(R.string.general_settings)
+                SettingsType.ACTIVITY -> LocalContext.current.getString(R.string.activity_settings)
+              },
+          fontWeight = FontWeight.Bold,
+          color = MaterialTheme.colorScheme.primary,
+          style = MaterialTheme.typography.bodySmall,
+          modifier = Modifier.padding(horizontal = 16.dp).testTag("settingsHeader"),
+          textAlign = TextAlign.Justify)
+    }
+    Spacer(modifier = Modifier.height(8.dp))
+  }
+  HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 1f))
+}
+
+@Composable
 fun LanguageSelectionComponent(
     language: Language,
     updateLanguage: (Language) -> Unit,
@@ -165,6 +172,7 @@ fun LanguageSelectionComponent(
   }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun FavoriteActivityComponent(
     prefActivity: ActivityType,
@@ -176,7 +184,7 @@ fun FavoriteActivityComponent(
         style = MaterialTheme.typography.headlineMedium,
         color = MaterialTheme.colorScheme.onBackground)
     Spacer(modifier = Modifier.height(8.dp))
-    Row(modifier = Modifier.testTag("settingsFavActivity")) {
+    FlowRow(modifier = Modifier.testTag("settingsFavActivity")) {
       for (activity in ActivityType.values()) {
         val tag = "settings${activity.name}"
         Button(
