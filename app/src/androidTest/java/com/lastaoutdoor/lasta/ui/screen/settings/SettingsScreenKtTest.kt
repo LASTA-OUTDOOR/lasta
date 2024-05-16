@@ -97,6 +97,7 @@ class SettingsScreenKtTest {
           navigateBack = {},
           signOutAndNavigate = {})
     }
+    composeRule.onNodeWithTag("languageDropDownButton").performClick()
     composeRule.onNodeWithTag("settingsLanguage").performClick()
     composeRule.onNodeWithTag("settingsLanguage").assertIsDisplayed()
   }
@@ -139,6 +140,7 @@ class SettingsScreenKtTest {
           updateBikingLevel = { levels = levels.copy(bikingLevel = it) },
       )
     }
+    composeRule.onNodeWithTag("activityDropDownButtonCLIMBING").performClick()
     composeRule.onNodeWithTag("settingsCLIMBINGLevel").assertIsDisplayed()
     composeRule.onNodeWithTag("settingsCLIMBINGLevel").performClick()
     composeRule.onNodeWithText("Intermediate").performClick()
