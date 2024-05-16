@@ -98,9 +98,9 @@ fun MessageCard(
           Row(
               modifier = Modifier.fillMaxWidth(),
               horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                ProfilePicture(friend.profilePictureUrl ?: "")
+                ProfilePicture(friend.profilePictureUrl)
                 Text(
-                    text = friend.userName ?: "Name error",
+                    text = friend.userName,
                     modifier = Modifier.align(alignment = Alignment.CenterVertically),
                     fontWeight = FontWeight.Bold)
               }

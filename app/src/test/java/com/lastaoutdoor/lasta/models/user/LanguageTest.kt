@@ -31,4 +31,11 @@ class LanguageTest {
     assertEquals("French", Language.FRENCH.resourcesToString(context))
     assertEquals("German", Language.GERMAN.resourcesToString(context))
   }
+
+  @Test
+  fun toLocaleTest() {
+    assertEquals(Language.ENGLISH.toLocale(), "en")
+    assertEquals(Language.GERMAN.toLocale(), "de")
+    assertEquals(Language.FRENCH.toLocale(), "fr")
+  }
 }

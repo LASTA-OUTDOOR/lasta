@@ -11,6 +11,7 @@ import com.google.firebase.ktx.Firebase
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.autocomplete.RadarApiService
 import com.lastaoutdoor.lasta.data.api.autocomplete.RadarRepositoryImpl
+import com.lastaoutdoor.lasta.data.api.notifications.FCMApi
 import com.lastaoutdoor.lasta.data.api.osm.ActivityRepositoryImpl
 import com.lastaoutdoor.lasta.data.api.osm.OSMApiService
 import com.lastaoutdoor.lasta.data.api.weather.WeatherApiService
@@ -18,6 +19,7 @@ import com.lastaoutdoor.lasta.data.api.weather.WeatherRepositoryImpl
 import com.lastaoutdoor.lasta.data.auth.AuthRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.ActivitiesDBRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.SocialDBRepositoryImpl
+import com.lastaoutdoor.lasta.data.db.TokenDBRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.UserActivitiesDBRepositoryImpl
 import com.lastaoutdoor.lasta.data.db.UserDBRepositoryImpl
 import com.lastaoutdoor.lasta.data.time.TimeProvider
@@ -27,6 +29,7 @@ import com.lastaoutdoor.lasta.repository.api.WeatherRepository
 import com.lastaoutdoor.lasta.repository.auth.AuthRepository
 import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
 import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
+import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserActivitiesDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import dagger.Module
@@ -88,6 +91,15 @@ object NetworkModule {
           .addConverterFactory(GsonConverterFactory.create())
           .build()
           .create(WeatherApiService::class.java)
+
+  @Singleton
+  @Provides
+  fun provideFcmAPIService(@ApplicationContext context: Context): FCMApi =
+      Retrofit.Builder()
+          .baseUrl(context.getString(R.string.notification_server_url))
+          .addConverterFactory(GsonConverterFactory.create())
+          .build()
+          .create(FCMApi::class.java)
 
   @Singleton
   @Provides
@@ -156,4 +168,11 @@ object NetworkModule {
   ): SocialDBRepository =
       SocialDBRepositoryImpl(
           context, firestore, userActivitiesDBRepository, timeProvider, activitiesDBRepository)
+
+  @Singleton
+  @Provides
+  fun provideTokenDBRepository(
+      @ApplicationContext context: Context,
+      firestore: FirebaseFirestore
+  ): TokenDBRepository = TokenDBRepositoryImpl(context, firestore)
 }

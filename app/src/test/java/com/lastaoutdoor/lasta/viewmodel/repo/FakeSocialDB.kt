@@ -8,7 +8,7 @@ import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
 import com.lastaoutdoor.lasta.utils.TimeFrame
 
-class FakeSocialDB() : SocialDBRepository {
+class FakeSocialDB : SocialDBRepository {
   val fakeUserModel = UserModel(userId = "id")
   val fakeActivity = ClimbingUserActivity()
   val fakeMSG = MessageModel(UserModel("moi"), "toi", Timestamp(0, 0))

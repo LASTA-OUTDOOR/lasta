@@ -4,57 +4,52 @@ import FakeSocialDB
 import android.content.Context
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.google.firebase.Timestamp
+import com.lastaoutdoor.lasta.data.api.notifications.FCMApi
 import com.lastaoutdoor.lasta.models.social.MessageModel
 import com.lastaoutdoor.lasta.models.user.UserModel
+import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
+import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeConnectivityviewRepo
 import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
+import com.lastaoutdoor.lasta.viewmodel.repo.FakeTokenDBRepo
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserDB
+import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.TestWatcher
-import org.junit.runner.Description
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-@ExperimentalCoroutinesApi
-class MainCoroutineRule(private val dispatcher: TestDispatcher = StandardTestDispatcher()) :
-    TestWatcher() {
-
-  override fun starting(description: Description?) {
-    super.starting(description)
-    Dispatchers.setMain(dispatcher)
-  }
-
-  override fun finished(description: Description?) {
-    super.finished(description)
-    Dispatchers.resetMain()
-  }
-}
-
+@RunWith(RobolectricTestRunner::class)
 class SocialViewModelTest {
   @ExperimentalCoroutinesApi @get:Rule val mainDispatcherRule = MainDispatcherRule()
 
   private val repoDB = FakeSocialDB()
-  private val userDB = FakeUserDB()
+  private lateinit var userDB: UserDBRepository
   private val connectRepo = FakeConnectivityviewRepo()
   private val context: Context = mockk()
   private lateinit var viewModel: SocialViewModel
   private val prefRepo = FakePreferencesRepository()
+  private val tokenDBRepository: TokenDBRepository = FakeTokenDBRepo()
+  private val fcmAPI = mockk<FCMApi>(relaxed = true)
 
   // Mock the user preferences flow
 
   @ExperimentalCoroutinesApi
   @Before
   fun setUp() {
-    viewModel = SocialViewModel(context, repoDB, userDB, connectRepo, prefRepo)
+    userDB = FakeUserDB()
+    viewModel =
+        SocialViewModel(context, repoDB, userDB, connectRepo, prefRepo, tokenDBRepository, fcmAPI)
   }
 
   @ExperimentalCoroutinesApi val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
@@ -137,5 +132,20 @@ class SocialViewModelTest {
     viewModel.latestFriendActivities
     Dispatchers.resetMain()
     testDispatcher.cleanupTestCoroutines()
+  }
+
+  @Test
+  fun `test request friend`() = runTest {
+    every { context.getString(any()) } returns "stringResource"
+    coEvery { fcmAPI.sendMessage(any()) } returns Unit
+    viewModel.requestFriend("test@email.com")
+    viewModel.acceptFriend(UserModel("userId"))
+    viewModel.declineFriend(UserModel("userId"))
+  }
+
+  @Test
+  fun `test request friend with invalid email`() = runTest {
+    every { context.getString(any()) } returns "stringResource"
+    viewModel.requestFriend("test")
   }
 }
