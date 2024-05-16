@@ -96,7 +96,7 @@ class MoreInfoScreenTest {
     composeRule.onNodeWithContentDescription("Top Bar logo ${R.drawable.share}").performClick()
   }
 
-  // Test that the more info screen is displayed
+  // Test that the more info screen is displayed.
   @Test
   fun moreInfoComposable_isDisplayed() {
     // Check that the more info screen is displayed correctly
