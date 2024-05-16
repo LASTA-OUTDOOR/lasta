@@ -48,7 +48,6 @@ class MoreInfoScreenTest {
       MoreInfoScreen(
           fakeActivity,
           fakeMapState,
-          {},
           LatLng(0.0, 0.0),
           0f,
           activities,

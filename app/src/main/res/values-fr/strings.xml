@@ -85,6 +85,7 @@
     <string name="send_message">Envoyer</string>
     <string name="Account_settings">Paramètres du compte</string>
     <string name="delete_account">Supprimer compte</string>
+    <string name="delete_account_prompt">Voulez-vous vraiment supprimer votre compte ?</string>
     <string name="tab_favorites">Favoris</string>
     <string name="tab_socials">Amis</string>
     <string name="sport_level">Niveau</string>
@@ -113,4 +114,16 @@
     <string name="step_count">Nombre de pas</string>
     <string name="step_count_unavailable">Compteur de pas indisponible</string>
     <string name="step_count_unsupported">Cet appareil ne prend pas en charge le comptage de pas </string>
+    <string name="new_friend_request_notif">Nouvelle Demande d\'Ami</string>
+    <string name="friend_request_notif">vous a demandé en ami!</string>
+    <string name="friend_request_accepted_notif">a accepté votre demande d\'ami!</string>
+    <string name="friend_request_declined_notif">a refusé votre demande d\'ami!</string>
+    <string name="general_settings">Paramètres généraux</string>
+    <string name="activity_settings">Paramètres d\'activités</string>
+    <string name = "select_lev_activity">Sélectionnez votre niveau dans l\'activité</string>
+    <string name = "Account_setup">Configuration</string>
+    <string name="submit_settings">Soumettre les paramètres choisis</string>
+    <string name="submit_settings_prompt">Etes-vous sûr de vouloir soumettre ces paramètres ? (Remarque : Vous pourrez toujours modifier vos préférences dans les paramètres de la page Profil)</string>
+    <string name="yes">Oui</string>
+    <string name="no">Non</string>
 </resources>

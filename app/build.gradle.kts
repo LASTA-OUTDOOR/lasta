@@ -171,6 +171,8 @@ dependencies {
     implementation(libs.androidx.room.common)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.material)
+    implementation(libs.firebase.messaging.ktx)
+    implementation(libs.firebase.firestore.ktx)
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.androidx.core.testing)
@@ -211,7 +213,7 @@ dependencies {
     //firebase
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.database.ktx)
-    implementation(libs.firebase.firestore.v24100)
+    implementation(libs.firebase.firestore.ktx)
     implementation (libs.firebase.ui.auth)
     implementation(platform(libs.firebase.bom))
     // --------- Kaspresso test framework ----------

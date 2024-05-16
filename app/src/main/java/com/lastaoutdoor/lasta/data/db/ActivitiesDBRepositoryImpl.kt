@@ -17,6 +17,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.tasks.await
 
+@Suppress("UNCHECKED_CAST")
 @Singleton
 class ActivitiesDBRepositoryImpl
 @Inject
@@ -83,7 +84,7 @@ constructor(context: Context, database: FirebaseFirestore) : ActivitiesDBReposit
     if (!query.isEmpty) {
       val documents = query.documents
       for (document in documents) {
-        val startPositionMap = document.get("startPosition") as Map<String, Double>
+        val startPositionMap = document.get("startPosition") as Map<*, *>
         if (onlyKnown && startPositionMap["lat"] == 0.0 && startPositionMap["lon"] == 0.0) {
           continue
         }
@@ -101,11 +102,11 @@ constructor(context: Context, database: FirebaseFirestore) : ActivitiesDBReposit
   }
 
   private fun convertDocumentToActivity(document: DocumentSnapshot): Activity {
-    val startPositionMap: Map<String, Double> =
-        (document.get("startPosition") ?: HashMap<String, Double>()) as Map<String, Double>
+    val startPositionMap = (document.get("startPosition") ?: HashMap<String, Double>()) as Map<*, *>
     val startPosition =
         Position(
-            startPositionMap.getOrDefault("lat", 0.0), startPositionMap.getOrDefault("lon", 0.0))
+            startPositionMap.getOrDefault("lat", 0.0) as Double,
+            startPositionMap.getOrDefault("lon", 0.0) as Double)
     val id = document.id
     val osmId = document.getLong("osmId") ?: 0
     val activityType = ActivityType.valueOf(document.getString("activityType") ?: "CLIMBING")
