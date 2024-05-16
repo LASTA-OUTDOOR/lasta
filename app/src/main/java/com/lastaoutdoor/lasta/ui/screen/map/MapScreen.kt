@@ -37,9 +37,6 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.Dash
-import com.google.android.gms.maps.model.Dot
-import com.google.android.gms.maps.model.Gap
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.SphericalUtil
 import com.google.maps.android.compose.CameraPositionState
@@ -246,7 +243,7 @@ private fun GoogleMapComposable(
       Polyline(
           points = selectedItinerary.points,
           color = Color.Blue,
-          width = 12f
+          width = 12f,
       )
     }
 
@@ -274,17 +271,22 @@ private fun GoogleMapComposable(
       )
     }
   }
-
 }
-fun getScaledBitmapDescriptor(context: Context, vectorResId: Int, width: Int, height: Int): BitmapDescriptor? {
-    val vectorDrawable: Drawable = ContextCompat.getDrawable(context, vectorResId) ?: return null
 
-    // Scale the drawable
-    vectorDrawable.setBounds(0, 0, width, height)
+fun getScaledBitmapDescriptor(
+    context: Context,
+    vectorResId: Int,
+    width: Int,
+    height: Int
+): BitmapDescriptor? {
+  val vectorDrawable: Drawable = ContextCompat.getDrawable(context, vectorResId) ?: return null
 
-    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-    val canvas = Canvas(bitmap)
-    vectorDrawable.draw(canvas)
+  // Scale the drawable
+  vectorDrawable.setBounds(0, 0, width, height)
 
-    return BitmapDescriptorFactory.fromBitmap(bitmap)
+  val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+  val canvas = Canvas(bitmap)
+  vectorDrawable.draw(canvas)
+
+  return BitmapDescriptorFactory.fromBitmap(bitmap)
 }

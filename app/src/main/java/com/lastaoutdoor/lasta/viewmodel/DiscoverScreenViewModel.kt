@@ -78,7 +78,7 @@ constructor(
   val initialZoom = 11f
 
   // Zoom level when focusing on a marker
-  val selectedZoom = 13f
+  val selectedZoom = 16f
 
   // Changes the map properties depending on the permission
 
@@ -274,7 +274,21 @@ constructor(
   // Update which marker is currently selected
   fun updateSelectedMarker(marker: Marker?) {
     _selectedMarker.value = marker
-    showHikingItinerary(marker?.id ?: 0L)
+    val id = marker?.id ?: 0L
+
+    if (id == 0L) {
+      _selectedItinerary.value = null
+      return
+    }
+
+    val activityType =
+        when (marker?.icon) {
+          R.drawable.hiking_icon -> ActivityType.HIKING
+          R.drawable.biking_icon -> ActivityType.BIKING
+          R.drawable.climbing_icon -> ActivityType.CLIMBING
+          else -> ActivityType.HIKING
+        }
+    showItinerary(id, marker?.position ?: LatLng(0.0, 0.0), activityType)
   }
 
   // Clear the selected itinerary
@@ -291,22 +305,69 @@ constructor(
     _initialPosition.value = position
   }
 
-  private fun showHikingItinerary(id: Long) {
+  private fun showItinerary(id: Long, startPosition: LatLng, activityType: ActivityType) {
     viewModelScope.launch {
-      val response = repository.getHikingRouteById(id)
+      val response =
+          when (activityType) {
+            ActivityType.HIKING -> repository.getHikingRouteById(id)
+            ActivityType.BIKING -> repository.getBikingRouteById(id)
+            ActivityType.CLIMBING -> repository.getClimbingPointById(id)
+          }
       val itinerary = (response as Response.Success).data
-      val pointsList = mutableListOf<LatLng>()
-      itinerary?.ways?.forEach { way ->
-        val nodes = way.nodes ?: emptyList()
-        nodes.forEach { position -> pointsList.add(LatLng(position.lat, position.lon)) }
+
+      when (activityType) {
+        ActivityType.HIKING,
+        ActivityType.BIKING -> showRouteItinerary(id, itinerary as Relation, startPosition)
+        ActivityType.CLIMBING -> showClimbingItinerary(id, itinerary as NodeWay, startPosition)
       }
-      _selectedItinerary.value =
-          MapItinerary(
-              id,
-              itinerary?.tags?.name ?: "",
-              pointsList,
-          )
     }
+  }
+
+  private fun showRouteItinerary(id: Long, itinerary: Relation, startPosition: LatLng) {
+    val pointsList = mutableListOf<LatLng>()
+    var currentStartPosition = startPosition
+
+    itinerary.ways?.forEach { way ->
+      val nodes = way.nodes ?: emptyList()
+      if (nodes.isNotEmpty()) {
+        // Calculate distances from the current start position to the first and last node
+        val firstNode = nodes[0]
+        val lastNode = nodes[nodes.size - 1]
+
+        val firstNodeDistanceFromStart =
+            SphericalUtil.computeDistanceBetween(
+                currentStartPosition, LatLng(firstNode.lat, firstNode.lon))
+
+        val lastNodeDistanceFromStart =
+            SphericalUtil.computeDistanceBetween(
+                currentStartPosition, LatLng(lastNode.lat, lastNode.lon))
+
+        // Determine if the nodes list needs to be reversed
+        val orderedNodes =
+            if (lastNodeDistanceFromStart < firstNodeDistanceFromStart) {
+              nodes.reversed()
+            } else {
+              nodes
+            }
+
+        // Add the ordered nodes to the points list
+        orderedNodes.forEach { position -> pointsList.add(LatLng(position.lat, position.lon)) }
+
+        // Update the current start position to the last node in the ordered list
+        currentStartPosition = pointsList.last()
+      }
+    }
+
+    _selectedItinerary.value =
+        MapItinerary(
+            id,
+            itinerary.tags.name,
+            pointsList,
+        )
+  }
+
+  private fun showClimbingItinerary(id: Long, itinerary: NodeWay, startPosition: LatLng) {
+    TODO()
   }
 
   fun updateActivityType(activitiesType: List<ActivityType>) {
