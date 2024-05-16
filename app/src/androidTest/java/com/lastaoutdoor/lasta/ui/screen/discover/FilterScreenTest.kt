@@ -66,7 +66,7 @@ class FilterScreenTest {
           updateRange = {},
           setSelectedActivitiesType = {},
           setSelectedLevels = {},
-      )
+          setShowCompleted = {})
 
   @Before
   fun setUp() {
