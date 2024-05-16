@@ -93,7 +93,8 @@ fun MoreInfoScreen(
     selectedItinerary: MapItinerary?,
     navigateBack: () -> Unit,
     downloadActivity: (Activity) -> Unit,
-    setWeatherBackToUserLoc: () -> Unit
+    setWeatherBackToUserLoc: () -> Unit,
+    clearSelectedMarker: () -> Unit
 ) {
   val isMapDisplayed = remember { mutableStateOf(false) }
   val isReviewing = remember { mutableStateOf(false) }
@@ -156,10 +157,7 @@ fun MoreInfoScreen(
           marker,
           selectedItinerary,
           markerList,
-      ) {
-        clearSelectedItinerary()
-      }
-      updateSelectedMarker(marker)
+          clearSelectedMarker)
     }
   }
 }

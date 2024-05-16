@@ -225,7 +225,8 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           selectedItinerary,
           { navController.navigateUp() },
           moreInfoScreenViewModel::downloadActivity,
-          weatherViewModel::fetchWeatherWithUserLoc)
+          weatherViewModel::fetchWeatherWithUserLoc,
+          discoverScreenViewModel::clearSelectedMarker)
     }
     composable(DestinationRoute.Filter.route) { entry ->
       val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)

@@ -7,6 +7,9 @@ import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.activity.ClimbingStyle
 import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.models.api.Position
+import com.lastaoutdoor.lasta.models.api.Relation
+import com.lastaoutdoor.lasta.models.api.SimpleWay
+import com.lastaoutdoor.lasta.models.api.Tags
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
@@ -471,6 +474,24 @@ class DiscoveryScreenViewModelTest() {
 
     activityType = ActivityType.CLIMBING
     method.invoke(viewModel, id, startPosition, activityType)
+    assert(viewModel.selectedItinerary.value != null)
+  }
+
+  @Suppress("UNCHECKED_CAST")
+  @Test
+  fun testShowRouteItinerary() {
+
+    val ways = listOf(SimpleWay(listOf(Position(0.0, 0.0), Position(15.0, 15.0))))
+
+    val relation: Relation = Relation("test", 1L, Tags(), ways as List<SimpleWay>?)
+
+    val method =
+        viewModel.javaClass.getDeclaredMethod(
+            "showRouteItinerary", Long::class.java, Relation::class.java, LatLng::class.java)
+    method.isAccessible = true
+
+    method.invoke(viewModel, 0L, relation, LatLng(14.0, 14.0))
+
     assert(viewModel.selectedItinerary.value != null)
   }
 }

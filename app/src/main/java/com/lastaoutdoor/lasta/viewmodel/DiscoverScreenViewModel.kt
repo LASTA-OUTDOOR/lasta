@@ -289,6 +289,14 @@ constructor(
 
   // Update which marker is currently selected
   fun updateSelectedMarker(marker: Marker?) {
+    // update the marker list
+    val markerListHolder = ArrayList(_markerList.value)
+    if (!markerList.value.contains(marker)) {
+      markerListHolder.add(marker!!)
+    }
+    _markerList.value = markerListHolder
+
+    // update the selected marker
     _selectedMarker.value = marker
     val id = marker?.id ?: 0L
 
@@ -304,6 +312,8 @@ constructor(
           R.drawable.climbing_icon -> ActivityType.CLIMBING
           else -> ActivityType.HIKING
         }
+
+    // show itinerary
     showItinerary(id, marker?.position ?: LatLng(0.0, 0.0), activityType)
   }
 
@@ -383,7 +393,7 @@ constructor(
   }
 
   private fun showClimbingItinerary(id: Long, itinerary: NodeWay, startPosition: LatLng) {
-    TODO()
+    return /* TODO */
   }
 
   fun updateActivityType(activitiesType: List<ActivityType>) {
