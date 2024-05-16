@@ -94,7 +94,6 @@ fun DiscoverScreen(
     changeWeatherTarget: (Activity) -> Unit,
     weather: WeatherResponse?,
     state: MapState,
-    updatePermission: (Boolean) -> Unit,
     initialPosition: LatLng,
     initialZoom: Float,
     updateMarkers: (LatLng, Double) -> Unit,
@@ -194,7 +193,6 @@ fun DiscoverScreen(
         moveCamera =
             mapScreen(
                 state,
-                updatePermission,
                 initialPosition,
                 initialZoom,
                 updateMarkers,
