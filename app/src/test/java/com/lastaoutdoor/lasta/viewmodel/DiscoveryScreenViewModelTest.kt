@@ -16,7 +16,6 @@ import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivitiesDBRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivityRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeRadarRepository
-import io.mockk.coEvery
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.Dispatchers
@@ -68,7 +67,7 @@ class DiscoveryScreenViewModelTest() {
 
   @Before
   fun setUp() {
-    repository = mockk(relaxed = true)
+    repository = FakeActivityRepository()
     prefRepo = FakePreferencesRepository()
     radarRepo = FakeRadarRepository()
     activitiesDB = FakeActivitiesDBRepository()
@@ -80,10 +79,6 @@ class DiscoveryScreenViewModelTest() {
   @Test
   fun fetchBikingActivities() {
     runBlocking {
-      val fakeRel = FakeActivityRepository().fakeRel
-      coEvery { repository.getBikingRoutesInfo(any(), any(), any()) } returns
-          Response.Success(listOf(fakeRel))
-
       viewModel.updateActivityType(listOf(ActivityType.BIKING))
 
       assertEquals(viewModel.selectedActivityType.value, listOf(ActivityType.BIKING))
@@ -107,10 +102,6 @@ class DiscoveryScreenViewModelTest() {
   @Test
   fun fetchHikingActivities() {
     runBlocking {
-      val fakeRel = FakeActivityRepository().fakeRel
-      coEvery { repository.getHikingRoutesInfo(any(), any(), any()) } returns
-          Response.Success(listOf(fakeRel))
-
       viewModel.updateActivityType(listOf(ActivityType.HIKING))
 
       assertEquals(viewModel.selectedActivityType.value, listOf(ActivityType.HIKING))
@@ -134,10 +125,6 @@ class DiscoveryScreenViewModelTest() {
   @Test
   fun fetchClimbingActivities() {
     runBlocking {
-      val fakeNode = FakeActivityRepository().fakeNode
-      coEvery { repository.getClimbingPointsInfo(any(), any(), any()) } returns
-          Response.Success(listOf(fakeNode))
-
       viewModel.updateActivityType(listOf(ActivityType.CLIMBING))
 
       assertEquals(viewModel.selectedActivityType.value, listOf(ActivityType.CLIMBING))
@@ -472,8 +459,18 @@ class DiscoveryScreenViewModelTest() {
             "showItinerary", Long::class.java, LatLng::class.java, ActivityType::class.java)
     method.isAccessible = true
 
+    repository.currResponse = Response.Success(null)
+
     method.invoke(viewModel, id, startPosition, activityType)
 
-    assert(viewModel.selectedItinerary.value == null)
+    assert(viewModel.selectedItinerary.value != null)
+
+    activityType = ActivityType.BIKING
+    method.invoke(viewModel, id, startPosition, activityType)
+    assert(viewModel.selectedItinerary.value != null)
+
+    activityType = ActivityType.CLIMBING
+    method.invoke(viewModel, id, startPosition, activityType)
+    assert(viewModel.selectedItinerary.value != null)
   }
 }
