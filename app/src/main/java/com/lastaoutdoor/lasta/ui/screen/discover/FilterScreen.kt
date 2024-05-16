@@ -71,7 +71,8 @@ fun FilterScreen(
         userSelectedLevels.hikingLevel,
         userSelectedLevels.bikingLevel)
   }
-
+  val checked = discoverScreenState.collectAsState().value.showCompleted
+  // internal function to avoid code duplication
   @Composable
   fun collectSelectedActivitiesTypes(): SnapshotStateList<ActivityType> {
     // really cumbersome way to get the number of activities but didn't want to break the rest of
@@ -97,7 +98,7 @@ fun FilterScreen(
 
   val snapshotSelectedActivitiesTypes = collectSelectedActivitiesTypes()
 
-  val selectedActivitiesTypes = remember { mutableStateListOf(selectedActivitiesType.first()) }
+  val selectedActivitiesTypes = collectSelectedActivitiesTypes()
 
   var checkedBox by remember { mutableStateOf(true) }
 
@@ -193,8 +194,8 @@ fun FilterScreen(
           Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
               Checkbox(
-                  checked = checkedBox,
-                  onCheckedChange = { checkedBox = it },
+                  checked = checked,
+                  onCheckedChange = { discoverScreenCallBacks.setShowCompleted(it) },
                   colors =
                       CheckboxDefaults.colors(
                           uncheckedColor = MaterialTheme.colorScheme.onBackground,

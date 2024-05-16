@@ -53,7 +53,8 @@ class MoreInfoScreenTest {
           updateActivities = {},
           updateRange = {},
           setSelectedActivitiesType = {},
-          setSelectedLevels = {})
+          setSelectedLevels = {},
+          setShowCompleted = {})
 
   @SuppressLint("StateFlowValueCalledInComposition")
   @Before

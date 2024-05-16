@@ -56,6 +56,7 @@ data class DiscoverScreenCallBacks(
     val updateRange: (Double) -> Unit,
     val setSelectedLevels: (UserActivitiesLevel) -> Unit,
     val setSelectedActivitiesType: (List<ActivityType>) -> Unit,
+    val setShowCompleted: (Boolean) -> Unit
 )
 
 // Data class to store all the state of the viewmodel
@@ -85,7 +86,8 @@ data class DiscoverScreenState(
     val suggestions: Map<String, LatLng> = emptyMap(),
     val selectedActivityTypes: List<ActivityType> = listOf(ActivityType.HIKING),
     val selectedLevels: UserActivitiesLevel =
-        UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
+        UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER),
+    val showCompleted: Boolean = false
 )
 
 @HiltViewModel
@@ -126,7 +128,7 @@ constructor(
           setSelectedActivitiesType = { activitiesType ->
             setSelectedActivitiesType(activitiesType)
           },
-      )
+          setShowCompleted = { showCompleted -> setShowCompleted(showCompleted) })
 
   init {
     viewModelScope.launch {
@@ -265,15 +267,17 @@ constructor(
             }
           }
         }
-        activitiesHolder.addAll(activitiesDB.getActivitiesByOSMIds(activitiesIdsHolder, false))
+        activitiesHolder.addAll(
+            activitiesDB.getActivitiesByOSMIds(activitiesIdsHolder, _state.value.showCompleted))
         markerListHolder.addAll(activitiesToMarkers(activitiesHolder))
+        // remove duplicates
+        markerListHolder.distinct()
       }
       _state.value =
           _state.value.copy(
-              activities = activitiesHolder,
-              activityIds = activitiesIdsHolder,
+              activities = activitiesHolder.distinct(),
+              activityIds = activitiesIdsHolder.distinct(),
               markerList = markerListHolder)
-
       // order the activities by the selected ordering
       updateActivitiesByOrdering()
       _state.value =
@@ -292,6 +296,12 @@ constructor(
     _state.value = _state.value.copy(range = range)
   }
 
+  // toggle wether we show completed activities or not
+  fun setShowCompleted(showCompleted: Boolean) {
+    _state.value = _state.value.copy(showCompleted = showCompleted)
+    fetchActivities()
+  }
+
   // Set the selected locality
   fun setSelectedLocality(locality: Pair<String, LatLng>) {
     _state.value = _state.value.copy(selectedLocality = locality)
@@ -305,6 +315,7 @@ constructor(
 
   fun setSelectedLevels(levels: UserActivitiesLevel) {
     _state.value = _state.value.copy(selectedLevels = levels)
+    fetchActivities()
   }
 
   fun updatePermission(value: Boolean) {
