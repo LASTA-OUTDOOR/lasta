@@ -106,7 +106,7 @@ class DiscoverScreenTest {
             fetchSuggestion = fetchSuggestion,
             suggestions = suggestion,
             setSelectedLocality = {},
-            fetchActivities = { _, _ -> },
+            fetchActivities = {},
             clearSuggestions = { suggestion = emptyMap() },
             updateInitialPosition = {},
             moveCamera = { _ -> },
@@ -259,12 +259,12 @@ class DiscoverScreenTest {
                 ),
             selectedLocality = "Ecublens" to LatLng(46.519962, 6.633597),
             range = 5000.0,
-            fetchActivities = { _, _ -> },
             onDismissRequest = { isRangePopup = false },
             setRange = {},
             isRangePopup = isRangePopup,
             setSelectedLocality = {},
-        )
+            updateRange = {},
+            updateInitialPosition = {})
       }
     }
 
@@ -435,7 +435,7 @@ class DiscoverScreenTest {
             fetchSuggestion = { suggestions["Ecublens"] = LatLng(4.519962, 6.633597) },
             suggestions = suggestions,
             setSelectedLocality = {},
-            fetchActivities = { _, _ -> },
+            fetchActivities = {},
             clearSuggestions = { suggestions.clear() },
             updateInitialPosition = { initialPos = it },
         ) {

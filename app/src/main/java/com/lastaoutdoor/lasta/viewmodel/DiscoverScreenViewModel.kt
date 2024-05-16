@@ -39,7 +39,7 @@ const val INITIAL_RANGE = 10000.0
 
 // All the function of the viewmodel that the view can call
 data class DiscoverScreenCallBacks(
-    val fetchActivities: (Double, LatLng) -> Unit,
+    val fetchActivities: () -> Unit,
     val setScreen: (DiscoverDisplayType) -> Unit,
     val setRange: (Double) -> Unit,
     val setSelectedLocality: (Pair<String, LatLng>) -> Unit,
@@ -53,16 +53,14 @@ data class DiscoverScreenCallBacks(
     val clearSuggestions: () -> Unit,
     val updateInitialPosition: (LatLng) -> Unit,
     val updateActivities: (List<Activity>) -> Unit,
-    val fetchActivitiesDefault: () -> Unit = {
-      fetchActivities(INITIAL_RANGE, LatLng(46.519962, 6.633597))
-    },
+    val updateRange : (Double) -> Unit
 )
 
 // Data class to store all the state of the viewmodel
 data class DiscoverScreenState(
     val isLoading: Boolean = true,
-    val activities: ArrayList<Activity> = ArrayList(),
-    val activityIds: ArrayList<Long> = ArrayList(),
+    val activities: List<Activity> = emptyList(),
+    val activityIds: List<Long> = emptyList(),
     val screen: DiscoverDisplayType = DiscoverDisplayType.LIST,
     val range: Double = INITIAL_RANGE,
     val localities: List<Pair<String, LatLng>> =
@@ -120,7 +118,9 @@ constructor(
           fetchSuggestion = { query -> fetchSuggestions(query) },
           clearSuggestions = { clearSuggestions() },
           updateInitialPosition = { position -> updateInitialPosition(position) },
-          updateActivities = { activities -> updateActivities(activities) })
+          updateActivities = { activities -> updateActivities(activities) },
+          updateRange = { range -> updateRange(range) }
+      )
 
   init {
     viewModelScope.launch {
@@ -140,6 +140,7 @@ constructor(
       tokenDBRepository.uploadUserToken(userId, token)
 
       fetchActivities()
+        println("Coucou")
     }
   }
 
@@ -182,28 +183,32 @@ constructor(
     _state.value = _state.value.copy(suggestions = emptyMap())
   }
 
-  fun fetchActivities(
-      rad: Double = INITIAL_RANGE,
-      centerLocation: LatLng = LatLng(46.519962, 6.633597)
-  ) {
+  fun fetchActivities() {
     viewModelScope.launch {
-      _state.value = _state.value.copy(isLoading = true)
-      _state.value = _state.value.copy(activities = ArrayList())
-      _state.value = _state.value.copy(activityIds = ArrayList())
+        _state.value = _state.value.copy(isLoading = true)
+
+        val activitiesHolder: ArrayList<Activity> = ArrayList()
+      val activitiesIdsHolder: ArrayList<Long> = ArrayList()
+      val markerListHolder: ArrayList<Marker> = ArrayList()
       for (activityType in _state.value.selectedActivityTypes) {
         val response =
             when (activityType) {
               ActivityType.CLIMBING ->
                   repository.getClimbingPointsInfo(
-                      rad.toInt(), centerLocation.latitude, centerLocation.longitude)
+                      _state.value.range.toInt(),
+                      _state.value.initialPosition.latitude,
+                      _state.value.initialPosition.longitude)
               ActivityType.HIKING ->
                   repository.getHikingRoutesInfo(
-                      rad.toInt(), centerLocation.latitude, centerLocation.longitude)
+                      _state.value.range.toInt(),
+                      _state.value.initialPosition.latitude,
+                      _state.value.initialPosition.longitude)
               ActivityType.BIKING ->
                   repository.getBikingRoutesInfo(
-                      rad.toInt(), centerLocation.latitude, centerLocation.longitude)
+                      _state.value.range.toInt(),
+                      _state.value.initialPosition.latitude,
+                      _state.value.initialPosition.longitude)
             }
-
         val osmData =
             when (response) {
               is Response.Failure -> {
@@ -222,18 +227,13 @@ constructor(
           when (activityType) {
             ActivityType.CLIMBING -> {
               val castedPoint = point as NodeWay
-              _state.value =
-                  _state.value.copy(
-                      activityIds = ArrayList(_state.value.activityIds + castedPoint.id))
+              activitiesIdsHolder.add(castedPoint.id)
               activitiesDB.addActivityIfNonExisting(
                   Activity("", point.id, ActivityType.CLIMBING, point.tags.name))
             }
             ActivityType.HIKING -> {
               val castedPoint = point as Relation
-              _state.value =
-                  _state.value.copy(
-                      activityIds = ArrayList(_state.value.activityIds + castedPoint.id))
-
+              activitiesIdsHolder.add(castedPoint.id)
               activitiesDB.addActivityIfNonExisting(
                   Activity(
                       "",
@@ -245,9 +245,7 @@ constructor(
             }
             ActivityType.BIKING -> {
               val castedPoint = point as Relation
-              _state.value =
-                  _state.value.copy(
-                      activityIds = ArrayList(_state.value.activityIds + castedPoint.id))
+              activitiesIdsHolder.add(castedPoint.id)
               val distance =
                   if (point.tags.distance.isEmpty()) 0f else point.tags.distance.toFloat()
               activitiesDB.addActivityIfNonExisting(
@@ -262,20 +260,21 @@ constructor(
             }
           }
         }
+        activitiesHolder.addAll(activitiesDB.getActivitiesByOSMIds(activitiesIdsHolder, false))
+        markerListHolder.addAll(activitiesToMarkers(activitiesHolder))
 
-        val newActivities = activitiesDB.getActivitiesByOSMIds(_state.value.activityIds, false)
-        _state.value =
-            _state.value.copy(activities = ArrayList(_state.value.activities + newActivities))
-        _state.value =
-            _state.value.copy(
-                markerList =
-                    ArrayList(
-                        activitiesToMarkers(_state.value.activities) union _state.value.markerList))
       }
+      _state.value = _state.value.copy(
+          activities = activitiesHolder,
+          activityIds = activitiesIdsHolder,
+          markerList = markerListHolder
+      )
 
       // order the activities by the selected ordering
       updateActivitiesByOrdering()
-      _state.value = _state.value.copy(isLoading = false)
+        _state.value = _state.value.copy(
+            isLoading = false,
+        )
     }
   }
 
@@ -358,7 +357,7 @@ constructor(
 
   // function used only for testing purposes
   fun updateActivities(activities: List<Activity>) {
-    _state.value = _state.value.copy(activities = ArrayList(activities))
+    _state.value = _state.value.copy(activities = activities)
   }
 
   private fun updateActivitiesByOrdering() {
@@ -373,36 +372,36 @@ constructor(
             }
         val sortedActivities =
             _state.value.activities.sortedBy { distances[_state.value.activities.indexOf(it)] }
-        _state.value = _state.value.copy(activities = ArrayList(sortedActivities))
+        _state.value = _state.value.copy(activities = sortedActivities)
       }
       OrderingBy.RATING -> {
         _state.value =
             _state.value.copy(
-                activities = ArrayList(_state.value.activities.sortedBy { it.rating }.reversed()))
+                activities = (_state.value.activities.sortedBy { it.rating }.reversed()))
       }
       OrderingBy.POPULARITY -> {
         _state.value =
             _state.value.copy(
                 activities =
-                    ArrayList(_state.value.activities.sortedBy { it.numRatings }.reversed()))
+                    (_state.value.activities.sortedBy { it.numRatings }.reversed()))
       }
       OrderingBy.DIFFICULTYASCENDING -> {
         _state.value =
             _state.value.copy(
-                activities = ArrayList(_state.value.activities.sortedBy { it.difficulty }))
+                activities = (_state.value.activities.sortedBy { it.difficulty }))
       }
       OrderingBy.DIFFICULTYDESCENDING -> {
         _state.value =
             _state.value.copy(
                 activities =
-                    ArrayList(_state.value.activities.sortedBy { it.difficulty }.reversed()))
+                    (_state.value.activities.sortedBy { it.difficulty }.reversed()))
       }
     }
     _state.value =
         _state.value.copy(
             activities =
                 _state.value.activities.filter { filterWithDiff(_state.value.selectedLevels, it) }
-                    as ArrayList<Activity>)
+        )
   }
 
   fun filterWithDiff(difficulties: UserActivitiesLevel, activity: Activity): Boolean {
@@ -443,6 +442,12 @@ constructor(
 
     // Add the itineraries to a map -> can access them by relation id
     // getItineraryFromRelations(hikingRelations)
+  }
+
+
+  fun updateRange(range: Double) {
+    _state.value = _state.value.copy(range = range)
+    fetchActivities()
   }
 }
 

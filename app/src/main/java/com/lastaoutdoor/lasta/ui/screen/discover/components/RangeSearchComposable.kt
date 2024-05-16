@@ -31,6 +31,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
 import com.lastaoutdoor.lasta.viewmodel.DiscoverDisplayType
+import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenCallBacks
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,9 +42,9 @@ fun RangeSearchComposable(
     selectedLocality: Pair<String, LatLng>,
     setRange: (Double) -> Unit,
     setSelectedLocality: (Pair<String, LatLng>) -> Unit,
-    fetchActivities: (Double, LatLng) -> Unit,
     isRangePopup: Boolean,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    discoverScreenCallBacks: DiscoverScreenCallBacks
 ) {
 
   // list view search popup
@@ -89,7 +90,8 @@ fun RangeSearchComposable(
                 // Button to apply the range
                 ElevatedButton(
                     onClick = {
-                      fetchActivities(range, selectedLocality.second)
+                      discoverScreenCallBacks.updateRange(range)
+                      discoverScreenCallBacks.updateInitialPosition(selectedLocality.second)
                       onDismissRequest()
                     },
                     modifier =
@@ -174,7 +176,8 @@ fun RangeSearchComposable(
                 // Button to apply the range
                 ElevatedButton(
                     onClick = {
-                      fetchActivities(range, selectedLocality.second)
+                      discoverScreenCallBacks.updateRange(range)
+                      discoverScreenCallBacks.updateInitialPosition(selectedLocality.second)
                       onDismissRequest()
                     },
                     modifier =

@@ -93,10 +93,10 @@ fun DiscoverScreen(
       discoverScreenState.selectedLocality,
       discoverScreenCallBacks.setRange,
       discoverScreenCallBacks.setSelectedLocality,
-      discoverScreenCallBacks.fetchActivities,
-      isRangePopup) {
-        isRangePopup = false
-      }
+      isRangePopup,
+      discoverScreenCallBacks = discoverScreenCallBacks,
+        onDismissRequest = { isRangePopup = false })
+
 
   var moveCamera: (CameraUpdate) -> Unit by remember { mutableStateOf({ _ -> }) }
 
@@ -117,7 +117,6 @@ fun DiscoverScreen(
               discoverScreenCallBacks.fetchSuggestion,
               discoverScreenState.suggestions,
               discoverScreenCallBacks.setSelectedLocality,
-              discoverScreenCallBacks.fetchActivities,
               discoverScreenCallBacks.clearSuggestions,
               discoverScreenCallBacks.updateInitialPosition,
               moveCamera)
@@ -157,7 +156,6 @@ fun DiscoverScreen(
           discoverScreenCallBacks.fetchSuggestion,
           discoverScreenState.suggestions,
           discoverScreenCallBacks.setSelectedLocality,
-          discoverScreenCallBacks.fetchActivities,
           discoverScreenCallBacks.clearSuggestions,
           discoverScreenCallBacks.updateInitialPosition,
           moveCamera)
@@ -198,7 +196,6 @@ fun HeaderComposable(
     fetchSuggestion: (String) -> Unit,
     suggestions: Map<String, LatLng>,
     setSelectedLocality: (Pair<String, LatLng>) -> Unit,
-    fetchActivities: (Double, LatLng) -> Unit,
     clearSuggestions: () -> Unit,
     updateInitialPosition: (LatLng) -> Unit,
     moveCamera: (CameraUpdate) -> Unit
@@ -290,7 +287,6 @@ fun HeaderComposable(
                           Modifier.fillMaxWidth().padding(4.dp).testTag("suggestion").clickable {
                             fManager.clearFocus()
                             setSelectedLocality(Pair(suggestion.key, suggestion.value))
-                            fetchActivities(range, suggestion.value)
                             changeText(suggestion.key)
                             updateInitialPosition(suggestion.value)
                             moveCamera(CameraUpdateFactory.newLatLng(suggestion.value))

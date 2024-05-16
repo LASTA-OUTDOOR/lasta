@@ -163,7 +163,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
 
     // More Info Screen
     composable(DestinationRoute.MoreInfo.route) { entry ->
-      val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
+      val discoverScreenViewModel: DiscoverScreenViewModel = entry.sharedViewModel(navController)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
 
       val activityToDisplay = moreInfoScreenViewModel.activityToDisplay.value
