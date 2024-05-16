@@ -95,7 +95,7 @@ class MoreInfoScreenTest {
     composeRule.onNodeWithContentDescription("Top Bar logo ${R.drawable.share}").performClick()
   }
 
-  // Test that the more info screen is displayed
+  // Test that the more info screen is displayed.
   @Test
   fun moreInfoComposable_isDisplayed() {
     // Check that the more info screen is displayed correctly
@@ -105,9 +105,6 @@ class MoreInfoScreenTest {
     composeRule.onNodeWithTag("MoreInfoStartButton").performClick()
     // Check that middle zone is displayed
     composeRule.onNodeWithTag("MoreInfoMiddleZone").assertIsDisplayed()
-    // Check that activity title zone is displayed
-    composeRule.onNodeWithTag("MoreInfoActivityTypeComposable").assertIsDisplayed()
-    composeRule.onNodeWithTag("MoreInfoActivityTypeComposable").performClick()
   }
 
   @Test

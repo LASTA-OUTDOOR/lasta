@@ -85,6 +85,7 @@
     <string name="send_message">Senden</string>
     <string name="Account_settings">Kontoeinstellungen</string>
     <string name="delete_account">Konto löschen</string>
+    <string name="delete_account_prompt">Möchten Sie Ihr Konto wirklich löschen?</string>
     <string name="tab_favorites">Favoriten</string>
     <string name="tab_socials">Freunde</string>
     <string name="sport_level">Niveau</string>
@@ -108,6 +109,11 @@
     <string name="erase_options">Alles löschen</string>
     <string name="ride">Radtour</string>
     <string name="recent_activities">Neueste Aktivitäten</string>
+    <string name="add_review">Review:</string>
+    <string name="ask_rating">Bitte bewerten Sie (von 5 Sternen): </string>
+    <string name="ask_comment">Schreiben Sie hier Ihren Kommentar: </string>
+    <string name="no_duration">Keine Dauer</string>
+    <string name="publish">Veröffentlichen!</string>
     <string name="share_title">Lasta : Aktivitäten teilen</string>
     <string name="share_body">Hallo ! Sieh dir diese Aktivität auf Lasta an :</string>
     <string name="step_count">Schrittzahl</string>
@@ -117,4 +123,12 @@
     <string name="friend_request_notif">möchte dein Freund sein!</string>
     <string name="friend_request_accepted_notif">hat deine Freundesanfrage angenommen!</string>
     <string name="friend_request_declined_notif">hat deine Freundesanfrage abgelehnt!</string>
+    <string name="general_settings">Allgemeine Einstellungen</string>
+    <string name="activity_settings">"Aktivitätseinstellungen "</string>
+    <string name = "select_lev_activity">Wählen Sie Ihr Nivaue in diese Aktivität</string>
+    <string name = "Account_setup">Einstellungen</string>
+    <string name="submit_settings">Ausgewählte Einstellungen senden</string>
+    <string name="submit_settings_prompt">Sind Sie sicher, dass Sie diese Einstellungen übermitteln möchten? (Hinweis: Sie können Ihre Präferenzen weiterhin in den Einstellungen der Profilseite ändern.)</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nein</string>
 </resources>
