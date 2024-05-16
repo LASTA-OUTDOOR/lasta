@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedAssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -310,83 +311,85 @@ fun SportSelection(sport: ActivityType, onSelected: (ActivityType) -> Unit) {
 
 @Composable
 fun Chart(activities: List<UserActivity>, timeFrame: TimeFrame, sport: ActivityType) {
-  Column(modifier = Modifier.padding(8.dp)) {
+    Column(modifier = Modifier.padding(8.dp)) {
 
-    // Bar graph x and y data
+        // Bar graph x and y data
 
-    // Based on the collected timeFrame, adapt the chart dynamically
-    val (values, abscissa) =
-        when (timeFrame) {
-          TimeFrame.W ->
-              Pair(chartDisplayValues(activities, timeFrame), DaysInWeek.values().toList())
-          TimeFrame.M ->
-              Pair(chartDisplayValues(activities, timeFrame), WeeksInMonth.values().toList())
-          TimeFrame.Y ->
-              Pair(chartDisplayValues(activities, timeFrame), MonthsInYear.values().toList())
-          TimeFrame.ALL -> {
-            if (activities.isEmpty()) {
-              Pair(listOf(0f), listOf(Year(2024)))
-            } else {
-              val start =
-                  Calendar.getInstance()
-                      .apply { time = activities[0].timeStarted }
-                      .get(Calendar.YEAR)
-              val end =
-                  Calendar.getInstance()
-                      .apply { time = activities[activities.size - 1].timeStarted }
-                      .get(Calendar.YEAR)
-              val years = mutableListOf<Year>()
-              (start..end).forEach { years.add(Year(it)) }
-
-              Pair(chartDisplayValues(activities, timeFrame), years.toList())
+        // Based on the collected timeFrame, adapt the chart dynamically
+        val (values, abscissa) =
+            when (timeFrame) {
+                TimeFrame.W ->
+                    Pair(chartDisplayValues(activities, timeFrame), DaysInWeek.values().toList())
+                TimeFrame.M ->
+                    Pair(chartDisplayValues(activities, timeFrame), WeeksInMonth.values().toList())
+                TimeFrame.Y ->
+                    Pair(chartDisplayValues(activities, timeFrame), MonthsInYear.values().toList())
+                TimeFrame.ALL -> {
+                    if (activities.isEmpty()) {
+                        Pair(listOf(0f), listOf(Year(2024)))
+                    } else {
+                        val start =
+                            Calendar.getInstance()
+                                .apply { time = activities[0].timeStarted }
+                                .get(Calendar.YEAR)
+                        val end =
+                            Calendar.getInstance()
+                                .apply { time = activities[activities.size - 1].timeStarted }
+                                .get(Calendar.YEAR)
+                        val years = mutableListOf<Year>()
+                        for (i in start..end) {
+                            years.add(Year(i))
+                        }
+                        Pair(chartDisplayValues(activities, timeFrame), years.toList())
+                    }
+                }
             }
-          }
+
+        val ordinate = values.map { it.toInt() }
+
+        val ordinateFloat: List<Float> =
+            values.map {
+                val max = ordinate.max()
+                if (max == 0) 0f else it / ordinate.max()
+            }
+
+        Row {
+            Column {
+                Text(
+                    text = String.format("%.2f", values.sum()),
+                    fontWeight = FontWeight.Bold,
+                    style = TextStyle(fontSize = 48.sp))
+                Text("Km")
+            }
         }
 
-    val ordinate = values.map { it.toInt() }
+        Spacer(modifier = Modifier.height(16.dp))
 
-    val ordinateFloat: List<Float> =
-        values.map {
-          val max = ordinate.max()
-          if (max == 0) 0f else it / ordinate.max()
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            ShowNumberOfActivities(sport = sport, activities =activities )
+            CalculateElevation(sport,activities)
+
+            Column {
+                Text(
+                    text = timeFromMillis(timeFromActivityInMillis(activities)),
+                    fontWeight = FontWeight.Bold,
+                    style = TextStyle(fontSize = 20.sp))
+                Text(LocalContext.current.getString(R.string.time))
+            }
         }
 
-    Row {
-      Column {
-        Text(
-            text = String.format("%.2f", values.sum()),
-            fontWeight = FontWeight.Bold,
-            style = TextStyle(fontSize = 48.sp))
-        Text("Km")
-      }
+        Spacer(modifier = Modifier.height(32.dp))
+
+        BarGraph(
+            graphBarData = ordinateFloat,
+            xAxisScaleData = abscissa,
+            barData = ordinate,
+            height = 260.dp,
+            roundType = BarType.TOP_CURVED,
+            barWidth = 20.dp,
+            barColor = MaterialTheme.colorScheme.primary,
+            barArrangement = Arrangement.SpaceEvenly)
     }
-
-    Spacer(modifier = Modifier.height(16.dp))
-
-    ShowNumberOfActivities(sport = sport, activities = activities)
-    CalculateElevation(sport = sport, activities = activities)
-
-      Column {
-        Text(
-            text = timeFromMillis(timeFromActivityInMillis(activities)),
-            fontWeight = FontWeight.Bold,
-            style = TextStyle(fontSize = 20.sp))
-        Text(LocalContext.current.getString(R.string.time))
-      }
-
-
-    Spacer(modifier = Modifier.height(32.dp))
-
-    BarGraph(
-        graphBarData = ordinateFloat,
-        xAxisScaleData = abscissa,
-        barData = ordinate,
-        height = 260.dp,
-        roundType = BarType.TOP_CURVED,
-        barWidth = 20.dp,
-        barColor = MaterialTheme.colorScheme.primary,
-        barArrangement = Arrangement.SpaceEvenly)
-  }
 }
 
 @SuppressLint("DefaultLocale")
