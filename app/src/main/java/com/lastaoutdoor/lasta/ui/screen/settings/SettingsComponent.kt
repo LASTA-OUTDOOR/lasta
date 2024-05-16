@@ -85,17 +85,21 @@ fun TitleComponent(setUpOrSetting: Boolean) { // Setup if true, Settings if fals
           tint = MaterialTheme.colorScheme.secondary,
           modifier = Modifier.padding(8.dp))
     }
-    Text(
-        text =
-            if (setUpOrSetting) {
-              LocalContext.current.getString(R.string.Account_setup)
-            } else {
-              LocalContext.current.getString(R.string.Account_settings)
-            },
-        fontWeight = FontWeight.Bold,
-        style = MaterialTheme.typography.displayLarge,
-        modifier = Modifier.testTag("settingsTitle"),
-        textAlign = TextAlign.Center)
+    if (setUpOrSetting) {
+      Text(
+          text = LocalContext.current.getString(R.string.Account_setup),
+          fontWeight = FontWeight.Bold,
+          style = MaterialTheme.typography.displayLarge,
+          modifier = Modifier.testTag("settingsTitle"),
+          textAlign = TextAlign.Center)
+    } else {
+      Text(
+          text = LocalContext.current.getString(R.string.Account_settings),
+          fontWeight = FontWeight.Bold,
+          style = MaterialTheme.typography.displayLarge,
+          modifier = Modifier.testTag("settingsTitle"),
+          textAlign = TextAlign.Center)
+    }
     if (setUpOrSetting) {
       // put a small setting icon in secondary color
       Icon(
@@ -119,17 +123,23 @@ fun SettingsHeader(setUpOrSetting: SettingsType) {
 
   Column {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
-      Text(
-          text =
-              when (setUpOrSetting) {
-                SettingsType.GENERAL -> LocalContext.current.getString(R.string.general_settings)
-                SettingsType.ACTIVITY -> LocalContext.current.getString(R.string.activity_settings)
-              },
-          fontWeight = FontWeight.Bold,
-          color = MaterialTheme.colorScheme.primary,
-          style = MaterialTheme.typography.bodySmall,
-          modifier = Modifier.padding(horizontal = 16.dp).testTag("settingsHeader"),
-          textAlign = TextAlign.Justify)
+      if (setUpOrSetting == SettingsType.GENERAL) {
+        Text(
+            text = LocalContext.current.getString(R.string.general_settings),
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.padding(horizontal = 16.dp).testTag("settingsHeader"),
+            textAlign = TextAlign.Justify)
+      } else {
+        Text(
+            text = LocalContext.current.getString(R.string.activity_settings),
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.padding(horizontal = 16.dp).testTag("settingsHeader"),
+            textAlign = TextAlign.Justify)
+      }
     }
     Spacer(modifier = Modifier.height(8.dp))
   }
