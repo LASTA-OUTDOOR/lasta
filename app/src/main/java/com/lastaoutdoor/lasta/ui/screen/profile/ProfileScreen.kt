@@ -67,6 +67,7 @@ import com.lastaoutdoor.lasta.ui.screen.profile.components.BarGraph
 import com.lastaoutdoor.lasta.ui.screen.profile.components.BarType
 import com.lastaoutdoor.lasta.utils.DaysInWeek
 import com.lastaoutdoor.lasta.utils.MonthsInYear
+import com.lastaoutdoor.lasta.utils.SubTimeFrames
 import com.lastaoutdoor.lasta.utils.TimeFrame
 import com.lastaoutdoor.lasta.utils.WeeksInMonth
 import com.lastaoutdoor.lasta.utils.Year
@@ -191,7 +192,9 @@ fun UserInfo(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween) {
                   Text(
-                      text = "Bio" /* TODO : make this a xml string */,
+                      text =
+                          LocalContext.current.getString(
+                              R.string.bio) /* TODO : make this a xml string */,
                       style = MaterialTheme.typography.bodySmall,
                       modifier = Modifier.padding(8.dp, 8.dp, 0.dp, 8.dp))
                   if (isCurrentUser) {
@@ -222,7 +225,6 @@ fun UserInfo(
   }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChangeBio(
     isEditBio: Boolean,
@@ -232,52 +234,7 @@ fun ChangeBio(
 ) {
 
   if (isEditBio) {
-    val maxCharCount = 70
-    var text by remember { mutableStateOf(bioText) }
-
-    ModalBottomSheet(
-        onDismissRequest = { onDismissRequest() },
-        modifier = Modifier.fillMaxWidth().wrapContentHeight().testTag("ProfileModal")) {
-          Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-            Text("Bio" /* TODO : make this a xml string */)
-            Spacer(modifier = Modifier.height(8.dp))
-            TextField(
-                value = text,
-                onValueChange = {
-                  if (it.length <= maxCharCount) {
-                    text = it
-                  }
-                },
-                placeholder = { Text("Enter your bio...") /* TODO : make this a xml string */ },
-                singleLine = false,
-                maxLines = 2,
-                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                trailingIcon = {
-                  if (text.isNotEmpty()) {
-                    Text(
-                        "${text.length}/$maxCharCount",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = if (text.length == maxCharCount) Color.Red else Color.Gray)
-                  }
-                },
-                modifier = Modifier.fillMaxWidth().testTag("ProfileTextField"))
-
-            Spacer(modifier = Modifier.height(16.dp))
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.fillMaxWidth().testTag("ProfileBox")) {
-                  Row {
-                    Button(onClick = onDismissRequest) {
-                      Text("Cancel" /* TODO : make this a xml string */)
-                    }
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Button(onClick = { onBioChange(text) }) {
-                      Text("Save" /* TODO : make this a xml string */)
-                    }
-                  }
-                }
-          }
-        }
+    BottomSheetProfile(onDismissRequest, bioText, onBioChange)
   }
 }
 
@@ -300,35 +257,8 @@ fun Chart(activities: List<UserActivity>, timeFrame: TimeFrame, sport: ActivityT
     // Bar graph x and y data
 
     // Based on the collected timeFrame, adapt the chart dynamically
-    val (values, abscissa) =
-        when (timeFrame) {
-          TimeFrame.W ->
-              Pair(chartDisplayValues(activities, timeFrame), DaysInWeek.values().toList())
-          TimeFrame.M ->
-              Pair(chartDisplayValues(activities, timeFrame), WeeksInMonth.values().toList())
-          TimeFrame.Y ->
-              Pair(chartDisplayValues(activities, timeFrame), MonthsInYear.values().toList())
-          TimeFrame.ALL -> {
-            if (activities.isEmpty()) {
-              Pair(listOf(0f), listOf(Year(2024)))
-            } else {
-              val start =
-                  Calendar.getInstance()
-                      .apply { time = activities[0].timeStarted }
-                      .get(Calendar.YEAR)
-              val end =
-                  Calendar.getInstance()
-                      .apply { time = activities[activities.size - 1].timeStarted }
-                      .get(Calendar.YEAR)
-              val years = mutableListOf<Year>()
-              for (i in start..end) {
-                years.add(Year(i))
-              }
-              Pair(chartDisplayValues(activities, timeFrame), years.toList())
-            }
-          }
-        }
 
+    val (values, abscissa) = calculateTimeFrame(timeFrame, activities)
     val ordinate = values.map { it.toInt() }
 
     val ordinateFloat: List<Float> =
@@ -350,62 +280,8 @@ fun Chart(activities: List<UserActivity>, timeFrame: TimeFrame, sport: ActivityT
     Spacer(modifier = Modifier.height(16.dp))
 
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-      Column {
-        Text(
-            activities.size.toString(),
-            fontWeight = FontWeight.Bold,
-            style = TextStyle(fontSize = 20.sp))
-
-        when (sport) {
-          ActivityType.HIKING -> {
-            Text(
-                LocalContext.current.getString(R.string.hikes),
-                modifier = Modifier.testTag("TestHike"))
-          }
-          ActivityType.CLIMBING -> {
-            Text(
-                LocalContext.current.getString(R.string.climbs),
-                modifier = Modifier.testTag("TestClimb"))
-          }
-          ActivityType.BIKING -> {
-            Text(
-                LocalContext.current.getString(R.string.ride),
-                modifier = Modifier.testTag("TestBiking"))
-          }
-        }
-      }
-      when (sport) {
-        ActivityType.HIKING -> {
-          val trailActivities = activities.filterIsInstance<HikingUserActivity>()
-          Column {
-            Text(
-                text = trailActivities.sumOf { it.elevationChange.toLong() }.toString() + "m",
-                fontWeight = FontWeight.Bold,
-                style = TextStyle(fontSize = 20.sp))
-            Text(LocalContext.current.getString(R.string.elevation))
-          }
-        }
-        ActivityType.CLIMBING -> {
-          val trailActivities = activities.filterIsInstance<ClimbingUserActivity>()
-          Column {
-            Text(
-                text = trailActivities.sumOf { it.numPitches }.toString(),
-                fontWeight = FontWeight.Bold,
-                style = TextStyle(fontSize = 20.sp))
-            Text(LocalContext.current.getString(R.string.pitches))
-          }
-        }
-        ActivityType.BIKING -> {
-          val trailActivities = activities.filterIsInstance<BikingUserActivity>()
-          Column {
-            Text(
-                text = trailActivities.sumOf { it.elevationChange.toLong() }.toString() + "m",
-                fontWeight = FontWeight.Bold,
-                style = TextStyle(fontSize = 20.sp))
-            Text(LocalContext.current.getString(R.string.elevation))
-          }
-        }
-      }
+      ShowNumberOfActivities(sport = sport, activities = activities)
+      CalculateElevation(sport, activities)
 
       Column {
         Text(
@@ -528,6 +404,156 @@ fun RecentActivities(
                   }
                 }
           }
+    }
+  }
+}
+
+@Composable
+fun CalculateElevation(sport: ActivityType, activities: List<UserActivity>) {
+  when (sport) {
+    ActivityType.HIKING -> {
+      val trailActivities = activities.filterIsInstance<HikingUserActivity>()
+      Column {
+        Text(
+            text = trailActivities.sumOf { it.elevationChange.toLong() }.toString() + "m",
+            fontWeight = FontWeight.Bold,
+            style = TextStyle(fontSize = 20.sp))
+        Text(LocalContext.current.getString(R.string.elevation))
+      }
+    }
+    ActivityType.CLIMBING -> {
+      val trailActivities = activities.filterIsInstance<ClimbingUserActivity>()
+      Column {
+        Text(
+            text = trailActivities.sumOf { it.numPitches }.toString(),
+            fontWeight = FontWeight.Bold,
+            style = TextStyle(fontSize = 20.sp))
+        Text(LocalContext.current.getString(R.string.pitches))
+      }
+    }
+    ActivityType.BIKING -> {
+      val trailActivities = activities.filterIsInstance<BikingUserActivity>()
+      Column {
+        Text(
+            text = trailActivities.sumOf { it.elevationChange.toLong() }.toString() + "m",
+            fontWeight = FontWeight.Bold,
+            style = TextStyle(fontSize = 20.sp))
+        Text(LocalContext.current.getString(R.string.elevation))
+      }
+    }
+  }
+}
+
+@Composable
+fun ShowNumberOfActivities(sport: ActivityType, activities: List<UserActivity>) {
+  Column {
+    Text(
+        activities.size.toString(),
+        fontWeight = FontWeight.Bold,
+        style = TextStyle(fontSize = 20.sp))
+
+    when (sport) {
+      ActivityType.HIKING -> {
+        Text(
+            LocalContext.current.getString(R.string.hikes), modifier = Modifier.testTag("TestHike"))
+      }
+      ActivityType.CLIMBING -> {
+        Text(
+            LocalContext.current.getString(R.string.climbs),
+            modifier = Modifier.testTag("TestClimb"))
+      }
+      ActivityType.BIKING -> {
+        Text(
+            LocalContext.current.getString(R.string.ride),
+            modifier = Modifier.testTag("TestBiking"))
+      }
+    }
+  }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BottomSheetProfile(
+    onDismissRequest: () -> Unit,
+    bioText: String,
+    onBioChange: (String) -> Unit
+) {
+  val maxCharCount = 70
+  var text by remember { mutableStateOf(bioText) }
+  ModalBottomSheet(
+      onDismissRequest = { onDismissRequest() },
+      modifier = Modifier.fillMaxWidth().wrapContentHeight().testTag("ProfileModal")) {
+        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+          Text(LocalContext.current.getString(R.string.bio))
+          Spacer(modifier = Modifier.height(8.dp))
+          TextField(
+              value = text,
+              onValueChange = {
+                if (it.length <= maxCharCount) {
+                  text = it
+                }
+              },
+              placeholder = { Text(LocalContext.current.getString(R.string.enter_bio)) },
+              singleLine = false,
+              maxLines = 2,
+              keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+              trailingIcon = { TrailingIcon(text = text, max = maxCharCount) },
+              modifier = Modifier.fillMaxWidth().testTag("ProfileTextField"))
+
+          Spacer(modifier = Modifier.height(16.dp))
+          Box(
+              contentAlignment = Alignment.Center,
+              modifier = Modifier.fillMaxWidth().testTag("ProfileBox")) {
+                Row {
+                  Button(onClick = onDismissRequest) {
+                    Text(LocalContext.current.getString(R.string.cancel))
+                  }
+                  Spacer(modifier = Modifier.width(16.dp))
+                  Button(onClick = { onBioChange(text) }) {
+                    Text(LocalContext.current.getString(R.string.save))
+                  }
+                }
+              }
+        }
+      }
+}
+
+@Composable
+fun TrailingIcon(text: String, max: Int) {
+
+  if (text.isNotEmpty()) {
+    Text(
+        "${text.length}/$max",
+        style = MaterialTheme.typography.bodySmall,
+        color = if (text.length == max) Color.Red else Color.Gray)
+  }
+}
+
+fun calculateTimeFrame(
+    timeFrame: TimeFrame,
+    activities: List<UserActivity>
+): Pair<List<Float>, List<SubTimeFrames>> {
+
+  return when (timeFrame) {
+    TimeFrame.W -> Pair(chartDisplayValues(activities, timeFrame), DaysInWeek.values().toList())
+    TimeFrame.M -> Pair(chartDisplayValues(activities, timeFrame), WeeksInMonth.values().toList())
+    TimeFrame.Y -> Pair(chartDisplayValues(activities, timeFrame), MonthsInYear.values().toList())
+    TimeFrame.ALL -> {
+      if (activities.isEmpty()) {
+        Pair(listOf(0f), listOf(Year(2024)))
+      } else {
+        val start =
+            Calendar.getInstance().apply { time = activities[0].timeStarted }.get(Calendar.YEAR)
+        val end =
+            Calendar.getInstance()
+                .apply { time = activities[activities.size - 1].timeStarted }
+                .get(Calendar.YEAR)
+        val years = mutableListOf<Year>()
+        for (i in start..end) {
+          years.add(Year(i))
+        }
+        Pair(chartDisplayValues(activities, timeFrame), years.toList())
+      }
     }
   }
 }

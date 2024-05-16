@@ -17,6 +17,8 @@ import com.lastaoutdoor.lasta.models.activity.Rating
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.MainActivity
+import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenCallBacks
+import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenState
 import com.lastaoutdoor.lasta.viewmodel.MapState
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -33,6 +35,26 @@ class MoreInfoScreenTest {
   // Create a compose rule
   @get:Rule(order = 1) val composeRule = createAndroidComposeRule<MainActivity>()
 
+  val discoverScreenCallBacks =
+      DiscoverScreenCallBacks(
+          fetchActivities = {},
+          setScreen = {},
+          setRange = {},
+          setSelectedLocality = {},
+          updatePermission = {},
+          updateMarkers = { _, _ -> },
+          updateSelectedMarker = {},
+          clearSelectedItinerary = {},
+          updateOrderingBy = {},
+          clearSelectedMarker = {},
+          fetchSuggestion = {},
+          clearSuggestions = {},
+          updateInitialPosition = {},
+          updateActivities = {},
+          updateRange = {},
+          setSelectedActivitiesType = {},
+          setSelectedLevels = {})
+
   @SuppressLint("StateFlowValueCalledInComposition")
   @Before
   fun setUp() {
@@ -45,30 +67,23 @@ class MoreInfoScreenTest {
       val fakeUsersList = listOf(UserModel("123"))
       val fakeActivity = Activity("", 0L, ratings = fakeRatings)
 
+      val discoverScreenState =
+          DiscoverScreenState(isLoading = false, selectedActivityTypes = emptyList())
+
       MoreInfoScreen(
-          fakeActivity,
-          fakeMapState,
-          LatLng(0.0, 0.0),
-          0f,
-          activities,
-          { _ -> },
-          { _, _ -> },
-          {},
-          {},
-          {},
-          0f,
-          { a: Activity -> Marker(0L, "", LatLng(0.0, 0.0), "", 0, ActivityType.CLIMBING) },
-          fakeUsersList,
-          { _ -> },
-          { _, _, _ -> },
-          currentUser,
-          null,
-          emptyList(),
-          null,
-          {},
-          { a: Activity -> Unit },
+          activityToDisplay = fakeActivity,
+          discoverScreenState = discoverScreenState,
+          discoverScreenCallBacks = discoverScreenCallBacks,
+          goToMarker = { _ -> Marker(2, "", LatLng(0.0, 0.0), "", 0, ActivityType.HIKING) },
+          usersList = fakeUsersList,
+          getUserModels = { _ -> },
+          writeNewRating = { _, _, _ -> },
+          currentUser = currentUser,
+          weather = null,
+          navigateBack = { /*TODO*/},
+          downloadActivity = {},
           setWeatherBackToUserLoc = {},
-          {})
+          clearSelectedMarker = {})
     }
   }
 
