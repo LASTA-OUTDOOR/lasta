@@ -93,11 +93,12 @@ fun ProfileScreen(
     item {
       Box(
           modifier =
-              Modifier.fillMaxWidth()
-                  .clip(RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp))
-                  .background(MaterialTheme.colorScheme.primary)
-                  .padding(16.dp)
-                  .height(150.dp)) {
+          Modifier
+              .fillMaxWidth()
+              .clip(RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp))
+              .background(MaterialTheme.colorScheme.primary)
+              .padding(16.dp)
+              .height(150.dp)) {
             UserInfo(isCurrentUser, user, updateDescription, navigateToSettings)
           }
     }
@@ -144,9 +145,10 @@ fun UserInfo(
             model = user.profilePictureUrl,
             contentDescription = "Profile picture",
             modifier =
-                Modifier.size(100.dp)
-                    .clip(CircleShape)
-                    .border(2.dp, MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(100.dp)),
+            Modifier
+                .size(100.dp)
+                .clip(CircleShape)
+                .border(2.dp, MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(100.dp)),
             contentScale = ContentScale.Crop,
             error = painterResource(id = R.drawable.default_profile_icon))
       }
@@ -180,7 +182,9 @@ fun UserInfo(
         Spacer(modifier = Modifier.height(8.dp))
         // Bio
         Surface(
-            modifier = Modifier.fillMaxWidth().height(80.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp),
             shadowElevation = 4.dp,
             shape = MaterialTheme.shapes.small,
             color = MaterialTheme.colorScheme.primary,
@@ -197,7 +201,9 @@ fun UserInfo(
                   if (isCurrentUser) {
                     IconButton(
                         onClick = { isEditBio = true },
-                        modifier = Modifier.size(24.dp).align(Alignment.Top)) {
+                        modifier = Modifier
+                            .size(24.dp)
+                            .align(Alignment.Top)) {
                           Icon(
                               Icons.Filled.Create,
                               contentDescription = "Edit bio",
@@ -237,8 +243,13 @@ fun ChangeBio(
 
     ModalBottomSheet(
         onDismissRequest = { onDismissRequest() },
-        modifier = Modifier.fillMaxWidth().wrapContentHeight().testTag("ProfileModal")) {
-          Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .testTag("ProfileModal")) {
+          Column(modifier = Modifier
+              .fillMaxWidth()
+              .padding(16.dp)) {
             Text("Bio" /* TODO : make this a xml string */)
             Spacer(modifier = Modifier.height(8.dp))
             TextField(
@@ -260,12 +271,16 @@ fun ChangeBio(
                         color = if (text.length == maxCharCount) Color.Red else Color.Gray)
                   }
                 },
-                modifier = Modifier.fillMaxWidth().testTag("ProfileTextField"))
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("ProfileTextField"))
 
             Spacer(modifier = Modifier.height(16.dp))
             Box(
                 contentAlignment = Alignment.Center,
-                modifier = Modifier.fillMaxWidth().testTag("ProfileBox")) {
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("ProfileBox")) {
                   Row {
                     Button(onClick = onDismissRequest) {
                       Text("Cancel" /* TODO : make this a xml string */)
@@ -321,9 +336,8 @@ fun Chart(activities: List<UserActivity>, timeFrame: TimeFrame, sport: ActivityT
                       .apply { time = activities[activities.size - 1].timeStarted }
                       .get(Calendar.YEAR)
               val years = mutableListOf<Year>()
-              for (i in start..end) {
-                years.add(Year(i))
-              }
+              (start..end).forEach { years.add(Year(it)) }
+
               Pair(chartDisplayValues(activities, timeFrame), years.toList())
             }
           }
@@ -349,63 +363,8 @@ fun Chart(activities: List<UserActivity>, timeFrame: TimeFrame, sport: ActivityT
 
     Spacer(modifier = Modifier.height(16.dp))
 
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-      Column {
-        Text(
-            activities.size.toString(),
-            fontWeight = FontWeight.Bold,
-            style = TextStyle(fontSize = 20.sp))
-
-        when (sport) {
-          ActivityType.HIKING -> {
-            Text(
-                LocalContext.current.getString(R.string.hikes),
-                modifier = Modifier.testTag("TestHike"))
-          }
-          ActivityType.CLIMBING -> {
-            Text(
-                LocalContext.current.getString(R.string.climbs),
-                modifier = Modifier.testTag("TestClimb"))
-          }
-          ActivityType.BIKING -> {
-            Text(
-                LocalContext.current.getString(R.string.ride),
-                modifier = Modifier.testTag("TestBiking"))
-          }
-        }
-      }
-      when (sport) {
-        ActivityType.HIKING -> {
-          val trailActivities = activities.filterIsInstance<HikingUserActivity>()
-          Column {
-            Text(
-                text = trailActivities.sumOf { it.elevationChange.toLong() }.toString() + "m",
-                fontWeight = FontWeight.Bold,
-                style = TextStyle(fontSize = 20.sp))
-            Text(LocalContext.current.getString(R.string.elevation))
-          }
-        }
-        ActivityType.CLIMBING -> {
-          val trailActivities = activities.filterIsInstance<ClimbingUserActivity>()
-          Column {
-            Text(
-                text = trailActivities.sumOf { it.numPitches }.toString(),
-                fontWeight = FontWeight.Bold,
-                style = TextStyle(fontSize = 20.sp))
-            Text(LocalContext.current.getString(R.string.pitches))
-          }
-        }
-        ActivityType.BIKING -> {
-          val trailActivities = activities.filterIsInstance<BikingUserActivity>()
-          Column {
-            Text(
-                text = trailActivities.sumOf { it.elevationChange.toLong() }.toString() + "m",
-                fontWeight = FontWeight.Bold,
-                style = TextStyle(fontSize = 20.sp))
-            Text(LocalContext.current.getString(R.string.elevation))
-          }
-        }
-      }
+    ShowNumberOfActivities(sport = sport, activities = activities)
+    CalculateElevation(sport = sport, activities = activities)
 
       Column {
         Text(
@@ -414,7 +373,7 @@ fun Chart(activities: List<UserActivity>, timeFrame: TimeFrame, sport: ActivityT
             style = TextStyle(fontSize = 20.sp))
         Text(LocalContext.current.getString(R.string.time))
       }
-    }
+
 
     Spacer(modifier = Modifier.height(32.dp))
 
@@ -445,14 +404,19 @@ fun RecentActivities(
     for (a in activities.reversed()) {
       val sport = a.activityType
       Card(
-          modifier = Modifier.padding(8.dp).fillMaxWidth().testTag("RecentActivitiesItem"),
+          modifier = Modifier
+              .padding(8.dp)
+              .fillMaxWidth()
+              .testTag("RecentActivitiesItem"),
           elevation = CardDefaults.cardElevation(4.dp),
           shape = RoundedCornerShape(8.dp)) {
             Row(
                 modifier = Modifier.padding(8.dp, 0.dp),
                 verticalAlignment = Alignment.CenterVertically) {
                   // Image on the left
-                  Box(modifier = Modifier.size(100.dp).padding(8.dp)) {
+                  Box(modifier = Modifier
+                      .size(100.dp)
+                      .padding(8.dp)) {
                     /*
                     Image(
                         bitmap = imageBitmap,
@@ -470,7 +434,9 @@ fun RecentActivities(
             // Text information on the right
 
             Row(
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween) {
                   Column {
                     when (sport) {
@@ -531,3 +497,67 @@ fun RecentActivities(
     }
   }
 }
+
+@Composable
+fun CalculateElevation(sport : ActivityType, activities: List<UserActivity>){
+    when (sport) {
+        ActivityType.HIKING -> {
+            val trailActivities = activities.filterIsInstance<HikingUserActivity>()
+            Column {
+                Text(
+                    text = trailActivities.sumOf { it.elevationChange.toLong() }.toString() + "m",
+                    fontWeight = FontWeight.Bold,
+                    style = TextStyle(fontSize = 20.sp))
+                Text(LocalContext.current.getString(R.string.elevation))
+            }
+        }
+        ActivityType.CLIMBING -> {
+            val trailActivities = activities.filterIsInstance<ClimbingUserActivity>()
+            Column {
+                Text(
+                    text = trailActivities.sumOf { it.numPitches }.toString(),
+                    fontWeight = FontWeight.Bold,
+                    style = TextStyle(fontSize = 20.sp))
+                Text(LocalContext.current.getString(R.string.pitches))
+            }
+        }
+        ActivityType.BIKING -> {
+            val trailActivities = activities.filterIsInstance<BikingUserActivity>()
+            Column {
+                Text(
+                    text = trailActivities.sumOf { it.elevationChange.toLong() }.toString() + "m",
+                    fontWeight = FontWeight.Bold,
+                    style = TextStyle(fontSize = 20.sp))
+                Text(LocalContext.current.getString(R.string.elevation))
+            }
+        }
+    }
+}
+@Composable
+fun ShowNumberOfActivities(sport : ActivityType, activities: List<UserActivity>){
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Column {
+            Text(
+                activities.size.toString(),
+                fontWeight = FontWeight.Bold,
+                style = TextStyle(fontSize = 20.sp))
+
+            when (sport) {
+                ActivityType.HIKING -> {
+                    Text(
+                        LocalContext.current.getString(R.string.hikes),
+                        modifier = Modifier.testTag("TestHike"))
+                }
+                ActivityType.CLIMBING -> {
+                    Text(
+                        LocalContext.current.getString(R.string.climbs),
+                        modifier = Modifier.testTag("TestClimb"))
+                }
+                ActivityType.BIKING -> {
+                    Text(
+                        LocalContext.current.getString(R.string.ride),
+                        modifier = Modifier.testTag("TestBiking"))
+                }
+            }
+        }
+} }
