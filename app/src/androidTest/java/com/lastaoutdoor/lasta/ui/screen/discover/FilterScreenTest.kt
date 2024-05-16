@@ -188,6 +188,9 @@ class FilterScreenTest {
 
   @Test
   fun test_ApplyFilterOptionsButton() {
+    updatedLevels = false
+    updatedActivities = false
+    navigateBackTriggered = false
 
     composeRule.activity.setContent {
       FilterScreen(
@@ -201,7 +204,7 @@ class FilterScreenTest {
     composeRule.onNodeWithTag("applyFilterOptionsButton").performClick()
 
     // Check if the values are updated
-    assertEquals(updatedLevels, true)
+    assertEquals(true, updatedLevels)
     assertEquals(updatedActivities, true)
     assertEquals(navigateBackTriggered, true)
   }
