@@ -31,7 +31,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,7 +41,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.ActivityType
-import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
 import com.lastaoutdoor.lasta.ui.screen.discover.components.ToggleButton
@@ -53,16 +51,12 @@ import kotlinx.coroutines.flow.StateFlow
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun FilterScreen(
-    discoverScreenState: StateFlow<DiscoverScreenState>,
-    navigateBack: () -> Unit
-) {
+fun FilterScreen(discoverScreenState: StateFlow<DiscoverScreenState>, navigateBack: () -> Unit) {
 
   val userSelectedLevels = discoverScreenState.collectAsState().value.selectedLevels
   val selectedActivitiesType = discoverScreenState.collectAsState().value.selectedActivityTypes
 
   val activities = ActivityType.values()
-
 
   val activitiesLevelArray = remember {
     mutableStateListOf(
@@ -71,14 +65,11 @@ fun FilterScreen(
         userSelectedLevels.bikingLevel)
   }
 
-  val selectedActivitiesTypes = remember {
-    mutableStateListOf(selectedActivitiesType.first())}
+  val selectedActivitiesTypes = remember { mutableStateListOf(selectedActivitiesType.first()) }
 
   var checkedBox by remember { mutableStateOf(true) }
 
-  Column(modifier = Modifier
-      .fillMaxSize()
-      .testTag("filterScreen")) {
+  Column(modifier = Modifier.fillMaxSize().testTag("filterScreen")) {
     MediumTopAppBar(
         title = {
           Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
@@ -100,9 +91,7 @@ fun FilterScreen(
 
     // Filter by activity type
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp), horizontalAlignment = Alignment.Start) {
+        modifier = Modifier.fillMaxSize().padding(16.dp), horizontalAlignment = Alignment.Start) {
           Column {
             Text(
                 text = stringResource(id = R.string.filter_activity_type),
@@ -112,9 +101,7 @@ fun FilterScreen(
             FlowRow(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
-                modifier = Modifier
-                    .padding(horizontal = 8.dp, vertical = 16.dp)
-                    .fillMaxWidth()) {
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp).fillMaxWidth()) {
                   activities.forEach { activity ->
                     ToggleButton(
                         activity.resourcesToString(LocalContext.current),
@@ -198,9 +185,7 @@ fun FilterScreen(
                 }
           }
           Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp)) {
+            Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
               Button(
                   onClick = {
                     // go back to snapshot values
@@ -227,9 +212,7 @@ fun FilterScreen(
                     navigateBack()
                   },
                   elevation = ButtonDefaults.elevatedButtonElevation(3.dp),
-                  modifier = Modifier
-                      .testTag("applyFilterOptionsButton")
-                      .weight(0.6f),
+                  modifier = Modifier.testTag("applyFilterOptionsButton").weight(0.6f),
                   colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
                     Text(
                         LocalContext.current.getString(R.string.apply),

@@ -20,7 +20,8 @@ import com.lastaoutdoor.lasta.ui.MainActivity
 import com.lastaoutdoor.lasta.ui.screen.discover.components.RangeSearchComposable
 import com.lastaoutdoor.lasta.utils.OrderingBy
 import com.lastaoutdoor.lasta.viewmodel.DiscoverDisplayType
-import com.lastaoutdoor.lasta.viewmodel.MapState
+import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenCallBacks
+import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenState
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -37,9 +38,47 @@ class DiscoverScreenTest {
 
   @get:Rule(order = 1) val composeRule = createAndroidComposeRule<MainActivity>()
 
+  private lateinit var discoverScreenState: DiscoverScreenState
+  private lateinit var discoverScreenCallBacks: DiscoverScreenCallBacks
+
   @Before
   fun setUp() {
     hiltRule.inject()
+
+    discoverScreenState =
+        DiscoverScreenState(
+            activities =
+                ArrayList(
+                    listOf(
+                        Activity(
+                            "1",
+                            11033919,
+                            ActivityType.HIKING,
+                            "Chemin panorama alpin",
+                            Position(46.4718332, 6.8338907),
+                            0.0f,
+                            0,
+                            emptyList(),
+                            difficulty = Difficulty.EASY,
+                            activityImageUrl = ""))))
+
+    discoverScreenCallBacks =
+        DiscoverScreenCallBacks(
+            fetchActivities = { _, _ -> },
+            setScreen = {},
+            setRange = {},
+            setSelectedLocality = {},
+            updatePermission = {},
+            updateMarkers = { _, _ -> },
+            updateSelectedMarker = {},
+            clearSelectedItinerary = {},
+            updateOrderingBy = {},
+            clearSelectedMarker = {},
+            fetchSuggestion = {},
+            clearSuggestions = {},
+            updateInitialPosition = {},
+            updateActivities = {},
+        )
   }
 
   @Test
@@ -97,58 +136,15 @@ class DiscoverScreenTest {
     composeRule.activity.setContent {
       MaterialTheme {
         DiscoverScreen(
-            isLoading = true,
-            activities =
-                listOf(
-                    Activity(
-                        "1",
-                        11033919,
-                        ActivityType.HIKING,
-                        "Chemin panorama alpin",
-                        Position(46.4718332, 6.8338907),
-                        0.0f,
-                        0,
-                        emptyList(),
-                        difficulty = Difficulty.EASY,
-                        activityImageUrl = "")),
-            screen = screenType,
-            range = 5000.0,
-            centerPoint = LatLng(46.519962, 6.633597),
+            discoverScreenState = discoverScreenState,
+            discoverScreenCallBacks = discoverScreenCallBacks,
             favorites = emptyList(),
-            localities =
-                listOf(
-                    "Ecublens" to LatLng(46.519962, 6.633597),
-                    "Geneva" to LatLng(46.2043907, 6.1431577),
-                    "Payerne" to LatLng(46.834190, 6.928969),
-                    "Matterhorn" to LatLng(45.980537, 7.641618)),
-            selectedLocality = "Ecublens" to LatLng(46.519962, 6.633597),
-            fetchActivities = { _, _ -> },
-            setScreen = { screenType = it },
-            setRange = {},
-            setSelectedLocality = {},
             flipFavorite = {},
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
             changeActivityToDisplay = {},
             changeWeatherTarget = {},
             weather = null,
-            state = MapState(),
-            initialPosition = LatLng(46.519962, 6.633597),
-            initialZoom = 11f,
-            updateMarkers = { _, _ -> },
-            updateSelectedMarker = { /*TODO*/},
-            clearSelectedItinerary = { /*TODO*/},
-            selectedZoom = 13f,
-            selectedMarker = null,
-            selectedItinerary = null,
-            markerList = emptyList(),
-            orderingBy = OrderingBy.RATING,
-            updateOrderingBy = {},
-            clearSelectedMarker = {},
-            fetchSuggestion = { _ -> },
-            suggestions = emptyMap(),
-            clearSuggestions = {},
-            updateInitialPosition = {},
         )
       }
     }
@@ -216,62 +212,23 @@ class DiscoverScreenTest {
 
   @Test
   fun discoverScreenList() {
-    var screenType = DiscoverDisplayType.LIST
+
+    var state = discoverScreenState.copy(isLoading = false, screen = DiscoverDisplayType.LIST)
+
     composeRule.activity.setContent {
       MaterialTheme {
         DiscoverScreen(
-            isLoading = false,
-            activities =
-                listOf(
-                    Activity(
-                        "1",
-                        11033919,
-                        ActivityType.HIKING,
-                        "Chemin panorama alpin",
-                        Position(46.4718332, 6.8338907),
-                        0.0f,
-                        0,
-                        emptyList(),
-                        difficulty = Difficulty.EASY,
-                        activityImageUrl = "")),
-            screen = screenType,
-            range = 5000.0,
-            centerPoint = LatLng(46.519962, 6.633597),
+            discoverScreenState = state,
+            discoverScreenCallBacks =
+                discoverScreenCallBacks.copy(
+                    setScreen = { _ -> state = state.copy(screen = DiscoverDisplayType.MAP) }),
             favorites = emptyList(),
-            localities =
-                listOf(
-                    "Ecublens" to LatLng(46.519962, 6.633597),
-                    "Geneva" to LatLng(46.2043907, 6.1431577),
-                    "Payerne" to LatLng(46.834190, 6.928969),
-                    "Matterhorn" to LatLng(45.980537, 7.641618)),
-            selectedLocality = "Ecublens" to LatLng(46.519962, 6.633597),
-            fetchActivities = { _, _ -> },
-            setScreen = { screenType = it },
-            setRange = {},
-            setSelectedLocality = {},
             flipFavorite = {},
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
             changeActivityToDisplay = {},
             changeWeatherTarget = {},
             weather = null,
-            state = MapState(),
-            initialPosition = LatLng(46.519962, 6.633597),
-            initialZoom = 11f,
-            updateMarkers = { _, _ -> },
-            updateSelectedMarker = { /*TODO*/},
-            clearSelectedItinerary = { /*TODO*/},
-            selectedZoom = 13f,
-            selectedMarker = null,
-            selectedItinerary = null,
-            markerList = emptyList(),
-            orderingBy = OrderingBy.RATING,
-            updateOrderingBy = {},
-            clearSelectedMarker = {},
-            fetchSuggestion = { _ -> },
-            suggestions = emptyMap(),
-            clearSuggestions = {},
-            updateInitialPosition = {},
         )
       }
     }
@@ -279,7 +236,7 @@ class DiscoverScreenTest {
     composeRule.onNodeWithTag("discoveryScreen").assertIsDisplayed()
     composeRule.onNodeWithTag("SelectionItem1").assertIsDisplayed()
     composeRule.onNodeWithTag("SelectionItem1").performClick()
-    assert(screenType == DiscoverDisplayType.MAP)
+    assert(state.screen == DiscoverDisplayType.MAP)
     composeRule.waitForIdle()
     composeRule.onNodeWithTag("locationButton").performClick()
     composeRule.onNodeWithTag("listSearchOptionsApplyButton").performClick()
@@ -319,62 +276,21 @@ class DiscoverScreenTest {
    */
   @Test
   fun discover_sortingButtonWorks() {
-    var screenType = DiscoverDisplayType.LIST
+
+    val state = discoverScreenState.copy(isLoading = false, screen = DiscoverDisplayType.LIST)
+
     composeRule.activity.setContent {
       MaterialTheme {
         DiscoverScreen(
-            isLoading = false,
-            activities =
-                listOf(
-                    Activity(
-                        "1",
-                        11033919,
-                        ActivityType.HIKING,
-                        "Chemin panorama alpin",
-                        Position(46.4718332, 6.8338907),
-                        0.0f,
-                        0,
-                        emptyList(),
-                        difficulty = Difficulty.EASY,
-                        activityImageUrl = "")),
-            screen = screenType,
-            range = 5000.0,
-            centerPoint = LatLng(46.519962, 6.633597),
+            discoverScreenState = state,
+            discoverScreenCallBacks = discoverScreenCallBacks,
             favorites = emptyList(),
-            localities =
-                listOf(
-                    "Ecublens" to LatLng(46.519962, 6.633597),
-                    "Geneva" to LatLng(46.2043907, 6.1431577),
-                    "Payerne" to LatLng(46.834190, 6.928969),
-                    "Matterhorn" to LatLng(45.980537, 7.641618)),
-            selectedLocality = "Ecublens" to LatLng(46.519962, 6.633597),
-            fetchActivities = { _, _ -> },
-            setScreen = { screenType = it },
-            setRange = {},
-            setSelectedLocality = {},
             flipFavorite = {},
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
             changeActivityToDisplay = {},
             changeWeatherTarget = {},
             weather = null,
-            state = MapState(),
-            initialPosition = LatLng(46.519962, 6.633597),
-            initialZoom = 11f,
-            updateMarkers = { _, _ -> },
-            updateSelectedMarker = { /*TODO*/},
-            clearSelectedItinerary = { /*TODO*/},
-            selectedZoom = 13f,
-            selectedMarker = null,
-            selectedItinerary = null,
-            orderingBy = OrderingBy.DISTANCE,
-            updateOrderingBy = {},
-            clearSelectedMarker = {},
-            fetchSuggestion = {},
-            suggestions = emptyMap(),
-            clearSuggestions = {},
-            updateInitialPosition = {},
-            markerList = emptyList(),
         )
       }
     }
@@ -392,63 +308,21 @@ class DiscoverScreenTest {
 
   @Test
   fun discoverScreenWithOrderingByDifficultyAscending() {
-    var screenType = DiscoverDisplayType.LIST
+
+    val state = discoverScreenState.copy(isLoading = false, screen = DiscoverDisplayType.LIST)
+
     composeRule.activity.setContent {
       MaterialTheme {
         DiscoverScreen(
-            isLoading = false,
-            activities =
-                listOf(
-                    Activity(
-                        "1",
-                        11033919,
-                        ActivityType.HIKING,
-                        "Chemin panorama alpin",
-                        Position(46.4718332, 6.8338907),
-                        0.0f,
-                        0,
-                        emptyList(),
-                        difficulty = Difficulty.EASY,
-                        activityImageUrl = "")),
-            screen = screenType,
-            range = 5000.0,
-            centerPoint = LatLng(46.519962, 6.633597),
+            discoverScreenState = state,
+            discoverScreenCallBacks = discoverScreenCallBacks,
             favorites = emptyList(),
-            localities =
-                listOf(
-                    "Ecublens" to LatLng(46.519962, 6.633597),
-                    "Geneva" to LatLng(46.2043907, 6.1431577),
-                    "Payerne" to LatLng(46.834190, 6.928969),
-                    "Matterhorn" to LatLng(45.980537, 7.641618),
-                ),
-            selectedLocality = "Ecublens" to LatLng(46.519962, 6.633597),
-            fetchActivities = { _, _ -> },
-            setScreen = { screenType = it },
-            setRange = {},
-            setSelectedLocality = {},
             flipFavorite = {},
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
             changeActivityToDisplay = {},
             changeWeatherTarget = {},
             weather = null,
-            state = MapState(),
-            initialPosition = LatLng(46.519962, 6.633597),
-            initialZoom = 11f,
-            updateMarkers = { _, _ -> },
-            updateSelectedMarker = { /*TODO*/},
-            clearSelectedItinerary = { /*TODO*/},
-            selectedZoom = 13f,
-            selectedMarker = null,
-            selectedItinerary = null,
-            markerList = emptyList(),
-            orderingBy = OrderingBy.DIFFICULTYASCENDING,
-            updateOrderingBy = {},
-            clearSelectedMarker = {},
-            fetchSuggestion = { _ -> },
-            suggestions = emptyMap(),
-            clearSuggestions = {},
-            updateInitialPosition = {},
         )
       }
     }
@@ -458,63 +332,25 @@ class DiscoverScreenTest {
 
   @Test
   fun discoverScreenWithOrderingByDifficultyDescending() {
-    var screenType = DiscoverDisplayType.LIST
+
+    val state =
+        discoverScreenState.copy(
+            orderingBy = OrderingBy.DIFFICULTYDESCENDING,
+            isLoading = false,
+            screen = DiscoverDisplayType.LIST)
+
     composeRule.activity.setContent {
       MaterialTheme {
         DiscoverScreen(
-            isLoading = false,
-            activities =
-                listOf(
-                    Activity(
-                        "1",
-                        11033919,
-                        ActivityType.HIKING,
-                        "Chemin panorama alpin",
-                        Position(46.4718332, 6.8338907),
-                        0.0f,
-                        0,
-                        emptyList(),
-                        difficulty = Difficulty.EASY,
-                        activityImageUrl = "")),
-            screen = screenType,
-            range = 5000.0,
-            centerPoint = LatLng(46.519962, 6.633597),
+            discoverScreenState = state,
+            discoverScreenCallBacks = discoverScreenCallBacks,
             favorites = emptyList(),
-            localities =
-                listOf(
-                    "Ecublens" to LatLng(46.519962, 6.633597),
-                    "Geneva" to LatLng(46.2043907, 6.1431577),
-                    "Payerne" to LatLng(46.834190, 6.928969),
-                    "Matterhorn" to LatLng(45.980537, 7.641618),
-                ),
-            selectedLocality = "Ecublens" to LatLng(46.519962, 6.633597),
-            fetchActivities = { _, _ -> },
-            setScreen = { screenType = it },
-            setRange = {},
-            setSelectedLocality = {},
             flipFavorite = {},
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
             changeActivityToDisplay = {},
             changeWeatherTarget = {},
             weather = null,
-            state = MapState(),
-            initialPosition = LatLng(46.519962, 6.633597),
-            initialZoom = 11f,
-            updateMarkers = { _, _ -> },
-            updateSelectedMarker = { /*TODO*/},
-            clearSelectedItinerary = { /*TODO*/},
-            selectedZoom = 13f,
-            selectedMarker = null,
-            selectedItinerary = null,
-            markerList = emptyList(),
-            orderingBy = OrderingBy.DIFFICULTYDESCENDING,
-            updateOrderingBy = {},
-            clearSelectedMarker = {},
-            fetchSuggestion = { _ -> },
-            suggestions = emptyMap(),
-            updateInitialPosition = {},
-            clearSuggestions = {},
         )
       }
     }
@@ -524,130 +360,52 @@ class DiscoverScreenTest {
 
   @Test
   fun discoverScreenWithOrderingByPopularity() {
-    var screenType = DiscoverDisplayType.LIST
+
+    val state =
+        discoverScreenState.copy(
+            orderingBy = OrderingBy.POPULARITY,
+            isLoading = false,
+            screen = DiscoverDisplayType.LIST)
+
     composeRule.activity.setContent {
       MaterialTheme {
         DiscoverScreen(
-            isLoading = false,
-            activities =
-                listOf(
-                    Activity(
-                        "1",
-                        11033919,
-                        ActivityType.HIKING,
-                        "Chemin panorama alpin",
-                        Position(46.4718332, 6.8338907),
-                        0.0f,
-                        0,
-                        emptyList(),
-                        difficulty = Difficulty.EASY,
-                        activityImageUrl = "")),
-            screen = screenType,
-            range = 5000.0,
-            centerPoint = LatLng(46.519962, 6.633597),
+            discoverScreenState = state,
+            discoverScreenCallBacks = discoverScreenCallBacks,
             favorites = emptyList(),
-            localities =
-                listOf(
-                    "Ecublens" to LatLng(46.519962, 6.633597),
-                    "Geneva" to LatLng(46.2043907, 6.1431577),
-                    "Payerne" to LatLng(46.834190, 6.928969),
-                    "Matterhorn" to LatLng(45.980537, 7.641618),
-                ),
-            selectedLocality = "Ecublens" to LatLng(46.519962, 6.633597),
-            fetchActivities = { _, _ -> },
-            setScreen = { screenType = it },
-            setRange = {},
-            setSelectedLocality = {},
             flipFavorite = {},
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
             changeActivityToDisplay = {},
             changeWeatherTarget = {},
             weather = null,
-            state = MapState(),
-            initialPosition = LatLng(46.519962, 6.633597),
-            initialZoom = 11f,
-            updateMarkers = { _, _ -> },
-            updateSelectedMarker = { /*TODO*/},
-            clearSelectedItinerary = { /*TODO*/},
-            selectedZoom = 13f,
-            selectedMarker = null,
-            selectedItinerary = null,
-            markerList = emptyList(),
-            orderingBy = OrderingBy.POPULARITY,
-            updateOrderingBy = {},
-            clearSelectedMarker = {},
-            fetchSuggestion = { _ -> },
-            suggestions = emptyMap(),
-            clearSuggestions = {},
-            updateInitialPosition = {},
         )
       }
     }
+
     composeRule.onNodeWithTag("textValueRow").assertIsDisplayed()
     composeRule.onNodeWithTag("spinnerIcon").assertIsDisplayed()
   }
 
   @Test
   fun discoverScreenWithOrderingByDistanceDescending() {
-    var screenType = DiscoverDisplayType.LIST
+
+    val state =
+        discoverScreenState.copy(
+            orderingBy = OrderingBy.DISTANCE, isLoading = false, screen = DiscoverDisplayType.LIST)
+
     composeRule.activity.setContent {
       MaterialTheme {
         DiscoverScreen(
-            isLoading = false,
-            activities =
-                listOf(
-                    Activity(
-                        "1",
-                        11033919,
-                        ActivityType.HIKING,
-                        "Chemin panorama alpin",
-                        Position(46.4718332, 6.8338907),
-                        0.0f,
-                        0,
-                        emptyList(),
-                        difficulty = Difficulty.EASY,
-                        activityImageUrl = "")),
-            screen = screenType,
-            range = 5000.0,
-            centerPoint = LatLng(46.519962, 6.633597),
+            discoverScreenState = state,
+            discoverScreenCallBacks = discoverScreenCallBacks,
             favorites = emptyList(),
-            localities =
-                listOf(
-                    "Ecublens" to LatLng(46.519962, 6.633597),
-                    "Geneva" to LatLng(46.2043907, 6.1431577),
-                    "Payerne" to LatLng(46.834190, 6.928969),
-                    "Matterhorn" to LatLng(45.980537, 7.641618),
-                ),
-            selectedLocality = "Ecublens" to LatLng(46.519962, 6.633597),
-            fetchActivities = { _, _ -> },
-            setScreen = { screenType = it },
-            setRange = {},
-            setSelectedLocality = {},
             flipFavorite = {},
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
             changeActivityToDisplay = {},
             changeWeatherTarget = {},
-            weather = null,
-            state = MapState(),
-            initialPosition = LatLng(46.519962, 6.633597),
-            initialZoom = 11f,
-            updateMarkers = { _, _ -> },
-            updateSelectedMarker = { /*TODO*/},
-            clearSelectedItinerary = { /*TODO*/},
-            selectedZoom = 13f,
-            selectedMarker = null,
-            selectedItinerary = null,
-            orderingBy = OrderingBy.DISTANCE,
-            updateOrderingBy = {},
-            clearSelectedMarker = {},
-            fetchSuggestion = {},
-            suggestions = emptyMap(),
-            clearSuggestions = {},
-            updateInitialPosition = {},
-            markerList = emptyList(),
-        )
+            weather = null)
       }
     }
     composeRule.onNodeWithTag("textValueRow").assertIsDisplayed()

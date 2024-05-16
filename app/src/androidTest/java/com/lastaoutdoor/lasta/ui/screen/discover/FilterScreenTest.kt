@@ -17,12 +17,12 @@ import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.ui.MainActivity
 import com.lastaoutdoor.lasta.ui.screen.loading.LoadingScreen
+import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenState
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -46,20 +46,20 @@ class FilterScreenTest {
 
   private val mockSelectedLevels = MutableStateFlow(mockUserActivitiesLevel)
   private val mockSelectedActivitiesType = MutableStateFlow(listOf<ActivityType>())
-  private var navigateBackTriggered = false
-  private var updatedLevels = false
-  private var updatedActivities = false
 
   @Before
   fun setUp() {
     hiltRule.inject()
 
-    val selectedActivityType: StateFlow<List<ActivityType>> =
-        MutableStateFlow(listOf(ActivityType.CLIMBING))
-
-    val selectedLevels =
+    val state =
         MutableStateFlow(
-            UserActivitiesLevel(UserLevel.INTERMEDIATE, UserLevel.ADVANCED, UserLevel.ADVANCED))
+            DiscoverScreenState(
+                isLoading = false,
+                selectedLevels =
+                    UserActivitiesLevel(
+                        UserLevel.INTERMEDIATE, UserLevel.ADVANCED, UserLevel.ADVANCED),
+                selectedActivityTypes = listOf(ActivityType.CLIMBING),
+            ))
 
     composeRule.activity.setContent {
       intermediate = stringResource(id = R.string.filter_difficulty_level)
@@ -68,10 +68,7 @@ class FilterScreenTest {
       NavHost(navController = navController, startDestination = "filterScreen") {
         composable("filterScreen") {
           FilterScreen(
-              selectedActivitiesType = selectedActivityType,
-              setSelectedActivitiesType = {},
-              selectedLevels = selectedLevels,
-              setSelectedLevels = {},
+              state,
           ) {
             // go to loading
             navController.navigate("loading")
@@ -116,73 +113,86 @@ class FilterScreenTest {
 
   @Test
   fun variousNrOfActivities_areWorking() {
-    val selectedActivityType: StateFlow<List<ActivityType>> = MutableStateFlow(listOf())
 
-    val selectedLevels =
+    val state =
         MutableStateFlow(
-            UserActivitiesLevel(UserLevel.INTERMEDIATE, UserLevel.ADVANCED, UserLevel.ADVANCED))
+            DiscoverScreenState(
+                isLoading = false,
+                selectedLevels =
+                    UserActivitiesLevel(
+                        UserLevel.INTERMEDIATE, UserLevel.ADVANCED, UserLevel.ADVANCED),
+                selectedActivityTypes =
+                    listOf(
+                        ActivityType.CLIMBING,
+                        ActivityType.HIKING,
+                        ActivityType.BIKING,
+                    ),
+            ))
 
     composeRule.activity.setContent {
       FilterScreen(
-          selectedActivitiesType = selectedActivityType,
-          setSelectedActivitiesType = {},
-          selectedLevels = selectedLevels,
-          setSelectedLevels = {},
+          state,
       ) {}
     }
-    composeRule.onNodeWithTag("filterScreen").assertIsDisplayed()
-    val selectedActivityType1: StateFlow<List<ActivityType>> =
-        MutableStateFlow(listOf(ActivityType.CLIMBING, ActivityType.HIKING))
 
-    val selectedLevels1 =
+    composeRule.onNodeWithTag("filterScreen").assertIsDisplayed()
+
+    val state1 =
         MutableStateFlow(
-            UserActivitiesLevel(UserLevel.INTERMEDIATE, UserLevel.ADVANCED, UserLevel.ADVANCED))
+            DiscoverScreenState(
+                isLoading = false,
+                selectedLevels =
+                    UserActivitiesLevel(
+                        UserLevel.INTERMEDIATE, UserLevel.ADVANCED, UserLevel.ADVANCED),
+                selectedActivityTypes = listOf(ActivityType.CLIMBING, ActivityType.HIKING),
+            ))
 
     composeRule.activity.setContent {
       FilterScreen(
-          selectedActivitiesType = selectedActivityType1,
-          setSelectedActivitiesType = {},
-          selectedLevels = selectedLevels1,
-          setSelectedLevels = {},
+          state1,
       ) {}
     }
-    composeRule.onNodeWithTag("filterScreen").assertIsDisplayed()
-    composeRule.onNodeWithTag("filterScreen").assertIsDisplayed()
-    val selectedActivityType2: StateFlow<List<ActivityType>> =
-        MutableStateFlow(listOf(ActivityType.CLIMBING, ActivityType.HIKING, ActivityType.BIKING))
 
-    val selectedLevels2 =
+    composeRule.onNodeWithTag("filterScreen").assertIsDisplayed()
+    composeRule.onNodeWithTag("filterScreen").assertIsDisplayed()
+
+    val state2 =
         MutableStateFlow(
-            UserActivitiesLevel(UserLevel.INTERMEDIATE, UserLevel.ADVANCED, UserLevel.ADVANCED))
-
+            DiscoverScreenState(
+                isLoading = false,
+                selectedLevels =
+                    UserActivitiesLevel(
+                        UserLevel.INTERMEDIATE, UserLevel.ADVANCED, UserLevel.ADVANCED),
+                selectedActivityTypes =
+                    listOf(ActivityType.CLIMBING, ActivityType.HIKING, ActivityType.BIKING),
+            ))
     composeRule.activity.setContent {
       FilterScreen(
-          selectedActivitiesType = selectedActivityType2,
-          setSelectedActivitiesType = {},
-          selectedLevels = selectedLevels2,
-          setSelectedLevels = {},
+          state2,
       ) {}
     }
+
     composeRule.onNodeWithTag("filterScreen").assertIsDisplayed()
   }
 
   @Test
   fun test_EraseButton() {
-    var updatedLevels: UserActivitiesLevel? = null
-    var updatedActivities: List<ActivityType>? = null
 
-    composeRule.activity.setContent {
-      FilterScreen(
-          selectedLevels = mockSelectedLevels,
-          setSelectedLevels = { updatedLevels = it },
-          selectedActivitiesType = mockSelectedActivitiesType,
-          setSelectedActivitiesType = { updatedActivities = it },
-          navigateBack = {})
-    }
+    val state =
+        MutableStateFlow(
+            DiscoverScreenState(
+                isLoading = false,
+                selectedLevels = mockUserActivitiesLevel,
+                selectedActivityTypes = listOf(ActivityType.CLIMBING),
+            ))
+
+    composeRule.activity.setContent { FilterScreen(state, navigateBack = {}) }
 
     composeRule.onNodeWithTag("EraseButton").performClick()
 
-    assertEquals(updatedLevels, null)
-    assertEquals(updatedActivities?.isEmpty(), null)
+    assertEquals(
+        state.value.selectedLevels,
+        UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER))
+    assertEquals(state.value.selectedActivityTypes, listOf<ActivityType>())
   }
 }
