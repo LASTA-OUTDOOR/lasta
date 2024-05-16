@@ -7,7 +7,6 @@ import android.os.LocaleList
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.annotation.RequiresApi
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -26,7 +25,7 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-  @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+
   override fun onCreate(savedInstanceState: Bundle?) {
     enableEdgeToEdge()
     super.onCreate(savedInstanceState)
@@ -53,37 +52,45 @@ class MainActivity : ComponentActivity() {
                     })
         // update the language of the app when language is changed in the DB
         language.collect {
-          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+              !getSystemService(LocaleManager::class.java).applicationLocales.isEmpty) {
 
             val locale = getSystemService(LocaleManager::class.java).applicationLocales
             val newLocale = LocaleList(Locale.forLanguageTag(it.toLocale()))
 
-            if (locale != newLocale) {
-
-              // Set the new Locale.
-              getSystemService(LocaleManager::class.java).applicationLocales = newLocale
-
-              // Recreate the Activity.
-              recreate()
-            }
+            changeLocale(locale.get(0), newLocale.get(0))
           } else {
             // different version for older android versions
             val locale = Locale.getDefault()
             val newLocale = Locale(it.toLocale())
-            if (locale != newLocale) {
-              val configuration =
-                  resources.configuration.apply {
-                    Locale.setDefault(newLocale)
-                    setLocale(newLocale)
-                  }
-
-              resources.updateConfiguration(configuration, resources.displayMetrics)
-              recreate()
-            }
+            changeLocale(locale, newLocale)
           }
         }
       }
     }
     setContent { LastaTheme { AppNavGraph() } }
+  }
+
+  fun changeLocale(old: Locale, new: Locale): Unit {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      if (old != new) {
+        // Set the new Locale.
+        getSystemService(LocaleManager::class.java).applicationLocales = LocaleList(new)
+
+        // Recreate the Activity.
+        recreate()
+      }
+    } else {
+      if (old != new) {
+        val configuration =
+            resources.configuration.apply {
+              Locale.setDefault(new)
+              setLocale(new)
+            }
+
+        resources.updateConfiguration(configuration, resources.displayMetrics)
+        recreate()
+      }
+    }
   }
 }
