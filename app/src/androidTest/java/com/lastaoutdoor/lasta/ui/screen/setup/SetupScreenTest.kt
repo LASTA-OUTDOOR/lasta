@@ -110,6 +110,7 @@ class SetupScreenTest {
       )
     }
     composeRule.onNodeWithTag("setupFinishButton").performClick()
+    composeRule.waitForIdle()
     composeRule.onNodeWithTag("setupSubmitDialog").assertIsDisplayed()
   }
 
