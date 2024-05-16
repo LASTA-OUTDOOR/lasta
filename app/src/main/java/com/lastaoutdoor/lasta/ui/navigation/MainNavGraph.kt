@@ -46,7 +46,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
       val isLoading = discoverScreenViewModel.isLoading.collectAsState().value
-      val activities = discoverScreenViewModel.activities.collectAsState().value
+      val activities by discoverScreenViewModel.activities.collectAsState()
       val screen = discoverScreenViewModel.screen.collectAsState().value
       val range = discoverScreenViewModel.range.collectAsState().value
       val centerPoint = discoverScreenViewModel.selectedLocality.collectAsState().value.second
@@ -102,6 +102,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           suggestions,
           discoverScreenViewModel::clearSuggestions,
           discoverScreenViewModel::updateInitialPosition,
+          discoverScreenViewModel::updateRange,
       )
     }
     composable(DestinationRoute.Favorites.route) { entry ->
@@ -187,7 +188,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
     }
 
     composable(DestinationRoute.MoreInfo.route) { entry ->
-      val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
+      val discoverScreenViewModel: DiscoverScreenViewModel = entry.sharedViewModel(navController)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
       val activityToDisplay = moreInfoScreenViewModel.activityToDisplay.value
       val usersList = moreInfoScreenViewModel.usersList.collectAsState().value
@@ -227,7 +228,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           weatherViewModel::fetchWeatherWithUserLoc)
     }
     composable(DestinationRoute.Filter.route) { entry ->
-      val discoverScreenViewModel: DiscoverScreenViewModel = entry.sharedViewModel(navController)
+      val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
 
       FilterScreen(
           discoverScreenViewModel.selectedLevels,

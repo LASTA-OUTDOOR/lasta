@@ -393,7 +393,7 @@ class DiscoveryScreenViewModelTest() {
     viewModel.setSelectedActivitiesType(listOf(ActivityType.BIKING))
     assert(viewModel.selectedActivityType.value.contains(ActivityType.BIKING))
 
-    assert(viewModel.selectedZoom == 13f)
+    assert(viewModel.selectedZoom == 16f)
     assert(viewModel.initialPosition.value == LatLng(46.519962, 6.633597))
     assert(viewModel.initialZoom == 11f)
   }

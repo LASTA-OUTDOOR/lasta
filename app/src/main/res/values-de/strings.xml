@@ -109,6 +109,11 @@
     <string name="erase_options">Alles löschen</string>
     <string name="ride">Radtour</string>
     <string name="recent_activities">Neueste Aktivitäten</string>
+    <string name="add_review">Review:</string>
+    <string name="ask_rating">Bitte bewerten Sie (von 5 Sternen): </string>
+    <string name="ask_comment">Schreiben Sie hier Ihren Kommentar: </string>
+    <string name="no_duration">Keine Dauer</string>
+    <string name="publish">Veröffentlichen!</string>
     <string name="share_title">Lasta : Aktivitäten teilen</string>
     <string name="share_body">Hallo ! Sieh dir diese Aktivität auf Lasta an :</string>
     <string name="step_count">Schrittzahl</string>
