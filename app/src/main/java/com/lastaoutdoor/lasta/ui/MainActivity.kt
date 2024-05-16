@@ -62,35 +62,34 @@ class MainActivity : ComponentActivity() {
             // different version for older android versions
             val locale = Locale.getDefault()
             val newLocale = Locale(it.toLocale())
-            changeLocale(locale,newLocale)
+            changeLocale(locale, newLocale)
           }
         }
       }
     }
     setContent { LastaTheme { AppNavGraph() } }
   }
-  fun changeLocale(old : Locale, new: Locale) : Unit {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-          if(old != new){
-              // Set the new Locale.
-              getSystemService(LocaleManager::class.java).applicationLocales = LocaleList(new)
 
-              // Recreate the Activity.
-              recreate()
-          }
-      }else{
-          if(old!=new){
-              val configuration =
-                  resources.configuration.apply {
-                      Locale.setDefault(new)
-                      setLocale(new)
-                  }
+  fun changeLocale(old: Locale, new: Locale): Unit {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      if (old != new) {
+        // Set the new Locale.
+        getSystemService(LocaleManager::class.java).applicationLocales = LocaleList(new)
 
-              resources.updateConfiguration(configuration, resources.displayMetrics)
-              recreate()
-          }
-          }
+        // Recreate the Activity.
+        recreate()
       }
+    } else {
+      if (old != new) {
+        val configuration =
+            resources.configuration.apply {
+              Locale.setDefault(new)
+              setLocale(new)
+            }
+
+        resources.updateConfiguration(configuration, resources.displayMetrics)
+        recreate()
+      }
+    }
   }
-
-
+}
