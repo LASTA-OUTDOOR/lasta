@@ -1,5 +1,6 @@
 package com.lastaoutdoor.lasta.viewmodel
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -12,6 +13,8 @@ import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.auth.AuthRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import com.lastaoutdoor.lasta.utils.Response
+import com.lastaoutdoor.lasta.utils.ErrorToast
+import com.lastaoutdoor.lasta.utils.ErrorType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
@@ -22,7 +25,8 @@ class AuthViewModel
 constructor(
     private val authRepo: AuthRepository,
     private val userDBRepository: UserDBRepository,
-    val oneTapClient: SignInClient
+    val oneTapClient: SignInClient,
+    private val errorToast: ErrorToast
 ) : ViewModel() {
 
   var beginSignInResult: BeginSignInResult? by mutableStateOf(null)
@@ -40,7 +44,7 @@ constructor(
           }
           is Response.Failure -> {
             response.e.printStackTrace()
-            throw response.e
+            errorToast.showToast(ErrorType.ERROR_SIGN_IN)
           }
         }
       }
@@ -57,7 +61,7 @@ constructor(
           }
           is Response.Failure -> {
             response.e.printStackTrace()
-            throw response.e
+            errorToast.showToast(ErrorType.ERROR_SIGN_IN)
           }
         }
       }
@@ -76,7 +80,7 @@ constructor(
           }
           is Response.Failure -> {
             response.e.printStackTrace()
-            throw response.e
+            errorToast.showToast(ErrorType.ERROR_SIGN_OUT)
           }
         }
       }
@@ -84,6 +88,13 @@ constructor(
   }
 
   fun updateFieldInUser(userId: String, field: String, value: Any) {
-    viewModelScope.launch { userDBRepository.updateField(userId, field, value) }
+    viewModelScope.launch {
+      try {
+        userDBRepository.updateField(userId, field, value)
+      } catch (e: Exception) {
+        e.printStackTrace()
+        errorToast.showToast(ErrorType.ERROR_UPDATE_USER)
+      }
+    }
   }
 }
