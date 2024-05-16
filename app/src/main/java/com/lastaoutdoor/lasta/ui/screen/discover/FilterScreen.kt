@@ -31,6 +31,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -64,6 +65,31 @@ fun FilterScreen(discoverScreenState: StateFlow<DiscoverScreenState>, navigateBa
         userSelectedLevels.hikingLevel,
         userSelectedLevels.bikingLevel)
   }
+
+  @Composable
+  fun collectSelectedActivitiesTypes(): SnapshotStateList<ActivityType> {
+    // really cumbersome way to get the number of activities but didn't want to break the rest of
+    // the
+    // code (implemented by someone else)
+    val nrOfActivities = selectedActivitiesType.size
+    return when (nrOfActivities) {
+      0 -> remember { mutableStateListOf() }
+      1 -> remember { mutableStateListOf(selectedActivitiesType.first()) }
+      2 ->
+          remember {
+            mutableStateListOf(selectedActivitiesType.first(), selectedActivitiesType.last())
+          }
+      else ->
+          remember {
+            mutableStateListOf(
+                selectedActivitiesType.first(),
+                selectedActivitiesType[1],
+                selectedActivitiesType.last())
+          }
+    }
+  }
+
+  val snapshotSelectedActivitiesTypes = collectSelectedActivitiesTypes()
 
   val selectedActivitiesTypes = remember { mutableStateListOf(selectedActivitiesType.first()) }
 
@@ -193,7 +219,7 @@ fun FilterScreen(discoverScreenState: StateFlow<DiscoverScreenState>, navigateBa
                     activitiesLevelArray[1] = userSelectedLevels.hikingLevel
                     activitiesLevelArray[2] = userSelectedLevels.bikingLevel
                     selectedActivitiesTypes.clear()
-                    selectedActivitiesTypes.addAll(selectedActivitiesTypes)
+                    selectedActivitiesTypes.addAll(snapshotSelectedActivitiesTypes)
                   },
                   modifier = Modifier.testTag("EraseButton"),
                   colors =
