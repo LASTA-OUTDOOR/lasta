@@ -4,6 +4,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.Language
@@ -139,12 +140,15 @@ class SettingsScreenKtTest {
     }
     composeRule.onNodeWithTag("settingsCLIMBINGLevel").assertIsDisplayed()
     composeRule.onNodeWithTag("settingsCLIMBINGLevel").performClick()
+      composeRule.onNodeWithText("Intermediate").performClick()
     composeRule.onNodeWithTag("settingsCLIMBINGLevel").assertIsDisplayed()
     composeRule.onNodeWithTag("settingsHIKINGLevel").assertIsDisplayed()
     composeRule.onNodeWithTag("settingsHIKINGLevel").performClick()
+      composeRule.onNodeWithText("Advanced").performClick()
     composeRule.onNodeWithTag("settingsHIKINGLevel").assertIsDisplayed()
     composeRule.onNodeWithTag("settingsBIKINGLevel").assertIsDisplayed()
     composeRule.onNodeWithTag("settingsBIKINGLevel").performClick()
+        composeRule.onNodeWithText("Intermediate").performClick()
     composeRule.onNodeWithTag("settingsBIKINGLevel").assertIsDisplayed()
   }
 }
