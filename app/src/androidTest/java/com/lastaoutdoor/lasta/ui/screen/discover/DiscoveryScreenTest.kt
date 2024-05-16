@@ -78,7 +78,10 @@ class DiscoverScreenTest {
             clearSuggestions = {},
             updateInitialPosition = {},
             updateActivities = {},
-            updateRange = {})
+            updateRange = {},
+            setSelectedActivitiesType = {},
+            setSelectedLevels = {},
+        )
   }
 
   @Test

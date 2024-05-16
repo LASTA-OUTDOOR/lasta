@@ -53,7 +53,9 @@ data class DiscoverScreenCallBacks(
     val clearSuggestions: () -> Unit,
     val updateInitialPosition: (LatLng) -> Unit,
     val updateActivities: (List<Activity>) -> Unit,
-    val updateRange: (Double) -> Unit
+    val updateRange: (Double) -> Unit,
+    val setSelectedLevels: (UserActivitiesLevel) -> Unit,
+    val setSelectedActivitiesType: (List<ActivityType>) -> Unit,
 )
 
 // Data class to store all the state of the viewmodel
@@ -119,7 +121,12 @@ constructor(
           clearSuggestions = { clearSuggestions() },
           updateInitialPosition = { position -> updateInitialPosition(position) },
           updateActivities = { activities -> updateActivities(activities) },
-          updateRange = { range -> updateRange(range) })
+          updateRange = { range -> updateRange(range) },
+          setSelectedLevels = { levels -> setSelectedLevels(levels) },
+          setSelectedActivitiesType = { activitiesType ->
+            setSelectedActivitiesType(activitiesType)
+          },
+      )
 
   init {
     viewModelScope.launch {
@@ -139,7 +146,6 @@ constructor(
       tokenDBRepository.uploadUserToken(userId, token)
 
       fetchActivities()
-      println("Coucou")
     }
   }
 

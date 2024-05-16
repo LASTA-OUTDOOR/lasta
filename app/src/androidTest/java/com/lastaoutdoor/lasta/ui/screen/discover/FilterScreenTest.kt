@@ -17,6 +17,7 @@ import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.ui.MainActivity
 import com.lastaoutdoor.lasta.ui.screen.loading.LoadingScreen
+import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenCallBacks
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenState
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -46,6 +47,27 @@ class FilterScreenTest {
   private val mockSelectedLevels = MutableStateFlow(mockUserActivitiesLevel)
   private val mockSelectedActivitiesType = MutableStateFlow(listOf<ActivityType>())
 
+  private val discoverScreenCallBacks: DiscoverScreenCallBacks =
+      DiscoverScreenCallBacks(
+          fetchActivities = {},
+          setScreen = {},
+          setRange = {},
+          setSelectedLocality = {},
+          updatePermission = {},
+          updateMarkers = { _, _ -> },
+          updateSelectedMarker = {},
+          clearSelectedItinerary = {},
+          updateOrderingBy = {},
+          clearSelectedMarker = {},
+          fetchSuggestion = {},
+          clearSuggestions = {},
+          updateInitialPosition = {},
+          updateActivities = {},
+          updateRange = {},
+          setSelectedActivitiesType = {},
+          setSelectedLevels = {},
+      )
+
   @Before
   fun setUp() {
     hiltRule.inject()
@@ -68,6 +90,7 @@ class FilterScreenTest {
         composable("filterScreen") {
           FilterScreen(
               state,
+              discoverScreenCallBacks,
           ) {
             // go to loading
             navController.navigate("loading")
@@ -128,11 +151,7 @@ class FilterScreenTest {
                     ),
             ))
 
-    composeRule.activity.setContent {
-      FilterScreen(
-          state,
-      ) {}
-    }
+    composeRule.activity.setContent { FilterScreen(state, discoverScreenCallBacks) {} }
 
     composeRule.onNodeWithTag("filterScreen").assertIsDisplayed()
 
@@ -146,11 +165,7 @@ class FilterScreenTest {
                 selectedActivityTypes = listOf(ActivityType.CLIMBING, ActivityType.HIKING),
             ))
 
-    composeRule.activity.setContent {
-      FilterScreen(
-          state1,
-      ) {}
-    }
+    composeRule.activity.setContent { FilterScreen(state1, discoverScreenCallBacks) {} }
 
     composeRule.onNodeWithTag("filterScreen").assertIsDisplayed()
     composeRule.onNodeWithTag("filterScreen").assertIsDisplayed()
@@ -165,11 +180,7 @@ class FilterScreenTest {
                 selectedActivityTypes =
                     listOf(ActivityType.CLIMBING, ActivityType.HIKING, ActivityType.BIKING),
             ))
-    composeRule.activity.setContent {
-      FilterScreen(
-          state2,
-      ) {}
-    }
+    composeRule.activity.setContent { FilterScreen(state2, discoverScreenCallBacks) {} }
 
     composeRule.onNodeWithTag("filterScreen").assertIsDisplayed()
   }

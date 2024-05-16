@@ -198,6 +198,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
 
       FilterScreen(
           discoverScreenViewModel.state,
+          discoverScreenViewModel.callbacks,
       ) {
         navController.popBackStack()
       }

@@ -42,17 +42,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
 import com.lastaoutdoor.lasta.ui.screen.discover.components.ToggleButton
 import com.lastaoutdoor.lasta.ui.theme.AccentGreen
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
+import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenCallBacks
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenState
 import kotlinx.coroutines.flow.StateFlow
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun FilterScreen(discoverScreenState: StateFlow<DiscoverScreenState>, navigateBack: () -> Unit) {
+fun FilterScreen(
+    discoverScreenState: StateFlow<DiscoverScreenState>,
+    discoverScreenCallBacks: DiscoverScreenCallBacks,
+    navigateBack: () -> Unit
+) {
 
   val userSelectedLevels = discoverScreenState.collectAsState().value.selectedLevels
   val selectedActivitiesType = discoverScreenState.collectAsState().value.selectedActivityTypes
@@ -234,7 +240,13 @@ fun FilterScreen(discoverScreenState: StateFlow<DiscoverScreenState>, navigateBa
               // Apply the filter options
               ElevatedButton(
                   onClick = {
-                    { /* TODO */}
+                    discoverScreenCallBacks.setSelectedLevels(
+                        UserActivitiesLevel(
+                            activitiesLevelArray[0],
+                            activitiesLevelArray[1],
+                            activitiesLevelArray[2]))
+                    discoverScreenCallBacks.setSelectedActivitiesType(
+                        selectedActivitiesTypes.toList())
                     navigateBack()
                   },
                   elevation = ButtonDefaults.elevatedButtonElevation(3.dp),
