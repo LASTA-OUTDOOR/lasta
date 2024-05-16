@@ -60,7 +60,6 @@ fun InformationSheet(
     selectedMarker: Marker?,
     onDismissRequest: () -> Unit
 ) {
-
   // We use the rememberSavable to keep the state of the sheet (whether it is open or not)
   if (isSheetOpen) {
     ModalBottomSheet(
