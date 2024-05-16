@@ -8,6 +8,8 @@ import com.lastaoutdoor.lasta.repository.app.ConnectivityRepository
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
 import com.lastaoutdoor.lasta.utils.ConnectionState
+import com.lastaoutdoor.lasta.utils.ErrorToast
+import com.lastaoutdoor.lasta.utils.ErrorType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +24,8 @@ constructor(
     private val preferences: PreferencesRepository,
     private val activitiesDB: ActivitiesDBRepository,
     private val offlineActivityDB: ActivityDatabaseImpl,
-    private val connectivityRepositoryImpl: ConnectivityRepository
+    private val connectivityRepositoryImpl: ConnectivityRepository,
+    private val errorToast: ErrorToast
 ) : ViewModel() {
   private val _isLoading = MutableStateFlow(true)
   val isLoading = _isLoading
@@ -39,7 +42,6 @@ constructor(
   val favorites = _favorites
 
   init {
-
     fetchFavorites()
   }
 
@@ -54,22 +56,31 @@ constructor(
               val favoritesIds = userPreferences.user.favorites
               _favoritesIds.value = favoritesIds
               if (favoritesIds.isNotEmpty()) {
-                val favorites = activitiesDB.getActivitiesByIds(favoritesIds)
-                _favorites.value = favorites
+                try {
+                  val favorites = activitiesDB.getActivitiesByIds(favoritesIds)
+                  _favorites.value = favorites
+                } catch (e: Exception) {
+                  e.printStackTrace()
+                  errorToast.showToast(ErrorType.ERROR_DATABASE)
+                }
               } else {
                 _favorites.value = emptyList()
               }
             }
           }
           ConnectionState.OFFLINE -> {
-            val act = offlineActivityDB.getAllActivities()
-            _favoritesIds.value = act.map { it.activityId }
-            _favorites.value = act
+            try {
+              val act = offlineActivityDB.getAllActivities()
+              _favoritesIds.value = act.map { it.activityId }
+              _favorites.value = act
+            } catch (e: Exception) {
+              e.printStackTrace()
+              errorToast.showToast(ErrorType.ERROR_DATABASE)
+            }
           }
         }
       }
     }
-
     _isLoading.value = false
   }
 }

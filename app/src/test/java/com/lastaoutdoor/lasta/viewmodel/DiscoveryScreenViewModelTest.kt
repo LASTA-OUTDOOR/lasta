@@ -10,6 +10,7 @@ import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
+import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.utils.OrderingBy
 import com.lastaoutdoor.lasta.utils.Response
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivitiesDBRepository
@@ -52,6 +53,7 @@ class DiscoveryScreenViewModelTest() {
   private lateinit var activitiesDB: FakeActivitiesDBRepository
   private lateinit var prefRepo: FakePreferencesRepository
   private lateinit var radarRepo: FakeRadarRepository
+  private val errorToast = mockk<ErrorToast>()
 
   @ExperimentalCoroutinesApi
   @Before
@@ -72,7 +74,8 @@ class DiscoveryScreenViewModelTest() {
     prefRepo = FakePreferencesRepository()
     radarRepo = FakeRadarRepository()
     activitiesDB = FakeActivitiesDBRepository()
-    viewModel = DiscoverScreenViewModel(repository, prefRepo, activitiesDB, radarRepo, mockk())
+    viewModel =
+        DiscoverScreenViewModel(repository, prefRepo, activitiesDB, radarRepo, mockk(), errorToast)
     repo.currResponse = Response.Success(null)
   }
 

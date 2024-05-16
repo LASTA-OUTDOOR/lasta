@@ -12,9 +12,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 
 @HiltViewModel
-class ConnectivityViewModel @Inject constructor(connectivityRepository: ConnectivityRepository,
-    errorToast: ErrorToast) :
-    ViewModel() {
+class ConnectivityViewModel
+@Inject
+constructor(connectivityRepository: ConnectivityRepository, errorToast: ErrorToast) : ViewModel() {
 
   val connectionState: StateFlow<ConnectionState> =
       connectivityRepository.connectionState.stateIn(

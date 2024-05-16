@@ -1,6 +1,5 @@
 package com.lastaoutdoor.lasta.viewmodel
 
-import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -12,9 +11,9 @@ import com.google.firebase.auth.AuthCredential
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.auth.AuthRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
-import com.lastaoutdoor.lasta.utils.Response
 import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.utils.ErrorType
+import com.lastaoutdoor.lasta.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
@@ -93,7 +92,7 @@ constructor(
         userDBRepository.updateField(userId, field, value)
       } catch (e: Exception) {
         e.printStackTrace()
-        errorToast.showToast(ErrorType.ERROR_UPDATE_USER)
+        errorToast.showToast(ErrorType.ERROR_DATABASE)
       }
     }
   }

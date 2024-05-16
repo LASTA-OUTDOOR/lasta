@@ -5,8 +5,10 @@ import com.lastaoutdoor.lasta.models.user.Language
 import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
+import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserDB
+import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -18,10 +20,12 @@ import org.junit.Test
 
 class PreferencesViewModelTest {
 
+  private val errorToast = mockk<ErrorToast>()
+
   @ExperimentalCoroutinesApi val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
   val db = FakePreferencesRepository()
   val db2 = FakeUserDB()
-  val vm = PreferencesViewModel(db, db2)
+  val vm = PreferencesViewModel(db, db2, errorToast)
 
   @ExperimentalCoroutinesApi
   @Before

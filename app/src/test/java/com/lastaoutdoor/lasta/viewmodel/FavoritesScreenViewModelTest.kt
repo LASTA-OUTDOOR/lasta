@@ -5,6 +5,7 @@ import com.lastaoutdoor.lasta.data.offline.ActivityDatabaseImpl
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.repository.offline.ActivityDao
 import com.lastaoutdoor.lasta.utils.ConnectionState
+import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivitiesDBRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeConnectivityviewRepo
 import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
@@ -46,6 +47,7 @@ class FavoritesScreenViewModelTest {
   private val dao: ActivityDao = mockk()
   private val loc = ActivityDatabaseImpl(dao)
   private val con = FakeConnectivityviewRepo()
+  private val errorToast = mockk<ErrorToast>()
 
   @Before
   fun setUp() {
@@ -60,7 +62,7 @@ class FavoritesScreenViewModelTest {
     runBlocking {
       val con = FakeConnectivityviewRepo()
       favoritesScreenViewModel =
-          FavoritesScreenViewModel(preferencesRepository, activitiesRepo, loc, con)
+          FavoritesScreenViewModel(preferencesRepository, activitiesRepo, loc, con, errorToast)
 
       assert(favoritesScreenViewModel.favorites.value.isEmpty())
       favoritesScreenViewModel.viewModelScope.cancel("")
@@ -76,7 +78,7 @@ class FavoritesScreenViewModelTest {
       loc.getActivity("id")
       con.connectionState = flowOf(ConnectionState.OFFLINE)
       favoritesScreenViewModel =
-          FavoritesScreenViewModel(preferencesRepository, activitiesRepo, loc, con)
+          FavoritesScreenViewModel(preferencesRepository, activitiesRepo, loc, con, errorToast)
 
       assert(favoritesScreenViewModel.favorites.value.isNotEmpty())
       favoritesScreenViewModel.viewModelScope.cancel("")

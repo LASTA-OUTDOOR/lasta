@@ -9,6 +9,7 @@ import com.lastaoutdoor.lasta.models.social.MessageModel
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
+import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeConnectivityviewRepo
 import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeTokenDBRepo
@@ -41,6 +42,7 @@ class SocialViewModelTest {
   private val prefRepo = FakePreferencesRepository()
   private val tokenDBRepository: TokenDBRepository = FakeTokenDBRepo()
   private val fcmAPI = mockk<FCMApi>(relaxed = true)
+  private val errorToast = mockk<ErrorToast>()
 
   // Mock the user preferences flow
 
@@ -49,7 +51,8 @@ class SocialViewModelTest {
   fun setUp() {
     userDB = FakeUserDB()
     viewModel =
-        SocialViewModel(context, repoDB, userDB, connectRepo, prefRepo, tokenDBRepository, fcmAPI)
+        SocialViewModel(
+            context, repoDB, userDB, connectRepo, prefRepo, tokenDBRepository, fcmAPI, errorToast)
   }
 
   @ExperimentalCoroutinesApi val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()

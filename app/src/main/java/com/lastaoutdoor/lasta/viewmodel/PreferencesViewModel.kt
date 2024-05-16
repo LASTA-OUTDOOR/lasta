@@ -10,6 +10,8 @@ import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
+import com.lastaoutdoor.lasta.utils.ErrorToast
+import com.lastaoutdoor.lasta.utils.ErrorType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.first
@@ -19,8 +21,11 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class PreferencesViewModel
 @Inject
-constructor(private val preferences: PreferencesRepository, private val userDB: UserDBRepository) :
-    ViewModel() {
+constructor(
+    private val preferences: PreferencesRepository,
+    private val userDB: UserDBRepository,
+    private val errorToast: ErrorToast
+) : ViewModel() {
   // Decompose UserPreferences into individual properties available as Flows
   val isLoggedIn = preferences.userPreferencesFlow.map { it.isLoggedIn }.asLiveData()
   val user = preferences.userPreferencesFlow.map { it.user }
@@ -52,68 +57,103 @@ constructor(private val preferences: PreferencesRepository, private val userDB: 
 
   fun updateDescription(description: String) {
     viewModelScope.launch {
-      preferences.updateDescription(description)
-      userDB.updateField(userId.first(), "description", description)
+      try {
+        userDB.updateField(userId.first(), "description", description)
+        preferences.updateDescription(description)
+      } catch (e: Exception) {
+        e.printStackTrace()
+        errorToast.showToast(ErrorType.ERROR_DATABASE)
+      }
     }
   }
 
   fun updateLanguage(language: Language) {
     viewModelScope.launch {
-      preferences.updateLanguage(language)
-      userDB.updateField(userId.first(), "language", language)
+      try {
+        userDB.updateField(userId.first(), "language", language)
+        preferences.updateLanguage(language)
+      } catch (e: Exception) {
+        e.printStackTrace()
+        errorToast.showToast(ErrorType.ERROR_DATABASE)
+      }
     }
   }
 
   fun updatePrefActivity(activityType: ActivityType) {
     viewModelScope.launch {
-      preferences.updatePrefActivity(activityType)
-      userDB.updateField(userId.first(), "prefActivity", activityType)
+      try {
+        userDB.updateField(userId.first(), "prefActivity", activityType)
+        preferences.updatePrefActivity(activityType)
+      } catch (e: Exception) {
+        e.printStackTrace()
+        errorToast.showToast(ErrorType.ERROR_DATABASE)
+      }
     }
   }
 
   fun updateActivityLevels(userActivitiesLevel: UserActivitiesLevel) {
     viewModelScope.launch {
-      preferences.updateActivityLevels(userActivitiesLevel)
-      userDB.updateField(userId.first(), "levels", userActivitiesLevel)
+      try {
+        userDB.updateField(userId.first(), "levels", userActivitiesLevel)
+        preferences.updateActivityLevels(userActivitiesLevel)
+      } catch (e: Exception) {
+        e.printStackTrace()
+        errorToast.showToast(ErrorType.ERROR_DATABASE)
+      }
     }
   }
 
   fun updateClimbingLevel(level: UserLevel) {
     viewModelScope.launch {
-      preferences.updateClimbingLevel(level)
-      userDB.updateField(
-          userId.first(),
-          "levels",
-          hashMapOf(
-              "climbingLevel" to level.name,
-              "hikingLevel" to levels.first().hikingLevel.name,
-              "bikingLevel" to levels.first().bikingLevel.name))
+      try {
+        userDB.updateField(
+            userId.first(),
+            "levels",
+            hashMapOf(
+                "climbingLevel" to level.name,
+                "hikingLevel" to levels.first().hikingLevel.name,
+                "bikingLevel" to levels.first().bikingLevel.name))
+        preferences.updateClimbingLevel(level)
+      } catch (e: Exception) {
+        e.printStackTrace()
+        errorToast.showToast(ErrorType.ERROR_DATABASE)
+      }
     }
   }
 
   fun updateHikingLevel(level: UserLevel) {
     viewModelScope.launch {
-      preferences.updateHikingLevel(level)
-      userDB.updateField(
-          userId.first(),
-          "levels",
-          hashMapOf(
-              "climbingLevel" to levels.first().climbingLevel.name,
-              "hikingLevel" to level.name,
-              "bikingLevel" to levels.first().bikingLevel.name))
+      try {
+        userDB.updateField(
+            userId.first(),
+            "levels",
+            hashMapOf(
+                "climbingLevel" to levels.first().climbingLevel.name,
+                "hikingLevel" to level.name,
+                "bikingLevel" to levels.first().bikingLevel.name))
+        preferences.updateHikingLevel(level)
+      } catch (e: Exception) {
+        e.printStackTrace()
+        errorToast.showToast(ErrorType.ERROR_DATABASE)
+      }
     }
   }
 
   fun updateBikingLevel(level: UserLevel) {
     viewModelScope.launch {
-      preferences.updateBikingLevel(level)
-      userDB.updateField(
-          userId.first(),
-          "levels",
-          hashMapOf(
-              "climbingLevel" to levels.first().climbingLevel.name,
-              "hikingLevel" to levels.first().hikingLevel.name,
-              "bikingLevel" to level.name))
+      try {
+        userDB.updateField(
+            userId.first(),
+            "levels",
+            hashMapOf(
+                "climbingLevel" to levels.first().climbingLevel.name,
+                "hikingLevel" to levels.first().hikingLevel.name,
+                "bikingLevel" to level.name))
+        preferences.updateBikingLevel(level)
+      } catch (e: Exception) {
+        e.printStackTrace()
+        errorToast.showToast(ErrorType.ERROR_DATABASE)
+      }
     }
   }
 
@@ -128,15 +168,25 @@ constructor(private val preferences: PreferencesRepository, private val userDB: 
   fun flipFavorite(favoriteId: String) {
     viewModelScope.launch {
       if (favorites.first().contains(favoriteId)) {
-        val newFavorites = favorites.first().filter { it.isNotEmpty() }.toMutableList()
-        newFavorites.remove(favoriteId)
-        userDB.removeFavorite(userId.first(), favoriteId)
-        preferences.updateFavorites(newFavorites)
+        try {
+          val newFavorites = favorites.first().filter { it.isNotEmpty() }.toMutableList()
+          userDB.removeFavorite(userId.first(), favoriteId)
+          newFavorites.remove(favoriteId)
+          preferences.updateFavorites(newFavorites)
+        } catch (e: Exception) {
+          e.printStackTrace()
+          errorToast.showToast(ErrorType.ERROR_DATABASE)
+        }
       } else {
-        val newFavorites = favorites.first().filter { it.isNotEmpty() }.toMutableList()
-        newFavorites.add(favoriteId)
-        userDB.addFavorite(userId.first(), favoriteId)
-        preferences.updateFavorites(newFavorites)
+        try {
+          val newFavorites = favorites.first().filter { it.isNotEmpty() }.toMutableList()
+          userDB.addFavorite(userId.first(), favoriteId)
+          newFavorites.add(favoriteId)
+          preferences.updateFavorites(newFavorites)
+        } catch (e: Exception) {
+          e.printStackTrace()
+          errorToast.showToast(ErrorType.ERROR_DATABASE)
+        }
       }
     }
   }

@@ -1,6 +1,7 @@
 package com.lastaoutdoor.lasta.viewmodel
 
 import FakeSocialDB
+import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeConnectivityviewRepo
 import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserDB
@@ -23,11 +24,13 @@ class ConversationViewModelTest {
   private var fakeUserDB = FakeUserDB()
   private var fakePreferencesRepository = FakePreferencesRepository()
   private var fakeConnectivityViewRepo = FakeConnectivityviewRepo()
+  private var errorToast = mockk<ErrorToast>()
 
   @Before
   fun setUp() {
     viewModel =
-        ConversationViewModel(fakeUserDB, mockk(), mockk(), fakeSocialDB, fakePreferencesRepository)
+        ConversationViewModel(
+            fakeUserDB, mockk(), mockk(), fakeSocialDB, fakePreferencesRepository, errorToast)
   }
 
   @ExperimentalCoroutinesApi val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()

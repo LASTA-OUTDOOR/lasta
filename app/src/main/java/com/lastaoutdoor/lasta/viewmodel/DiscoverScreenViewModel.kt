@@ -23,6 +23,8 @@ import com.lastaoutdoor.lasta.repository.api.RadarRepository
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
 import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
+import com.lastaoutdoor.lasta.utils.ErrorToast
+import com.lastaoutdoor.lasta.utils.ErrorType
 import com.lastaoutdoor.lasta.utils.OrderingBy
 import com.lastaoutdoor.lasta.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,7 +44,8 @@ constructor(
     private val preferencesRepository: PreferencesRepository,
     private val activitiesDB: ActivitiesDBRepository,
     private val radarRepository: RadarRepository,
-    private val tokenDBRepository: TokenDBRepository
+    private val tokenDBRepository: TokenDBRepository,
+    private val errorToast: ErrorToast
 ) : ViewModel() {
 
   private val _isLoading = MutableStateFlow(true)
@@ -115,16 +118,28 @@ constructor(
 
   init {
     viewModelScope.launch {
-      val userId = preferencesRepository.userPreferencesFlow.map { it.user.userId }.first()
-      _selectedActivityTypes.value =
-          preferencesRepository.userPreferencesFlow.map { listOf(it.user.prefActivity) }.first()
+      try {
+        val userId = preferencesRepository.userPreferencesFlow.map { it.user.userId }.first()
+        _selectedActivityTypes.value =
+            preferencesRepository.userPreferencesFlow.map { listOf(it.user.prefActivity) }.first()
 
-      _selectedLevels.value =
-          preferencesRepository.userPreferencesFlow.map { it.user.levels }.first()
-      val token = FirebaseMessaging.getInstance().token.await()
-      tokenDBRepository.uploadUserToken(userId, token)
-
-      fetchActivities()
+        _selectedLevels.value =
+            preferencesRepository.userPreferencesFlow.map { it.user.levels }.first()
+        val token: String
+        try {
+          token = FirebaseMessaging.getInstance().token.await()
+        } catch (e: Exception) {
+          e.printStackTrace()
+          errorToast.showToast(ErrorType.ERROR_MESSAGING)
+          return@launch
+        }
+        tokenDBRepository.uploadUserToken(userId, token)
+        fetchActivities()
+      } catch (e: Exception) {
+        e.printStackTrace()
+        errorToast.showToast(ErrorType.ERROR_DATABASE)
+        return@launch
+      }
     }
   }
 
@@ -147,6 +162,7 @@ constructor(
           when (val response = radarRepository.getSuggestions(query)) {
             is Response.Failure -> {
               response.e.printStackTrace()
+              errorToast.showToast(ErrorType.ERROR_RADAR_API)
               return@launch
             }
             is Response.Success -> {
@@ -194,6 +210,7 @@ constructor(
             when (response) {
               is Response.Failure -> {
                 response.e.printStackTrace()
+                errorToast.showToast(ErrorType.ERROR_OSM_API)
                 return@launch
               }
               is Response.Success -> {
@@ -209,42 +226,64 @@ constructor(
             ActivityType.CLIMBING -> {
               val castedPoint = point as NodeWay
               activitiesIdsHolder.add(castedPoint.id)
-              activitiesDB.addActivityIfNonExisting(
-                  Activity("", point.id, ActivityType.CLIMBING, point.tags.name))
+              try {
+                activitiesDB.addActivityIfNonExisting(
+                    Activity("", point.id, ActivityType.CLIMBING, point.tags.name))
+              } catch (e: Exception) {
+                e.printStackTrace()
+                errorToast.showToast(ErrorType.ERROR_DATABASE)
+                return@launch
+              }
             }
             ActivityType.HIKING -> {
               val castedPoint = point as Relation
               activitiesIdsHolder.add(castedPoint.id)
-              activitiesDB.addActivityIfNonExisting(
-                  Activity(
-                      "",
-                      point.id,
-                      ActivityType.HIKING,
-                      point.tags.name,
-                      from = point.tags.from,
-                      to = point.tags.to))
+              try {
+                activitiesDB.addActivityIfNonExisting(
+                    Activity(
+                        "",
+                        point.id,
+                        ActivityType.HIKING,
+                        point.tags.name,
+                        from = point.tags.from,
+                        to = point.tags.to))
+              } catch (e: Exception) {
+                e.printStackTrace()
+                errorToast.showToast(ErrorType.ERROR_DATABASE)
+                return@launch
+              }
             }
             ActivityType.BIKING -> {
               val castedPoint = point as Relation
               activitiesIdsHolder.add(castedPoint.id)
               val distance =
                   if (point.tags.distance.isEmpty()) 0f else point.tags.distance.toFloat()
-              activitiesDB.addActivityIfNonExisting(
-                  Activity(
-                      "",
-                      point.id,
-                      ActivityType.BIKING,
-                      point.tags.name,
-                      from = point.tags.from,
-                      to = point.tags.to,
-                      distance = distance))
+              try {
+                activitiesDB.addActivityIfNonExisting(
+                    Activity(
+                        "",
+                        point.id,
+                        ActivityType.BIKING,
+                        point.tags.name,
+                        from = point.tags.from,
+                        to = point.tags.to,
+                        distance = distance))
+              } catch (e: Exception) {
+                e.printStackTrace()
+                errorToast.showToast(ErrorType.ERROR_DATABASE)
+              }
             }
           }
         }
-        activitiesHolder.addAll(activitiesDB.getActivitiesByOSMIds(activitiesIdsHolder, false))
+        try {
+          activitiesHolder.addAll(activitiesDB.getActivitiesByOSMIds(activitiesIdsHolder, false))
+        } catch (e: Exception) {
+          e.printStackTrace()
+          errorToast.showToast(ErrorType.ERROR_DATABASE)
+          return@launch
+        }
         markerListHolder.addAll(activitiesToMarkers(activitiesHolder))
       }
-
       _activities.value = activitiesHolder
       _activityIds.value = activitiesIdsHolder
       _markerList.value = markerListHolder
@@ -305,7 +344,14 @@ constructor(
 
   private fun showHikingItinerary(id: Long) {
     viewModelScope.launch {
-      val response = repository.getHikingRouteById(id)
+      val response =
+          try {
+            repository.getHikingRouteById(id)
+          } catch (e: Exception) {
+            e.printStackTrace()
+            errorToast.showToast(ErrorType.ERROR_OSM_API)
+            return@launch
+          }
       val itinerary = (response as Response.Success).data
       val pointsList = mutableListOf<LatLng>()
       itinerary?.ways?.forEach { way ->

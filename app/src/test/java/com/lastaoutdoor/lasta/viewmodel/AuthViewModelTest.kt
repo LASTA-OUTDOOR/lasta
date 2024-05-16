@@ -1,6 +1,7 @@
 package com.lastaoutdoor.lasta.viewmodel
 
 import com.google.android.gms.auth.api.identity.SignInClient
+import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeAuthRepo
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserDB
 import io.mockk.mockk
@@ -21,13 +22,14 @@ class AuthViewModelTest {
   val userDB = FakeUserDB()
   val oneTap: SignInClient = mockk()
   private lateinit var vm: AuthViewModel
+  val errorToast = mockk<ErrorToast>()
 
   @ExperimentalCoroutinesApi
   @Before
   fun setupDispatcher() {
 
     Dispatchers.setMain(testDispatcher)
-    vm = AuthViewModel(db, userDB, oneTap)
+    vm = AuthViewModel(db, userDB, oneTap, errorToast)
   }
 
   @ExperimentalCoroutinesApi

@@ -3,6 +3,7 @@ package com.lastaoutdoor.lasta.viewmodel
 import com.lastaoutdoor.lasta.models.user.ClimbingUserActivity
 import com.lastaoutdoor.lasta.models.user.UserActivity
 import com.lastaoutdoor.lasta.models.user.UserModel
+import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserActivityRepo
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserDB
@@ -19,6 +20,9 @@ import org.junit.Rule
 import org.junit.Test
 
 class ProfileScreenViewModelTest {
+
+  private val errorToast = mockk<ErrorToast>()
+
   @ExperimentalCoroutinesApi @get:Rule val mainDispatcherRule = MainDispatcherRule()
   private lateinit var viewModel: ProfileScreenViewModel
   private val tm: com.lastaoutdoor.lasta.data.time.TimeProvider =
@@ -31,7 +35,11 @@ class ProfileScreenViewModelTest {
   fun setUp() {
     viewModel =
         ProfileScreenViewModel(
-            userActDb, timeProvider = tm, userDBRepo = userDb, preferences = prefDB)
+            userActDb,
+            timeProvider = tm,
+            userDBRepo = userDb,
+            preferences = prefDB,
+            errorToast = errorToast)
   }
 
   @ExperimentalCoroutinesApi val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
