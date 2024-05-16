@@ -95,8 +95,7 @@ fun DiscoverScreen(
       discoverScreenCallBacks.setSelectedLocality,
       isRangePopup,
       discoverScreenCallBacks = discoverScreenCallBacks,
-        onDismissRequest = { isRangePopup = false })
-
+      onDismissRequest = { isRangePopup = false })
 
   var moveCamera: (CameraUpdate) -> Unit by remember { mutableStateOf({ _ -> }) }
 

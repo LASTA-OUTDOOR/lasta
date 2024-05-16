@@ -53,7 +53,7 @@ data class DiscoverScreenCallBacks(
     val clearSuggestions: () -> Unit,
     val updateInitialPosition: (LatLng) -> Unit,
     val updateActivities: (List<Activity>) -> Unit,
-    val updateRange : (Double) -> Unit
+    val updateRange: (Double) -> Unit
 )
 
 // Data class to store all the state of the viewmodel
@@ -119,8 +119,7 @@ constructor(
           clearSuggestions = { clearSuggestions() },
           updateInitialPosition = { position -> updateInitialPosition(position) },
           updateActivities = { activities -> updateActivities(activities) },
-          updateRange = { range -> updateRange(range) }
-      )
+          updateRange = { range -> updateRange(range) })
 
   init {
     viewModelScope.launch {
@@ -140,7 +139,7 @@ constructor(
       tokenDBRepository.uploadUserToken(userId, token)
 
       fetchActivities()
-        println("Coucou")
+      println("Coucou")
     }
   }
 
@@ -185,9 +184,9 @@ constructor(
 
   fun fetchActivities() {
     viewModelScope.launch {
-        _state.value = _state.value.copy(isLoading = true)
+      _state.value = _state.value.copy(isLoading = true)
 
-        val activitiesHolder: ArrayList<Activity> = ArrayList()
+      val activitiesHolder: ArrayList<Activity> = ArrayList()
       val activitiesIdsHolder: ArrayList<Long> = ArrayList()
       val markerListHolder: ArrayList<Marker> = ArrayList()
       for (activityType in _state.value.selectedActivityTypes) {
@@ -262,19 +261,19 @@ constructor(
         }
         activitiesHolder.addAll(activitiesDB.getActivitiesByOSMIds(activitiesIdsHolder, false))
         markerListHolder.addAll(activitiesToMarkers(activitiesHolder))
-
       }
-      _state.value = _state.value.copy(
-          activities = activitiesHolder,
-          activityIds = activitiesIdsHolder,
-          markerList = markerListHolder
-      )
+      _state.value =
+          _state.value.copy(
+              activities = activitiesHolder,
+              activityIds = activitiesIdsHolder,
+              markerList = markerListHolder)
 
       // order the activities by the selected ordering
       updateActivitiesByOrdering()
-        _state.value = _state.value.copy(
-            isLoading = false,
-        )
+      _state.value =
+          _state.value.copy(
+              isLoading = false,
+          )
     }
   }
 
@@ -382,26 +381,22 @@ constructor(
       OrderingBy.POPULARITY -> {
         _state.value =
             _state.value.copy(
-                activities =
-                    (_state.value.activities.sortedBy { it.numRatings }.reversed()))
+                activities = (_state.value.activities.sortedBy { it.numRatings }.reversed()))
       }
       OrderingBy.DIFFICULTYASCENDING -> {
         _state.value =
-            _state.value.copy(
-                activities = (_state.value.activities.sortedBy { it.difficulty }))
+            _state.value.copy(activities = (_state.value.activities.sortedBy { it.difficulty }))
       }
       OrderingBy.DIFFICULTYDESCENDING -> {
         _state.value =
             _state.value.copy(
-                activities =
-                    (_state.value.activities.sortedBy { it.difficulty }.reversed()))
+                activities = (_state.value.activities.sortedBy { it.difficulty }.reversed()))
       }
     }
     _state.value =
         _state.value.copy(
             activities =
-                _state.value.activities.filter { filterWithDiff(_state.value.selectedLevels, it) }
-        )
+                _state.value.activities.filter { filterWithDiff(_state.value.selectedLevels, it) })
   }
 
   fun filterWithDiff(difficulties: UserActivitiesLevel, activity: Activity): Boolean {
@@ -443,7 +438,6 @@ constructor(
     // Add the itineraries to a map -> can access them by relation id
     // getItineraryFromRelations(hikingRelations)
   }
-
 
   fun updateRange(range: Double) {
     _state.value = _state.value.copy(range = range)

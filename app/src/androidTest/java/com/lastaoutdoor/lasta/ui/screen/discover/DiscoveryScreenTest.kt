@@ -64,7 +64,7 @@ class DiscoverScreenTest {
 
     discoverScreenCallBacks =
         DiscoverScreenCallBacks(
-            fetchActivities = { _, _ -> },
+            fetchActivities = {},
             setScreen = {},
             setRange = {},
             setSelectedLocality = {},
@@ -78,7 +78,7 @@ class DiscoverScreenTest {
             clearSuggestions = {},
             updateInitialPosition = {},
             updateActivities = {},
-        )
+            updateRange = {})
   }
 
   @Test
@@ -106,7 +106,6 @@ class DiscoverScreenTest {
             fetchSuggestion = fetchSuggestion,
             suggestions = suggestion,
             setSelectedLocality = {},
-            fetchActivities = {},
             clearSuggestions = { suggestion = emptyMap() },
             updateInitialPosition = {},
             moveCamera = { _ -> },
@@ -263,8 +262,7 @@ class DiscoverScreenTest {
             setRange = {},
             isRangePopup = isRangePopup,
             setSelectedLocality = {},
-            updateRange = {},
-            updateInitialPosition = {})
+            discoverScreenCallBacks = discoverScreenCallBacks)
       }
     }
 
@@ -435,7 +433,6 @@ class DiscoverScreenTest {
             fetchSuggestion = { suggestions["Ecublens"] = LatLng(4.519962, 6.633597) },
             suggestions = suggestions,
             setSelectedLocality = {},
-            fetchActivities = {},
             clearSuggestions = { suggestions.clear() },
             updateInitialPosition = { initialPos = it },
         ) {

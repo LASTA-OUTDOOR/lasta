@@ -48,7 +48,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.models.activity.Activity
@@ -203,7 +202,7 @@ fun MiddleZone(
             currentUser,
             activities,
             updateActivity,
-            )
+        )
         ViewOnMapButton(isMapDisplayed)
       }
   SeparatorComponent()

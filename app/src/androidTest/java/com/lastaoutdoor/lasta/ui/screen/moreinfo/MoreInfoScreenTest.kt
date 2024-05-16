@@ -37,7 +37,7 @@ class MoreInfoScreenTest {
 
   val discoverScreenCallBacks =
       DiscoverScreenCallBacks(
-          fetchActivities = { _, _ -> },
+          fetchActivities = {},
           setScreen = {},
           setRange = {},
           setSelectedLocality = {},
@@ -51,6 +51,7 @@ class MoreInfoScreenTest {
           clearSuggestions = {},
           updateInitialPosition = {},
           updateActivities = {},
+          updateRange = {},
       )
 
   @SuppressLint("StateFlowValueCalledInComposition")
