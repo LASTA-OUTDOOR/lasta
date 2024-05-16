@@ -52,6 +52,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.models.activity.Activity
+import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.models.activity.Rating
 import com.lastaoutdoor.lasta.models.map.MapItinerary
@@ -101,8 +102,8 @@ fun MoreInfoScreen(
     Column(
         modifier = Modifier.fillMaxSize(1f).testTag("MoreInfoComposable"),
         verticalArrangement = Arrangement.SpaceBetween) {
-          Column(modifier = Modifier.padding(8.dp)) {
-            Spacer(modifier = Modifier.height(15.dp))
+          Column(modifier = Modifier.padding(5.dp)) {
+            Spacer(modifier = Modifier.height(20.dp))
             // contains the top icon buttons
             TopBar(activityToDisplay, downloadActivity) {
               fetchActivities()
@@ -127,11 +128,11 @@ fun MoreInfoScreen(
           }
           Column(
               modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
-                LazyColumn(modifier = Modifier.weight(0.88f)) {
+                LazyColumn(modifier = Modifier.weight(0.85f)) {
                   item { RatingCards(activityToDisplay.ratings, usersList, getUserModels) }
                 }
                 Spacer(modifier = Modifier.height(5.dp))
-                Box(modifier = Modifier.weight(0.12f), contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier.weight(0.15f), contentAlignment = Alignment.Center) {
                   StartButton()
                 }
               }
@@ -202,7 +203,7 @@ fun MiddleZone(
     fetchActivities: () -> Unit
 ) {
   Row(
-      modifier = Modifier.fillMaxWidth().testTag("MoreInfoMiddleZone"),
+      modifier = Modifier.fillMaxWidth().testTag("MoreInfoMiddleZone").padding(5.dp),
       horizontalArrangement = Arrangement.SpaceBetween) {
         RatingLine(
             activityToDisplay,
@@ -354,7 +355,7 @@ fun ElevatedDifficultyDisplay(activityToDisplay: Activity) {
 @Composable
 fun TopBar(
     activityToDisplay: Activity,
-    downloadActivity: (Activity) -> kotlin.Unit,
+    downloadActivity: (Activity) -> Unit,
     navigateBack: () -> Unit
 ) {
 
@@ -385,68 +386,64 @@ fun TopBarLogo(logoPainterId: Int, isFriendProf: Boolean = false, f: () -> Unit)
 // Displays the title of the activity, its type and its duration
 @Composable
 fun ActivityTitleZone(activityToDisplay: Activity) {
-  Row { ElevatedActivityType(activityToDisplay) }
-  Row {
-    ActivityPicture()
-    ActivityTitleText(activityToDisplay)
-    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
-      ElevatedDifficultyDisplay(activityToDisplay)
-    }
-  }
+  Row(
+      modifier = Modifier.fillMaxWidth(),
+      verticalAlignment = Alignment.CenterVertically,
+      horizontalArrangement = Arrangement.SpaceBetween) {
+        Row(
+            modifier = Modifier.padding(vertical = 5.dp, horizontal = 5.dp).weight(0.65f),
+            verticalAlignment = Alignment.CenterVertically) {
+              ActivityPicture(activityToDisplay)
+              ActivityTitleText(activityToDisplay)
+            }
+        ElevatedDifficultyDisplay(activityToDisplay)
+      }
 }
 
 // Displays the picture of the activity
 @Composable
-fun ActivityPicture() {
+fun ActivityPicture(activityToDisplay: Activity) {
+  val defaultId =
+      when (activityToDisplay.activityType) {
+        ActivityType.HIKING -> R.drawable.hiking_icon
+        ActivityType.CLIMBING -> R.drawable.climbing_icon
+        ActivityType.BIKING -> R.drawable.biking_icon
+      }
   Column {
-    Image(
-        painter = painterResource(id = R.drawable.ellipse),
-        contentDescription = "Soon Activity Picture",
-        modifier = Modifier.padding(5.dp).width(70.dp).height(70.dp))
+    if (activityToDisplay.activityImageUrl != "") {
+      AsyncImage(
+          model = activityToDisplay.activityImageUrl,
+          contentDescription = "Activity Picture",
+          modifier = Modifier.size(90.dp).clip(RoundedCornerShape(8.dp)),
+          error = painterResource(id = defaultId))
+    } else {
+      Image(
+          painter = painterResource(id = defaultId),
+          contentDescription = "Default Activity Picture",
+          modifier = Modifier.padding(5.dp).size(90.dp))
+    }
   }
 }
 
 @Composable
 fun ActivityTitleText(activityToDisplay: Activity) {
-  Column(modifier = Modifier.padding(vertical = 25.dp, horizontal = 5.dp)) {
-    Text(
-        text = activityToDisplay.name,
-        style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight(600)))
-    Text(
-        text = "No Duration",
-        style =
-            TextStyle(
-                fontSize = 14.sp,
-                lineHeight = 20.sp,
-                fontWeight = FontWeight(500),
-                color = Color.Gray,
-                letterSpacing = 0.1.sp,
-            ))
+  Row(modifier = Modifier.padding(vertical = 25.dp, horizontal = 5.dp)) {
+    Column {
+      Text(
+          text = activityToDisplay.name,
+          style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight(600)))
+      Text(
+          text = LocalContext.current.getString(R.string.no_duration),
+          style =
+              TextStyle(
+                  fontSize = 14.sp,
+                  lineHeight = 20.sp,
+                  fontWeight = FontWeight(500),
+                  color = Color.Gray,
+                  letterSpacing = 0.1.sp,
+              ))
+    }
   }
-}
-
-@Composable
-fun ElevatedActivityType(activityToDisplay: Activity) {
-  ElevatedButton(
-      onClick = {},
-      contentPadding = PaddingValues(all = 3.dp),
-      modifier =
-          Modifier.padding(3.dp)
-              .width(64.dp)
-              .height(20.dp)
-              .testTag("MoreInfoActivityTypeComposable"),
-      colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
-        Text(
-            text = activityToDisplay.activityType.toString(),
-            style =
-                TextStyle(
-                    fontSize = 11.sp,
-                    lineHeight = 16.sp,
-                    fontWeight = FontWeight(500),
-                    color = Color(0xFF000000),
-                    letterSpacing = 0.5.sp,
-                ))
-      }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -470,8 +467,12 @@ fun AddRatingButton(
               horizontalAlignment = Alignment.CenterHorizontally) {
                 val selectedStarCount = remember { mutableIntStateOf(1) }
                 Text(
-                    text = "Review: ${activityToDisplay.name}",
-                    style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold))
+                    text =
+                        LocalContext.current.getString(R.string.add_review) +
+                            " " +
+                            activityToDisplay.name,
+                    maxLines = 1,
+                    style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold))
 
                 Spacer(modifier = Modifier.height(30.dp))
 
@@ -479,14 +480,14 @@ fun AddRatingButton(
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically) {
                       Text(
-                          text = "Please rate (out of 5 stars): ",
+                          text = LocalContext.current.getString(R.string.ask_rating),
                           style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium))
                       StarButtons(selectedStarCount = selectedStarCount)
                     }
 
                 OutlinedTextField(
                     value = text.value,
-                    label = { Text(text = "Write your comment here:") },
+                    label = { Text(text = LocalContext.current.getString(R.string.ask_comment)) },
                     onValueChange = { text.value = it },
                     maxLines = 3,
                     modifier = Modifier.fillMaxWidth())
@@ -532,7 +533,7 @@ fun AddRatingButton(
                         ButtonDefaults.buttonColors(
                             containerColor = PrimaryBlue, contentColor = Color.White)) {
                       Text(
-                          text = "Publish!",
+                          text = LocalContext.current.getString(R.string.publish),
                           style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold))
                     }
               }
