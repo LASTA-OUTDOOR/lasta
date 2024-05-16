@@ -50,7 +50,7 @@ private fun LocationPermissionManager(updatePermission: (Boolean) -> Unit) {
   }
 }
 
-private fun requestNotificationPermission(context: Context, activity: Activity) {
+fun requestNotificationPermission(context: Context, activity: Activity) {
   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
     val hasPermission =
         ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) ==

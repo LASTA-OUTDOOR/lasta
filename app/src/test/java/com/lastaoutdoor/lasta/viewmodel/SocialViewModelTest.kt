@@ -11,15 +11,14 @@ import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeConnectivityviewRepo
 import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
+import com.lastaoutdoor.lasta.viewmodel.repo.FakeTokenDBRepo
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserDB
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -27,25 +26,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.TestWatcher
-import org.junit.runner.Description
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-
-@ExperimentalCoroutinesApi
-class MainCoroutineRule(private val dispatcher: TestDispatcher = StandardTestDispatcher()) :
-    TestWatcher() {
-
-  override fun starting(description: Description?) {
-    super.starting(description)
-    Dispatchers.setMain(dispatcher)
-  }
-
-  override fun finished(description: Description?) {
-    super.finished(description)
-    Dispatchers.resetMain()
-  }
-}
 
 @RunWith(RobolectricTestRunner::class)
 class SocialViewModelTest {
@@ -57,7 +39,7 @@ class SocialViewModelTest {
   private val context: Context = mockk()
   private lateinit var viewModel: SocialViewModel
   private val prefRepo = FakePreferencesRepository()
-  private val tokenDBRepository = mockk<TokenDBRepository>(relaxed = true)
+  private val tokenDBRepository: TokenDBRepository = FakeTokenDBRepo()
   private val fcmAPI = mockk<FCMApi>(relaxed = true)
 
   // Mock the user preferences flow
@@ -154,11 +136,11 @@ class SocialViewModelTest {
 
   @Test
   fun `test request friend`() = runTest {
-    val userToken = "userToken"
     every { context.getString(any()) } returns "stringResource"
-    coEvery { tokenDBRepository.getUserTokenById(any() as String) } returns userToken
     coEvery { fcmAPI.sendMessage(any()) } returns Unit
     viewModel.requestFriend("test@email.com")
+    viewModel.acceptFriend(UserModel("userId"))
+    viewModel.declineFriend(UserModel("userId"))
   }
 
   @Test
