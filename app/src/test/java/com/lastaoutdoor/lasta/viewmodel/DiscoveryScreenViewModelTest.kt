@@ -72,7 +72,7 @@ class DiscoveryScreenViewModelTest() {
     prefRepo = FakePreferencesRepository()
     radarRepo = FakeRadarRepository()
     activitiesDB = FakeActivitiesDBRepository()
-    viewModel = DiscoverScreenViewModel(repository, prefRepo, activitiesDB, radarRepo)
+    viewModel = DiscoverScreenViewModel(repository, prefRepo, activitiesDB, radarRepo, mockk())
     repo.currResponse = Response.Success(null)
   }
 

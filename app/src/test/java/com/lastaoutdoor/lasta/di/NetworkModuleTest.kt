@@ -53,6 +53,12 @@ class NetworkModuleTest {
   }
 
   @Test
+  fun `FCM API service is provided`() {
+    val fcmApiService = NetworkModule.provideFcmAPIService(context)
+    assertNotNull(fcmApiService)
+  }
+
+  @Test
   fun `Radar API service is provided`() {
     val radarApiService = NetworkModule.provideRadarApiService(context)
     assertNotNull(radarApiService)
@@ -117,5 +123,13 @@ class NetworkModuleTest {
     val socialDB =
         NetworkModule.provideSocialDBRepository(context, database, mockk(), mockk(), mockk())
     assertNotNull(socialDB)
+  }
+
+  @Test
+  fun `FCM DB is provided`() {
+    val database = mockk<FirebaseFirestore>()
+    every { database.collection(any()) } returns mockk()
+    val fcmDB = NetworkModule.provideTokenDBRepository(context, database)
+    assertNotNull(fcmDB)
   }
 }

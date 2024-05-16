@@ -31,6 +31,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -71,8 +72,7 @@ fun FilterScreen(
   }
 
   val selectedActivitiesTypes = remember {
-    mutableStateListOf(selectedActivitiesType.first())
-  }
+    mutableStateListOf(selectedActivitiesType.first())}
 
   var checkedBox by remember { mutableStateOf(true) }
 
@@ -202,7 +202,14 @@ fun FilterScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp)) {
               Button(
-                  onClick = { /* TODO */},
+                  onClick = {
+                    // go back to snapshot values
+                    activitiesLevelArray[0] = userSelectedLevels.climbingLevel
+                    activitiesLevelArray[1] = userSelectedLevels.hikingLevel
+                    activitiesLevelArray[2] = userSelectedLevels.bikingLevel
+                    selectedActivitiesTypes.clear()
+                    selectedActivitiesTypes.addAll(selectedActivitiesTypes)
+                  },
                   modifier = Modifier.testTag("EraseButton"),
                   colors =
                       ButtonDefaults.buttonColors(

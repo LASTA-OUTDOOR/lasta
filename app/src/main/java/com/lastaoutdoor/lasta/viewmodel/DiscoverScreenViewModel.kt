@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.maps.android.SphericalUtil
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.Activity
@@ -21,6 +22,7 @@ import com.lastaoutdoor.lasta.repository.api.ActivityRepository
 import com.lastaoutdoor.lasta.repository.api.RadarRepository
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
+import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
 import com.lastaoutdoor.lasta.utils.OrderingBy
 import com.lastaoutdoor.lasta.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,63 +32,61 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 // Initial values
 const val INITIAL_RANGE = 10000.0
 
-
 // All the function of the viewmodel that the view can call
 data class DiscoverScreenCallBacks(
-  val fetchActivities: (Double, LatLng) -> Unit,
-  val setScreen: (DiscoverDisplayType) -> Unit,
-  val setRange: (Double) -> Unit,
-  val setSelectedLocality: (Pair<String, LatLng>) -> Unit,
-  val updatePermission: (Boolean) -> Unit,
-  val updateMarkers: (LatLng, Double) -> Unit,
-  val updateSelectedMarker: (Marker?) -> Unit,
-  val clearSelectedItinerary: () -> Unit,
-  val updateOrderingBy: (OrderingBy) -> Unit,
-  val clearSelectedMarker: () -> Unit,
-  val fetchSuggestion: (String) -> Unit,
-  val clearSuggestions: () -> Unit,
-  val updateInitialPosition: (LatLng) -> Unit,
-  val updateActivities: (List<Activity>) -> Unit,
-  val fetchActivitiesDefault: () -> Unit = { fetchActivities(INITIAL_RANGE, LatLng(46.519962, 6.633597)) },
-
+    val fetchActivities: (Double, LatLng) -> Unit,
+    val setScreen: (DiscoverDisplayType) -> Unit,
+    val setRange: (Double) -> Unit,
+    val setSelectedLocality: (Pair<String, LatLng>) -> Unit,
+    val updatePermission: (Boolean) -> Unit,
+    val updateMarkers: (LatLng, Double) -> Unit,
+    val updateSelectedMarker: (Marker?) -> Unit,
+    val clearSelectedItinerary: () -> Unit,
+    val updateOrderingBy: (OrderingBy) -> Unit,
+    val clearSelectedMarker: () -> Unit,
+    val fetchSuggestion: (String) -> Unit,
+    val clearSuggestions: () -> Unit,
+    val updateInitialPosition: (LatLng) -> Unit,
+    val updateActivities: (List<Activity>) -> Unit,
+    val fetchActivitiesDefault: () -> Unit = {
+      fetchActivities(INITIAL_RANGE, LatLng(46.519962, 6.633597))
+    },
 )
-
 
 // Data class to store all the state of the viewmodel
 data class DiscoverScreenState(
-
-  val isLoading: Boolean = true,
-  val activities: ArrayList<Activity> = ArrayList(),
-  val activityIds: ArrayList<Long> = ArrayList(),
-  val screen: DiscoverDisplayType = DiscoverDisplayType.LIST,
-  val range: Double = INITIAL_RANGE,
-  val localities: List<Pair<String, LatLng>> =
-    listOf(
-      "Ecublens" to LatLng(46.519962, 6.633597),
-      "Geneva" to LatLng(46.2043907, 6.1431577),
-      "Payerne" to LatLng(46.834190, 6.928969),
-      "Matterhorn" to LatLng(45.980537, 7.641618)),
-  val centerPoint: LatLng = localities[0].second, //default center point is Ecublens (to fetch activities from)
-  val selectedLocality: Pair<String, LatLng> = localities[0],
-  val mapState: MapState = MapState(),
-  val initialPosition: LatLng = localities[0].second,
-  val initialZoom: Float = 11f,
-  val selectedZoom: Float = 13f, // Zoom level when focusing on a marker
-  val selectedMarker: Marker? = null, // no marker is initially selected
-  val selectedItinerary: MapItinerary? = null, // no itinerary is initially selected
-  val markerList: List<Marker> = emptyList(),
-  val orderingBy: OrderingBy = OrderingBy.DISTANCE,
-  val suggestions: Map<String, LatLng> = emptyMap(),
-  val selectedActivityTypes: List<ActivityType> = listOf(ActivityType.HIKING),
-  val selectedLevels: UserActivitiesLevel = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
-
+    val isLoading: Boolean = true,
+    val activities: ArrayList<Activity> = ArrayList(),
+    val activityIds: ArrayList<Long> = ArrayList(),
+    val screen: DiscoverDisplayType = DiscoverDisplayType.LIST,
+    val range: Double = INITIAL_RANGE,
+    val localities: List<Pair<String, LatLng>> =
+        listOf(
+            "Ecublens" to LatLng(46.519962, 6.633597),
+            "Geneva" to LatLng(46.2043907, 6.1431577),
+            "Payerne" to LatLng(46.834190, 6.928969),
+            "Matterhorn" to LatLng(45.980537, 7.641618)),
+    val centerPoint: LatLng =
+        localities[0].second, // default center point is Ecublens (to fetch activities from)
+    val selectedLocality: Pair<String, LatLng> = localities[0],
+    val mapState: MapState = MapState(),
+    val initialPosition: LatLng = localities[0].second,
+    val initialZoom: Float = 11f,
+    val selectedZoom: Float = 13f, // Zoom level when focusing on a marker
+    val selectedMarker: Marker? = null, // no marker is initially selected
+    val selectedItinerary: MapItinerary? = null, // no itinerary is initially selected
+    val markerList: List<Marker> = emptyList(),
+    val orderingBy: OrderingBy = OrderingBy.DISTANCE,
+    val suggestions: Map<String, LatLng> = emptyMap(),
+    val selectedActivityTypes: List<ActivityType> = listOf(ActivityType.HIKING),
+    val selectedLevels: UserActivitiesLevel =
+        UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
 )
-
-
 
 @HiltViewModel
 class DiscoverScreenViewModel
@@ -95,38 +95,50 @@ constructor(
     private val repository: ActivityRepository,
     private val preferencesRepository: PreferencesRepository,
     private val activitiesDB: ActivitiesDBRepository,
-    private val radarRepository: RadarRepository
+    private val radarRepository: RadarRepository,
+    private val tokenDBRepository: TokenDBRepository
 ) : ViewModel() {
 
-  //data class to store all the state of the viewModel, this allows to group them together and make it easier to test the navgraph
+  // data class to store all the state of the viewModel, this allows to group them together and make
+  // it easier to test the navgraph
   private val _state = MutableStateFlow(DiscoverScreenState())
-  val state : StateFlow<DiscoverScreenState> = _state
+  val state: StateFlow<DiscoverScreenState> = _state
 
   // Callbacks that the view can call
-  val callbacks = DiscoverScreenCallBacks(
-      fetchActivities = ::fetchActivities,
-      setScreen = { screen -> setScreen(screen) },
-      setRange = { range -> setRange(range) },
-      setSelectedLocality = { locality -> setSelectedLocality(locality) },
-      updatePermission = { value -> updatePermission(value) },
-      updateMarkers = { centerLocation, rad -> updateMarkers(centerLocation, rad) },
-      updateSelectedMarker = { marker -> updateSelectedMarker(marker) },
-      clearSelectedItinerary = { clearSelectedItinerary() },
-      updateOrderingBy = { orderingBy -> updateOrderingBy(orderingBy) },
-      clearSelectedMarker = { clearSelectedMarker() },
-      fetchSuggestion = { query -> fetchSuggestions(query) },
-      clearSuggestions = { clearSuggestions() },
-      updateInitialPosition = { position -> updateInitialPosition(position) },
-        updateActivities = { activities -> updateActivities(activities) }
-  )
+  val callbacks =
+      DiscoverScreenCallBacks(
+          fetchActivities = ::fetchActivities,
+          setScreen = { screen -> setScreen(screen) },
+          setRange = { range -> setRange(range) },
+          setSelectedLocality = { locality -> setSelectedLocality(locality) },
+          updatePermission = { value -> updatePermission(value) },
+          updateMarkers = { centerLocation, rad -> updateMarkers(centerLocation, rad) },
+          updateSelectedMarker = { marker -> updateSelectedMarker(marker) },
+          clearSelectedItinerary = { clearSelectedItinerary() },
+          updateOrderingBy = { orderingBy -> updateOrderingBy(orderingBy) },
+          clearSelectedMarker = { clearSelectedMarker() },
+          fetchSuggestion = { query -> fetchSuggestions(query) },
+          clearSuggestions = { clearSuggestions() },
+          updateInitialPosition = { position -> updateInitialPosition(position) },
+          updateActivities = { activities -> updateActivities(activities) })
 
   init {
     viewModelScope.launch {
-      _state.value = _state.value.copy(
-        selectedActivityTypes = preferencesRepository.userPreferencesFlow.map { listOf(it.user.prefActivity) }.first()
-      )
-      _state.value = _state.value.copy(selectedLevels =
-          preferencesRepository.userPreferencesFlow.map { it.user.levels }.first())
+      _state.value =
+          _state.value.copy(
+              selectedActivityTypes =
+                  preferencesRepository.userPreferencesFlow
+                      .map { listOf(it.user.prefActivity) }
+                      .first())
+      _state.value =
+          _state.value.copy(
+              selectedLevels =
+                  preferencesRepository.userPreferencesFlow.map { it.user.levels }.first())
+
+      val userId = preferencesRepository.userPreferencesFlow.map { it.user.userId }.first()
+      val token = FirebaseMessaging.getInstance().token.await()
+      tokenDBRepository.uploadUserToken(userId, token)
+
       fetchActivities()
     }
   }
@@ -159,7 +171,9 @@ constructor(
               emptyList<RadarSuggestion>()
             }
           }
-      _state.value = _state.value.copy(suggestions = suggestions.associate { it.getSuggestion() to it.getPosition() })
+      _state.value =
+          _state.value.copy(
+              suggestions = suggestions.associate { it.getSuggestion() to it.getPosition() })
     }
   }
 
@@ -168,7 +182,10 @@ constructor(
     _state.value = _state.value.copy(suggestions = emptyMap())
   }
 
-  fun fetchActivities(rad: Double = INITIAL_RANGE, centerLocation: LatLng = LatLng(46.519962, 6.633597)) {
+  fun fetchActivities(
+      rad: Double = INITIAL_RANGE,
+      centerLocation: LatLng = LatLng(46.519962, 6.633597)
+  ) {
     viewModelScope.launch {
       _state.value = _state.value.copy(isLoading = true)
       _state.value = _state.value.copy(activities = ArrayList())
@@ -205,13 +222,17 @@ constructor(
           when (activityType) {
             ActivityType.CLIMBING -> {
               val castedPoint = point as NodeWay
-              _state.value = _state.value.copy(activityIds = ArrayList(_state.value.activityIds + castedPoint.id))
+              _state.value =
+                  _state.value.copy(
+                      activityIds = ArrayList(_state.value.activityIds + castedPoint.id))
               activitiesDB.addActivityIfNonExisting(
                   Activity("", point.id, ActivityType.CLIMBING, point.tags.name))
             }
             ActivityType.HIKING -> {
               val castedPoint = point as Relation
-              _state.value = _state.value.copy(activityIds = ArrayList(_state.value.activityIds + castedPoint.id))
+              _state.value =
+                  _state.value.copy(
+                      activityIds = ArrayList(_state.value.activityIds + castedPoint.id))
 
               activitiesDB.addActivityIfNonExisting(
                   Activity(
@@ -224,7 +245,9 @@ constructor(
             }
             ActivityType.BIKING -> {
               val castedPoint = point as Relation
-              _state.value = _state.value.copy(activityIds = ArrayList(_state.value.activityIds + castedPoint.id))
+              _state.value =
+                  _state.value.copy(
+                      activityIds = ArrayList(_state.value.activityIds + castedPoint.id))
               val distance =
                   if (point.tags.distance.isEmpty()) 0f else point.tags.distance.toFloat()
               activitiesDB.addActivityIfNonExisting(
@@ -241,9 +264,13 @@ constructor(
         }
 
         val newActivities = activitiesDB.getActivitiesByOSMIds(_state.value.activityIds, false)
-        _state.value = _state.value.copy(activities = ArrayList(_state.value.activities + newActivities))
-        _state.value = _state.value.copy(markerList = ArrayList(activitiesToMarkers(_state.value.activities) union _state.value.markerList))
-
+        _state.value =
+            _state.value.copy(activities = ArrayList(_state.value.activities + newActivities))
+        _state.value =
+            _state.value.copy(
+                markerList =
+                    ArrayList(
+                        activitiesToMarkers(_state.value.activities) union _state.value.markerList))
       }
 
       // order the activities by the selected ordering
@@ -269,7 +296,7 @@ constructor(
 
   fun setSelectedActivitiesType(activitiesType: List<ActivityType>) {
     _state.value = _state.value.copy(selectedActivityTypes = activitiesType)
-    updateActivitiesByOrdering()
+    fetchActivities()
   }
 
   fun setSelectedLevels(levels: UserActivitiesLevel) {
@@ -318,7 +345,9 @@ constructor(
         nodes.forEach { position -> pointsList.add(LatLng(position.lat, position.lon)) }
       }
 
-      _state.value = _state.value.copy(selectedItinerary = MapItinerary(id, itinerary?.tags?.name ?: "", pointsList))
+      _state.value =
+          _state.value.copy(
+              selectedItinerary = MapItinerary(id, itinerary?.tags?.name ?: "", pointsList))
     }
   }
 
@@ -339,27 +368,41 @@ constructor(
         val distances =
             _state.value.activities.map {
               SphericalUtil.computeDistanceBetween(
-                  _state.value.selectedLocality.second, LatLng(it.startPosition.lat, it.startPosition.lon))
+                  _state.value.selectedLocality.second,
+                  LatLng(it.startPosition.lat, it.startPosition.lon))
             }
         val sortedActivities =
             _state.value.activities.sortedBy { distances[_state.value.activities.indexOf(it)] }
         _state.value = _state.value.copy(activities = ArrayList(sortedActivities))
       }
       OrderingBy.RATING -> {
-        _state.value = _state.value.copy(activities = ArrayList(_state.value.activities.sortedBy { it.rating }.reversed()))
+        _state.value =
+            _state.value.copy(
+                activities = ArrayList(_state.value.activities.sortedBy { it.rating }.reversed()))
       }
       OrderingBy.POPULARITY -> {
-        _state.value = _state.value.copy(activities = ArrayList(_state.value.activities.sortedBy { it.numRatings }.reversed()))
+        _state.value =
+            _state.value.copy(
+                activities =
+                    ArrayList(_state.value.activities.sortedBy { it.numRatings }.reversed()))
       }
       OrderingBy.DIFFICULTYASCENDING -> {
-        _state.value = _state.value.copy(activities = ArrayList(_state.value.activities.sortedBy { it.difficulty }))
+        _state.value =
+            _state.value.copy(
+                activities = ArrayList(_state.value.activities.sortedBy { it.difficulty }))
       }
       OrderingBy.DIFFICULTYDESCENDING -> {
-        _state.value = _state.value.copy(activities = ArrayList(_state.value.activities.sortedBy { it.difficulty }.reversed()))
+        _state.value =
+            _state.value.copy(
+                activities =
+                    ArrayList(_state.value.activities.sortedBy { it.difficulty }.reversed()))
       }
     }
-    _state.value = _state.value.copy(
-        activities = _state.value.activities.filter { filterWithDiff(_state.value.selectedLevels, it) } as ArrayList<Activity>)
+    _state.value =
+        _state.value.copy(
+            activities =
+                _state.value.activities.filter { filterWithDiff(_state.value.selectedLevels, it) }
+                    as ArrayList<Activity>)
   }
 
   fun filterWithDiff(difficulties: UserActivitiesLevel, activity: Activity): Boolean {

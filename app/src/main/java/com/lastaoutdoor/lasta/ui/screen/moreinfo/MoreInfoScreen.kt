@@ -54,7 +54,6 @@ import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.models.activity.Rating
-import com.lastaoutdoor.lasta.models.map.MapItinerary
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
@@ -68,7 +67,6 @@ import com.lastaoutdoor.lasta.ui.theme.RedDifficulty
 import com.lastaoutdoor.lasta.ui.theme.YellowDifficulty
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenCallBacks
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenState
-import com.lastaoutdoor.lasta.viewmodel.MapState
 
 // MoreInfoScreen : displays all the information of an activity
 @Composable
@@ -138,7 +136,6 @@ fun MoreInfoScreen(
       }
       mapScreen(
           discoverScreenState.mapState,
-          discoverScreenCallBacks.updatePermission,
           discoverScreenState.initialPosition,
           discoverScreenState.initialZoom,
           discoverScreenCallBacks.updateMarkers,
@@ -258,8 +255,7 @@ fun RatingLine(
         writeNewRating,
         currentUser,
         activities,
-        updateActivity
-    )
+        updateActivity)
   }
 }
 

@@ -27,6 +27,7 @@ import com.lastaoutdoor.lasta.ui.screen.social.FriendProfileScreen
 import com.lastaoutdoor.lasta.ui.screen.social.NotificationsScreen
 import com.lastaoutdoor.lasta.ui.screen.social.SocialScreen
 import com.lastaoutdoor.lasta.utils.ConnectionState
+import com.lastaoutdoor.lasta.utils.PermissionManager
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 import com.lastaoutdoor.lasta.viewmodel.ConversationViewModel
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenCallBacks
@@ -44,9 +45,8 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
 
   navigation(startDestination = DestinationRoute.Discover.route, route = BaseRoute.Main.route) {
 
-    //Discover Screen
+    // Discover Screen
     composable(DestinationRoute.Discover.route) { entry ->
-
       val discoverScreenViewModel: DiscoverScreenViewModel = entry.sharedViewModel(navController)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
@@ -54,8 +54,11 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val weatherViewModel: WeatherViewModel = entry.sharedViewModel(navController)
       val weather = weatherViewModel.weather.observeAsState().value
 
-      val discoverScreenState : DiscoverScreenState = discoverScreenViewModel.state.collectAsState().value
-      val discoverScreenCallBacks : DiscoverScreenCallBacks = discoverScreenViewModel.callbacks
+      val discoverScreenState: DiscoverScreenState =
+          discoverScreenViewModel.state.collectAsState().value
+      val discoverScreenCallBacks: DiscoverScreenCallBacks = discoverScreenViewModel.callbacks
+
+      PermissionManager(discoverScreenViewModel::updatePermission)
 
       DiscoverScreen(
           discoverScreenState,
@@ -70,10 +73,8 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       )
     }
 
-
-    //Favorites Screen
+    // Favorites Screen
     composable(DestinationRoute.Favorites.route) { entry ->
-
       val discoverScreenViewModel: DiscoverScreenViewModel = entry.sharedViewModel(navController)
       val favoritesScreenViewModel: FavoritesScreenViewModel = hiltViewModel(entry)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
@@ -97,10 +98,8 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           }
     }
 
-
-    //Social Screen
+    // Social Screen
     composable(DestinationRoute.Socials.route) { entry ->
-
       val socialViewModel: SocialViewModel = entry.sharedViewModel(navController)
       val isConnected = socialViewModel.isConnected.collectAsState().value
 
@@ -138,10 +137,8 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           socialViewModel::refreshFriendsActivities)
     }
 
-
-    //Profile Screen
+    // Profile Screen
     composable(DestinationRoute.Profile.route) { entry ->
-
       val profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(entry)
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
 
@@ -151,7 +148,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val isCurrentUser by profileScreenViewModel.isCurrentUser.collectAsState()
       val user = preferencesViewModel.user.collectAsState(initial = UserModel("")).value
 
-        ProfileScreen(
+      ProfileScreen(
           activities,
           timeFrame,
           sport,
@@ -164,23 +161,21 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           }
     }
 
-
-    //More Info Screen
+    // More Info Screen
     composable(DestinationRoute.MoreInfo.route) { entry ->
-
       val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
 
       val activityToDisplay = moreInfoScreenViewModel.activityToDisplay.value
       val usersList = moreInfoScreenViewModel.usersList.collectAsState().value
-      val ratings = moreInfoScreenViewModel.ratings.collectAsState().value
       val weatherViewModel: WeatherViewModel = entry.sharedViewModel(navController)
       val weather = weatherViewModel.weather.observeAsState().value
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
       val currentUser = preferencesViewModel.user.collectAsState(initial = UserModel("")).value
 
-      val discoverScreenState : DiscoverScreenState = discoverScreenViewModel.state.collectAsState().value
-      val discoverScreenCallBacks : DiscoverScreenCallBacks = discoverScreenViewModel.callbacks
+      val discoverScreenState: DiscoverScreenState =
+          discoverScreenViewModel.state.collectAsState().value
+      val discoverScreenCallBacks: DiscoverScreenCallBacks = discoverScreenViewModel.callbacks
 
       MoreInfoScreen(
           activityToDisplay,
@@ -197,13 +192,9 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           weatherViewModel::fetchWeatherWithUserLoc)
     }
 
-
-    //Filter Screen
+    // Filter Screen
     composable(DestinationRoute.Filter.route) { entry ->
-
-      val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
-      val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
-
+      val discoverScreenViewModel: DiscoverScreenViewModel = entry.sharedViewModel(navController)
 
       FilterScreen(
           discoverScreenViewModel.state,
@@ -212,8 +203,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       }
     }
 
-
-    //Conversation Screen
+    // Conversation Screen
     composable(
         DestinationRoute.Conversation.route + "/{userId}",
         arguments = listOf(navArgument("userId") { type = NavType.StringType })) { entry ->
@@ -229,8 +219,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
               navController::navigateUp)
         }
 
-
-    //Notifications Screen
+    // Notifications Screen
     composable(DestinationRoute.Notifications.route) { entry ->
       val socialViewModel: SocialViewModel = entry.sharedViewModel(navController)
       val isConnected: ConnectionState = socialViewModel.isConnected.collectAsState().value
@@ -243,8 +232,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           }
     }
 
-
-    //Friend Profile Screen
+    // Friend Profile Screen
     composable(DestinationRoute.FriendProfile.route + "/{friendId}") { entry ->
       val profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(entry)
 
@@ -269,10 +257,9 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           onBack = { navController.navigateUp() })
     }
 
-
-    //Settings Screen
+    // Settings Screen
     composable(DestinationRoute.Settings.route) { entry ->
-      val authViewModel: AuthViewModel = hiltViewModel(entry)
+      val authViewModel: AuthViewModel = entry.sharedViewModel(navController)
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
       val language = preferencesViewModel.language.collectAsState(initial = Language.ENGLISH).value
       val prefActivity = preferencesViewModel.prefActivity.collectAsState(ActivityType.HIKING).value

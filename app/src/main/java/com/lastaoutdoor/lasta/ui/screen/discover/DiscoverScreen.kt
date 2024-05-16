@@ -57,8 +57,6 @@ import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
-import com.lastaoutdoor.lasta.models.map.MapItinerary
-import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
 import com.lastaoutdoor.lasta.ui.components.LoadingAnim
@@ -73,7 +71,6 @@ import com.lastaoutdoor.lasta.utils.OrderingBy
 import com.lastaoutdoor.lasta.viewmodel.DiscoverDisplayType
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenCallBacks
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenState
-import com.lastaoutdoor.lasta.viewmodel.MapState
 
 @Composable
 fun DiscoverScreen(
@@ -86,7 +83,7 @@ fun DiscoverScreen(
     changeActivityToDisplay: (Activity) -> Unit,
     changeWeatherTarget: (Activity) -> Unit,
     weather: WeatherResponse?,
-){
+) {
   var isRangePopup by rememberSaveable { mutableStateOf(false) }
 
   RangeSearchComposable(
@@ -108,7 +105,7 @@ fun DiscoverScreen(
         modifier =
             Modifier.testTag("discoveryScreen").background(MaterialTheme.colorScheme.background)) {
           HeaderComposable(
-              discoverScreenState. screen,
+              discoverScreenState.screen,
               discoverScreenState.range,
               discoverScreenState.selectedLocality,
               discoverScreenCallBacks.setScreen,
@@ -168,7 +165,6 @@ fun DiscoverScreen(
         moveCamera =
             mapScreen(
                 discoverScreenState.mapState,
-                discoverScreenCallBacks.updatePermission,
                 discoverScreenState.initialPosition,
                 discoverScreenState.initialZoom,
                 discoverScreenCallBacks.updateMarkers,
@@ -344,7 +340,6 @@ fun ActivitiesDisplay(
     flipFavorite: (String) -> Unit,
     navigateToMoreInfo: () -> Unit
 ) {
-
   for (a in activities) {
     Card(
         modifier =

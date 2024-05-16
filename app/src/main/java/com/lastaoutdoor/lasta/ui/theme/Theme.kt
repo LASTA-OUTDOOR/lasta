@@ -42,12 +42,7 @@ private val LightColorScheme =
         )
 
 @Composable
-fun LastaTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
-) {
+fun LastaTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
   // choose color scheme based on darkTheme
   val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
 
