@@ -228,8 +228,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           weatherViewModel::fetchWeatherWithUserLoc)
     }
     composable(DestinationRoute.Filter.route) { entry ->
-      val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
-      val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
+      val discoverScreenViewModel: DiscoverScreenViewModel = entry.sharedViewModel(navController)
 
       FilterScreen(
           discoverScreenViewModel.selectedLevels,

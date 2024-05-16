@@ -370,7 +370,6 @@ fun ActivitiesDisplay(
     flipFavorite: (String) -> Unit,
     navigateToMoreInfo: () -> Unit
 ) {
-
   for (a in activities) {
     Card(
         modifier =
