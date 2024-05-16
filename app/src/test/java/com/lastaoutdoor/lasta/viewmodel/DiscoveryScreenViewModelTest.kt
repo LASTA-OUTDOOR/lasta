@@ -86,10 +86,10 @@ class DiscoveryScreenViewModelTest() {
 
       viewModel.updateActivityType(listOf(ActivityType.BIKING))
 
-      assertEquals(viewModel.selectedActivityType.value, listOf(ActivityType.BIKING))
+      assertEquals(viewModel.state.value.selectedActivityTypes, listOf(ActivityType.BIKING))
 
       assertEquals(
-          viewModel.activities.value,
+          viewModel.state.value.activities,
           listOf(
               Activity(
                   "id",
@@ -113,10 +113,10 @@ class DiscoveryScreenViewModelTest() {
 
       viewModel.updateActivityType(listOf(ActivityType.HIKING))
 
-      assertEquals(viewModel.selectedActivityType.value, listOf(ActivityType.HIKING))
+      assertEquals(viewModel.state.value.selectedActivityTypes, listOf(ActivityType.HIKING))
 
       assertEquals(
-          viewModel.activities.value,
+          viewModel.state.value.activities,
           listOf(
               Activity(
                   "id",
@@ -140,10 +140,10 @@ class DiscoveryScreenViewModelTest() {
 
       viewModel.updateActivityType(listOf(ActivityType.CLIMBING))
 
-      assertEquals(viewModel.selectedActivityType.value, listOf(ActivityType.CLIMBING))
+      assertEquals(viewModel.state.value.selectedActivityTypes, listOf(ActivityType.CLIMBING))
 
       assertEquals(
-          viewModel.activities.value,
+          viewModel.state.value.activities,
           listOf(
               Activity(
                   "id",
@@ -162,7 +162,7 @@ class DiscoveryScreenViewModelTest() {
   fun setScreen() {
     runBlocking {
       viewModel.setScreen(DiscoverDisplayType.LIST)
-      assertEquals(viewModel.screen.value, DiscoverDisplayType.LIST)
+      assertEquals(viewModel.state.value.screen, DiscoverDisplayType.LIST)
     }
   }
 
@@ -171,18 +171,18 @@ class DiscoveryScreenViewModelTest() {
   fun setLoc() {
     runBlocking {
       viewModel.setSelectedLocality(Pair("a", LatLng(0.0, 0.0)))
-      assertEquals(viewModel.selectedLocality.value, Pair("a", LatLng(0.0, 0.0)))
+      assertEquals(viewModel.state.value.selectedLocality, Pair("a", LatLng(0.0, 0.0)))
     }
   }
 
   @Test
   fun testInitialValues() {
-    assertEquals(viewModel.activities.value.isEmpty(), true) // Check initial activities
-    assertEquals(viewModel.screen.value, DiscoverDisplayType.LIST)
-    assertEquals(viewModel.range.value, 10000.0)
-    assertEquals(viewModel.suggestions.value, emptyMap<String, LatLng>())
+    assertEquals(viewModel.state.value.activities.isEmpty(), true) // Check initial activities
+    assertEquals(viewModel.state.value.screen, DiscoverDisplayType.LIST)
+    assertEquals(viewModel.state.value.range, 10000.0)
+    assertEquals(viewModel.state.value.suggestions, emptyMap<String, LatLng>())
     assertEquals(
-        viewModel.localities,
+        viewModel.state.value.localities,
         listOf(
             "Ecublens" to LatLng(46.519962, 6.633597),
             "Geneva" to LatLng(46.2043907, 6.1431577),
@@ -193,11 +193,11 @@ class DiscoveryScreenViewModelTest() {
   @Test
   fun testPUpdatePermissions() {
     viewModel.updatePermission(true)
-    assertEquals(viewModel.mapState.value.uiSettings.myLocationButtonEnabled, true)
-    assertEquals(viewModel.mapState.value.properties.isMyLocationEnabled, true)
+    assertEquals(viewModel.state.value.mapState.uiSettings.myLocationButtonEnabled, true)
+    assertEquals(viewModel.state.value.mapState.properties.isMyLocationEnabled, true)
     viewModel.updatePermission(false)
-    assertEquals(viewModel.mapState.value.properties.isMyLocationEnabled, false)
-    assertEquals(viewModel.mapState.value.uiSettings.myLocationButtonEnabled, false)
+    assertEquals(viewModel.state.value.mapState.properties.isMyLocationEnabled, false)
+    assertEquals(viewModel.state.value.mapState.uiSettings.myLocationButtonEnabled, false)
   }
 
   @ExperimentalCoroutinesApi
@@ -205,26 +205,26 @@ class DiscoveryScreenViewModelTest() {
   fun setRange() {
     runBlocking {
       viewModel.setRange(0.0)
-      assertEquals(viewModel.range.value, 0.0)
+      assertEquals(viewModel.state.value.range, 0.0)
     }
   }
 
   @Test
   fun testClearSelectedItinerary() {
     viewModel.clearSelectedItinerary()
-    assertEquals(viewModel.selectedItinerary.value, null)
+    assertEquals(viewModel.state.value.selectedItinerary, null)
   }
 
   @Test
   fun testClearSelectedMarker() {
     viewModel.clearSelectedMarker()
-    assertEquals(viewModel.selectedMarker.value, null)
+    assertEquals(viewModel.state.value.selectedMarker, null)
   }
 
   @Test
   fun testUpdateMarkers() {
     viewModel.updateMarkers(LatLng(46.519962, 6.633597), 10000.0)
-    assertEquals(viewModel.markerList.value, emptyList<Marker>())
+    assertEquals(viewModel.state.value.markerList, emptyList<Marker>())
   }
 
   @Test
@@ -259,21 +259,21 @@ class DiscoveryScreenViewModelTest() {
     viewModel.updateSelectedMarker(
         Marker(0, "name", LatLng(0.0, 0.0), "description", 1, ActivityType.BIKING))
     assertEquals(
-        viewModel.selectedMarker.value,
+        viewModel.state.value.selectedMarker,
         Marker(0, "name", LatLng(0.0, 0.0), "description", 1, ActivityType.BIKING))
     viewModel.clearSelectedMarker()
     // hiking
     viewModel.updateSelectedMarker(
         Marker(0, "name", LatLng(0.0, 0.0), "description", 1, ActivityType.HIKING))
     assertEquals(
-        viewModel.selectedMarker.value,
+        viewModel.state.value.selectedMarker,
         Marker(0, "name", LatLng(0.0, 0.0), "description", 1, ActivityType.HIKING))
     viewModel.clearSelectedMarker()
     // climbing
     viewModel.updateSelectedMarker(
         Marker(0, "name", LatLng(0.0, 0.0), "description", 1, ActivityType.CLIMBING))
     assertEquals(
-        viewModel.selectedMarker.value,
+        viewModel.state.value.selectedMarker,
         Marker(0, "name", LatLng(0.0, 0.0), "description", 1, ActivityType.CLIMBING))
   }
 
@@ -308,15 +308,15 @@ class DiscoveryScreenViewModelTest() {
   @Test
   fun testUpdateOrderingBy_WithEmptyActivities() {
     viewModel.updateOrderingBy(OrderingBy.RATING)
-    assertEquals(viewModel.orderingBy.value, OrderingBy.RATING)
+    assertEquals(viewModel.state.value.orderingBy, OrderingBy.RATING)
     viewModel.updateOrderingBy(OrderingBy.DISTANCE)
-    assertEquals(viewModel.orderingBy.value, OrderingBy.DISTANCE)
+    assertEquals(viewModel.state.value.orderingBy, OrderingBy.DISTANCE)
     viewModel.updateOrderingBy(OrderingBy.DIFFICULTYASCENDING)
-    assertEquals(viewModel.orderingBy.value, OrderingBy.DIFFICULTYASCENDING)
+    assertEquals(viewModel.state.value.orderingBy, OrderingBy.DIFFICULTYASCENDING)
     viewModel.updateOrderingBy(OrderingBy.DIFFICULTYDESCENDING)
-    assertEquals(viewModel.orderingBy.value, OrderingBy.DIFFICULTYDESCENDING)
+    assertEquals(viewModel.state.value.orderingBy, OrderingBy.DIFFICULTYDESCENDING)
     viewModel.updateOrderingBy(OrderingBy.POPULARITY)
-    assertEquals(viewModel.orderingBy.value, OrderingBy.POPULARITY)
+    assertEquals(viewModel.state.value.orderingBy, OrderingBy.POPULARITY)
   }
 
   @Test
@@ -341,26 +341,26 @@ class DiscoveryScreenViewModelTest() {
                 1f)))
 
     viewModel.updateOrderingBy(OrderingBy.RATING)
-    assertEquals(viewModel.orderingBy.value, OrderingBy.RATING)
+    assertEquals(viewModel.state.value.orderingBy, OrderingBy.RATING)
     viewModel.updateOrderingBy(OrderingBy.DISTANCE)
-    assertEquals(viewModel.orderingBy.value, OrderingBy.DISTANCE)
+    assertEquals(viewModel.state.value.orderingBy, OrderingBy.DISTANCE)
     viewModel.updateOrderingBy(OrderingBy.DIFFICULTYASCENDING)
-    assertEquals(viewModel.orderingBy.value, OrderingBy.DIFFICULTYASCENDING)
+    assertEquals(viewModel.state.value.orderingBy, OrderingBy.DIFFICULTYASCENDING)
     viewModel.updateOrderingBy(OrderingBy.DIFFICULTYDESCENDING)
-    assertEquals(viewModel.orderingBy.value, OrderingBy.DIFFICULTYDESCENDING)
+    assertEquals(viewModel.state.value.orderingBy, OrderingBy.DIFFICULTYDESCENDING)
     viewModel.updateOrderingBy(OrderingBy.POPULARITY)
-    assertEquals(viewModel.orderingBy.value, OrderingBy.POPULARITY)
+    assertEquals(viewModel.state.value.orderingBy, OrderingBy.POPULARITY)
   }
 
   // Test autocompletion part of the view model
   @Test
   fun testFetchSuggestionsAndClear() {
     viewModel.fetchSuggestions("Test")
-    assert(viewModel.suggestions.value.isNotEmpty())
-    assert(viewModel.suggestions.value.size == 4)
+    assert(viewModel.state.value.suggestions.isNotEmpty())
+    assert(viewModel.state.value.suggestions.size == 4)
 
     viewModel.clearSuggestions()
-    assert(viewModel.suggestions.value.isEmpty())
+    assert(viewModel.state.value.suggestions.isEmpty())
   }
 
   @Test
@@ -391,10 +391,10 @@ class DiscoveryScreenViewModelTest() {
   @Test
   fun randomSmallChecks() {
     viewModel.setSelectedActivitiesType(listOf(ActivityType.BIKING))
-    assert(viewModel.selectedActivityType.value.contains(ActivityType.BIKING))
+    assert(viewModel.state.value.selectedActivityTypes.contains(ActivityType.BIKING))
 
-    assert(viewModel.selectedZoom == 13f)
-    assert(viewModel.initialPosition.value == LatLng(46.519962, 6.633597))
-    assert(viewModel.initialZoom == 11f)
+    assert(viewModel.state.value.selectedZoom == 13f)
+    assert(viewModel.state.value.initialPosition == LatLng(46.519962, 6.633597))
+    assert(viewModel.state.value.initialZoom == 11f)
   }
 }
