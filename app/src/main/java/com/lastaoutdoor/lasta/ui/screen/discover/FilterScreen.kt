@@ -59,6 +59,8 @@ fun FilterScreen(
     setSelectedLevels: (UserActivitiesLevel) -> Unit,
     selectedActivitiesType: StateFlow<List<ActivityType>>,
     setSelectedActivitiesType: (List<ActivityType>) -> Unit,
+    showCompleted: StateFlow<Boolean>,
+    setShowCompleted: (Boolean) -> Unit,
     navigateBack: () -> Unit
 ) {
 
@@ -72,7 +74,7 @@ fun FilterScreen(
         userSelectedLevels.hikingLevel,
         userSelectedLevels.bikingLevel)
   }
-
+  val checked = showCompleted.collectAsState().value
   // internal function to avoid code duplication
   @Composable
   fun collectSelectedActivitiesTypes(): SnapshotStateList<ActivityType> {
@@ -99,8 +101,6 @@ fun FilterScreen(
   }
   val selectedActivitiesTypes = collectSelectedActivitiesTypes()
   val snapshotSelectedActivitiesTypes = collectSelectedActivitiesTypes()
-
-  var checkedBox by remember { mutableStateOf(true) }
 
   Column(modifier = Modifier.fillMaxSize().testTag("filterScreen")) {
     MediumTopAppBar(
@@ -194,8 +194,8 @@ fun FilterScreen(
           Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
               Checkbox(
-                  checked = checkedBox,
-                  onCheckedChange = { checkedBox = it },
+                  checked = checked,
+                  onCheckedChange = { setShowCompleted(it) },
                   colors =
                       CheckboxDefaults.colors(
                           uncheckedColor = MaterialTheme.colorScheme.onBackground,

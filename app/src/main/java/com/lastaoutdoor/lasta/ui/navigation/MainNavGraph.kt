@@ -228,13 +228,15 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           weatherViewModel::fetchWeatherWithUserLoc)
     }
     composable(DestinationRoute.Filter.route) { entry ->
-      val discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(entry)
+      val discoverScreenViewModel: DiscoverScreenViewModel = entry.sharedViewModel(navController)
 
       FilterScreen(
           discoverScreenViewModel.selectedLevels,
           discoverScreenViewModel::setSelectedLevels,
           discoverScreenViewModel.selectedActivityType,
           discoverScreenViewModel::setSelectedActivitiesType,
+          discoverScreenViewModel.showCompleted,
+          discoverScreenViewModel::setShowCompleted
       ) {
         navController.popBackStack()
       }

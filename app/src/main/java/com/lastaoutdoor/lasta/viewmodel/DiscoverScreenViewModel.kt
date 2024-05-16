@@ -48,6 +48,9 @@ constructor(
   private val _isLoading = MutableStateFlow(true)
   val isLoading: StateFlow<Boolean> = _isLoading
 
+  private val _showCompleted = MutableStateFlow(false)
+  val showCompleted: StateFlow<Boolean> = _showCompleted
+
   private val _activities = MutableStateFlow<List<Activity>>(emptyList())
   val activities: StateFlow<List<Activity>> = _activities
 
@@ -241,12 +244,14 @@ constructor(
             }
           }
         }
-        activitiesHolder.addAll(activitiesDB.getActivitiesByOSMIds(activitiesIdsHolder, false))
+        activitiesHolder.addAll(activitiesDB.getActivitiesByOSMIds(activitiesIdsHolder, showCompleted.value))
         markerListHolder.addAll(activitiesToMarkers(activitiesHolder))
       }
 
       _activities.value = activitiesHolder
       _activityIds.value = activitiesIdsHolder
+      //remove duplicates
+      _activities.value = _activities.value.distinctBy { it.osmId } as ArrayList<Activity>
       _markerList.value = markerListHolder
       // order the activities by the selected ordering
       updateActivitiesByOrdering()
@@ -261,6 +266,12 @@ constructor(
   // Set the range for the activities
   fun setRange(range: Double) {
     _range.value = range
+  }
+
+    // toggle wether we show completed activities or not
+  fun setShowCompleted(showCompleted: Boolean) {
+    _showCompleted.value = showCompleted
+    fetchActivities()
   }
 
   // Set the selected locality
