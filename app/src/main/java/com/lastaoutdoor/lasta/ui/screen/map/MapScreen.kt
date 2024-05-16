@@ -3,10 +3,6 @@
 package com.lastaoutdoor.lasta.ui.screen.map
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.drawable.Drawable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,11 +24,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.SphericalUtil
@@ -45,6 +38,7 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.map.MapItinerary
 import com.lastaoutdoor.lasta.models.map.Marker
+import com.lastaoutdoor.lasta.utils.getScaledBitmapDescriptor
 import com.lastaoutdoor.lasta.viewmodel.MapState
 
 // Called after a click on a pointer on the map
@@ -232,22 +226,4 @@ private fun GoogleMapComposable(
       )
     }
   }
-}
-
-fun getScaledBitmapDescriptor(
-    context: Context,
-    vectorResId: Int,
-    width: Int,
-    height: Int
-): BitmapDescriptor? {
-  val vectorDrawable: Drawable = ContextCompat.getDrawable(context, vectorResId) ?: return null
-
-  // Scale the drawable
-  vectorDrawable.setBounds(0, 0, width, height)
-
-  val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-  val canvas = Canvas(bitmap)
-  vectorDrawable.draw(canvas)
-
-  return BitmapDescriptorFactory.fromBitmap(bitmap)
 }

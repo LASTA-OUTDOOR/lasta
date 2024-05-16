@@ -1,6 +1,7 @@
 package com.lastaoutdoor.lasta.viewmodel
 
 import com.google.android.gms.maps.model.LatLng
+import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.activity.ClimbingStyle
@@ -9,7 +10,6 @@ import com.lastaoutdoor.lasta.models.api.Position
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
-import com.lastaoutdoor.lasta.repository.api.ActivityRepository
 import com.lastaoutdoor.lasta.utils.OrderingBy
 import com.lastaoutdoor.lasta.utils.Response
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivitiesDBRepository
@@ -48,7 +48,7 @@ class DiscoveryScreenViewModelTest() {
   private var repo = FakeActivityRepository()
 
   private lateinit var viewModel: DiscoverScreenViewModel
-  private lateinit var repository: ActivityRepository
+  private lateinit var repository: FakeActivityRepository
   private lateinit var activitiesDB: FakeActivitiesDBRepository
   private lateinit var prefRepo: FakePreferencesRepository
   private lateinit var radarRepo: FakeRadarRepository
@@ -256,25 +256,76 @@ class DiscoveryScreenViewModelTest() {
 
   @Test
   fun update_selectedMarker() {
+    // biking, id = 0
     viewModel.updateSelectedMarker(
         Marker(0, "name", LatLng(0.0, 0.0), "description", 1, ActivityType.BIKING))
     assertEquals(
         viewModel.selectedMarker.value,
         Marker(0, "name", LatLng(0.0, 0.0), "description", 1, ActivityType.BIKING))
     viewModel.clearSelectedMarker()
-    // hiking
+
+    // biking, id != 0
     viewModel.updateSelectedMarker(
-        Marker(0, "name", LatLng(0.0, 0.0), "description", 1, ActivityType.HIKING))
+        Marker(
+            1,
+            "name",
+            LatLng(0.0, 0.0),
+            "description",
+            R.drawable.biking_icon,
+            ActivityType.BIKING))
     assertEquals(
         viewModel.selectedMarker.value,
-        Marker(0, "name", LatLng(0.0, 0.0), "description", 1, ActivityType.HIKING))
+        Marker(
+            1,
+            "name",
+            LatLng(0.0, 0.0),
+            "description",
+            R.drawable.biking_icon,
+            ActivityType.BIKING))
     viewModel.clearSelectedMarker()
+
+    // hiking, id != 0
+    viewModel.updateSelectedMarker(
+        Marker(
+            1,
+            "name",
+            LatLng(0.0, 0.0),
+            "description",
+            R.drawable.hiking_icon,
+            ActivityType.HIKING))
+    assertEquals(
+        viewModel.selectedMarker.value,
+        Marker(
+            1,
+            "name",
+            LatLng(0.0, 0.0),
+            "description",
+            R.drawable.hiking_icon,
+            ActivityType.HIKING))
+    viewModel.clearSelectedMarker()
+
     // climbing
     viewModel.updateSelectedMarker(
-        Marker(0, "name", LatLng(0.0, 0.0), "description", 1, ActivityType.CLIMBING))
+        Marker(
+            2,
+            "name",
+            LatLng(0.0, 0.0),
+            "description",
+            R.drawable.climbing_icon,
+            ActivityType.CLIMBING))
     assertEquals(
         viewModel.selectedMarker.value,
-        Marker(0, "name", LatLng(0.0, 0.0), "description", 1, ActivityType.CLIMBING))
+        Marker(
+            2,
+            "name",
+            LatLng(0.0, 0.0),
+            "description",
+            R.drawable.climbing_icon,
+            ActivityType.CLIMBING))
+
+    // marker icon null
+    viewModel.updateSelectedMarker(
+        Marker(2, "name", LatLng(0.0, 0.0), "description", -1, ActivityType.CLIMBING))
   }
 
   @Test
@@ -365,7 +416,7 @@ class DiscoveryScreenViewModelTest() {
 
   @Test
   fun testActivitiesToMarkers() {
-    val testActivity =
+    val testActivityBiking =
         Activity(
             "id",
             1,
@@ -382,10 +433,22 @@ class DiscoveryScreenViewModelTest() {
             "from",
             "to",
             1f)
-    val marker = viewModel.activitiesToMarkers(listOf(testActivity))
-    assert(marker.isNotEmpty())
-    assert(marker.size == 1)
-    assert(marker.first().position == LatLng(0.0, 0.0))
+    val markerBiking = viewModel.activitiesToMarkers(listOf(testActivityBiking))
+    assert(markerBiking.isNotEmpty())
+    assert(markerBiking.size == 1)
+    assert(markerBiking.first().position == LatLng(0.0, 0.0))
+
+    val testActivityHiking = testActivityBiking.copy(activityType = ActivityType.HIKING)
+    val markerHiking = viewModel.activitiesToMarkers(listOf(testActivityHiking))
+    assert(markerHiking.isNotEmpty())
+    assert(markerHiking.size == 1)
+    assert(markerHiking.first().position == LatLng(0.0, 0.0))
+
+    val testActivityClimbing = testActivityBiking.copy(activityType = ActivityType.CLIMBING)
+    val markerClimbing = viewModel.activitiesToMarkers(listOf(testActivityClimbing))
+    assert(markerClimbing.isNotEmpty())
+    assert(markerClimbing.size == 1)
+    assert(markerClimbing.first().position == LatLng(0.0, 0.0))
   }
 
   @Test
@@ -396,5 +459,21 @@ class DiscoveryScreenViewModelTest() {
     assert(viewModel.selectedZoom == 16f)
     assert(viewModel.initialPosition.value == LatLng(46.519962, 6.633597))
     assert(viewModel.initialZoom == 11f)
+  }
+
+  @Test
+  fun testShowItinerary() {
+    val id = 0L
+    val startPosition = LatLng(0.0, 0.0)
+    var activityType = ActivityType.HIKING
+
+    val method =
+        viewModel.javaClass.getDeclaredMethod(
+            "showItinerary", Long::class.java, LatLng::class.java, ActivityType::class.java)
+    method.isAccessible = true
+
+    method.invoke(viewModel, id, startPosition, activityType)
+
+    assert(viewModel.selectedItinerary.value == null)
   }
 }
