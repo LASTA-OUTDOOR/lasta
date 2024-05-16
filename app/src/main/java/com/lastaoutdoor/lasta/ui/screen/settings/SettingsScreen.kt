@@ -117,7 +117,7 @@ fun SettingsScreen(
               updateBikingLevel = updateBikingLevel)
         }
 
-        item { Spacer(modifier = Modifier.fillMaxHeight(1f)) }
+        item { Spacer(modifier = Modifier.fillMaxHeight(1f).testTag("settingsSpacer")) }
 
         item {
           Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {

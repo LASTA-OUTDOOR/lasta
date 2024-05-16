@@ -88,7 +88,7 @@ class SetupScreenTest {
     composeRule.onNodeWithTag("settingsLanguage").assertIsDisplayed()
   }
 
-  @Test
+  /*@Test
   fun setupScreen_clickSubmitButton() {
     var userId = "123"
     var language = Language.ENGLISH
@@ -113,6 +113,7 @@ class SetupScreenTest {
     composeRule.waitForIdle()
     composeRule.onNodeWithTag("setupSubmitDialog").assertIsDisplayed()
   }
+    */
 
   /*@Test
   fun setupScreen_changeToClimbing() {

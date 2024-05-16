@@ -120,4 +120,32 @@ class SettingsScreenKtTest {
     composeRule.onNodeWithTag("settingsHIKING").performClick()
     composeRule.onNodeWithTag("settingsHIKING").assertIsDisplayed()
   }
+
+  // Test that changing activity levels works
+  @Test
+  fun changeLevelsWorks() {
+    var levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
+    composeRule.activity.setContent {
+      SettingsScreen(
+          language = Language.ENGLISH,
+          prefActivity = ActivityType.BIKING,
+          levels = levels,
+          updateLanguage = {},
+          updatePrefActivity = {},
+          updateClimbingLevel = { levels = levels.copy(climbingLevel = it) },
+          updateHikingLevel = { levels = levels.copy(hikingLevel = it) },
+          updateBikingLevel = { levels = levels.copy(bikingLevel = it) },
+          navigateBack = {},
+          signOutAndNavigate = {})
+    }
+    composeRule.onNodeWithTag("settingsCLIMBINGLevel").assertIsDisplayed()
+    composeRule.onNodeWithTag("settingsCLIMBINGLevel").performClick()
+    composeRule.onNodeWithTag("settingsCLIMBINGLevel").assertIsDisplayed()
+    composeRule.onNodeWithTag("settingsHIKINGLevel").assertIsDisplayed()
+    composeRule.onNodeWithTag("settingsHIKINGLevel").performClick()
+    composeRule.onNodeWithTag("settingsHIKINGLevel").assertIsDisplayed()
+    composeRule.onNodeWithTag("settingsBIKINGLevel").assertIsDisplayed()
+    composeRule.onNodeWithTag("settingsBIKINGLevel").performClick()
+    composeRule.onNodeWithTag("settingsBIKINGLevel").assertIsDisplayed()
+  }
 }
