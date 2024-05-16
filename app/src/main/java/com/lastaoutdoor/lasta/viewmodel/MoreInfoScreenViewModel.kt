@@ -63,7 +63,6 @@ constructor(
         is Response.Loading -> {}
         is Response.Success -> {
           val osmData = response.data!!
-          println("YOUGOU")
           val updatedActivity = activity.copy(startPosition = osmData.getPosition())
           activityDB.updateStartPosition(activity.activityId, osmData.getPosition())
           activityToDisplay.value = updatedActivity
