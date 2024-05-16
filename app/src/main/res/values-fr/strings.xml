@@ -113,4 +113,8 @@
     <string name="step_count">Nombre de pas</string>
     <string name="step_count_unavailable">Compteur de pas indisponible</string>
     <string name="step_count_unsupported">Cet appareil ne prend pas en charge le comptage de pas </string>
+    <string name="new_friend_request_notif">Nouvelle Demande d\'Ami</string>
+    <string name="friend_request_notif">vous a demandé en ami!</string>
+    <string name="friend_request_accepted_notif">a accepté votre demande d\'ami!</string>
+    <string name="friend_request_declined_notif">a refusé votre demande d\'ami!</string>
 </resources>
