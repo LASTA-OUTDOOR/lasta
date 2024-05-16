@@ -33,22 +33,25 @@ class MainActivity : ComponentActivity() {
 
     lifecycleScope.launch {
       repeatOnLifecycle(Lifecycle.State.STARTED) {
+        // Creates an instance of preferencesViewModel to get the user's language
         val vm =
             PreferencesViewModel(
                 PreferencesRepositoryImpl(applicationContext),
                 UserDBRepositoryImpl(applicationContext, provideFirebaseFirestore()))
+        // Get the user's language from PreferencesViewModel
         val language =
             vm.language.stateIn(
                 lifecycleScope,
                 started = SharingStarted.WhileSubscribed(5_000L),
                 initialValue =
+                    // Set the initial value of the language to the user's system's default
                     when (LocaleListCompat.getDefault().get(0)) {
                       Locale.ENGLISH -> com.lastaoutdoor.lasta.models.user.Language.ENGLISH
                       Locale.FRENCH -> com.lastaoutdoor.lasta.models.user.Language.FRENCH
                       Locale.GERMAN -> com.lastaoutdoor.lasta.models.user.Language.GERMAN
                       else -> com.lastaoutdoor.lasta.models.user.Language.ENGLISH
                     })
-
+        // update the language of the app when language is changed in the DB
         language.collect {
           val locale = getSystemService(LocaleManager::class.java).applicationLocales
           val newLocale = LocaleList(Locale.forLanguageTag(it.toLocale()))
