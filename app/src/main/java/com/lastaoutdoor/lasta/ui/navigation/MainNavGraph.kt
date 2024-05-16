@@ -27,6 +27,7 @@ import com.lastaoutdoor.lasta.ui.screen.social.FriendProfileScreen
 import com.lastaoutdoor.lasta.ui.screen.social.NotificationsScreen
 import com.lastaoutdoor.lasta.ui.screen.social.SocialScreen
 import com.lastaoutdoor.lasta.utils.ConnectionState
+import com.lastaoutdoor.lasta.utils.PermissionManager
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
 import com.lastaoutdoor.lasta.viewmodel.ConversationViewModel
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenViewModel
@@ -63,6 +64,8 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val suggestions = discoverScreenViewModel.suggestions.collectAsState().value
       val initialPosition = discoverScreenViewModel.initialPosition.collectAsState().value
 
+      PermissionManager(discoverScreenViewModel::updatePermission)
+
       DiscoverScreen(
           isLoading,
           activities,
@@ -83,7 +86,6 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           weatherViewModel::changeLocOfWeather,
           weather,
           mapState,
-          discoverScreenViewModel::updatePermission,
           initialPosition,
           initialZoom,
           discoverScreenViewModel::updateMarkers,
@@ -204,7 +206,6 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       MoreInfoScreen(
           activityToDisplay,
           mapState,
-          discoverScreenViewModel::updatePermission,
           initialPosition,
           initialZoom,
           activities,
@@ -289,7 +290,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
     }
 
     composable(DestinationRoute.Settings.route) { entry ->
-      val authViewModel: AuthViewModel = hiltViewModel(entry)
+      val authViewModel: AuthViewModel = entry.sharedViewModel(navController)
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
       val language = preferencesViewModel.language.collectAsState(initial = Language.ENGLISH).value
       val prefActivity = preferencesViewModel.prefActivity.collectAsState(ActivityType.HIKING).value
