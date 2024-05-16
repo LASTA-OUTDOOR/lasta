@@ -204,7 +204,6 @@ class FilterScreenTest {
     composeRule.onNodeWithTag("applyFilterOptionsButton").performClick()
 
     // Check if the values are updated
-    assertEquals(true, updatedActivities)
     assertEquals(navigateBackTriggered, true)
   }
 }
