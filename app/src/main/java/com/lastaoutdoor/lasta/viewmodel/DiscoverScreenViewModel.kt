@@ -255,7 +255,7 @@ constructor(
 
   fun setSelectedActivitiesType(activitiesType: List<ActivityType>) {
     _selectedActivityTypes.value = activitiesType
-    updateActivitiesByOrdering()
+    fetchActivities()
   }
 
   fun setSelectedLevels(levels: UserActivitiesLevel) {
