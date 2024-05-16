@@ -7,7 +7,6 @@ import android.os.LocaleList
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.annotation.RequiresApi
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -53,34 +52,33 @@ class MainActivity : ComponentActivity() {
                     })
         // update the language of the app when language is changed in the DB
         language.collect {
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 
-          if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val locale = getSystemService(LocaleManager::class.java).applicationLocales
+            val newLocale = LocaleList(Locale.forLanguageTag(it.toLocale()))
 
+            if (locale != newLocale) {
 
-              val locale = getSystemService(LocaleManager::class.java).applicationLocales
-              val newLocale = LocaleList(Locale.forLanguageTag(it.toLocale()))
+              // Set the new Locale.
+              getSystemService(LocaleManager::class.java).applicationLocales = newLocale
 
-              if (locale != newLocale) {
-
-                  // Set the new Locale.
-                  getSystemService(LocaleManager::class.java).applicationLocales = newLocale
-
-                  // Recreate the Activity.
-                  recreate()
-              }
-          }else{
-              //different version for older android versions
-              val locale = Locale.getDefault()
-              val newLocale = Locale(it.toLocale())
-              if(locale != newLocale){
-                  val configuration = resources.configuration.apply{
-                      Locale.setDefault(newLocale)
-                      setLocale(newLocale)
+              // Recreate the Activity.
+              recreate()
+            }
+          } else {
+            // different version for older android versions
+            val locale = Locale.getDefault()
+            val newLocale = Locale(it.toLocale())
+            if (locale != newLocale) {
+              val configuration =
+                  resources.configuration.apply {
+                    Locale.setDefault(newLocale)
+                    setLocale(newLocale)
                   }
 
-                  resources.updateConfiguration(configuration, resources.displayMetrics)
-                  recreate()
-              }
+              resources.updateConfiguration(configuration, resources.displayMetrics)
+              recreate()
+            }
           }
         }
       }
