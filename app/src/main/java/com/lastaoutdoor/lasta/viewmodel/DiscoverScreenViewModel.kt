@@ -48,10 +48,10 @@ constructor(
   private val _isLoading = MutableStateFlow(true)
   val isLoading: StateFlow<Boolean> = _isLoading
 
-  private val _activities = MutableStateFlow<ArrayList<Activity>>(ArrayList())
+  private val _activities = MutableStateFlow<List<Activity>>(emptyList())
   val activities: StateFlow<List<Activity>> = _activities
 
-  private val _activityIds = MutableStateFlow<ArrayList<Long>>(ArrayList())
+  private val _activityIds = MutableStateFlow<List<Long>>(emptyList())
   val activityIds: StateFlow<List<Long>> = _activityIds
 
   private val _orderingBy = MutableStateFlow(OrderingBy.DISTANCE)
@@ -165,25 +165,31 @@ constructor(
     _suggestions.value = emptyMap()
   }
 
-  fun fetchActivities(rad: Double = 10000.0, centerLocation: LatLng = LatLng(46.519962, 6.633597)) {
+  fun fetchActivities() {
     viewModelScope.launch {
       _isLoading.value = true
-      _activities.value = ArrayList()
-      _activityIds.value = ArrayList()
+      val activitiesHolder: ArrayList<Activity> = ArrayList()
+      val activitiesIdsHolder: ArrayList<Long> = ArrayList()
+      val markerListHolder: ArrayList<Marker> = ArrayList()
       for (activityType in _selectedActivityTypes.value) {
         val response =
             when (activityType) {
               ActivityType.CLIMBING ->
                   repository.getClimbingPointsInfo(
-                      rad.toInt(), centerLocation.latitude, centerLocation.longitude)
+                      _range.value.toInt(),
+                      _initialPosition.value.latitude,
+                      _initialPosition.value.longitude)
               ActivityType.HIKING ->
                   repository.getHikingRoutesInfo(
-                      rad.toInt(), centerLocation.latitude, centerLocation.longitude)
+                      _range.value.toInt(),
+                      _initialPosition.value.latitude,
+                      _initialPosition.value.longitude)
               ActivityType.BIKING ->
                   repository.getBikingRoutesInfo(
-                      rad.toInt(), centerLocation.latitude, centerLocation.longitude)
+                      _range.value.toInt(),
+                      _initialPosition.value.latitude,
+                      _initialPosition.value.longitude)
             }
-
         val osmData =
             when (response) {
               is Response.Failure -> {
@@ -202,13 +208,13 @@ constructor(
           when (activityType) {
             ActivityType.CLIMBING -> {
               val castedPoint = point as NodeWay
-              _activityIds.value.add(castedPoint.id)
+              activitiesIdsHolder.add(castedPoint.id)
               activitiesDB.addActivityIfNonExisting(
                   Activity("", point.id, ActivityType.CLIMBING, point.tags.name))
             }
             ActivityType.HIKING -> {
               val castedPoint = point as Relation
-              _activityIds.value.add(castedPoint.id)
+              activitiesIdsHolder.add(castedPoint.id)
               activitiesDB.addActivityIfNonExisting(
                   Activity(
                       "",
@@ -220,7 +226,7 @@ constructor(
             }
             ActivityType.BIKING -> {
               val castedPoint = point as Relation
-              _activityIds.value.add(castedPoint.id)
+              activitiesIdsHolder.add(castedPoint.id)
               val distance =
                   if (point.tags.distance.isEmpty()) 0f else point.tags.distance.toFloat()
               activitiesDB.addActivityIfNonExisting(
@@ -235,11 +241,13 @@ constructor(
             }
           }
         }
-
-        _activities.value.addAll(activitiesDB.getActivitiesByOSMIds(activityIds.value, false))
-        _markerList.value.union(activitiesToMarkers(activities.value))
+        activitiesHolder.addAll(activitiesDB.getActivitiesByOSMIds(activitiesIdsHolder, false))
+        markerListHolder.addAll(activitiesToMarkers(activitiesHolder))
       }
 
+      _activities.value = activitiesHolder
+      _activityIds.value = activitiesIdsHolder
+      _markerList.value = markerListHolder
       // order the activities by the selected ordering
       updateActivitiesByOrdering()
       _isLoading.value = false
@@ -320,7 +328,7 @@ constructor(
 
   // function used only for testing purposes
   fun updateActivities(activities: List<Activity>) {
-    _activities.value = ArrayList(activities)
+    _activities.value = activities
   }
 
   private fun updateActivitiesByOrdering() {
@@ -334,24 +342,22 @@ constructor(
             }
         val sortedActivities =
             _activities.value.sortedBy { distances[_activities.value.indexOf(it)] }
-        _activities.value = ArrayList(sortedActivities)
+        _activities.value = sortedActivities
       }
       OrderingBy.RATING -> {
-        _activities.value = ArrayList(_activities.value.sortedBy { it.rating }.reversed())
+        _activities.value = _activities.value.sortedBy { it.rating }.reversed()
       }
       OrderingBy.POPULARITY -> {
-        _activities.value = ArrayList(_activities.value.sortedBy { it.numRatings }.reversed())
+        _activities.value = _activities.value.sortedBy { it.numRatings }.reversed()
       }
       OrderingBy.DIFFICULTYASCENDING -> {
-        _activities.value = ArrayList(_activities.value.sortedBy { it.difficulty })
+        _activities.value = _activities.value.sortedBy { it.difficulty }
       }
       OrderingBy.DIFFICULTYDESCENDING -> {
-        _activities.value = ArrayList(_activities.value.sortedBy { it.difficulty }.reversed())
+        _activities.value = _activities.value.sortedBy { it.difficulty }.reversed()
       }
     }
-    _activities.value =
-        _activities.value.filter { filterWithDiff(_selectedLevels.value, it) }
-            as ArrayList<Activity>
+    _activities.value = _activities.value.filter { filterWithDiff(_selectedLevels.value, it) }
   }
 
   fun filterWithDiff(difficulties: UserActivitiesLevel, activity: Activity): Boolean {
@@ -392,6 +398,11 @@ constructor(
 
     // Add the itineraries to a map -> can access them by relation id
     // getItineraryFromRelations(hikingRelations)
+  }
+
+  fun updateRange(range: Double) {
+    _range.value = range
+    fetchActivities()
   }
 }
 
