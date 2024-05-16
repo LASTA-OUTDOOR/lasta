@@ -126,7 +126,7 @@ class SettingsScreenKtTest {
   fun changeLevelsWorks() {
     var levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
     composeRule.activity.setContent {
-      SettingsScreen(
+      SettingsComponent(
           language = Language.ENGLISH,
           prefActivity = ActivityType.BIKING,
           levels = levels,
@@ -135,8 +135,7 @@ class SettingsScreenKtTest {
           updateClimbingLevel = { levels = levels.copy(climbingLevel = it) },
           updateHikingLevel = { levels = levels.copy(hikingLevel = it) },
           updateBikingLevel = { levels = levels.copy(bikingLevel = it) },
-          navigateBack = {},
-          signOutAndNavigate = {})
+      )
     }
     composeRule.onNodeWithTag("settingsCLIMBINGLevel").assertIsDisplayed()
     composeRule.onNodeWithTag("settingsCLIMBINGLevel").performClick()
