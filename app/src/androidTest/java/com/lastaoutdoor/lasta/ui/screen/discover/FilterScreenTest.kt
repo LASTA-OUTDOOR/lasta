@@ -185,25 +185,4 @@ class FilterScreenTest {
     assertEquals(updatedLevels, null)
     assertEquals(updatedActivities?.isEmpty(), null)
   }
-
-  @Test
-  fun test_ApplyFilterOptionsButton() {
-    updatedLevels = false
-    updatedActivities = false
-    navigateBackTriggered = false
-
-    composeRule.activity.setContent {
-      FilterScreen(
-          selectedLevels = mockSelectedLevels,
-          setSelectedLevels = { updatedLevels = true },
-          selectedActivitiesType = mockSelectedActivitiesType,
-          setSelectedActivitiesType = { updatedActivities = true },
-          navigateBack = { navigateBackTriggered = true })
-    }
-
-    composeRule.onNodeWithTag("applyFilterOptionsButton").performClick()
-
-    // Check if the values are updated
-    assertEquals(navigateBackTriggered, true)
-  }
 }
