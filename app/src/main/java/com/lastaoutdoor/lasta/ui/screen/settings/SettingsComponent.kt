@@ -147,7 +147,7 @@ fun LanguageSelectionComponent(
       verticalAlignment = Alignment.CenterVertically) {
         Text(
             text = LocalContext.current.getString(R.string.languague) + " :",
-            color = MaterialTheme.colorScheme.primary,
+            color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.width(8.dp))
@@ -188,22 +188,25 @@ fun FavoriteActivityComponent(
         style = MaterialTheme.typography.headlineSmall,
         fontWeight = FontWeight.Bold)
     Spacer(modifier = Modifier.height(8.dp))
-    FlowRow(modifier = Modifier.testTag("settingsFavActivity")) {
-      for (activity in ActivityType.values()) {
-        val tag = "settings${activity.name}"
-        Button(
-            modifier = Modifier.padding(1.dp).testTag(tag),
-            onClick = { updatePrefActivity(activity) },
-            colors =
-                ButtonDefaults.buttonColors(
-                    containerColor =
-                        if (prefActivity == activity) MaterialTheme.colorScheme.primary
-                        else MaterialTheme.colorScheme.secondaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimary)) {
-              Text(text = activity.resourcesToString(LocalContext.current))
-            }
-      }
-    }
+    FlowRow(
+        modifier = Modifier.testTag("settingsFavActivity").fillMaxWidth(),
+        horizontalArrangement = Arrangement.Start) {
+          for (activity in ActivityType.values()) {
+            val tag = "settings${activity.name}"
+            Button(
+                modifier = Modifier.padding(1.dp).testTag(tag),
+                onClick = { updatePrefActivity(activity) },
+                colors =
+                    ButtonDefaults.buttonColors(
+                        containerColor =
+                            if (prefActivity == activity) MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimary)) {
+                  Text(text = activity.resourcesToString(LocalContext.current))
+                }
+            Spacer(modifier = Modifier.weight(1f))
+          }
+        }
   }
 }
 
@@ -233,7 +236,7 @@ fun ActivityLevelsComponent(
           verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = activity.resourcesToString(LocalContext.current) + " :",
-                color = MaterialTheme.colorScheme.primary,
+                color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.headlineMedium)
             Spacer(modifier = Modifier.width(20.dp))

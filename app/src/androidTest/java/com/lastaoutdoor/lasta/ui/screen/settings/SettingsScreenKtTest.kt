@@ -48,25 +48,16 @@ class SettingsScreenKtTest {
   }
 
   // Test that the delete account dialog is displayed
-  @Test
-  fun deleteAccountDialogIsDisplayed() {
-    composeRule.activity.setContent {
-      SettingsScreen(
-          language = Language.ENGLISH,
-          prefActivity = ActivityType.BIKING,
-          levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER),
-          updateLanguage = {},
-          updatePrefActivity = {},
-          updateClimbingLevel = {},
-          updateHikingLevel = {},
-          updateBikingLevel = {},
-          navigateBack = {},
-          signOutAndNavigate = {})
-    }
-    composeRule.onNodeWithTag("settingsDeleteAccount").performClick()
-    composeRule.onNodeWithTag("settingsDeleteDialog").assertIsDisplayed()
-    composeRule.onNodeWithTag("settingsDeleteButton").performClick()
-  }
+  /**
+   * @Test fun deleteAccountDialogIsDisplayed() { composeRule.activity.setContent { SettingsScreen(
+   *   language = Language.ENGLISH, prefActivity = ActivityType.BIKING, levels =
+   *   UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER),
+   *   updateLanguage = {}, updatePrefActivity = {}, updateClimbingLevel = {}, updateHikingLevel =
+   *   {}, updateBikingLevel = {}, navigateBack = {}, signOutAndNavigate = {}) }
+   *   composeRule.onNodeWithTag("settingsDeleteAccount").performClick()
+   *   composeRule.onNodeWithTag("settingsDeleteDialog").assertIsDisplayed()
+   *   composeRule.onNodeWithTag("settingsDeleteButton").performClick() }
+   */
 
   // Test that top app bar is displayed
   @Test

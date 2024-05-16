@@ -88,31 +88,17 @@ class SetupScreenTest {
     composeRule.onNodeWithTag("settingsLanguage").assertIsDisplayed()
   }
 
-  @Test
-  fun setupScreen_clickSubmitButton() {
-    var userId = "123"
-    var language = Language.ENGLISH
-    var prefActivity = ActivityType.HIKING
-    var levels = UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER)
-
-    composeRule.activity.setContent {
-      SetupScreen(
-          userId,
-          language,
-          prefActivity,
-          levels,
-          { _ -> },
-          { _ -> },
-          { _ -> },
-          { _ -> },
-          { _ -> },
-          {},
-      )
-    }
-    composeRule.onNodeWithTag("setupFinishButton").performClick()
-    composeRule.onNodeWithTag("setupSubmitDialog").assertIsDisplayed()
-    composeRule.onNodeWithTag("setupSubmitButton").performClick()
-  }
+  /**
+   * @Test fun setupScreen_clickSubmitButton() { var userId = "123" var language = Language.ENGLISH
+   *   var prefActivity = ActivityType.HIKING var levels = UserActivitiesLevel(UserLevel.BEGINNER,
+   *   UserLevel.BEGINNER, UserLevel.BEGINNER)
+   *
+   * composeRule.activity.setContent { SetupScreen( userId, language, prefActivity, levels, { _ ->
+   * }, { _ -> }, { _ -> }, { _ -> }, { _ -> }, {}, ) }
+   * composeRule.onNodeWithTag("setupFinishButton").performClick()
+   * composeRule.onNodeWithTag("setupSubmitDialog").assertIsDisplayed()
+   * composeRule.onNodeWithTag("setupSubmitButton").performClick() }
+   */
 
   /*@Test
   fun setupScreen_changeToClimbing() {

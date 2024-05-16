@@ -1,5 +1,6 @@
 package com.lastaoutdoor.lasta.ui.screen.settings
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -7,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -19,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -119,7 +120,7 @@ fun SettingsScreen(
         item { Spacer(modifier = Modifier.fillMaxHeight(1f)) }
 
         item {
-          Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+          Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
             Button(
                 onClick = { signOutAndNavigate() },
                 modifier = Modifier.testTag("settingsSignOut")) {
@@ -128,14 +129,15 @@ fun SettingsScreen(
                       style = MaterialTheme.typography.headlineMedium)
                 }
 
-            Spacer(modifier = Modifier.width(16.dp))
-            Button(
+            Spacer(modifier = Modifier.weight(1f))
+            OutlinedButton(
                 modifier = Modifier.testTag("settingsDeleteAccount"),
                 onClick = { showDeleteDialog.value = true },
                 colors =
-                    ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.onBackground,
-                        contentColor = MaterialTheme.colorScheme.background)) {
+                    ButtonDefaults.outlinedButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error,
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.error)) {
                   Text(
                       text = LocalContext.current.getString(R.string.delete_account),
                       style = MaterialTheme.typography.headlineMedium)
