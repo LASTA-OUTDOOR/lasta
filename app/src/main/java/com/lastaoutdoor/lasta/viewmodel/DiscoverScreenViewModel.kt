@@ -157,10 +157,8 @@ constructor(
     _suggestions.value = emptyMap()
   }
 
-  fun fetchActivities(rad: Double = 10000.0, centerLocation: LatLng = LatLng(46.519962, 6.633597)) {
-    println("Start fetching activities")
+  fun fetchActivities() {
     viewModelScope.launch {
-      println("Launch 1")
       _isLoading.value = true
       val activitiesHolder: ArrayList<Activity> = ArrayList()
       val activitiesIdsHolder: ArrayList<Long> = ArrayList()
@@ -170,15 +168,20 @@ constructor(
             when (activityType) {
               ActivityType.CLIMBING ->
                   repository.getClimbingPointsInfo(
-                      rad.toInt(), centerLocation.latitude, centerLocation.longitude)
+                      _range.value.toInt(),
+                      _initialPosition.value.latitude,
+                      _initialPosition.value.longitude)
               ActivityType.HIKING ->
                   repository.getHikingRoutesInfo(
-                      rad.toInt(), centerLocation.latitude, centerLocation.longitude)
+                      _range.value.toInt(),
+                      _initialPosition.value.latitude,
+                      _initialPosition.value.longitude)
               ActivityType.BIKING ->
                   repository.getBikingRoutesInfo(
-                      rad.toInt(), centerLocation.latitude, centerLocation.longitude)
+                      _range.value.toInt(),
+                      _initialPosition.value.latitude,
+                      _initialPosition.value.longitude)
             }
-        println("Launch 2")
         val osmData =
             when (response) {
               is Response.Failure -> {
@@ -192,7 +195,7 @@ constructor(
                 emptyList<OSMData>()
               }
             }
-        println("Launch 3")
+
         osmData.map { point ->
           when (activityType) {
             ActivityType.CLIMBING -> {
@@ -204,7 +207,6 @@ constructor(
             ActivityType.HIKING -> {
               val castedPoint = point as Relation
               activitiesIdsHolder.add(castedPoint.id)
-              println("3.5")
               activitiesDB.addActivityIfNonExisting(
                   Activity(
                       "",
@@ -231,23 +233,17 @@ constructor(
             }
           }
         }
-        println("Launch 4")
         activitiesHolder.addAll(activitiesDB.getActivitiesByOSMIds(activitiesIdsHolder, false))
         markerListHolder.addAll(activitiesToMarkers(activitiesHolder))
       }
 
-      println("activitiesHolder: ${activitiesHolder.size}")
-        println("activitiesIdsHolder: ${activitiesIdsHolder.size}")
-        println("markerListHolder: $markerListHolder")
-
-        _activities.value = activitiesHolder
-        _activityIds.value = activitiesIdsHolder
-        _markerList.value = markerListHolder
+      _activities.value = activitiesHolder
+      _activityIds.value = activitiesIdsHolder
+      _markerList.value = markerListHolder
       // order the activities by the selected ordering
       updateActivitiesByOrdering()
       _isLoading.value = false
     }
-    println("Before leaving")
   }
 
   fun setScreen(screen: DiscoverDisplayType) {
@@ -267,7 +263,7 @@ constructor(
 
   fun setSelectedActivitiesType(activitiesType: List<ActivityType>) {
     _selectedActivityTypes.value = activitiesType
-    updateActivitiesByOrdering()
+    fetchActivities()
   }
 
   fun setSelectedLevels(levels: UserActivitiesLevel) {
@@ -353,8 +349,7 @@ constructor(
         _activities.value = _activities.value.sortedBy { it.difficulty }.reversed()
       }
     }
-    _activities.value =
-        _activities.value.filter { filterWithDiff(_selectedLevels.value, it) }
+    _activities.value = _activities.value.filter { filterWithDiff(_selectedLevels.value, it) }
   }
 
   fun filterWithDiff(difficulties: UserActivitiesLevel, activity: Activity): Boolean {
@@ -395,6 +390,11 @@ constructor(
 
     // Add the itineraries to a map -> can access them by relation id
     // getItineraryFromRelations(hikingRelations)
+  }
+
+  fun updateRange(range: Double) {
+    _range.value = range
+    fetchActivities()
   }
 }
 

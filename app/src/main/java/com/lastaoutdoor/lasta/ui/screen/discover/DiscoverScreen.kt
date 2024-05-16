@@ -83,7 +83,7 @@ fun DiscoverScreen(
     favorites: List<String>,
     localities: List<Pair<String, LatLng>>,
     selectedLocality: Pair<String, LatLng>,
-    fetchActivities: (Double, LatLng) -> Unit,
+    fetchActivities: () -> Unit,
     setScreen: (DiscoverDisplayType) -> Unit,
     setRange: (Double) -> Unit,
     setSelectedLocality: (Pair<String, LatLng>) -> Unit,
@@ -111,6 +111,7 @@ fun DiscoverScreen(
     suggestions: Map<String, LatLng>,
     clearSuggestions: () -> Unit,
     updateInitialPosition: (LatLng) -> Unit,
+    updateRange: (Double) -> Unit,
 ) {
 
   var isRangePopup by rememberSaveable { mutableStateOf(false) }
@@ -122,8 +123,9 @@ fun DiscoverScreen(
       selectedLocality,
       setRange,
       setSelectedLocality,
-      fetchActivities,
-      isRangePopup) {
+      isRangePopup,
+      updateRange,
+      updateInitialPosition) {
         isRangePopup = false
       }
 
@@ -228,7 +230,7 @@ fun HeaderComposable(
     fetchSuggestion: (String) -> Unit,
     suggestions: Map<String, LatLng>,
     setSelectedLocality: (Pair<String, LatLng>) -> Unit,
-    fetchActivities: (Double, LatLng) -> Unit,
+    fetchActivities: () -> Unit,
     clearSuggestions: () -> Unit,
     updateInitialPosition: (LatLng) -> Unit,
     moveCamera: (CameraUpdate) -> Unit
@@ -369,7 +371,6 @@ fun ActivitiesDisplay(
     flipFavorite: (String) -> Unit,
     navigateToMoreInfo: () -> Unit
 ) {
-
   for (a in activities) {
     Card(
         modifier =

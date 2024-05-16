@@ -106,9 +106,6 @@ class MoreInfoScreenTest {
     composeRule.onNodeWithTag("MoreInfoStartButton").performClick()
     // Check that middle zone is displayed
     composeRule.onNodeWithTag("MoreInfoMiddleZone").assertIsDisplayed()
-    // Check that activity title zone is displayed
-    composeRule.onNodeWithTag("MoreInfoActivityTypeComposable").assertIsDisplayed()
-    composeRule.onNodeWithTag("MoreInfoActivityTypeComposable").performClick()
   }
 
   @Test

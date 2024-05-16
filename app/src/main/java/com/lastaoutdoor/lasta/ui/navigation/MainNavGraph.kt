@@ -3,6 +3,7 @@ package com.lastaoutdoor.lasta.ui.navigation
 import android.annotation.SuppressLint
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -99,6 +100,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           suggestions,
           discoverScreenViewModel::clearSuggestions,
           discoverScreenViewModel::updateInitialPosition,
+          discoverScreenViewModel::updateRange,
       )
     }
     composable(DestinationRoute.Favorites.route) { entry ->

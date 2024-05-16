@@ -67,7 +67,7 @@ class DiscoverScreenTest {
             fetchSuggestion = fetchSuggestion,
             suggestions = suggestion,
             setSelectedLocality = {},
-            fetchActivities = { _, _ -> },
+            fetchActivities = {},
             clearSuggestions = { suggestion = emptyMap() },
             updateInitialPosition = {},
             moveCamera = { _ -> },
@@ -122,7 +122,7 @@ class DiscoverScreenTest {
                     "Payerne" to LatLng(46.834190, 6.928969),
                     "Matterhorn" to LatLng(45.980537, 7.641618)),
             selectedLocality = "Ecublens" to LatLng(46.519962, 6.633597),
-            fetchActivities = { _, _ -> },
+            fetchActivities = {},
             setScreen = { screenType = it },
             setRange = {},
             setSelectedLocality = {},
@@ -150,7 +150,7 @@ class DiscoverScreenTest {
             suggestions = emptyMap(),
             clearSuggestions = {},
             updateInitialPosition = {},
-        )
+            updateRange = {})
       }
     }
     composeRule.onNodeWithTag("LoadingBarDiscover").assertIsDisplayed()
@@ -246,7 +246,7 @@ class DiscoverScreenTest {
                     "Payerne" to LatLng(46.834190, 6.928969),
                     "Matterhorn" to LatLng(45.980537, 7.641618)),
             selectedLocality = "Ecublens" to LatLng(46.519962, 6.633597),
-            fetchActivities = { _, _ -> },
+            fetchActivities = {},
             setScreen = { screenType = it },
             setRange = {},
             setSelectedLocality = {},
@@ -274,7 +274,7 @@ class DiscoverScreenTest {
             suggestions = emptyMap(),
             clearSuggestions = {},
             updateInitialPosition = {},
-        )
+            updateRange = {})
       }
     }
 
@@ -304,12 +304,12 @@ class DiscoverScreenTest {
                 ),
             selectedLocality = "Ecublens" to LatLng(46.519962, 6.633597),
             range = 5000.0,
-            fetchActivities = { _, _ -> },
             onDismissRequest = { isRangePopup = false },
             setRange = {},
             isRangePopup = isRangePopup,
             setSelectedLocality = {},
-        )
+            updateRange = {},
+            updateInitialPosition = {})
       }
     }
 
@@ -350,7 +350,7 @@ class DiscoverScreenTest {
                     "Payerne" to LatLng(46.834190, 6.928969),
                     "Matterhorn" to LatLng(45.980537, 7.641618)),
             selectedLocality = "Ecublens" to LatLng(46.519962, 6.633597),
-            fetchActivities = { _, _ -> },
+            fetchActivities = {},
             setScreen = { screenType = it },
             setRange = {},
             setSelectedLocality = {},
@@ -378,7 +378,7 @@ class DiscoverScreenTest {
             clearSuggestions = {},
             updateInitialPosition = {},
             markerList = emptyList(),
-        )
+            updateRange = {})
       }
     }
 
@@ -425,7 +425,7 @@ class DiscoverScreenTest {
                     "Matterhorn" to LatLng(45.980537, 7.641618),
                 ),
             selectedLocality = "Ecublens" to LatLng(46.519962, 6.633597),
-            fetchActivities = { _, _ -> },
+            fetchActivities = {},
             setScreen = { screenType = it },
             setRange = {},
             setSelectedLocality = {},
@@ -453,7 +453,7 @@ class DiscoverScreenTest {
             suggestions = emptyMap(),
             clearSuggestions = {},
             updateInitialPosition = {},
-        )
+            updateRange = {})
       }
     }
     composeRule.onNodeWithTag("textValueRow").assertIsDisplayed()
@@ -492,7 +492,7 @@ class DiscoverScreenTest {
                     "Matterhorn" to LatLng(45.980537, 7.641618),
                 ),
             selectedLocality = "Ecublens" to LatLng(46.519962, 6.633597),
-            fetchActivities = { _, _ -> },
+            fetchActivities = {},
             setScreen = { screenType = it },
             setRange = {},
             setSelectedLocality = {},
@@ -520,7 +520,7 @@ class DiscoverScreenTest {
             suggestions = emptyMap(),
             updateInitialPosition = {},
             clearSuggestions = {},
-        )
+            updateRange = {})
       }
     }
     composeRule.onNodeWithTag("textValueRow").assertIsDisplayed()
@@ -559,7 +559,7 @@ class DiscoverScreenTest {
                     "Matterhorn" to LatLng(45.980537, 7.641618),
                 ),
             selectedLocality = "Ecublens" to LatLng(46.519962, 6.633597),
-            fetchActivities = { _, _ -> },
+            fetchActivities = {},
             setScreen = { screenType = it },
             setRange = {},
             setSelectedLocality = {},
@@ -587,7 +587,7 @@ class DiscoverScreenTest {
             suggestions = emptyMap(),
             clearSuggestions = {},
             updateInitialPosition = {},
-        )
+            updateRange = {})
       }
     }
     composeRule.onNodeWithTag("textValueRow").assertIsDisplayed()
@@ -626,7 +626,7 @@ class DiscoverScreenTest {
                     "Matterhorn" to LatLng(45.980537, 7.641618),
                 ),
             selectedLocality = "Ecublens" to LatLng(46.519962, 6.633597),
-            fetchActivities = { _, _ -> },
+            fetchActivities = {},
             setScreen = { screenType = it },
             setRange = {},
             setSelectedLocality = {},
@@ -654,7 +654,7 @@ class DiscoverScreenTest {
             clearSuggestions = {},
             updateInitialPosition = {},
             markerList = emptyList(),
-        )
+            updateRange = {})
       }
     }
     composeRule.onNodeWithTag("textValueRow").assertIsDisplayed()
@@ -684,7 +684,7 @@ class DiscoverScreenTest {
             fetchSuggestion = { suggestions["Ecublens"] = LatLng(4.519962, 6.633597) },
             suggestions = suggestions,
             setSelectedLocality = {},
-            fetchActivities = { _, _ -> },
+            fetchActivities = {},
             clearSuggestions = { suggestions.clear() },
             updateInitialPosition = { initialPos = it },
         ) {

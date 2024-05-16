@@ -41,8 +41,9 @@ fun RangeSearchComposable(
     selectedLocality: Pair<String, LatLng>,
     setRange: (Double) -> Unit,
     setSelectedLocality: (Pair<String, LatLng>) -> Unit,
-    fetchActivities: (Double, LatLng) -> Unit,
     isRangePopup: Boolean,
+    updateRange: (Double) -> Unit,
+    updateInitialPosition: (LatLng) -> Unit,
     onDismissRequest: () -> Unit
 ) {
 
@@ -89,7 +90,8 @@ fun RangeSearchComposable(
                 // Button to apply the range
                 ElevatedButton(
                     onClick = {
-                      fetchActivities(range, selectedLocality.second)
+                      updateRange(range)
+                      updateInitialPosition(selectedLocality.second)
                       onDismissRequest()
                     },
                     modifier =
@@ -174,7 +176,8 @@ fun RangeSearchComposable(
                 // Button to apply the range
                 ElevatedButton(
                     onClick = {
-                      fetchActivities(range, selectedLocality.second)
+                      updateRange(range)
+                      updateInitialPosition(selectedLocality.second)
                       onDismissRequest()
                     },
                     modifier =
