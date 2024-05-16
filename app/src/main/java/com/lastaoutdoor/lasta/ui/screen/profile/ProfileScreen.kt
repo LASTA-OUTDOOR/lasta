@@ -192,7 +192,9 @@ fun UserInfo(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween) {
                   Text(
-                      text = "Bio" /* TODO : make this a xml string */,
+                      text =
+                          LocalContext.current.getString(
+                              R.string.bio) /* TODO : make this a xml string */,
                       style = MaterialTheme.typography.bodySmall,
                       modifier = Modifier.padding(8.dp, 8.dp, 0.dp, 8.dp))
                   if (isCurrentUser) {
@@ -482,7 +484,7 @@ fun BottomSheetProfile(
       onDismissRequest = { onDismissRequest() },
       modifier = Modifier.fillMaxWidth().wrapContentHeight().testTag("ProfileModal")) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-          Text("Bio" /* TODO : make this a xml string */)
+          Text(LocalContext.current.getString(R.string.bio))
           Spacer(modifier = Modifier.height(8.dp))
           TextField(
               value = text,
@@ -491,7 +493,7 @@ fun BottomSheetProfile(
                   text = it
                 }
               },
-              placeholder = { Text("Enter your bio...") /* TODO : make this a xml string */ },
+              placeholder = { Text(LocalContext.current.getString(R.string.enter_bio)) },
               singleLine = false,
               maxLines = 2,
               keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
@@ -504,11 +506,11 @@ fun BottomSheetProfile(
               modifier = Modifier.fillMaxWidth().testTag("ProfileBox")) {
                 Row {
                   Button(onClick = onDismissRequest) {
-                    Text("Cancel" /* TODO : make this a xml string */)
+                    Text(LocalContext.current.getString(R.string.cancel))
                   }
                   Spacer(modifier = Modifier.width(16.dp))
                   Button(onClick = { onBioChange(text) }) {
-                    Text("Save" /* TODO : make this a xml string */)
+                    Text(LocalContext.current.getString(R.string.save))
                   }
                 }
               }
