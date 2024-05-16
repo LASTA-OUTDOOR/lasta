@@ -27,6 +27,7 @@
     <string name="pitches">Seillängen</string>
     <string name="time">Zeit</string>
     <string name="elevation">Höhe</string>
+    <string name="enter_bio">Ihre Bio eingeben...</string>
     <string name="select_languague">Wählen Sie Ihre Sprache</string>
     <string name="languague">Sprache</string>
     <string name="select_fav_activity">Wählen Sie Ihre Lieblingsaktivität</string>
@@ -131,4 +132,6 @@
     <string name="submit_settings_prompt">Sind Sie sicher, dass Sie diese Einstellungen übermitteln möchten? (Hinweis: Sie können Ihre Präferenzen weiterhin in den Einstellungen der Profilseite ändern.)</string>
     <string name="yes">Ja</string>
     <string name="no">Nein</string>
+    <string name="cancel">Kündigen</string>
+    <string name="save">Speichern</string>
 </resources>

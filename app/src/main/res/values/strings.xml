@@ -70,6 +70,10 @@
     <string name = "pitches">Pitches</string>
     <string name = "time">Time</string>
     <string name = "elevation">Elevation</string>
+    <string name = "bio" translatable="false">Bio</string>
+    <string name = "enter_bio">Enter your Bio...</string>
+    <string name = "cancel">Cancel</string>
+    <string name="save">Save</string>
     <!--Setup-->
     <string name = "select_languague">Select your language</string>
     <string name = "languague">Language</string>
