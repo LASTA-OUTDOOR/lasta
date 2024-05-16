@@ -72,10 +72,10 @@ class MainActivity : ComponentActivity() {
             val newLocale = Locale(it.toLocale())
             if (locale != newLocale) {
               val configuration =
-                resources.configuration.apply {
-                  Locale.setDefault(newLocale)
-                  setLocale(newLocale)
-                }
+                  resources.configuration.apply {
+                    Locale.setDefault(newLocale)
+                    setLocale(newLocale)
+                  }
 
               resources.updateConfiguration(configuration, resources.displayMetrics)
               recreate()
