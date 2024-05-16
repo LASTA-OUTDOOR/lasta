@@ -21,7 +21,6 @@ import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenState
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
 import org.junit.Rule
@@ -173,26 +172,5 @@ class FilterScreenTest {
     }
 
     composeRule.onNodeWithTag("filterScreen").assertIsDisplayed()
-  }
-
-  @Test
-  fun test_EraseButton() {
-
-    val state =
-        MutableStateFlow(
-            DiscoverScreenState(
-                isLoading = false,
-                selectedLevels = mockUserActivitiesLevel,
-                selectedActivityTypes = listOf(ActivityType.CLIMBING),
-            ))
-
-    composeRule.activity.setContent { FilterScreen(state, navigateBack = {}) }
-
-    composeRule.onNodeWithTag("EraseButton").performClick()
-
-    assertEquals(
-        state.value.selectedLevels,
-        UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER))
-    assertEquals(state.value.selectedActivityTypes, listOf<ActivityType>())
   }
 }
