@@ -52,7 +52,8 @@ class MainActivity : ComponentActivity() {
                     })
         // update the language of the app when language is changed in the DB
         language.collect {
-          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+              !getSystemService(LocaleManager::class.java).applicationLocales.isEmpty) {
 
             val locale = getSystemService(LocaleManager::class.java).applicationLocales
             val newLocale = LocaleList(Locale.forLanguageTag(it.toLocale()))
