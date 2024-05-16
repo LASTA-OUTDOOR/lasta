@@ -191,14 +191,12 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
       val activityToDisplay = moreInfoScreenViewModel.activityToDisplay.value
       val usersList = moreInfoScreenViewModel.usersList.collectAsState().value
-      val ratings = moreInfoScreenViewModel.ratings.collectAsState().value
       val weatherViewModel: WeatherViewModel = entry.sharedViewModel(navController)
       val weather = weatherViewModel.weather.observeAsState().value
       val mapState = discoverScreenViewModel.mapState.collectAsState().value
       val initialZoom = discoverScreenViewModel.initialZoom
       val initialPosition = discoverScreenViewModel.initialPosition.collectAsState().value
       val selectedZoom = discoverScreenViewModel.selectedZoom
-      val selectedMarker = discoverScreenViewModel.selectedMarker.collectAsState().value
       val selectedItinerary = discoverScreenViewModel.selectedItinerary.collectAsState().value
       val markerList = discoverScreenViewModel.markerList.collectAsState().value
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)

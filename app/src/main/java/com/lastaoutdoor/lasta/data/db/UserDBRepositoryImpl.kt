@@ -15,6 +15,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.tasks.await
 
+@Suppress("UNCHECKED_CAST")
 @Singleton
 class UserDBRepositoryImpl @Inject constructor(context: Context, database: FirebaseFirestore) :
     UserDBRepository {

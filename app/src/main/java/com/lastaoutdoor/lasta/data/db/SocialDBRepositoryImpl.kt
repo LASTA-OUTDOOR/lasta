@@ -26,6 +26,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.tasks.await
 
+@Suppress("UNCHECKED_CAST")
 @Singleton
 class SocialDBRepositoryImpl
 @Inject
@@ -63,9 +64,9 @@ constructor(
                 climbingLevel = UserLevel.valueOf(levels["climbingLevel"] as String? ?: "BEGINNER"),
                 hikingLevel = UserLevel.valueOf(levels["hikingLevel"] as String? ?: "BEGINNER"),
                 bikingLevel = UserLevel.valueOf(levels["bikingLevel"] as String? ?: "BEGINNER"))
-        val senderFriendRequests = friend.get("friendRequests") as ArrayList<String>
-        val senderFriends = friend.get("friends") as ArrayList<String>
-        val senderFavorites = friend.get("favorites") as ArrayList<String>
+        val senderFriendRequests = friend.get("friendRequests") as ArrayList<*>
+        val senderFriends = friend.get("friends") as ArrayList<*>
+        val senderFavorites = friend.get("favorites") as ArrayList<*>
 
         val friendModel =
             UserModel(
@@ -77,9 +78,9 @@ constructor(
                 language = senderLanguagetoLanguage,
                 prefActivity = senderPrefActivity,
                 levels = senderLevels,
-                friends = senderFriends,
-                friendRequests = senderFriendRequests,
-                favorites = senderFavorites)
+                friends = senderFriends as ArrayList<String>,
+                friendRequests = senderFriendRequests as ArrayList<String>,
+                favorites = senderFavorites as ArrayList<String>)
         friends.add(friendModel)
       }
     }
@@ -91,7 +92,7 @@ constructor(
     val friendRequests: ArrayList<UserModel> = ArrayList()
     val userDocument = userCollection.document(userId).get().await()
     val friendRequestIds = userDocument.get("friendRequests") as? ArrayList<String>
-    if (friendRequestIds != null && friendRequestIds.isNotEmpty()) {
+    if (!friendRequestIds.isNullOrEmpty()) {
       val friendRequestsQuery =
           userCollection.whereIn(FieldPath.documentId(), friendRequestIds).get().await()
       if (!friendRequestsQuery.isEmpty) {
@@ -112,9 +113,9 @@ constructor(
                       UserLevel.valueOf(levels["climbingLevel"] as String? ?: "BEGINNER"),
                   hikingLevel = UserLevel.valueOf(levels["hikingLevel"] as String? ?: "BEGINNER"),
                   bikingLevel = UserLevel.valueOf(levels["bikingLevel"] as String? ?: "BEGINNER"))
-          val senderFriendRequests = friendRequest.get("friendRequests") as ArrayList<String>
-          val senderFriends = friendRequest.get("friends") as ArrayList<String>
-          val senderFavorites = friendRequest.get("favorites") as ArrayList<String>
+          val senderFriendRequests = friendRequest.get("friendRequests") as ArrayList<*>
+          val senderFriends = friendRequest.get("friends") as ArrayList<*>
+          val senderFavorites = friendRequest.get("favorites") as ArrayList<*>
 
           val friendRequestModel =
               UserModel(
@@ -126,9 +127,9 @@ constructor(
                   language = senderLanguagetoLanguage,
                   prefActivity = senderPrefActivity,
                   levels = senderLevels,
-                  friends = senderFriends,
-                  friendRequests = senderFriendRequests,
-                  favorites = senderFavorites)
+                  friends = senderFriends as ArrayList<String>,
+                  friendRequests = senderFriendRequests as ArrayList<String>,
+                  favorites = senderFavorites as ArrayList<String>)
           friendRequests.add(friendRequestModel)
         }
       }

@@ -124,4 +124,12 @@ class NetworkModuleTest {
         NetworkModule.provideSocialDBRepository(context, database, mockk(), mockk(), mockk())
     assertNotNull(socialDB)
   }
+
+  @Test
+  fun `FCM DB is provided`() {
+    val database = mockk<FirebaseFirestore>()
+    every { database.collection(any()) } returns mockk()
+    val fcmDB = NetworkModule.provideTokenDBRepository(context, database)
+    assertNotNull(fcmDB)
+  }
 }
