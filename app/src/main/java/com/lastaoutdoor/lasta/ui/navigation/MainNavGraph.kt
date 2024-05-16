@@ -289,7 +289,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
     }
 
     composable(DestinationRoute.Settings.route) { entry ->
-      val authViewModel: AuthViewModel = hiltViewModel(entry)
+      val authViewModel: AuthViewModel = entry.sharedViewModel(navController)
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
       val language = preferencesViewModel.language.collectAsState(initial = Language.ENGLISH).value
       val prefActivity = preferencesViewModel.prefActivity.collectAsState(ActivityType.HIKING).value
