@@ -1,7 +1,6 @@
 package com.lastaoutdoor.lasta.viewmodel
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
@@ -129,8 +128,7 @@ constructor(
           setSelectedActivitiesType = { activitiesType ->
             setSelectedActivitiesType(activitiesType)
           },
-          setShowCompleted = { showCompleted -> setShowCompleted(showCompleted) }
-      )
+          setShowCompleted = { showCompleted -> setShowCompleted(showCompleted) })
 
   init {
     viewModelScope.launch {
@@ -269,7 +267,8 @@ constructor(
             }
           }
         }
-        activitiesHolder.addAll(activitiesDB.getActivitiesByOSMIds(activitiesIdsHolder, _state.value.showCompleted))
+        activitiesHolder.addAll(
+            activitiesDB.getActivitiesByOSMIds(activitiesIdsHolder, _state.value.showCompleted))
         markerListHolder.addAll(activitiesToMarkers(activitiesHolder))
         // remove duplicates
         markerListHolder.distinct()
@@ -297,7 +296,7 @@ constructor(
     _state.value = _state.value.copy(range = range)
   }
 
-    // toggle wether we show completed activities or not
+  // toggle wether we show completed activities or not
   fun setShowCompleted(showCompleted: Boolean) {
     _state.value = _state.value.copy(showCompleted = showCompleted)
     fetchActivities()

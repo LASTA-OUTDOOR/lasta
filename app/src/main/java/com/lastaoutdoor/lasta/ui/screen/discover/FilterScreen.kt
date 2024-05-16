@@ -98,14 +98,11 @@ fun FilterScreen(
 
   val snapshotSelectedActivitiesTypes = collectSelectedActivitiesTypes()
 
-
   val selectedActivitiesTypes = collectSelectedActivitiesTypes()
 
   var checkedBox by remember { mutableStateOf(true) }
 
-  Column(modifier = Modifier
-      .fillMaxSize()
-      .testTag("filterScreen")) {
+  Column(modifier = Modifier.fillMaxSize().testTag("filterScreen")) {
     MediumTopAppBar(
         title = {
           Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
@@ -127,9 +124,7 @@ fun FilterScreen(
 
     // Filter by activity type
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp), horizontalAlignment = Alignment.Start) {
+        modifier = Modifier.fillMaxSize().padding(16.dp), horizontalAlignment = Alignment.Start) {
           Column {
             Text(
                 text = stringResource(id = R.string.filter_activity_type),
@@ -139,9 +134,7 @@ fun FilterScreen(
             FlowRow(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
-                modifier = Modifier
-                    .padding(horizontal = 8.dp, vertical = 16.dp)
-                    .fillMaxWidth()) {
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp).fillMaxWidth()) {
                   activities.forEach { activity ->
                     ToggleButton(
                         activity.resourcesToString(LocalContext.current),
@@ -225,9 +218,7 @@ fun FilterScreen(
                 }
           }
           Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp)) {
+            Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
               Button(
                   onClick = {
                     // go back to snapshot values
@@ -260,9 +251,7 @@ fun FilterScreen(
                     navigateBack()
                   },
                   elevation = ButtonDefaults.elevatedButtonElevation(3.dp),
-                  modifier = Modifier
-                      .testTag("applyFilterOptionsButton")
-                      .weight(0.6f),
+                  modifier = Modifier.testTag("applyFilterOptionsButton").weight(0.6f),
                   colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
                     Text(
                         LocalContext.current.getString(R.string.apply),
