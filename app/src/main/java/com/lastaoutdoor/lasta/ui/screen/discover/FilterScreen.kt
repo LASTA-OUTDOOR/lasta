@@ -1,6 +1,5 @@
 package com.lastaoutdoor.lasta.ui.screen.discover
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -49,24 +48,22 @@ import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
 import com.lastaoutdoor.lasta.ui.screen.discover.components.ToggleButton
 import com.lastaoutdoor.lasta.ui.theme.AccentGreen
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
+import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenCallBacks
+import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenState
 import kotlinx.coroutines.flow.StateFlow
 
-@SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun FilterScreen(
-    selectedLevels: StateFlow<UserActivitiesLevel>,
-    setSelectedLevels: (UserActivitiesLevel) -> Unit,
-    selectedActivitiesType: StateFlow<List<ActivityType>>,
-    setSelectedActivitiesType: (List<ActivityType>) -> Unit,
-    showCompleted: StateFlow<Boolean>,
-    setShowCompleted: (Boolean) -> Unit,
+    discoverScreenState: StateFlow<DiscoverScreenState>,
+    discoverScreenCallBacks: DiscoverScreenCallBacks,
     navigateBack: () -> Unit
 ) {
 
-  val activities = ActivityType.values()
+  val userSelectedLevels = discoverScreenState.collectAsState().value.selectedLevels
+  val selectedActivitiesType = discoverScreenState.collectAsState().value.selectedActivityTypes
 
-  val userSelectedLevels = selectedLevels.collectAsState().value
+  val activities = ActivityType.values()
 
   val activitiesLevelArray = remember {
     mutableStateListOf(
@@ -74,35 +71,41 @@ fun FilterScreen(
         userSelectedLevels.hikingLevel,
         userSelectedLevels.bikingLevel)
   }
-  val checked = showCompleted.collectAsState().value
+  val checked = discoverScreenState.collectAsState().value.showCompleted
   // internal function to avoid code duplication
   @Composable
   fun collectSelectedActivitiesTypes(): SnapshotStateList<ActivityType> {
     // really cumbersome way to get the number of activities but didn't want to break the rest of
     // the
     // code (implemented by someone else)
-    val nrOfActivities = selectedActivitiesType.value.size
+    val nrOfActivities = selectedActivitiesType.size
     return when (nrOfActivities) {
       0 -> remember { mutableStateListOf() }
-      1 -> remember { mutableStateListOf(selectedActivitiesType.value.first()) }
+      1 -> remember { mutableStateListOf(selectedActivitiesType.first()) }
       2 ->
           remember {
-            mutableStateListOf(
-                selectedActivitiesType.value.first(), selectedActivitiesType.value.last())
+            mutableStateListOf(selectedActivitiesType.first(), selectedActivitiesType.last())
           }
       else ->
           remember {
             mutableStateListOf(
-                selectedActivitiesType.value.first(),
-                selectedActivitiesType.value[1],
-                selectedActivitiesType.value.last())
+                selectedActivitiesType.first(),
+                selectedActivitiesType[1],
+                selectedActivitiesType.last())
           }
     }
   }
-  val selectedActivitiesTypes = collectSelectedActivitiesTypes()
+
   val snapshotSelectedActivitiesTypes = collectSelectedActivitiesTypes()
 
-  Column(modifier = Modifier.fillMaxSize().testTag("filterScreen")) {
+
+  val selectedActivitiesTypes = collectSelectedActivitiesTypes()
+
+  var checkedBox by remember { mutableStateOf(true) }
+
+  Column(modifier = Modifier
+      .fillMaxSize()
+      .testTag("filterScreen")) {
     MediumTopAppBar(
         title = {
           Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
@@ -124,7 +127,9 @@ fun FilterScreen(
 
     // Filter by activity type
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp), horizontalAlignment = Alignment.Start) {
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp), horizontalAlignment = Alignment.Start) {
           Column {
             Text(
                 text = stringResource(id = R.string.filter_activity_type),
@@ -134,7 +139,9 @@ fun FilterScreen(
             FlowRow(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp).fillMaxWidth()) {
+                modifier = Modifier
+                    .padding(horizontal = 8.dp, vertical = 16.dp)
+                    .fillMaxWidth()) {
                   activities.forEach { activity ->
                     ToggleButton(
                         activity.resourcesToString(LocalContext.current),
@@ -195,7 +202,7 @@ fun FilterScreen(
             Row(verticalAlignment = Alignment.CenterVertically) {
               Checkbox(
                   checked = checked,
-                  onCheckedChange = { setShowCompleted(it) },
+                  onCheckedChange = { discoverScreenCallBacks.setShowCompleted(it) },
                   colors =
                       CheckboxDefaults.colors(
                           uncheckedColor = MaterialTheme.colorScheme.onBackground,
@@ -218,7 +225,9 @@ fun FilterScreen(
                 }
           }
           Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
-            Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp)) {
               Button(
                   onClick = {
                     // go back to snapshot values
@@ -241,16 +250,19 @@ fun FilterScreen(
               // Apply the filter options
               ElevatedButton(
                   onClick = {
-                    setSelectedLevels(
+                    discoverScreenCallBacks.setSelectedLevels(
                         UserActivitiesLevel(
                             activitiesLevelArray[0],
                             activitiesLevelArray[1],
                             activitiesLevelArray[2]))
-                    setSelectedActivitiesType(selectedActivitiesTypes.toList())
+                    discoverScreenCallBacks.setSelectedActivitiesType(
+                        selectedActivitiesTypes.toList())
                     navigateBack()
                   },
                   elevation = ButtonDefaults.elevatedButtonElevation(3.dp),
-                  modifier = Modifier.testTag("applyFilterOptionsButton").weight(0.6f),
+                  modifier = Modifier
+                      .testTag("applyFilterOptionsButton")
+                      .weight(0.6f),
                   colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
                     Text(
                         LocalContext.current.getString(R.string.apply),
