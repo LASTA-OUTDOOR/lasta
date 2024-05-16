@@ -4,9 +4,9 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -117,7 +117,7 @@ fun SettingsScreen(
               updateBikingLevel = updateBikingLevel)
         }
 
-        item { Spacer(modifier = Modifier.fillMaxHeight(1f).testTag("settingsSpacer")) }
+        item { Spacer(modifier = Modifier.height(10.dp).testTag("settingsSpacer")) }
 
         item {
           Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
