@@ -120,7 +120,6 @@ fun UnavailableStepCounter() {
 @Composable
 fun StepsTakenField(globalStepCount: Int) {
   Column(
-      modifier = Modifier.fillMaxSize(),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
@@ -129,7 +128,6 @@ fun StepsTakenField(globalStepCount: Int) {
             modifier = Modifier.width(99.dp).height(26.dp).testTag("StepCountTag"))
         Text(
             text = "$globalStepCount",
-            color = Black,
             fontSize = 38.sp,
             fontWeight = FontWeight(600),
             modifier =
