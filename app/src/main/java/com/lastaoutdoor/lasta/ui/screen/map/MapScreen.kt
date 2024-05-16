@@ -2,10 +2,7 @@
 
 package com.lastaoutdoor.lasta.ui.screen.map
 
-import android.Manifest
 import android.annotation.SuppressLint
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -78,37 +75,6 @@ fun InformationSheet(
   }
 }
 
-// Composable asking user for permissions to access location
-// @param viewModel: the viewmodel that will be updated with the permission status
-@Composable
-private fun ManagePermissions(updatePermission: (Boolean) -> Unit) {
-  // Permission for geo-location
-  val requestPermissionLauncher =
-      rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-          permissions ->
-        when {
-          permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
-            // Precise location access granted.
-            updatePermission(true)
-          }
-          permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
-            // Only approximate location access granted.
-            updatePermission(false) // this is not enough for google map to work properly
-          }
-          else -> {
-            // No location access granted.
-            updatePermission(false)
-          }
-        }
-      }
-
-  LaunchedEffect(Unit) {
-    requestPermissionLauncher.launch(
-        arrayOf(
-            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION))
-  }
-}
-
 // This composable shows a map provided by Google Maps and will be used to show the activities and
 // interact with them
 // @param viewModel: the viewmodel that will be used to fetch the activities and update the map
@@ -117,7 +83,6 @@ private fun ManagePermissions(updatePermission: (Boolean) -> Unit) {
 @Composable
 fun mapScreen(
     state: MapState,
-    updatePermission: (Boolean) -> Unit,
     initialPosition: LatLng,
     initialZoom: Float,
     updateMarkers: (LatLng, Double) -> Unit,
@@ -129,9 +94,6 @@ fun mapScreen(
     markerList: List<Marker>,
     clearSelectedMarker: () -> Unit
 ): (CameraUpdate) -> Unit {
-
-  // Ask for permissions to determine what view to display
-  ManagePermissions(updatePermission)
 
   // camera that goes to the initial position and can be moved by the user
   val cameraPositionState = rememberCameraPositionState {

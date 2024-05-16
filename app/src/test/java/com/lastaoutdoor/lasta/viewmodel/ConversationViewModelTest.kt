@@ -4,6 +4,7 @@ import FakeSocialDB
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeConnectivityviewRepo
 import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserDB
+import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -26,8 +27,7 @@ class ConversationViewModelTest {
   @Before
   fun setUp() {
     viewModel =
-        ConversationViewModel(
-            fakeUserDB, fakeSocialDB, fakeConnectivityViewRepo, fakePreferencesRepository)
+        ConversationViewModel(fakeUserDB, mockk(), mockk(), fakeSocialDB, fakePreferencesRepository)
   }
 
   @ExperimentalCoroutinesApi val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
