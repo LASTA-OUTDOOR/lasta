@@ -47,6 +47,8 @@ class FilterScreenTest {
   private val mockSelectedLevels = MutableStateFlow(mockUserActivitiesLevel)
   private val mockSelectedActivitiesType = MutableStateFlow(listOf<ActivityType>())
   private var navigateBackTriggered = false
+  private var updatedLevels = false
+  private var updatedActivities = false
 
   @Before
   fun setUp() {
@@ -165,7 +167,7 @@ class FilterScreenTest {
   }
 
   @Test
-  fun testEraseButton() {
+  fun test_EraseButton() {
     var updatedLevels: UserActivitiesLevel? = null
     var updatedActivities: List<ActivityType>? = null
 
@@ -185,9 +187,7 @@ class FilterScreenTest {
   }
 
   @Test
-  fun testApplyFilterOptionsButton() {
-    var updatedLevels = false
-    var updatedActivities = false
+  fun test_ApplyFilterOptionsButton() {
 
     composeRule.activity.setContent {
       FilterScreen(
