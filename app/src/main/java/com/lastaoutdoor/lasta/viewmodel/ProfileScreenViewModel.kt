@@ -198,7 +198,9 @@ constructor(
     viewModelScope.launch {
       try {
         val user = userDBRepo.getUserById(userId)
-        if (user != null) updateUser(user)
+        if (user != null) {
+          updateUser(user)
+        }
       } catch (e: Exception) {
         e.printStackTrace()
         errorToast.showToast(ErrorType.ERROR_DATABASE)
