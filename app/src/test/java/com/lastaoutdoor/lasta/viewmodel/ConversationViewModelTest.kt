@@ -28,8 +28,6 @@ class ConversationViewModelTest {
   private var fakeConnectivityViewRepo = FakeConnectivityviewRepo()
   private var errorToast = mockk<ErrorToast>()
 
-
-
   @Before
   fun setUp() {
     viewModel =
@@ -37,7 +35,6 @@ class ConversationViewModelTest {
             fakeUserDB, mockk(), mockk(), fakeSocialDB, fakePreferencesRepository, errorToast)
 
     every { errorToast.showToast(ErrorType.ERROR_DATABASE) } returns Unit
-
   }
 
   @ExperimentalCoroutinesApi val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
@@ -71,9 +68,9 @@ class ConversationViewModelTest {
     fakeUserDB.shouldThrowException = true
     fakeSocialDB.shouldThrowException = true
     try {
-        viewModel.updateConversation()
-        } catch (e: Exception) {
-          errorToast.showToast(ErrorType.ERROR_DATABASE)
+      viewModel.updateConversation()
+    } catch (e: Exception) {
+      errorToast.showToast(ErrorType.ERROR_DATABASE)
     }
   }
 
@@ -82,9 +79,9 @@ class ConversationViewModelTest {
     fakeUserDB.shouldThrowException = true
     fakeSocialDB.shouldThrowException = true
     try {
-        viewModel.send("message")
-        } catch (e: Exception) {
-          errorToast.showToast(ErrorType.ERROR_DATABASE)
+      viewModel.send("message")
+    } catch (e: Exception) {
+      errorToast.showToast(ErrorType.ERROR_DATABASE)
     }
   }
 }

@@ -14,7 +14,6 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -38,7 +37,6 @@ class PreferencesViewModelTest {
     Dispatchers.setMain(testDispatcher)
 
     every { errorToast.showToast(ErrorType.ERROR_DATABASE) } returns Unit
-
   }
 
   @ExperimentalCoroutinesApi
@@ -104,72 +102,71 @@ class PreferencesViewModelTest {
   }
 
   @Test
-    fun `update pref activity offline`() {
-        db2.shouldThrowException = true
-        try {
-        vm.updatePrefActivity(ActivityType.CLIMBING)
-        } catch (e: Exception) {
-        coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
-        }
+  fun `update pref activity offline`() {
+    db2.shouldThrowException = true
+    try {
+      vm.updatePrefActivity(ActivityType.CLIMBING)
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
+    }
+  }
+
+  @Test
+  fun `update activity levels offline`() {
+    db2.shouldThrowException = true
+    try {
+      vm.updateActivityLevels(
+          UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER))
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
+    }
+  }
+
+  @Test
+  fun `update climbing level offline`() {
+    db2.shouldThrowException = true
+    try {
+      vm.updateClimbingLevel(UserLevel.BEGINNER)
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
+    }
+  }
+
+  @Test
+  fun `update hiking level offline`() {
+    db2.shouldThrowException = true
+    try {
+      vm.updateHikingLevel(UserLevel.BEGINNER)
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
+    }
+  }
+
+  @Test
+  fun `update biking level offline`() {
+    db2.shouldThrowException = true
+    try {
+      vm.updateBikingLevel(UserLevel.BEGINNER)
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
+    }
+  }
+
+  @Test
+  fun `flip favorite offline`() {
+    db2.shouldThrowException = true
+    vm.favorites = MutableStateFlow(listOf("1"))
+    try {
+      vm.flipFavorite("1")
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
     }
 
-    @Test
-    fun `update activity levels offline`() {
-        db2.shouldThrowException = true
-        try {
-        vm.updateActivityLevels(UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER))
-        } catch (e: Exception) {
-        coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
-        }
+    vm.favorites = MutableStateFlow(listOf())
+    try {
+      vm.flipFavorite("1")
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
     }
-
-    @Test
-    fun `update climbing level offline`() {
-        db2.shouldThrowException = true
-        try {
-        vm.updateClimbingLevel(UserLevel.BEGINNER)
-        } catch (e: Exception) {
-        coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
-        }
-    }
-
-    @Test
-    fun `update hiking level offline`() {
-        db2.shouldThrowException = true
-        try {
-        vm.updateHikingLevel(UserLevel.BEGINNER)
-        } catch (e: Exception) {
-        coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
-        }
-    }
-
-    @Test
-    fun `update biking level offline`() {
-        db2.shouldThrowException = true
-        try {
-        vm.updateBikingLevel(UserLevel.BEGINNER)
-        } catch (e: Exception) {
-        coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
-        }
-    }
-
-    @Test
-    fun `flip favorite offline`() {
-        db2.shouldThrowException = true
-        vm.favorites = MutableStateFlow(listOf("1"))
-        try {
-        vm.flipFavorite("1")
-        } catch (e: Exception) {
-        coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
-        }
-
-        vm.favorites = MutableStateFlow(listOf())
-        try {
-        vm.flipFavorite("1")
-        } catch (e: Exception) {
-        coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
-        }
-    }
-
-
+  }
 }

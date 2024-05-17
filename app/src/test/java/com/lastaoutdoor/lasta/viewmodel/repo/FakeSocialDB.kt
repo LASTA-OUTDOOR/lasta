@@ -17,17 +17,17 @@ class FakeSocialDB : SocialDBRepository {
       ConversationModel(listOf(UserModel("moi"), UserModel("toi")), listOf(fakeMSG), fakeMSG)
 
   override suspend fun getFriends(friendIds: List<String>): List<UserModel> {
-      if (shouldThrowException) {
-        throw Exception("FakeSocialDB: getFriends failed")
-      }
-        return listOf(fakeUserModel)
+    if (shouldThrowException) {
+      throw Exception("FakeSocialDB: getFriends failed")
+    }
+    return listOf(fakeUserModel)
   }
 
   override suspend fun getFriendRequests(userId: String): List<UserModel> {
-      if (shouldThrowException) {
-        throw Exception("FakeSocialDB: getFriendRequests failed")
-      }
-        return listOf(fakeUserModel)
+    if (shouldThrowException) {
+      throw Exception("FakeSocialDB: getFriendRequests failed")
+    }
+    return listOf(fakeUserModel)
   }
 
   override suspend fun getLatestFriendActivities(
@@ -35,10 +35,10 @@ class FakeSocialDB : SocialDBRepository {
       timeFrame: TimeFrame,
       friends: List<UserModel>
   ): List<FriendsActivities> {
-      if (shouldThrowException) {
-        throw Exception("FakeSocialDB: getLatestFriendActivities failed")
-      }
-      return listOf(FriendsActivities(fakeUserModel, fakeActivity, Activity("1", 1)))
+    if (shouldThrowException) {
+      throw Exception("FakeSocialDB: getLatestFriendActivities failed")
+    }
+    return listOf(FriendsActivities(fakeUserModel, fakeActivity, Activity("1", 1)))
   }
 
   override suspend fun getConversation(
@@ -46,40 +46,40 @@ class FakeSocialDB : SocialDBRepository {
       friend: UserModel,
       createNew: Boolean
   ): ConversationModel {
-        if (shouldThrowException) {
-            throw Exception("FakeSocialDB: getConversation failed")
-        }
-        return fakeConfModel
+    if (shouldThrowException) {
+      throw Exception("FakeSocialDB: getConversation failed")
+    }
+    return fakeConfModel
   }
 
   override suspend fun getAllConversations(userId: String): List<ConversationModel> {
-      if (shouldThrowException) {
-                throw Exception("FakeSocialDB: getAllConversations failed")
-            }
-      return listOf(fakeConfModel)
+    if (shouldThrowException) {
+      throw Exception("FakeSocialDB: getAllConversations failed")
+    }
+    return listOf(fakeConfModel)
   }
 
   override suspend fun sendFriendRequest(userId: String, receiverId: String) {
-        if (shouldThrowException) {
-                    throw Exception("FakeSocialDB: sendFriendRequest failed")
-                }
+    if (shouldThrowException) {
+      throw Exception("FakeSocialDB: sendFriendRequest failed")
+    }
   }
 
   override suspend fun acceptFriendRequest(source: String, requester: String) {
-        if (shouldThrowException) {
-                    throw Exception("FakeSocialDB: acceptFriendRequest failed")
-                }
+    if (shouldThrowException) {
+      throw Exception("FakeSocialDB: acceptFriendRequest failed")
+    }
   }
 
   override suspend fun declineFriendRequest(source: String, requester: String) {
-        if (shouldThrowException) {
-                    throw Exception("FakeSocialDB: declineFriendRequest failed")
-                }
+    if (shouldThrowException) {
+      throw Exception("FakeSocialDB: declineFriendRequest failed")
+    }
   }
 
   override suspend fun sendMessage(userId: String, friendUserId: String, message: String) {
-        if (shouldThrowException) {
-                    throw Exception("FakeSocialDB: sendMessage failed")
-                }
+    if (shouldThrowException) {
+      throw Exception("FakeSocialDB: sendMessage failed")
+    }
   }
 }
