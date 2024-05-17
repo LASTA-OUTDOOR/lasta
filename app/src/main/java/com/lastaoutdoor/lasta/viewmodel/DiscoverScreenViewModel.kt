@@ -135,18 +135,17 @@ constructor(
 
   init {
     viewModelScope.launch {
-
       try {
-          _state.value =
-              _state.value.copy(
-                  selectedActivityTypes =
-                  preferencesRepository.userPreferencesFlow
-                      .map { listOf(it.user.prefActivity) }
-                      .first())
-          _state.value =
-              _state.value.copy(
-                  selectedLevels =
-                  preferencesRepository.userPreferencesFlow.map { it.user.levels }.first())
+        _state.value =
+            _state.value.copy(
+                selectedActivityTypes =
+                    preferencesRepository.userPreferencesFlow
+                        .map { listOf(it.user.prefActivity) }
+                        .first())
+        _state.value =
+            _state.value.copy(
+                selectedLevels =
+                    preferencesRepository.userPreferencesFlow.map { it.user.levels }.first())
         val userId = preferencesRepository.userPreferencesFlow.map { it.user.userId }.first()
         val token = FirebaseMessaging.getInstance().token.await()
         tokenDBRepository.uploadUserToken(userId, token)
@@ -299,7 +298,8 @@ constructor(
           }
         }
         try {
-          activitiesHolder.addAll(activitiesDB.getActivitiesByOSMIds(activitiesIdsHolder, _state.value.showCompleted))
+          activitiesHolder.addAll(
+              activitiesDB.getActivitiesByOSMIds(activitiesIdsHolder, _state.value.showCompleted))
         } catch (e: Exception) {
           e.printStackTrace()
           errorToast.showToast(ErrorType.ERROR_DATABASE)
@@ -410,30 +410,25 @@ constructor(
 
   private fun showItinerary(id: Long, startPosition: LatLng, activityType: ActivityType) {
     viewModelScope.launch {
-        try {
-            val response =
-                when (activityType) {
-                    ActivityType.HIKING -> repository.getHikingRouteById(id)
-                    ActivityType.BIKING -> repository.getBikingRouteById(id)
-                    ActivityType.CLIMBING -> repository.getClimbingPointById(id)
-                }
-            val itinerary = (response as Response.Success).data
-
+      try {
+        val response =
             when (activityType) {
-                ActivityType.HIKING,
-                ActivityType.BIKING -> showRouteItinerary(id, itinerary as Relation, startPosition)
-
-                ActivityType.CLIMBING -> showClimbingItinerary(
-                    id,
-                    itinerary as NodeWay,
-                    startPosition
-                )
+              ActivityType.HIKING -> repository.getHikingRouteById(id)
+              ActivityType.BIKING -> repository.getBikingRouteById(id)
+              ActivityType.CLIMBING -> repository.getClimbingPointById(id)
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            errorToast.showToast(ErrorType.ERROR_OSM_API)
-            return@launch
+        val itinerary = (response as Response.Success).data
+
+        when (activityType) {
+          ActivityType.HIKING,
+          ActivityType.BIKING -> showRouteItinerary(id, itinerary as Relation, startPosition)
+          ActivityType.CLIMBING -> showClimbingItinerary(id, itinerary as NodeWay, startPosition)
         }
+      } catch (e: Exception) {
+        e.printStackTrace()
+        errorToast.showToast(ErrorType.ERROR_OSM_API)
+        return@launch
+      }
     }
   }
 

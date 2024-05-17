@@ -13,7 +13,6 @@ import com.lastaoutdoor.lasta.models.api.Tags
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
-import com.lastaoutdoor.lasta.repository.api.ActivityRepository
 import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.utils.OrderingBy
 import com.lastaoutdoor.lasta.utils.Response
