@@ -26,7 +26,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.SphericalUtil
@@ -39,6 +38,7 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.map.MapItinerary
 import com.lastaoutdoor.lasta.models.map.Marker
+import com.lastaoutdoor.lasta.utils.getScaledBitmapDescriptor
 import com.lastaoutdoor.lasta.viewmodel.MapState
 
 // Called after a click on a pointer on the map
@@ -54,7 +54,6 @@ fun InformationSheet(
     selectedMarker: Marker?,
     onDismissRequest: () -> Unit
 ) {
-
   // We use the rememberSavable to keep the state of the sheet (whether it is open or not)
   if (isSheetOpen) {
     ModalBottomSheet(
@@ -198,7 +197,8 @@ private fun GoogleMapComposable(
     if (selectedItinerary != null) {
       Polyline(
           points = selectedItinerary.points,
-          width = 6f,
+          color = Color.Blue,
+          width = 12f,
       )
     }
 
@@ -207,7 +207,7 @@ private fun GoogleMapComposable(
       Marker(
           state = MarkerState(position = marker.position),
           title = marker.name,
-          icon = BitmapDescriptorFactory.fromResource(marker.icon),
+          icon = getScaledBitmapDescriptor(LocalContext.current, marker.icon, 150, 150),
           snippet = marker.description,
           onClick = {
             if (selectedMarker == null || selectedMarker.id != marker.id) {

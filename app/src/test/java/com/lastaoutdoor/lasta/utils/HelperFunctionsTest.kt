@@ -1,14 +1,29 @@
 package com.lastaoutdoor.lasta.utils
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.VectorDrawable
+import androidx.core.content.ContextCompat
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.time.TimeProvider
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkConstructor
+import io.mockk.mockkStatic
 import io.mockk.unmockkObject
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 import java.util.*
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertNotNull
+import junit.framework.TestCase.assertNull
 import org.junit.Test
 
 class HelperFunctionsTest {
@@ -158,6 +173,52 @@ class HelperFunctionsTest {
   fun `Time from millis`() {
     val time = 10800000L // eq of 3 hours
     assert(timeFromMillis(time) == "03:00:00")
+  }
+
+  @Test
+  fun testGetScaledBitmapDescriptorInvalidId() {
+    val context: Context = mockk(relaxed = true)
+    val vectorResId = 0 // invalid resource ID
+
+    val width = 100
+    val height = 100
+
+    val result = getScaledBitmapDescriptor(context, vectorResId, width, height)
+
+    assertNull(result)
+  }
+
+  @Test
+  fun testGetScaledBitmapDescriptorValidId() {
+    // Mock dependencies
+    val context: Context = mockk(relaxed = true)
+    val vectorDrawable: Drawable = mockk(relaxed = true)
+    val bitmap: Bitmap = mockk(relaxed = true)
+    val canvas: Canvas = mockk(relaxed = true)
+    val bitmapDescriptor: BitmapDescriptor = mockk()
+
+    // Mock static methods
+    mockkStatic(ContextCompat::class)
+    mockkStatic(Bitmap::class)
+    mockkStatic(BitmapDescriptorFactory::class)
+    mockkConstructor(VectorDrawable::class)
+
+    // Mock method calls
+    every { ContextCompat.getDrawable(context, R.drawable.hiking_icon) } returns vectorDrawable
+    every { Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888) } returns bitmap
+    every { anyConstructed<VectorDrawable>().draw(any()) } just Runs
+    every { BitmapDescriptorFactory.fromBitmap(bitmap) } returns bitmapDescriptor
+
+    // Parameters
+    val vectorResId = R.drawable.hiking_icon
+    val width = 100
+    val height = 100
+
+    // Call the function
+    val result = getScaledBitmapDescriptor(context, vectorResId, width, height)
+
+    // Verify
+    assertNotNull(result)
   }
 }
 /*
