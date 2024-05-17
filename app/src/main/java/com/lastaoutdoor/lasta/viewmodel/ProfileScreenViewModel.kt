@@ -104,7 +104,6 @@ constructor(
                 numPitches = 5,
                 totalElevation = 449.3f))
       } catch (e: Exception) {
-        e.printStackTrace()
         errorToast.showToast(ErrorType.ERROR_DATABASE)
       }
     }
@@ -202,7 +201,6 @@ constructor(
           updateUser(user)
         }
       } catch (e: Exception) {
-        e.printStackTrace()
         errorToast.showToast(ErrorType.ERROR_DATABASE)
       }
     }

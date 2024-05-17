@@ -22,6 +22,9 @@ class FakeUserDB : UserDBRepository {
   }
 
   override suspend fun getUserByEmail(email: String): UserModel? {
+    if (shouldThrowException) {
+      throw Exception("FakeUserDB: getUserByEmail failed")
+    }
     return UserModel(userId = email)
   }
 

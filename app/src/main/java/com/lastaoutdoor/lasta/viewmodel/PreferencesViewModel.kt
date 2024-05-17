@@ -39,7 +39,7 @@ constructor(
   val prefActivity = preferences.userPreferencesFlow.map { it.user.prefActivity }
   val friends = preferences.userPreferencesFlow.map { it.user.friends }
   val friendRequests = preferences.userPreferencesFlow.map { it.user.friendRequests }
-  val favorites = preferences.userPreferencesFlow.map { it.user.favorites }
+  var favorites = preferences.userPreferencesFlow.map { it.user.favorites }
   val downloadedActivities = preferences.userPreferencesFlow.map { it.downloadedActivities }
 
   /**
@@ -61,7 +61,6 @@ constructor(
         userDB.updateField(userId.first(), "description", description)
         preferences.updateDescription(description)
       } catch (e: Exception) {
-        e.printStackTrace()
         errorToast.showToast(ErrorType.ERROR_DATABASE)
       }
     }
@@ -73,7 +72,6 @@ constructor(
         userDB.updateField(userId.first(), "language", language)
         preferences.updateLanguage(language)
       } catch (e: Exception) {
-        e.printStackTrace()
         errorToast.showToast(ErrorType.ERROR_DATABASE)
       }
     }
@@ -85,7 +83,6 @@ constructor(
         userDB.updateField(userId.first(), "prefActivity", activityType)
         preferences.updatePrefActivity(activityType)
       } catch (e: Exception) {
-        e.printStackTrace()
         errorToast.showToast(ErrorType.ERROR_DATABASE)
       }
     }
@@ -97,7 +94,6 @@ constructor(
         userDB.updateField(userId.first(), "levels", userActivitiesLevel)
         preferences.updateActivityLevels(userActivitiesLevel)
       } catch (e: Exception) {
-        e.printStackTrace()
         errorToast.showToast(ErrorType.ERROR_DATABASE)
       }
     }
@@ -115,7 +111,6 @@ constructor(
                 "bikingLevel" to levels.first().bikingLevel.name))
         preferences.updateClimbingLevel(level)
       } catch (e: Exception) {
-        e.printStackTrace()
         errorToast.showToast(ErrorType.ERROR_DATABASE)
       }
     }
@@ -133,7 +128,6 @@ constructor(
                 "bikingLevel" to levels.first().bikingLevel.name))
         preferences.updateHikingLevel(level)
       } catch (e: Exception) {
-        e.printStackTrace()
         errorToast.showToast(ErrorType.ERROR_DATABASE)
       }
     }
@@ -151,7 +145,6 @@ constructor(
                 "bikingLevel" to level.name))
         preferences.updateBikingLevel(level)
       } catch (e: Exception) {
-        e.printStackTrace()
         errorToast.showToast(ErrorType.ERROR_DATABASE)
       }
     }
@@ -174,7 +167,6 @@ constructor(
           newFavorites.remove(favoriteId)
           preferences.updateFavorites(newFavorites)
         } catch (e: Exception) {
-          e.printStackTrace()
           errorToast.showToast(ErrorType.ERROR_DATABASE)
         }
       } else {
@@ -184,7 +176,6 @@ constructor(
           newFavorites.add(favoriteId)
           preferences.updateFavorites(newFavorites)
         } catch (e: Exception) {
-          e.printStackTrace()
           errorToast.showToast(ErrorType.ERROR_DATABASE)
         }
       }
