@@ -27,6 +27,7 @@
     <string name="pitches">Seillängen</string>
     <string name="time">Zeit</string>
     <string name="elevation">Höhe</string>
+    <string name="enter_bio">Ihre Bio eingeben...</string>
     <string name="select_languague">Wählen Sie Ihre Sprache</string>
     <string name="languague">Sprache</string>
     <string name="select_fav_activity">Wählen Sie Ihre Lieblingsaktivität</string>
@@ -70,7 +71,7 @@
     <string name = "wind_speed">Windgeschwindigkeit</string>
     <string name = "humidity">Feuchtigkeit</string>
     <string name = "no_loc">Wetterbericht nicht verfügbar! Erlauben Sie dieser Anwendung, Ihren Standort zu verwenden, und versuchen Sie es erneut.</string>
-    <string name="show_completed_activities">Abgeschlossene Aktivitäten anzeigen</string>
+    <string name="show_completed_activities">Bekannte Aktivitäten anzeigen</string>
     <string name="filter_options">" Filteroptionen"</string>
     <string name="filter_activity_type">"Filtern Sie nach Aktivitätstyp "</string>
     <string name="filter_difficulty_level">Filtern Sie nach Schwierigkeitsgrad</string>
@@ -105,7 +106,7 @@
     <string name="beginner">Anfänger</string>
     <string name="intermediate">Fortgeschritten</string>
     <string name="advanced">Erweitert</string>
-    <string name="show_completed_activities_description">Durch Aktivieren dieser Option werden alle zuvor abgeschlossenen Aktivitäten angezeigt.</string>
+    <string name="show_completed_activities_description">Wenn Sie diese Option aktivieren, werden alle Aktivitäten mit bekanntem Standort angezeigt.</string>
     <string name="erase_options">Alles löschen</string>
     <string name="ride">Radtour</string>
     <string name="recent_activities">Neueste Aktivitäten</string>
@@ -131,4 +132,6 @@
     <string name="submit_settings_prompt">Sind Sie sicher, dass Sie diese Einstellungen übermitteln möchten? (Hinweis: Sie können Ihre Präferenzen weiterhin in den Einstellungen der Profilseite ändern.)</string>
     <string name="yes">Ja</string>
     <string name="no">Nein</string>
+    <string name="cancel">Kündigen</string>
+    <string name="save">Speichern</string>
 </resources>

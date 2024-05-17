@@ -1,6 +1,5 @@
 package com.lastaoutdoor.lasta.ui.screen.discover
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -49,22 +48,22 @@ import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
 import com.lastaoutdoor.lasta.ui.screen.discover.components.ToggleButton
 import com.lastaoutdoor.lasta.ui.theme.AccentGreen
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
+import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenCallBacks
+import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenState
 import kotlinx.coroutines.flow.StateFlow
 
-@SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun FilterScreen(
-    selectedLevels: StateFlow<UserActivitiesLevel>,
-    setSelectedLevels: (UserActivitiesLevel) -> Unit,
-    selectedActivitiesType: StateFlow<List<ActivityType>>,
-    setSelectedActivitiesType: (List<ActivityType>) -> Unit,
+    discoverScreenState: StateFlow<DiscoverScreenState>,
+    discoverScreenCallBacks: DiscoverScreenCallBacks,
     navigateBack: () -> Unit
 ) {
 
-  val activities = ActivityType.values()
+  val userSelectedLevels = discoverScreenState.collectAsState().value.selectedLevels
+  val selectedActivitiesType = discoverScreenState.collectAsState().value.selectedActivityTypes
 
-  val userSelectedLevels = selectedLevels.collectAsState().value
+  val activities = ActivityType.values()
 
   val activitiesLevelArray = remember {
     mutableStateListOf(
@@ -72,33 +71,34 @@ fun FilterScreen(
         userSelectedLevels.hikingLevel,
         userSelectedLevels.bikingLevel)
   }
-
+  val checked = discoverScreenState.collectAsState().value.showCompleted
   // internal function to avoid code duplication
   @Composable
   fun collectSelectedActivitiesTypes(): SnapshotStateList<ActivityType> {
     // really cumbersome way to get the number of activities but didn't want to break the rest of
     // the
     // code (implemented by someone else)
-    val nrOfActivities = selectedActivitiesType.value.size
+    val nrOfActivities = selectedActivitiesType.size
     return when (nrOfActivities) {
       0 -> remember { mutableStateListOf() }
-      1 -> remember { mutableStateListOf(selectedActivitiesType.value.first()) }
+      1 -> remember { mutableStateListOf(selectedActivitiesType.first()) }
       2 ->
           remember {
-            mutableStateListOf(
-                selectedActivitiesType.value.first(), selectedActivitiesType.value.last())
+            mutableStateListOf(selectedActivitiesType.first(), selectedActivitiesType.last())
           }
       else ->
           remember {
             mutableStateListOf(
-                selectedActivitiesType.value.first(),
-                selectedActivitiesType.value[1],
-                selectedActivitiesType.value.last())
+                selectedActivitiesType.first(),
+                selectedActivitiesType[1],
+                selectedActivitiesType.last())
           }
     }
   }
-  val selectedActivitiesTypes = collectSelectedActivitiesTypes()
+
   val snapshotSelectedActivitiesTypes = collectSelectedActivitiesTypes()
+
+  val selectedActivitiesTypes = collectSelectedActivitiesTypes()
 
   var checkedBox by remember { mutableStateOf(true) }
 
@@ -194,8 +194,8 @@ fun FilterScreen(
           Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
               Checkbox(
-                  checked = checkedBox,
-                  onCheckedChange = { checkedBox = it },
+                  checked = checked,
+                  onCheckedChange = { discoverScreenCallBacks.setShowCompleted(it) },
                   colors =
                       CheckboxDefaults.colors(
                           uncheckedColor = MaterialTheme.colorScheme.onBackground,
@@ -241,12 +241,13 @@ fun FilterScreen(
               // Apply the filter options
               ElevatedButton(
                   onClick = {
-                    setSelectedLevels(
+                    discoverScreenCallBacks.setSelectedLevels(
                         UserActivitiesLevel(
                             activitiesLevelArray[0],
                             activitiesLevelArray[1],
                             activitiesLevelArray[2]))
-                    setSelectedActivitiesType(selectedActivitiesTypes.toList())
+                    discoverScreenCallBacks.setSelectedActivitiesType(
+                        selectedActivitiesTypes.toList())
                     navigateBack()
                   },
                   elevation = ButtonDefaults.elevatedButtonElevation(3.dp),

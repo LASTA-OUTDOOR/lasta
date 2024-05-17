@@ -48,14 +48,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.models.activity.Rating
-import com.lastaoutdoor.lasta.models.map.MapItinerary
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
@@ -67,33 +65,25 @@ import com.lastaoutdoor.lasta.ui.theme.GreenDifficulty
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
 import com.lastaoutdoor.lasta.ui.theme.RedDifficulty
 import com.lastaoutdoor.lasta.ui.theme.YellowDifficulty
-import com.lastaoutdoor.lasta.viewmodel.MapState
+import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenCallBacks
+import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenState
 
 // MoreInfoScreen : displays all the information of an activity
 @Composable
 fun MoreInfoScreen(
     activityToDisplay: Activity,
-    state: MapState,
-    initialPosition: LatLng,
-    initialZoom: Float,
-    activities: List<Activity>,
-    updateActivity: (List<Activity>) -> Unit,
-    updateMarkers: (LatLng, Double) -> Unit,
-    updateSelectedMarker: (Marker?) -> Unit,
-    clearSelectedItinerary: () -> Unit,
-    fetchActivities: () -> Unit,
-    selectedZoom: Float,
+    discoverScreenState: DiscoverScreenState,
+    discoverScreenCallBacks: DiscoverScreenCallBacks,
     goToMarker: (Activity) -> Marker,
     usersList: List<UserModel?>,
     getUserModels: (List<String>) -> Unit,
     writeNewRating: (String, Rating, String) -> Unit,
     currentUser: UserModel?,
     weather: WeatherResponse?,
-    markerList: List<Marker>,
-    selectedItinerary: MapItinerary?,
     navigateBack: () -> Unit,
     downloadActivity: (Activity) -> Unit,
-    setWeatherBackToUserLoc: () -> Unit
+    setWeatherBackToUserLoc: () -> Unit,
+    clearSelectedMarker: () -> Unit
 ) {
   val isMapDisplayed = remember { mutableStateOf(false) }
   val isReviewing = remember { mutableStateOf(false) }
@@ -106,7 +96,7 @@ fun MoreInfoScreen(
             Spacer(modifier = Modifier.height(20.dp))
             // contains the top icon buttons
             TopBar(activityToDisplay, downloadActivity) {
-              fetchActivities()
+              discoverScreenCallBacks.fetchActivities()
               navigateBack()
               setWeatherBackToUserLoc()
             }
@@ -121,9 +111,9 @@ fun MoreInfoScreen(
                 text,
                 writeNewRating,
                 currentUser,
-                activities,
-                updateActivity,
-                fetchActivities)
+                discoverScreenState.activities,
+                discoverScreenCallBacks.updateActivities,
+                discoverScreenCallBacks.fetchActivities)
             // filled with a spacer for the moment but will contain address + community
           }
           Column(
@@ -141,25 +131,22 @@ fun MoreInfoScreen(
     Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoMap")) {
       val marker = goToMarker(activityToDisplay)
       TopBar(activityToDisplay, downloadActivity) {
-        fetchActivities()
+        discoverScreenCallBacks.fetchActivities()
         navigateBack()
         setWeatherBackToUserLoc()
       }
       mapScreen(
-          state,
-          initialPosition,
-          initialZoom,
-          updateMarkers,
-          updateSelectedMarker,
-          clearSelectedItinerary,
-          selectedZoom,
+          discoverScreenState.mapState,
+          discoverScreenState.initialPosition,
+          discoverScreenState.initialZoom,
+          discoverScreenCallBacks.updateMarkers,
+          discoverScreenCallBacks.updateSelectedMarker,
+          discoverScreenCallBacks.clearSelectedItinerary,
+          discoverScreenState.selectedZoom,
           marker,
-          selectedItinerary,
-          markerList,
-      ) {
-        clearSelectedItinerary()
-      }
-      updateSelectedMarker(marker)
+          discoverScreenState.selectedItinerary,
+          discoverScreenState.markerList,
+          discoverScreenCallBacks.clearSelectedMarker)
     }
   }
 }
@@ -213,7 +200,7 @@ fun MiddleZone(
             currentUser,
             activities,
             updateActivity,
-            fetchActivities)
+        )
         ViewOnMapButton(isMapDisplayed)
       }
   SeparatorComponent()
@@ -253,7 +240,6 @@ fun RatingLine(
     currentUser: UserModel?,
     activities: List<Activity>,
     updateActivity: (List<Activity>) -> Unit,
-    fetchActivities: () -> Unit
 ) {
   Row(verticalAlignment = Alignment.CenterVertically) {
     DiffAndRating(activityToDisplay = activityToDisplay)
@@ -266,8 +252,7 @@ fun RatingLine(
         writeNewRating,
         currentUser,
         activities,
-        updateActivity,
-        fetchActivities)
+        updateActivity)
   }
 }
 
@@ -457,7 +442,6 @@ fun AddRatingButton(
     currentUser: UserModel?,
     activities: List<Activity>,
     updateActivity: (List<Activity>) -> Unit,
-    fetchActivities: () -> Unit
 ) {
   if (isReviewing.value) {
     ModalBottomSheet(

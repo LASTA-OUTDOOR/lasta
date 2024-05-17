@@ -36,6 +36,62 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
+// Initial values
+const val INITIAL_RANGE = 10000.0
+
+// All the function of the viewmodel that the view can call
+data class DiscoverScreenCallBacks(
+    val fetchActivities: () -> Unit,
+    val setScreen: (DiscoverDisplayType) -> Unit,
+    val setRange: (Double) -> Unit,
+    val setSelectedLocality: (Pair<String, LatLng>) -> Unit,
+    val updatePermission: (Boolean) -> Unit,
+    val updateMarkers: (LatLng, Double) -> Unit,
+    val updateSelectedMarker: (Marker?) -> Unit,
+    val clearSelectedItinerary: () -> Unit,
+    val updateOrderingBy: (OrderingBy) -> Unit,
+    val clearSelectedMarker: () -> Unit,
+    val fetchSuggestion: (String) -> Unit,
+    val clearSuggestions: () -> Unit,
+    val updateInitialPosition: (LatLng) -> Unit,
+    val updateActivities: (List<Activity>) -> Unit,
+    val updateRange: (Double) -> Unit,
+    val setSelectedLevels: (UserActivitiesLevel) -> Unit,
+    val setSelectedActivitiesType: (List<ActivityType>) -> Unit,
+    val setShowCompleted: (Boolean) -> Unit
+)
+
+// Data class to store all the state of the viewmodel
+data class DiscoverScreenState(
+    val isLoading: Boolean = true,
+    val activities: List<Activity> = emptyList(),
+    val activityIds: List<Long> = emptyList(),
+    val screen: DiscoverDisplayType = DiscoverDisplayType.LIST,
+    val range: Double = INITIAL_RANGE,
+    val localities: List<Pair<String, LatLng>> =
+        listOf(
+            "Ecublens" to LatLng(46.519962, 6.633597),
+            "Geneva" to LatLng(46.2043907, 6.1431577),
+            "Payerne" to LatLng(46.834190, 6.928969),
+            "Matterhorn" to LatLng(45.980537, 7.641618)),
+    val centerPoint: LatLng =
+        localities[0].second, // default center point is Ecublens (to fetch activities from)
+    val selectedLocality: Pair<String, LatLng> = localities[0],
+    val mapState: MapState = MapState(),
+    val initialPosition: LatLng = localities[0].second,
+    val initialZoom: Float = 11f,
+    val selectedZoom: Float = 16f, // Zoom level when focusing on a marker
+    val selectedMarker: Marker? = null, // no marker is initially selected
+    val selectedItinerary: MapItinerary? = null, // no itinerary is initially selected
+    val markerList: List<Marker> = emptyList(),
+    val orderingBy: OrderingBy = OrderingBy.DISTANCE,
+    val suggestions: Map<String, LatLng> = emptyMap(),
+    val selectedActivityTypes: List<ActivityType> = listOf(ActivityType.HIKING),
+    val selectedLevels: UserActivitiesLevel =
+        UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER),
+    val showCompleted: Boolean = false
+)
+
 @HiltViewModel
 class DiscoverScreenViewModel
 @Inject
@@ -48,91 +104,51 @@ constructor(
     private val errorToast: ErrorToast
 ) : ViewModel() {
 
-  private val _isLoading = MutableStateFlow(true)
-  val isLoading: StateFlow<Boolean> = _isLoading
+  // data class to store all the state of the viewModel, this allows to group them together and make
+  // it easier to test the navgraph
+  private val _state = MutableStateFlow(DiscoverScreenState())
+  val state: StateFlow<DiscoverScreenState> = _state
 
-  private val _activities = MutableStateFlow<List<Activity>>(emptyList())
-  val activities: StateFlow<List<Activity>> = _activities
-
-  private val _activityIds = MutableStateFlow<List<Long>>(emptyList())
-  val activityIds: StateFlow<List<Long>> = _activityIds
-
-  private val _orderingBy = MutableStateFlow(OrderingBy.DISTANCE)
-  val orderingBy: StateFlow<OrderingBy> = _orderingBy
-
-  private val _selectedActivityTypes = MutableStateFlow(listOf(ActivityType.HIKING))
-  val selectedActivityType: StateFlow<List<ActivityType>> = _selectedActivityTypes
-
-  private val _selectedLevels =
-      MutableStateFlow(
-          UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER))
-  val selectedLevels: StateFlow<UserActivitiesLevel> = _selectedLevels
-
-  private var _mapState = MutableStateFlow(MapState())
-  val mapState: StateFlow<MapState> = _mapState
-
-  private val _screen = MutableStateFlow(DiscoverDisplayType.LIST)
-  val screen: StateFlow<DiscoverDisplayType> = _screen
-
-  private val _range = MutableStateFlow(10000.0)
-  val range: StateFlow<Double> = _range
-
-  // Position of the map when it is first displayed
-  private val _initialPosition = MutableStateFlow(LatLng(46.519962, 6.633597))
-  val initialPosition: StateFlow<LatLng> = _initialPosition
-
-  // initial zoom level of the map
-  val initialZoom = 11f
-
-  // Zoom level when focusing on a marker
-  val selectedZoom = 13f
-
-  // Changes the map properties depending on the permission
-
-  // List of markers to display on the map
-  private val _markerList = MutableStateFlow<List<Marker>>(emptyList())
-  val markerList: StateFlow<List<Marker>> = _markerList
-
-  // Map of suggestions from the radar API with the locality as key and the LatLng as value
-  private val _suggestions = MutableStateFlow<Map<String, LatLng>>(emptyMap())
-  val suggestions: StateFlow<Map<String, LatLng>> = _suggestions
-
-  // Displayed itinerary
-  private val _selectedItinerary = MutableStateFlow<MapItinerary?>(null)
-  val selectedItinerary: StateFlow<MapItinerary?> = _selectedItinerary
-
-  // The marker displayed in the more info bottom sheet
-  private val _selectedMarker = MutableStateFlow<Marker?>(null)
-  val selectedMarker: StateFlow<Marker?> = _selectedMarker
-
-  // List of localities with their LatLng coordinates
-  val localities =
-      listOf(
-          "Ecublens" to LatLng(46.519962, 6.633597),
-          "Geneva" to LatLng(46.2043907, 6.1431577),
-          "Payerne" to LatLng(46.834190, 6.928969),
-          "Matterhorn" to LatLng(45.980537, 7.641618))
-  // Selected locality
-  private val _selectedLocality = MutableStateFlow(localities[0])
-  val selectedLocality: StateFlow<Pair<String, LatLng>> = _selectedLocality
+  // Callbacks that the view can call
+  val callbacks =
+      DiscoverScreenCallBacks(
+          fetchActivities = ::fetchActivities,
+          setScreen = { screen -> setScreen(screen) },
+          setRange = { range -> setRange(range) },
+          setSelectedLocality = { locality -> setSelectedLocality(locality) },
+          updatePermission = { value -> updatePermission(value) },
+          updateMarkers = { centerLocation, rad -> updateMarkers(centerLocation, rad) },
+          updateSelectedMarker = { marker -> updateSelectedMarker(marker) },
+          clearSelectedItinerary = { clearSelectedItinerary() },
+          updateOrderingBy = { orderingBy -> updateOrderingBy(orderingBy) },
+          clearSelectedMarker = { clearSelectedMarker() },
+          fetchSuggestion = { query -> fetchSuggestions(query) },
+          clearSuggestions = { clearSuggestions() },
+          updateInitialPosition = { position -> updateInitialPosition(position) },
+          updateActivities = { activities -> updateActivities(activities) },
+          updateRange = { range -> updateRange(range) },
+          setSelectedLevels = { levels -> setSelectedLevels(levels) },
+          setSelectedActivitiesType = { activitiesType ->
+            setSelectedActivitiesType(activitiesType)
+          },
+          setShowCompleted = { showCompleted -> setShowCompleted(showCompleted) })
 
   init {
     viewModelScope.launch {
-      try {
-        val userId = preferencesRepository.userPreferencesFlow.map { it.user.userId }.first()
-        _selectedActivityTypes.value =
-            preferencesRepository.userPreferencesFlow.map { listOf(it.user.prefActivity) }.first()
 
-        _selectedLevels.value =
-            preferencesRepository.userPreferencesFlow.map { it.user.levels }.first()
-        val token: String
-        try {
-          token = FirebaseMessaging.getInstance().token.await()
-        } catch (e: Exception) {
-          e.printStackTrace()
-          errorToast.showToast(ErrorType.ERROR_MESSAGING)
-          return@launch
-        }
+      try {
+          _state.value =
+              _state.value.copy(
+                  selectedActivityTypes =
+                  preferencesRepository.userPreferencesFlow
+                      .map { listOf(it.user.prefActivity) }
+                      .first())
+          _state.value =
+              _state.value.copy(
+                  selectedLevels =
+                  preferencesRepository.userPreferencesFlow.map { it.user.levels }.first())
+        val userId = preferencesRepository.userPreferencesFlow.map { it.user.userId }.first()
+        val token = FirebaseMessaging.getInstance().token.await()
         tokenDBRepository.uploadUserToken(userId, token)
         fetchActivities()
       } catch (e: Exception) {
@@ -150,8 +166,12 @@ constructor(
           activity.name,
           LatLng(activity.startPosition.lat, activity.startPosition.lon),
           "",
-          R.drawable.hiking_icon,
-          ActivityType.HIKING)
+          when (activity.activityType) {
+            ActivityType.CLIMBING -> R.drawable.climbing_icon
+            ActivityType.HIKING -> R.drawable.hiking_icon
+            ActivityType.BIKING -> R.drawable.biking_icon
+          },
+          activity.activityType)
     }
   }
 
@@ -172,39 +192,42 @@ constructor(
               emptyList<RadarSuggestion>()
             }
           }
-      _suggestions.value = suggestions.map { it.getSuggestion() to it.getPosition() }.toMap()
+      _state.value =
+          _state.value.copy(
+              suggestions = suggestions.associate { it.getSuggestion() to it.getPosition() })
     }
   }
 
   // Clears the list of suggestions
   fun clearSuggestions() {
-    _suggestions.value = emptyMap()
+    _state.value = _state.value.copy(suggestions = emptyMap())
   }
 
   fun fetchActivities() {
     viewModelScope.launch {
-      _isLoading.value = true
+      _state.value = _state.value.copy(isLoading = true)
+
       val activitiesHolder: ArrayList<Activity> = ArrayList()
       val activitiesIdsHolder: ArrayList<Long> = ArrayList()
       val markerListHolder: ArrayList<Marker> = ArrayList()
-      for (activityType in _selectedActivityTypes.value) {
+      for (activityType in _state.value.selectedActivityTypes) {
         val response =
             when (activityType) {
               ActivityType.CLIMBING ->
                   repository.getClimbingPointsInfo(
-                      _range.value.toInt(),
-                      _initialPosition.value.latitude,
-                      _initialPosition.value.longitude)
+                      _state.value.range.toInt(),
+                      _state.value.initialPosition.latitude,
+                      _state.value.initialPosition.longitude)
               ActivityType.HIKING ->
                   repository.getHikingRoutesInfo(
-                      _range.value.toInt(),
-                      _initialPosition.value.latitude,
-                      _initialPosition.value.longitude)
+                      _state.value.range.toInt(),
+                      _state.value.initialPosition.latitude,
+                      _state.value.initialPosition.longitude)
               ActivityType.BIKING ->
                   repository.getBikingRoutesInfo(
-                      _range.value.toInt(),
-                      _initialPosition.value.latitude,
-                      _initialPosition.value.longitude)
+                      _state.value.range.toInt(),
+                      _state.value.initialPosition.latitude,
+                      _state.value.initialPosition.longitude)
             }
         val osmData =
             when (response) {
@@ -276,134 +299,235 @@ constructor(
           }
         }
         try {
-          activitiesHolder.addAll(activitiesDB.getActivitiesByOSMIds(activitiesIdsHolder, false))
+          activitiesHolder.addAll(activitiesDB.getActivitiesByOSMIds(activitiesIdsHolder, _state.value.showCompleted))
         } catch (e: Exception) {
           e.printStackTrace()
           errorToast.showToast(ErrorType.ERROR_DATABASE)
           return@launch
         }
         markerListHolder.addAll(activitiesToMarkers(activitiesHolder))
+        // remove duplicates
+        markerListHolder.distinct()
       }
-      _activities.value = activitiesHolder
-      _activityIds.value = activitiesIdsHolder
-      _markerList.value = markerListHolder
+      _state.value =
+          _state.value.copy(
+              activities = activitiesHolder.distinct(),
+              activityIds = activitiesIdsHolder.distinct(),
+              markerList = markerListHolder)
       // order the activities by the selected ordering
       updateActivitiesByOrdering()
-      _isLoading.value = false
-    }
-  }
-
-  fun setScreen(screen: DiscoverDisplayType) {
-    _screen.value = screen
-  }
-
-  // Set the range for the activities
-  fun setRange(range: Double) {
-    _range.value = range
-  }
-
-  // Set the selected locality
-  fun setSelectedLocality(locality: Pair<String, LatLng>) {
-    _selectedLocality.value = locality
-    _initialPosition.value = locality.second
-  }
-
-  fun setSelectedActivitiesType(activitiesType: List<ActivityType>) {
-    _selectedActivityTypes.value = activitiesType
-    fetchActivities()
-  }
-
-  fun setSelectedLevels(levels: UserActivitiesLevel) {
-    _selectedLevels.value = levels
-  }
-
-  fun updatePermission(value: Boolean) {
-    _mapState.value.uiSettings = _mapState.value.uiSettings.copy(myLocationButtonEnabled = value)
-    _mapState.value.properties = _mapState.value.properties.copy(isMyLocationEnabled = value)
-  }
-
-  // Update which marker is currently selected
-  fun updateSelectedMarker(marker: Marker?) {
-    _selectedMarker.value = marker
-    showHikingItinerary(marker?.id ?: 0L)
-  }
-
-  // Clear the selected itinerary
-  fun clearSelectedItinerary() {
-    _selectedItinerary.value = null
-  }
-
-  fun clearSelectedMarker() {
-    _selectedMarker.value = null
-  }
-
-  // change the default place on the map
-  fun updateInitialPosition(position: LatLng) {
-    _initialPosition.value = position
-  }
-
-  private fun showHikingItinerary(id: Long) {
-    viewModelScope.launch {
-      val response =
-          try {
-            repository.getHikingRouteById(id)
-          } catch (e: Exception) {
-            e.printStackTrace()
-            errorToast.showToast(ErrorType.ERROR_OSM_API)
-            return@launch
-          }
-      val itinerary = (response as Response.Success).data
-      val pointsList = mutableListOf<LatLng>()
-      itinerary?.ways?.forEach { way ->
-        val nodes = way.nodes ?: emptyList()
-        nodes.forEach { position -> pointsList.add(LatLng(position.lat, position.lon)) }
-      }
-      _selectedItinerary.value =
-          MapItinerary(
-              id,
-              itinerary?.tags?.name ?: "",
-              pointsList,
+      _state.value =
+          _state.value.copy(
+              isLoading = false,
           )
     }
   }
 
+  fun setScreen(screen: DiscoverDisplayType) {
+    _state.value = _state.value.copy(screen = screen)
+  }
+
+  // Set the range for the activities
+  fun setRange(range: Double) {
+    _state.value = _state.value.copy(range = range)
+  }
+
+  // toggle wether we show completed activities or not
+  fun setShowCompleted(showCompleted: Boolean) {
+    _state.value = _state.value.copy(showCompleted = showCompleted)
+    fetchActivities()
+  }
+
+  // Set the selected locality
+  fun setSelectedLocality(locality: Pair<String, LatLng>) {
+    _state.value = _state.value.copy(selectedLocality = locality)
+    _state.value = _state.value.copy(centerPoint = locality.second)
+  }
+
+  fun setSelectedActivitiesType(activitiesType: List<ActivityType>) {
+    _state.value = _state.value.copy(selectedActivityTypes = activitiesType)
+    fetchActivities()
+  }
+
+  fun setSelectedLevels(levels: UserActivitiesLevel) {
+    _state.value = _state.value.copy(selectedLevels = levels)
+    fetchActivities()
+  }
+
+  fun updatePermission(value: Boolean) {
+    val mapState = _state.value.mapState
+    mapState.uiSettings = mapState.uiSettings.copy(myLocationButtonEnabled = value)
+    mapState.properties = mapState.properties.copy(isMyLocationEnabled = value)
+    _state.value = _state.value.copy(mapState = mapState)
+  }
+
+  // Update which marker is currently selected
+  fun updateSelectedMarker(marker: Marker?) {
+    // if the marker is null, clear the selected itinerary
+    if (marker == null) {
+      clearSelectedItinerary()
+      return
+    }
+
+    // update the marker list
+    val markerListHolder = ArrayList(_state.value.markerList)
+    if (!markerListHolder.contains(marker)) {
+      markerListHolder.add(marker)
+    }
+
+    _state.value = _state.value.copy(markerList = markerListHolder)
+
+    // update the selected marker
+    _state.value = _state.value.copy(selectedMarker = marker)
+    val id = marker.id
+
+    val activityType =
+        when (marker.icon) {
+          R.drawable.hiking_icon -> ActivityType.HIKING
+          R.drawable.biking_icon -> ActivityType.BIKING
+          R.drawable.climbing_icon -> ActivityType.CLIMBING
+          else -> ActivityType.HIKING
+        }
+
+    // show itinerary
+    showItinerary(id, marker.position, activityType)
+  }
+
+  // Clear the selected itinerary
+  fun clearSelectedItinerary() {
+    _state.value = _state.value.copy(selectedItinerary = null)
+  }
+
+  // Clear the selected marker
+  fun clearSelectedMarker() {
+    _state.value = _state.value.copy(selectedMarker = null)
+  }
+
+  // change the default place on the map
+  fun updateInitialPosition(position: LatLng) {
+    _state.value = _state.value.copy(initialPosition = position)
+  }
+
+  private fun showItinerary(id: Long, startPosition: LatLng, activityType: ActivityType) {
+    viewModelScope.launch {
+        try {
+            val response =
+                when (activityType) {
+                    ActivityType.HIKING -> repository.getHikingRouteById(id)
+                    ActivityType.BIKING -> repository.getBikingRouteById(id)
+                    ActivityType.CLIMBING -> repository.getClimbingPointById(id)
+                }
+            val itinerary = (response as Response.Success).data
+
+            when (activityType) {
+                ActivityType.HIKING,
+                ActivityType.BIKING -> showRouteItinerary(id, itinerary as Relation, startPosition)
+
+                ActivityType.CLIMBING -> showClimbingItinerary(
+                    id,
+                    itinerary as NodeWay,
+                    startPosition
+                )
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            errorToast.showToast(ErrorType.ERROR_OSM_API)
+            return@launch
+        }
+    }
+  }
+
+  private fun showRouteItinerary(id: Long, itinerary: Relation, startPosition: LatLng) {
+    val pointsList = mutableListOf<LatLng>()
+    var currentStartPosition = startPosition
+
+    itinerary.ways?.forEach { way ->
+      val nodes = way.nodes ?: emptyList()
+      if (nodes.isNotEmpty()) {
+        // Calculate distances from the current start position to the first and last node
+        val firstNode = nodes[0]
+        val lastNode = nodes[nodes.size - 1]
+
+        val firstNodeDistanceFromStart =
+            SphericalUtil.computeDistanceBetween(
+                currentStartPosition, LatLng(firstNode.lat, firstNode.lon))
+
+        val lastNodeDistanceFromStart =
+            SphericalUtil.computeDistanceBetween(
+                currentStartPosition, LatLng(lastNode.lat, lastNode.lon))
+
+        // Determine if the nodes list needs to be reversed
+        val orderedNodes =
+            if (lastNodeDistanceFromStart < firstNodeDistanceFromStart) {
+              nodes.reversed()
+            } else {
+              nodes
+            }
+
+        // Add the ordered nodes to the points list
+        orderedNodes.forEach { position -> pointsList.add(LatLng(position.lat, position.lon)) }
+
+        // Update the current start position to the last node in the ordered list
+        currentStartPosition = pointsList.last()
+      }
+
+      _state.value =
+          _state.value.copy(selectedItinerary = MapItinerary(id, itinerary.tags.name, pointsList))
+    }
+  }
+
+  private fun showClimbingItinerary(id: Long, itinerary: NodeWay, startPosition: LatLng) {
+    return /* TODO */
+  }
+
   fun updateActivityType(activitiesType: List<ActivityType>) {
-    _selectedActivityTypes.value = activitiesType
+    _state.value = _state.value.copy(selectedActivityTypes = activitiesType)
     fetchActivities()
   }
 
   // function used only for testing purposes
   fun updateActivities(activities: List<Activity>) {
-    _activities.value = activities
+    _state.value = _state.value.copy(activities = activities)
   }
 
   private fun updateActivitiesByOrdering() {
-    if (_activities.value.isEmpty()) return
-    when (_orderingBy.value) {
+    if (_state.value.activities.isEmpty()) return
+    when (_state.value.orderingBy) {
       OrderingBy.DISTANCE -> {
         val distances =
-            _activities.value.map {
+            _state.value.activities.map {
               SphericalUtil.computeDistanceBetween(
-                  selectedLocality.value.second, LatLng(it.startPosition.lat, it.startPosition.lon))
+                  _state.value.selectedLocality.second,
+                  LatLng(it.startPosition.lat, it.startPosition.lon))
             }
         val sortedActivities =
-            _activities.value.sortedBy { distances[_activities.value.indexOf(it)] }
-        _activities.value = sortedActivities
+            _state.value.activities.sortedBy { distances[_state.value.activities.indexOf(it)] }
+        _state.value = _state.value.copy(activities = sortedActivities)
       }
       OrderingBy.RATING -> {
-        _activities.value = _activities.value.sortedBy { it.rating }.reversed()
+        _state.value =
+            _state.value.copy(
+                activities = (_state.value.activities.sortedBy { it.rating }.reversed()))
       }
       OrderingBy.POPULARITY -> {
-        _activities.value = _activities.value.sortedBy { it.numRatings }.reversed()
+        _state.value =
+            _state.value.copy(
+                activities = (_state.value.activities.sortedBy { it.numRatings }.reversed()))
       }
       OrderingBy.DIFFICULTYASCENDING -> {
-        _activities.value = _activities.value.sortedBy { it.difficulty }
+        _state.value =
+            _state.value.copy(activities = (_state.value.activities.sortedBy { it.difficulty }))
       }
       OrderingBy.DIFFICULTYDESCENDING -> {
-        _activities.value = _activities.value.sortedBy { it.difficulty }.reversed()
+        _state.value =
+            _state.value.copy(
+                activities = (_state.value.activities.sortedBy { it.difficulty }.reversed()))
       }
     }
-    _activities.value = _activities.value.filter { filterWithDiff(_selectedLevels.value, it) }
+    _state.value =
+        _state.value.copy(
+            activities =
+                _state.value.activities.filter { filterWithDiff(_state.value.selectedLevels, it) })
   }
 
   fun filterWithDiff(difficulties: UserActivitiesLevel, activity: Activity): Boolean {
@@ -429,7 +553,7 @@ constructor(
   }
 
   fun updateOrderingBy(orderingBy: OrderingBy) {
-    _orderingBy.value = orderingBy
+    _state.value = _state.value.copy(orderingBy = orderingBy)
     updateActivitiesByOrdering()
   }
 
@@ -447,7 +571,7 @@ constructor(
   }
 
   fun updateRange(range: Double) {
-    _range.value = range
+    _state.value = _state.value.copy(range = range)
     fetchActivities()
   }
 }

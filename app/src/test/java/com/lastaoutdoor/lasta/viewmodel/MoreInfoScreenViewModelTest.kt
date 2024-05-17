@@ -85,7 +85,7 @@ class MoreInfoScreenViewModelTest {
         Marker(10, "", LatLng(0.0, 0.0), "", R.drawable.hiking_icon, ActivityType.HIKING))
     assertEquals(
         moreInfoScreenViewModel.goToMarker(fakeActivity3),
-        Marker(10, "", LatLng(0.0, 0.0), "", R.drawable.hiking_icon, ActivityType.BIKING))
+        Marker(10, "", LatLng(0.0, 0.0), "", R.drawable.biking_icon, ActivityType.BIKING))
   }
 
   @Test

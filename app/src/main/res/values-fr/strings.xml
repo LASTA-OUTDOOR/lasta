@@ -24,6 +24,7 @@
     <string name="time">Temps</string>
     <string name="elevation">Elévation</string>
     <string name="climbs">Ascensions</string>
+    <string name="enter_bio">Entrez votre Bio...</string>
     <string name="select_languague">Sélectionnez votre langue</string>
     <string name="languague">Langue</string>
     <string name="select_fav_activity">Sélectionnez votre activité preférée</string>
@@ -73,7 +74,7 @@
     <string name="no_friend_activities">Pas d\'activités récentes…  Ajoute des amis pour en voir plus !</string>
     <string name="add_friend_title">Ajouter un amis</string>
     <string name="select_friend">Choisis un amis</string>
-    <string name="show_completed_activities">Afficher vos activités terminées</string>
+    <string name="show_completed_activities">Afficher les activités connues</string>
     <string name="filter_options">Filtres</string>
     <string name="filter_activity_type">"Filtrer par type d'activité "</string>
     <string name="filter_difficulty_level">"Filtrer par niveau de difficulté "</string>
@@ -105,7 +106,7 @@
     <string name="beginner">Débutant</string>
     <string name="intermediate">Intermédiaire</string>
     <string name="advanced">Avancé</string>
-    <string name="show_completed_activities_description">L\'activation de cette option affichera toutes les activités précédemment complétées</string>
+    <string name="show_completed_activities_description">L\'activation de cette option affichera toutes les activités dont la position est connue.</string>
     <string name="erase_options">Tout effacer</string>
     <string name="ride">Tour</string>
     <string name="recent_activities">Activités récentes</string>
@@ -131,4 +132,6 @@
     <string name="submit_settings_prompt">Etes-vous sûr de vouloir soumettre ces paramètres ? (Remarque : Vous pourrez toujours modifier vos préférences dans les paramètres de la page Profil)</string>
     <string name="yes">Oui</string>
     <string name="no">Non</string>
+    <string name="cancel">Annuler</string>
+    <string name="save">Sauvegarder</string>
 </resources>
