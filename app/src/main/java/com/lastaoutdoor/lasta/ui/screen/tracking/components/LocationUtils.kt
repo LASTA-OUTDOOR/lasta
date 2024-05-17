@@ -33,24 +33,22 @@ fun LocationScreen() {
   }
 
   DisposableEffect(Unit) {
-    val locationCallback = object : LocationCallback() {
-      override fun onLocationResult(locationResult: LocationResult) {
-        val location = locationResult.lastLocation
-        latitude = location?.latitude.toString()
-        longitude = location?.longitude.toString()
-      }
-    }
+    val locationCallback =
+        object : LocationCallback() {
+          override fun onLocationResult(locationResult: LocationResult) {
+            val location = locationResult.lastLocation
+            latitude = location?.latitude.toString()
+            longitude = location?.longitude.toString()
+          }
+        }
 
-    fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, context.mainLooper)
+    fusedLocationClient.requestLocationUpdates(
+        locationRequest, locationCallback, context.mainLooper)
 
-    onDispose {
-      fusedLocationClient.removeLocationUpdates(locationCallback)
-    }
+    onDispose { fusedLocationClient.removeLocationUpdates(locationCallback) }
   }
 
-  Box(
-    contentAlignment = Alignment.Center
-  ) {
+  Box(contentAlignment = Alignment.Center) {
     Text(text = "Latitude: $latitude\nLongitude: $longitude")
   }
 }

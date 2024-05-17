@@ -15,11 +15,14 @@ import com.lastaoutdoor.lasta.ui.screen.tracking.components.LocationScreen
 
 @Composable
 fun TrackingScreen() {
-  Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceAround) {
-    LocationScreen()
-    StepCountDisplay(
-        stepCounterSensor =
-            (LocalContext.current.getSystemService(Context.SENSOR_SERVICE) as SensorManager)
-                .getDefaultSensor(Sensor.TYPE_STEP_COUNTER))
-  }
+  Column(
+      modifier = Modifier.fillMaxSize(),
+      horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.SpaceAround) {
+        LocationScreen()
+        StepCountDisplay(
+            stepCounterSensor =
+                (LocalContext.current.getSystemService(Context.SENSOR_SERVICE) as SensorManager)
+                    .getDefaultSensor(Sensor.TYPE_STEP_COUNTER))
+      }
 }
