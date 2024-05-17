@@ -1,6 +1,13 @@
 package com.lastaoutdoor.lasta.utils
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
+import androidx.core.content.ContextCompat
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.firebase.Timestamp
 import com.lastaoutdoor.lasta.data.time.TimeProvider
 import com.lastaoutdoor.lasta.models.activity.ActivityType
@@ -170,4 +177,35 @@ fun timeFromMillis(time: Long): String {
   val minutes = (time % 3600000) / 60000
   val seconds = (time % 60000) / 1000
   return String.format("%02d:%02d:%02d", hours, minutes, seconds)
+}
+
+/**
+ * Returns a BitmapDescriptor that is a scaled version of the provided vector resource.
+ *
+ * This function is used to create a BitmapDescriptor from a vector drawable resource. The resulting
+ * BitmapDescriptor can be used to customize the appearance of markers on a Google Map, for example.
+ *
+ * @param context The context used to access resources.
+ * @param vectorResId The resource ID of the vector drawable to scale.
+ * @param width The desired width of the resulting bitmap.
+ * @param height The desired height of the resulting bitmap.
+ * @return A BitmapDescriptor that is a scaled version of the provided vector resource, or null if
+ *   the resource could not be found.
+ */
+fun getScaledBitmapDescriptor(
+    context: Context,
+    vectorResId: Int,
+    width: Int,
+    height: Int
+): BitmapDescriptor? {
+  val vectorDrawable: Drawable = ContextCompat.getDrawable(context, vectorResId) ?: return null
+
+  // Scale the drawable
+  vectorDrawable.setBounds(0, 0, width, height)
+
+  val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888) ?: return null
+  val canvas = Canvas(bitmap)
+  vectorDrawable.draw(canvas)
+
+  return BitmapDescriptorFactory.fromBitmap(bitmap)
 }

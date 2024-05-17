@@ -189,7 +189,8 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           weather,
           { navController.navigateUp() },
           moreInfoScreenViewModel::downloadActivity,
-          weatherViewModel::fetchWeatherWithUserLoc)
+          weatherViewModel::fetchWeatherWithUserLoc,
+          discoverScreenViewModel::clearSelectedMarker)
     }
 
     // Filter Screen
