@@ -65,7 +65,6 @@ constructor(
         if (friendUserId.isNotEmpty())
             conversation = repository.getConversation(_user.value, _friend.value)
       } catch (e: Exception) {
-        e.printStackTrace()
         errorToast.showToast(ErrorType.ERROR_DATABASE)
       }
     }
@@ -97,7 +96,6 @@ constructor(
             fcmAPI.sendMessage(SendMessageDto(it, NotificationBody(user.value.userName, message)))
           }
         } catch (e: Exception) {
-          e.printStackTrace()
           errorToast.showToast(ErrorType.ERROR_DATABASE)
         }
       }
