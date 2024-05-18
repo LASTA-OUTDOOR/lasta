@@ -72,6 +72,7 @@ class MainActivity : ComponentActivity() {
   }
 
   fun changeLocale(old: Locale, new: Locale): Unit {
+
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       if (old != new) {
         // Set the new Locale.

@@ -104,10 +104,6 @@ fun FriendsCard(friend: UserModel, navToFriend: () -> Unit) {
           // Text information
           Column(modifier = Modifier.padding(8.dp)) {
             Text(text = friend.userName ?: "Name error", fontWeight = FontWeight.Bold)
-            // little easteregg
-            if (friend.userName == "Jérémy Doffey" || friend.userName == "Thimphou") {
-              Text(text = "scrum angel uwu")
-            }
             // display the user's sport preference
             Row(modifier = Modifier.testTag("FriendPrefActivity")) {
               Text(text = friend.prefActivity.toString() + " - ")
