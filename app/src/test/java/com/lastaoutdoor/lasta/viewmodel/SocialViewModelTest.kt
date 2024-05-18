@@ -8,7 +8,6 @@ import com.lastaoutdoor.lasta.data.api.notifications.FCMApi
 import com.lastaoutdoor.lasta.models.social.MessageModel
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
-import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeConnectivityviewRepo
 import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
@@ -55,7 +54,6 @@ class SocialViewModelTest {
             context, repoDB, userDB, connectRepo, prefRepo, tokenDBRepository, fcmAPI, errorToast)
 
     every { errorToast.showToast(any()) } returns Unit
-
   }
 
   @ExperimentalCoroutinesApi val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
@@ -108,7 +106,7 @@ class SocialViewModelTest {
     val iv: ImageVector = mockk()
 
     every { context.getString(any()) } returns "stringResource"
-    
+
     viewModel.showTopButton(iv, {})
     viewModel.requestFriend("")
     viewModel.requestFriend("cass@gmail.com")
@@ -199,55 +197,55 @@ class SocialViewModelTest {
     }
   }
 
-    @Test
-    fun `test decline friend with exception`() = runTest {
-        every { context.getString(any()) } returns "stringResource"
-        coEvery { fcmAPI.sendMessage(any()) } throws Exception()
-        userDB.shouldThrowException = true
-        repoDB.shouldThrowException = true
-        try {
-            viewModel.declineFriend(UserModel("userId"))
-        } catch (e: Exception) {
-            coVerify { errorToast.showToast(any()) }
-        }
+  @Test
+  fun `test decline friend with exception`() = runTest {
+    every { context.getString(any()) } returns "stringResource"
+    coEvery { fcmAPI.sendMessage(any()) } throws Exception()
+    userDB.shouldThrowException = true
+    repoDB.shouldThrowException = true
+    try {
+      viewModel.declineFriend(UserModel("userId"))
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(any()) }
     }
+  }
 
-    @Test
-    fun `test refresh friends with exception`() = runTest {
-        every { context.getString(any()) } returns "stringResource"
-        coEvery { fcmAPI.sendMessage(any()) } throws Exception()
-        userDB.shouldThrowException = true
-        repoDB.shouldThrowException = true
-        try {
-            viewModel.refreshFriends()
-        } catch (e: Exception) {
-            coVerify { errorToast.showToast(any()) }
-        }
+  @Test
+  fun `test refresh friends with exception`() = runTest {
+    every { context.getString(any()) } returns "stringResource"
+    coEvery { fcmAPI.sendMessage(any()) } throws Exception()
+    userDB.shouldThrowException = true
+    repoDB.shouldThrowException = true
+    try {
+      viewModel.refreshFriends()
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(any()) }
     }
+  }
 
-    @Test
-    fun `test refresh messages with exception`() = runTest {
-        every { context.getString(any()) } returns "stringResource"
-        coEvery { fcmAPI.sendMessage(any()) } throws Exception()
-        userDB.shouldThrowException = true
-        repoDB.shouldThrowException = true
-        try {
-            viewModel.refreshMessages()
-        } catch (e: Exception) {
-            coVerify { errorToast.showToast(any()) }
-        }
+  @Test
+  fun `test refresh messages with exception`() = runTest {
+    every { context.getString(any()) } returns "stringResource"
+    coEvery { fcmAPI.sendMessage(any()) } throws Exception()
+    userDB.shouldThrowException = true
+    repoDB.shouldThrowException = true
+    try {
+      viewModel.refreshMessages()
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(any()) }
     }
+  }
 
-    @Test
-    fun `test refresh friend requests with exception`() = runTest {
-        every { context.getString(any()) } returns "stringResource"
-        coEvery { fcmAPI.sendMessage(any()) } throws Exception()
-        userDB.shouldThrowException = true
-        repoDB.shouldThrowException = true
-        try {
-            viewModel.refreshFriendRequests()
-        } catch (e: Exception) {
-            coVerify { errorToast.showToast(any()) }
-        }
+  @Test
+  fun `test refresh friend requests with exception`() = runTest {
+    every { context.getString(any()) } returns "stringResource"
+    coEvery { fcmAPI.sendMessage(any()) } throws Exception()
+    userDB.shouldThrowException = true
+    repoDB.shouldThrowException = true
+    try {
+      viewModel.refreshFriendRequests()
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(any()) }
     }
+  }
 }

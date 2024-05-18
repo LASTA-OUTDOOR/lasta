@@ -35,63 +35,72 @@ constructor(
 
   fun startGoogleSignIn() {
     viewModelScope.launch {
-      authRepo.startGoogleSignIn().collect { response ->
-        when (response) {
-          is Response.Loading -> {}
-          is Response.Success -> {
-            beginSignInResult = response.data
-          }
-          is Response.Failure -> {
-            response.e.printStackTrace()
-            errorToast.showToast(ErrorType.ERROR_SIGN_IN)
+      try {
+        authRepo.startGoogleSignIn().collect { response ->
+          when (response) {
+            is Response.Loading -> {}
+            is Response.Success -> {
+              beginSignInResult = response.data
+            }
+            is Response.Failure -> {
+              errorToast.showToast(ErrorType.ERROR_SIGN_IN)
+            }
           }
         }
+      } catch (e: Exception) {
+        errorToast.showToast(ErrorType.ERROR_SIGN_IN)
       }
     }
   }
 
   fun finishGoogleSignIn(googleCredential: AuthCredential) {
     viewModelScope.launch {
-      authRepo.finishGoogleSignIn(googleCredential).collect { response ->
-        when (response) {
-          is Response.Loading -> {}
-          is Response.Success -> {
-            user = response.data
-          }
-          is Response.Failure -> {
-            response.e.printStackTrace()
-            errorToast.showToast(ErrorType.ERROR_SIGN_IN)
+      try {
+        authRepo.finishGoogleSignIn(googleCredential).collect { response ->
+          when (response) {
+            is Response.Loading -> {}
+            is Response.Success -> {
+              user = response.data
+            }
+            is Response.Failure -> {
+              errorToast.showToast(ErrorType.ERROR_SIGN_IN)
+            }
           }
         }
+      } catch (e: Exception) {
+        errorToast.showToast(ErrorType.ERROR_SIGN_IN)
       }
     }
   }
 
   fun signOut() {
     viewModelScope.launch {
-      authRepo.signOut().collect { response ->
-        when (response) {
-          is Response.Loading -> {}
-          is Response.Success -> {
-            user = null
-            beginSignInResult = null
-            signedOut = true
-          }
-          is Response.Failure -> {
-            response.e.printStackTrace()
-            errorToast.showToast(ErrorType.ERROR_SIGN_OUT)
+      try {
+        authRepo.signOut().collect { response ->
+          when (response) {
+            is Response.Loading -> {}
+            is Response.Success -> {
+              user = null
+              beginSignInResult = null
+              signedOut = true
+            }
+            is Response.Failure -> {
+              errorToast.showToast(ErrorType.ERROR_SIGN_OUT)
+            }
           }
         }
+      } catch (e: Exception) {
+        errorToast.showToast(ErrorType.ERROR_SIGN_OUT)
       }
     }
   }
+
 
   fun updateFieldInUser(userId: String, field: String, value: Any) {
     viewModelScope.launch {
       try {
         userDBRepository.updateField(userId, field, value)
       } catch (e: Exception) {
-        e.printStackTrace()
         errorToast.showToast(ErrorType.ERROR_DATABASE)
       }
     }
