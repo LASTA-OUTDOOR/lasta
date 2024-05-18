@@ -67,6 +67,7 @@ import com.lastaoutdoor.lasta.ui.theme.RedDifficulty
 import com.lastaoutdoor.lasta.ui.theme.YellowDifficulty
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenCallBacks
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenState
+import java.util.Locale
 
 // MoreInfoScreen : displays all the information of an activity
 @Composable
@@ -219,13 +220,16 @@ fun ViewOnMapButton(isMapDisplayed: MutableState<Boolean>) {
             colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
               Text(
                   LocalContext.current.getString(R.string.on_map),
-                  style =
-                      TextStyle(
-                          fontSize = 16.sp,
-                          lineHeight = 24.sp,
-                          fontWeight = FontWeight(500),
-                          letterSpacing = 0.15.sp,
-                      ))
+                  style = when (Locale.getDefault().language) {
+                        "de" -> TextStyle(fontSize = 14.sp, fontWeight = FontWeight(500))
+                        else -> TextStyle(
+                            fontSize = 16.sp,
+                            lineHeight = 24.sp,
+                            fontWeight = FontWeight(500),
+                            letterSpacing = 0.15.sp,
+                        )
+                  }
+                      )
             }
       }
 }
@@ -484,31 +488,18 @@ fun AddRatingButton(
                               selectedStarCount.intValue
                       val division =
                           newMeanRating.toDouble() / (activityToDisplay.ratings.size + 1.0)
-                      val string = String.format("%.1f", division)
+                      val string = String.format(Locale.US, "%.1f", division)
 
-                      // Change activities list
-                      val newActivities = activities.toMutableList()
-                      val index =
-                          newActivities.indexOfFirst {
-                            it.activityId == activityToDisplay.activityId
-                          }
-                      if (index != -1) {
-                        newActivities[index] =
-                            activityToDisplay.copy(
-                                rating = division.toFloat(),
-                                numRatings = activityToDisplay.numRatings + 1)
-
-                        if (currentUser != null) {
-                          writeNewRating(
-                              activityToDisplay.activityId,
-                              Rating(
-                                  currentUser.userId,
-                                  text.value,
-                                  selectedStarCount.intValue.toString()),
-                              string)
-                          updateActivity(newActivities)
-                        }
+                      if (currentUser != null) {
+                        writeNewRating(
+                            activityToDisplay.activityId,
+                            Rating(
+                                currentUser.userId,
+                                text.value,
+                                selectedStarCount.intValue.toString()),
+                            string)
                       }
+
                       isReviewing.value = false
                     },
                     modifier =
