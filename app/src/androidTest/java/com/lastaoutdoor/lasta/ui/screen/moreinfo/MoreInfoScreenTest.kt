@@ -81,6 +81,8 @@ class MoreInfoScreenTest {
           writeNewRating = { _, _, _ -> },
           currentUser = currentUser,
           weather = null,
+          favorites = emptyList(),
+          flipFavorite = { _ -> },
           navigateBack = { /*TODO*/},
           downloadActivity = {},
           setWeatherBackToUserLoc = {},
