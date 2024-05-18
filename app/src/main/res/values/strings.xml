@@ -80,7 +80,6 @@
     <string name = "select_fav_activity">Select your favorite outdoor activity</string>
     <string name = "select_lev_activity">Select your level of experience</string>
     <string name = "finish">Finish</string>
-    <string name="setup_title">Settings</string>
     <string name="submit_settings">Submit Selected Settings</string>
     <string name="submit_settings_prompt">Are you sure you want to submit these settings ? \n(Note : You will still be able to change your preferences in the settings of the profile page)</string>
 

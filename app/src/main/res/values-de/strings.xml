@@ -32,7 +32,6 @@
     <string name="languague">Sprache</string>
     <string name="select_fav_activity">Wählen Sie Ihre Lieblingsaktivität</string>
     <string name="finish">Beenden</string>
-    <string name="setup_title">Einstellungen</string>
     <string name="activity_type">Aktivitätstyp</string>
     <string name="not_specified">nicht angegeben</string>
     <string name="no_name">Kein Name</string>
@@ -84,7 +83,7 @@
     <string name="type_message">Schreibe deine Nachricht hier</string>
     <string name="your_message">"Deine Nachricht "</string>
     <string name="send_message">Senden</string>
-    <string name="Account_settings">Kontoeinstellungen</string>
+    <string name="Account_settings">Einstellungen</string>
     <string name="delete_account">Konto löschen</string>
     <string name="delete_account_prompt">Möchten Sie Ihr Konto wirklich löschen?</string>
     <string name="tab_favorites">Favoriten</string>
@@ -127,7 +126,7 @@
     <string name="general_settings">Allgemeine Einstellungen</string>
     <string name="activity_settings">"Aktivitätseinstellungen "</string>
     <string name = "select_lev_activity">Wählen Sie Ihr Nivaue in diese Aktivität</string>
-    <string name = "Account_setup">Einstellungen</string>
+    <string name = "Account_setup">Einrichtung</string>
     <string name="submit_settings">Ausgewählte Einstellungen senden</string>
     <string name="submit_settings_prompt">Sind Sie sicher, dass Sie diese Einstellungen übermitteln möchten? (Hinweis: Sie können Ihre Präferenzen weiterhin in den Einstellungen der Profilseite ändern.)</string>
     <string name="yes">Ja</string>

@@ -7,7 +7,6 @@
     <string name="filter">Trier</string>
     <string name="rating">Note</string>
     <string name="difficulty">Difficulté</string>
-    <string name="setup_title">Paramètres</string>
     <string name="more_info">Plus d\'Info</string>
     <string name="sign_in_google">Connexion avec Google</string>
     <string name="offline">Vous êtes hors ligne</string>
@@ -84,8 +83,8 @@
     <string name="type_message">Ecris ton message ici</string>
     <string name="your_message">Ton message</string>
     <string name="send_message">Envoyer</string>
-    <string name="Account_settings">Paramètres du compte</string>
-    <string name="delete_account">Supprimer compte</string>
+    <string name="Account_settings">Paramètres</string>
+    <string name="delete_account">Supprimer le compte</string>
     <string name="delete_account_prompt">Voulez-vous vraiment supprimer votre compte ?</string>
     <string name="tab_favorites">Favoris</string>
     <string name="tab_socials">Amis</string>

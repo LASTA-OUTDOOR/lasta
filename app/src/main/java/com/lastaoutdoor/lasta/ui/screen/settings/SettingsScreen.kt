@@ -140,7 +140,7 @@ fun SettingsScreen(
                       style =
                           when (language) {
                             Language.ENGLISH -> MaterialTheme.typography.headlineMedium
-                            Language.FRENCH -> MaterialTheme.typography.bodyLarge
+                            Language.FRENCH -> MaterialTheme.typography.bodyMedium
                             Language.GERMAN -> MaterialTheme.typography.headlineMedium
                           },
                       maxLines = 1)
