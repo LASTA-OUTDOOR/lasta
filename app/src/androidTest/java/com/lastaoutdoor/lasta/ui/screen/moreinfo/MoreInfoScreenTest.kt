@@ -108,6 +108,10 @@ class MoreInfoScreenTest {
         .assertIsDisplayed()
     composeRule.onNodeWithContentDescription("Top Bar logo ${R.drawable.arrow_back}").performClick()
 
+    // favorite button
+    composeRule.onNodeWithContentDescription("Top Bar logo fav").assertIsDisplayed()
+    composeRule.onNodeWithContentDescription("Top Bar logo fav").performClick()
+
     // share button
     composeRule.onNodeWithContentDescription("Top Bar logo ${R.drawable.share}").assertIsDisplayed()
 
@@ -160,5 +164,19 @@ class MoreInfoScreenTest {
     }
     composeRule.onNodeWithTag("elevatedTestTag").assertIsDisplayed()
     composeRule.onNodeWithTag("elevatedTestTag").performClick()
+  }
+
+  // Test top bar with favorites has a filled heart
+  @Test
+  fun topBarWithFavorites_isDisplayed() {
+    composeRule.activity.setContent {
+      TopBar(
+          activityToDisplay = Activity("3", osmId = 2),
+          downloadActivity = {},
+          favorites = listOf("3"),
+          navigateBack = {},
+          flipFavorite = {})
+    }
+    composeRule.onNodeWithTag("Top Bar").assertIsDisplayed()
   }
 }

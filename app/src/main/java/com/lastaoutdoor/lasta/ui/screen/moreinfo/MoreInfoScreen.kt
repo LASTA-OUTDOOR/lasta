@@ -365,11 +365,11 @@ fun TopBar(
     TopBarLogo(R.drawable.download_button) { downloadActivity(activityToDisplay) }
     TopBarLogo(R.drawable.share) { shareActivity(activityToDisplay, context) }
     // if activity is in favorites, display the filled heart, else display the empty heart
-    TopBarLogo(
-        if (favorites.contains(activityToDisplay.activityId)) Icons.Filled.Favorite
-        else Icons.Filled.FavoriteBorder) {
-          flipFavorite(activityToDisplay.activityId)
-        }
+    if (favorites.contains(activityToDisplay.activityId)) {
+      TopBarLogo(Icons.Filled.Favorite) { flipFavorite(activityToDisplay.activityId) }
+    } else {
+      TopBarLogo(Icons.Filled.FavoriteBorder) { flipFavorite(activityToDisplay.activityId) }
+    }
   }
 }
 
@@ -392,7 +392,7 @@ fun TopBarLogo(logoPainterId: ImageVector, f: () -> Unit) {
   IconButton(modifier = Modifier.testTag("TopBarLogo"), onClick = { f() }) {
     Icon(
         imageVector = logoPainterId,
-        contentDescription = "Top Bar logo $logoPainterId",
+        contentDescription = "Top Bar logo fav",
         modifier = Modifier.width(26.dp).height(26.dp),
         tint = MaterialTheme.colorScheme.onSurface)
   }
