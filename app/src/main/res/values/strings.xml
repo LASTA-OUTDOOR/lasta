@@ -121,6 +121,15 @@
     <string name = "no_fr_yourself">You cannot add yourself as a friend</string>
     <string name = "no_fr_twice">You already sent a friend request to this user</string>
     <string name = "inv_email">The email address is not valid</string>
+    <string name = "hiking_newcomer">Hiking Newcomer</string>
+    <string name ="hiking_amateur">Hiking Amateur</string>
+    <string name ="hiking_expert">Hiking Expert</string>
+    <string name = "climbing_newcomer">Climbing Newcomer</string>
+    <string name ="climbing_amateur">Climbing Amateur</string>
+    <string name ="climbing_expert">Climbing Expert</string>
+    <string name = "biking_newcomer">Biking Newcomer</string>
+    <string name ="biking_amateur">Biking Amateur</string>
+    <string name ="biking_expert">Biking Expert</string>
 
     <!--Weather Report-->
     <string name = "weather_report">Weather Report</string>

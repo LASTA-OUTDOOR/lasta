@@ -134,4 +134,13 @@
     <string name="no">Non</string>
     <string name="cancel">Annuler</string>
     <string name="save">Sauvegarder</string>
+    <string name = "hiking_newcomer">Néophyte de la randonnée</string>
+    <string name ="hiking_amateur">Amateur de randonnée</string>
+    <string name ="hiking_expert">Expert en randonnée</string>
+    <string name = "climbing_newcomer">Néophyte de l\'escalade</string>
+    <string name ="climbing_amateur">Amateur d\'escalade</string>
+    <string name ="climbing_expert">Expert en escalade</string>
+    <string name = "biking_newcomer">Néophyte du cyclisme</string>
+    <string name ="biking_amateur">Amateur de cyclisme</string>
+    <string name ="biking_expert">Expert en cyclisme</string>
 </resources>
