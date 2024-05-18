@@ -8,6 +8,9 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.sp
+import java.util.Locale
 
 @Composable
 fun BottomBar(tabs: Array<BottomBarTab>, currentRoute: String, navigateToRoute: (String) -> Unit) {
@@ -17,7 +20,14 @@ fun BottomBar(tabs: Array<BottomBarTab>, currentRoute: String, navigateToRoute: 
       NavigationBarItem(
           selected = selected,
           onClick = { navigateToRoute(tab.route) },
-          label = { Text(LocalContext.current.getString(tab.title)) },
+          // if the language is German, use a smaller font size
+          label = {
+            Text(
+                text = LocalContext.current.getString(tab.title),
+                style =
+                    TextStyle(
+                        fontSize = if (Locale.getDefault().language == "de") 16.sp else 18.sp))
+          },
           icon = {
             BadgedBox(badge = { if (tab.hasNews) Badge() }) {
               Icon(

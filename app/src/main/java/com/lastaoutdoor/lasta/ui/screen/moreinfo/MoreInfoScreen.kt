@@ -227,16 +227,12 @@ fun ViewOnMapButton(isMapDisplayed: MutableState<Boolean>) {
               Text(
                   LocalContext.current.getString(R.string.on_map),
                   style =
-                      when (Locale.getDefault().language) {
-                        "de" -> TextStyle(fontSize = 14.sp, fontWeight = FontWeight(500))
-                        else ->
-                            TextStyle(
-                                fontSize = 16.sp,
-                                lineHeight = 24.sp,
-                                fontWeight = FontWeight(500),
-                                letterSpacing = 0.15.sp,
-                            )
-                      })
+                      TextStyle(
+                          fontSize = if (Locale.getDefault().language == "de") 14.sp else 16.sp,
+                          lineHeight = 24.sp,
+                          fontWeight = FontWeight(500),
+                          letterSpacing = 0.15.sp,
+                      ))
             }
       }
 }
