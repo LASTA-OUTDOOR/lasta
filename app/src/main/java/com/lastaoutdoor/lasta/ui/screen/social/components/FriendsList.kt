@@ -122,6 +122,7 @@ fun FriendsCard(friend: UserModel, navToFriend: () -> Unit) {
                     ActivityType.BIKING -> friend.levels.bikingLevel
                   }
               Text(
+                  modifier = Modifier.testTag("friendInfo"),
                   text =
                       when (prefActivity) {
                         ActivityType.CLIMBING ->
