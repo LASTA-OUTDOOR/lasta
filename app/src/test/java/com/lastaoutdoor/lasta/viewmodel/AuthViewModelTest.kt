@@ -64,6 +64,7 @@ class AuthViewModelTest {
     } catch (e: Exception) {
       coVerify { errorToast.showToast(any()) }
     }
+    db.shouldThrowException = false
   }
 
   @Test
@@ -74,6 +75,7 @@ class AuthViewModelTest {
     } catch (e: Exception) {
       coVerify { errorToast.showToast(any()) }
     }
+    db.shouldThrowException = false
   }
 
   @Test
@@ -84,6 +86,7 @@ class AuthViewModelTest {
     } catch (e: Exception) {
       coVerify { errorToast.showToast(any()) }
     }
+    db.shouldThrowException = false
   }
 
   @Test
@@ -94,5 +97,6 @@ class AuthViewModelTest {
     } catch (e: Exception) {
       coVerify { errorToast.showToast(any()) }
     }
+    db.shouldThrowException = false
   }
 }

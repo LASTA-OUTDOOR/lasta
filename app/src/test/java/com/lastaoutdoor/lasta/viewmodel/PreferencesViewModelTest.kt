@@ -89,6 +89,7 @@ class PreferencesViewModelTest {
     } catch (e: Exception) {
       coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
     }
+    db2.shouldThrowException = false
   }
 
   @Test
@@ -99,6 +100,7 @@ class PreferencesViewModelTest {
     } catch (e: Exception) {
       coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
     }
+    db2.shouldThrowException = false
   }
 
   @Test
@@ -109,6 +111,7 @@ class PreferencesViewModelTest {
     } catch (e: Exception) {
       coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
     }
+    db2.shouldThrowException = false
   }
 
   @Test
@@ -120,6 +123,7 @@ class PreferencesViewModelTest {
     } catch (e: Exception) {
       coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
     }
+    db2.shouldThrowException = false
   }
 
   @Test
@@ -130,6 +134,7 @@ class PreferencesViewModelTest {
     } catch (e: Exception) {
       coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
     }
+    db2.shouldThrowException = false
   }
 
   @Test
@@ -140,6 +145,7 @@ class PreferencesViewModelTest {
     } catch (e: Exception) {
       coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
     }
+    db2.shouldThrowException = false
   }
 
   @Test
@@ -150,6 +156,7 @@ class PreferencesViewModelTest {
     } catch (e: Exception) {
       coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
     }
+    db2.shouldThrowException = false
   }
 
   @Test
@@ -168,5 +175,6 @@ class PreferencesViewModelTest {
     } catch (e: Exception) {
       coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
     }
+    db2.shouldThrowException = false
   }
 }

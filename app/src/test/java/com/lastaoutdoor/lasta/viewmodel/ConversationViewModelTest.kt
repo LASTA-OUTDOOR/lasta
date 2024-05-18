@@ -72,6 +72,8 @@ class ConversationViewModelTest {
     } catch (e: Exception) {
       errorToast.showToast(ErrorType.ERROR_DATABASE)
     }
+    fakeUserDB.shouldThrowException = false
+    fakeSocialDB.shouldThrowException = false
   }
 
   @Test
@@ -83,5 +85,7 @@ class ConversationViewModelTest {
     } catch (e: Exception) {
       errorToast.showToast(ErrorType.ERROR_DATABASE)
     }
+    fakeUserDB.shouldThrowException = false
+    fakeSocialDB.shouldThrowException = false
   }
 }

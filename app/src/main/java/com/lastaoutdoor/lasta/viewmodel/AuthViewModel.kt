@@ -95,7 +95,6 @@ constructor(
     }
   }
 
-
   fun updateFieldInUser(userId: String, field: String, value: Any) {
     viewModelScope.launch {
       try {

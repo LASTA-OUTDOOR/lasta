@@ -221,6 +221,8 @@ class SocialViewModelTest {
     } catch (e: Exception) {
       coVerify { errorToast.showToast(any()) }
     }
+    userDB.shouldThrowException = false
+    repoDB.shouldThrowException = false
   }
 
   @Test
@@ -234,6 +236,8 @@ class SocialViewModelTest {
     } catch (e: Exception) {
       coVerify { errorToast.showToast(any()) }
     }
+    userDB.shouldThrowException = false
+    repoDB.shouldThrowException = false
   }
 
   @Test
@@ -247,5 +251,7 @@ class SocialViewModelTest {
     } catch (e: Exception) {
       coVerify { errorToast.showToast(any()) }
     }
+    userDB.shouldThrowException = false
+    repoDB.shouldThrowException = false
   }
 }

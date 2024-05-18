@@ -15,7 +15,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -82,12 +81,13 @@ class ProfileScreenViewModelTest {
   }
 
   @Test
-  fun `test updateUser with no connection`() = runTest {
+  fun `test updateUser with no connection`() {
     userDb.shouldThrowException = true
     try {
       viewModel.updateUser("id")
     } catch (e: Exception) {
       coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
     }
+    userDb.shouldThrowException = false
   }
 }
