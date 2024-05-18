@@ -9,6 +9,7 @@ import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserActivityRepo
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserDB
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -43,6 +44,8 @@ class ProfileScreenViewModelTest {
             userDBRepo = userDb,
             preferences = prefDB,
             errorToast = errorToast)
+
+    every { errorToast.showToast(ErrorType.ERROR_DATABASE) } returns Unit
   }
 
   @ExperimentalCoroutinesApi val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
