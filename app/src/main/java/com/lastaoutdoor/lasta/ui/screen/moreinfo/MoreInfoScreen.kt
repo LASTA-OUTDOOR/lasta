@@ -18,6 +18,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -39,6 +42,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -81,6 +85,8 @@ fun MoreInfoScreen(
     writeNewRating: (String, Rating, String) -> Unit,
     currentUser: UserModel?,
     weather: WeatherResponse?,
+    favorites: List<String>,
+    flipFavorite: (String) -> Unit,
     navigateBack: () -> Unit,
     downloadActivity: (Activity) -> Unit,
     setWeatherBackToUserLoc: () -> Unit,
@@ -96,7 +102,7 @@ fun MoreInfoScreen(
           Column(modifier = Modifier.padding(5.dp)) {
             Spacer(modifier = Modifier.height(20.dp))
             // contains the top icon buttons
-            TopBar(activityToDisplay, downloadActivity) {
+            TopBar(activityToDisplay, downloadActivity, favorites, flipFavorite) {
               discoverScreenCallBacks.fetchActivities()
               navigateBack()
               setWeatherBackToUserLoc()
@@ -131,7 +137,7 @@ fun MoreInfoScreen(
   } else {
     Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoMap")) {
       val marker = goToMarker(activityToDisplay)
-      TopBar(activityToDisplay, downloadActivity) {
+      TopBar(activityToDisplay, downloadActivity, favorites, flipFavorite) {
         discoverScreenCallBacks.fetchActivities()
         navigateBack()
         setWeatherBackToUserLoc()
@@ -346,6 +352,8 @@ fun ElevatedDifficultyDisplay(activityToDisplay: Activity) {
 fun TopBar(
     activityToDisplay: Activity,
     downloadActivity: (Activity) -> Unit,
+    favorites: List<String>,
+    flipFavorite: (String) -> Unit,
     navigateBack: () -> Unit
 ) {
 
@@ -356,7 +364,12 @@ fun TopBar(
     Spacer(modifier = Modifier.weight(1f))
     TopBarLogo(R.drawable.download_button) { downloadActivity(activityToDisplay) }
     TopBarLogo(R.drawable.share) { shareActivity(activityToDisplay, context) }
-    TopBarLogo(R.drawable.favourite) {}
+      //if activity is in favorites, display the filled heart, else display the empty heart
+    TopBarLogo(
+        if (favorites.contains(activityToDisplay.activityId)) Icons.Filled.Favorite
+        else Icons.Filled.FavoriteBorder) {
+        flipFavorite(activityToDisplay.activityId)
+    }
   }
 }
 
@@ -371,6 +384,18 @@ fun TopBarLogo(logoPainterId: Int, isFriendProf: Boolean = false, f: () -> Unit)
         // put to white if bool else put to default color
         tint = if (isFriendProf) Color.White else MaterialTheme.colorScheme.onSurface)
   }
+}
+
+//Logo of the top bar for vector images
+@Composable
+fun TopBarLogo(logoPainterId: ImageVector, f: () -> Unit) {
+    IconButton(modifier = Modifier.testTag("TopBarLogo"), onClick = { f() }) {
+        Icon(
+            imageVector = logoPainterId,
+            contentDescription = "Top Bar logo $logoPainterId",
+            modifier = Modifier.width(26.dp).height(26.dp),
+            tint = MaterialTheme.colorScheme.onSurface)
+    }
 }
 
 // Displays the title of the activity, its type and its duration

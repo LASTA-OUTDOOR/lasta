@@ -172,6 +172,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val weather = weatherViewModel.weather.observeAsState().value
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
       val currentUser = preferencesViewModel.user.collectAsState(initial = UserModel("")).value
+        val favorites = preferencesViewModel.favorites.collectAsState(initial = emptyList()).value
 
       val discoverScreenState: DiscoverScreenState =
           discoverScreenViewModel.state.collectAsState().value
@@ -187,6 +188,8 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           moreInfoScreenViewModel::writeNewRating,
           currentUser,
           weather,
+          favorites,
+          preferencesViewModel::flipFavorite,
           { navController.navigateUp() },
           moreInfoScreenViewModel::downloadActivity,
           weatherViewModel::fetchWeatherWithUserLoc,
