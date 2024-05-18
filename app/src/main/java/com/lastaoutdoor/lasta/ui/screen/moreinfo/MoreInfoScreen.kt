@@ -364,12 +364,12 @@ fun TopBar(
     Spacer(modifier = Modifier.weight(1f))
     TopBarLogo(R.drawable.download_button) { downloadActivity(activityToDisplay) }
     TopBarLogo(R.drawable.share) { shareActivity(activityToDisplay, context) }
-      //if activity is in favorites, display the filled heart, else display the empty heart
+    // if activity is in favorites, display the filled heart, else display the empty heart
     TopBarLogo(
         if (favorites.contains(activityToDisplay.activityId)) Icons.Filled.Favorite
         else Icons.Filled.FavoriteBorder) {
-        flipFavorite(activityToDisplay.activityId)
-    }
+          flipFavorite(activityToDisplay.activityId)
+        }
   }
 }
 
@@ -386,16 +386,16 @@ fun TopBarLogo(logoPainterId: Int, isFriendProf: Boolean = false, f: () -> Unit)
   }
 }
 
-//Logo of the top bar for vector images
+// Logo of the top bar for vector images
 @Composable
 fun TopBarLogo(logoPainterId: ImageVector, f: () -> Unit) {
-    IconButton(modifier = Modifier.testTag("TopBarLogo"), onClick = { f() }) {
-        Icon(
-            imageVector = logoPainterId,
-            contentDescription = "Top Bar logo $logoPainterId",
-            modifier = Modifier.width(26.dp).height(26.dp),
-            tint = MaterialTheme.colorScheme.onSurface)
-    }
+  IconButton(modifier = Modifier.testTag("TopBarLogo"), onClick = { f() }) {
+    Icon(
+        imageVector = logoPainterId,
+        contentDescription = "Top Bar logo $logoPainterId",
+        modifier = Modifier.width(26.dp).height(26.dp),
+        tint = MaterialTheme.colorScheme.onSurface)
+  }
 }
 
 // Displays the title of the activity, its type and its duration
