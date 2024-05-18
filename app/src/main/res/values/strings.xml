@@ -87,6 +87,7 @@
     <string name="activity_type">Activity Type</string>
     <string name="not_specified">not specified</string>
     <string name="no_name">No name</string>
+    <string name="unknown_activity_type">Unknown activity type</string>
     <!--UpperSheet-->
     <string name = "modify_search">Modify your search settings</string>
     <!--Range search-->

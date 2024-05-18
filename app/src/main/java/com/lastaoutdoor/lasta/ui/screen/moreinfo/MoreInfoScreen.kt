@@ -220,16 +220,17 @@ fun ViewOnMapButton(isMapDisplayed: MutableState<Boolean>) {
             colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
               Text(
                   LocalContext.current.getString(R.string.on_map),
-                  style = when (Locale.getDefault().language) {
+                  style =
+                      when (Locale.getDefault().language) {
                         "de" -> TextStyle(fontSize = 14.sp, fontWeight = FontWeight(500))
-                        else -> TextStyle(
-                            fontSize = 16.sp,
-                            lineHeight = 24.sp,
-                            fontWeight = FontWeight(500),
-                            letterSpacing = 0.15.sp,
-                        )
-                  }
-                      )
+                        else ->
+                            TextStyle(
+                                fontSize = 16.sp,
+                                lineHeight = 24.sp,
+                                fontWeight = FontWeight(500),
+                                letterSpacing = 0.15.sp,
+                            )
+                      })
             }
       }
 }
