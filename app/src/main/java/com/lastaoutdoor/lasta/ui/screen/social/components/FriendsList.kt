@@ -105,10 +105,13 @@ fun FriendsCard(friend: UserModel, navToFriend: () -> Unit) {
 
           // Text information
           Column(modifier = Modifier.padding(8.dp)) {
-            Row (horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-                Text(text = friend.userName, fontWeight = FontWeight.Bold)
-                Text(text = friend.language.resourcesToString(LocalContext.current))
-            }
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()) {
+                  Text(text = friend.userName, fontWeight = FontWeight.Bold)
+                  Text(text = friend.language.resourcesToString(LocalContext.current))
+                }
             // display the user's sport preference
             Row(modifier = Modifier.testTag("FriendPrefActivity")) {
               val prefActivity = friend.prefActivity
