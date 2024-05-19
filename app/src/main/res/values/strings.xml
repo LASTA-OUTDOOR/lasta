@@ -80,7 +80,6 @@
     <string name = "select_fav_activity">Select your favorite outdoor activity</string>
     <string name = "select_lev_activity">Select your level of experience</string>
     <string name = "finish">Finish</string>
-    <string name="setup_title">Settings</string>
     <string name="submit_settings">Submit Selected Settings</string>
     <string name="submit_settings_prompt">Are you sure you want to submit these settings ? \n(Note : You will still be able to change your preferences in the settings of the profile page)</string>
 
@@ -88,6 +87,7 @@
     <string name="activity_type">Activity Type</string>
     <string name="not_specified">not specified</string>
     <string name="no_name">No name</string>
+    <string name="unknown_activity_type">Unknown activity type</string>
     <!--UpperSheet-->
     <string name = "modify_search">Modify your search settings</string>
     <!--Range search-->
@@ -121,6 +121,15 @@
     <string name = "no_fr_yourself">You cannot add yourself as a friend</string>
     <string name = "no_fr_twice">You already sent a friend request to this user</string>
     <string name = "inv_email">The email address is not valid</string>
+    <string name = "hiking_newcomer">Hiking Beginner</string>
+    <string name ="hiking_amateur">Hiking Amateur</string>
+    <string name ="hiking_expert">Hiking Expert</string>
+    <string name = "climbing_newcomer">Climbing Beginner</string>
+    <string name ="climbing_amateur">Climbing Amateur</string>
+    <string name ="climbing_expert">Climbing Expert</string>
+    <string name = "biking_newcomer">Biking Beginner</string>
+    <string name ="biking_amateur">Biking Amateur</string>
+    <string name ="biking_expert">Biking Expert</string>
 
     <!--Weather Report-->
     <string name = "weather_report">Weather Report</string>

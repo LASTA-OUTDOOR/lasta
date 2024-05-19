@@ -38,6 +38,7 @@ import kotlinx.coroutines.tasks.await
 
 // Initial values
 const val INITIAL_RANGE = 10000.0
+const val FIREBASE_COMPARISONS_LIMIT = 25
 
 // All the function of the viewmodel that the view can call
 data class DiscoverScreenCallBacks(
@@ -242,81 +243,74 @@ constructor(
               }
             }
 
-        osmData.map { point ->
-          when (activityType) {
-            ActivityType.CLIMBING -> {
-              val castedPoint = point as NodeWay
-              activitiesIdsHolder.add(castedPoint.id)
-
-              // Call surrounded by try-catch block to make handle exceptions caused by database
-              try {
-                activitiesDB.addActivityIfNonExisting(
-                    Activity("", point.id, ActivityType.CLIMBING, point.tags.name))
-              } catch (e: Exception) {
-                errorToast.showToast(ErrorType.ERROR_DATABASE)
-                return@launch
+        // split the list of activities in chunks of 25 to avoid overloading the DB calls
+        val iterations = osmData.size / FIREBASE_COMPARISONS_LIMIT + 1
+        for (i in 0 until iterations) {
+          activitiesIdsHolder.clear()
+          val croppedList =
+              osmData.subList(
+                  i * FIREBASE_COMPARISONS_LIMIT,
+                  minOf((i + 1) * FIREBASE_COMPARISONS_LIMIT, osmData.size))
+          croppedList.map { point ->
+            when (activityType) {
+              ActivityType.CLIMBING -> {
+                val castedPoint = point as NodeWay
+                activitiesIdsHolder.add(castedPoint.id)
+                // Call surrounded by try-catch block to make handle exceptions caused by database
+                try {
+                  activitiesDB.addActivityIfNonExisting(
+                      Activity("", point.id, ActivityType.CLIMBING, point.tags.name))
+                } catch (e: Exception) {
+                  errorToast.showToast(ErrorType.ERROR_DATABASE)
+                  return@launch
+                }
               }
-            }
-            ActivityType.HIKING -> {
-              val castedPoint = point as Relation
-              activitiesIdsHolder.add(castedPoint.id)
-
-              // Call surrounded by try-catch block to make handle exceptions caused by database
-              try {
-                activitiesDB.addActivityIfNonExisting(
-                    Activity(
-                        "",
-                        point.id,
-                        ActivityType.HIKING,
-                        point.tags.name,
-                        from = point.tags.from,
-                        to = point.tags.to))
-              } catch (e: Exception) {
-                errorToast.showToast(ErrorType.ERROR_DATABASE)
-                return@launch
+              ActivityType.HIKING -> {
+                val castedPoint = point as Relation
+                activitiesIdsHolder.add(castedPoint.id)
+                // Call surrounded by try-catch block to make handle exceptions caused by database
+                try {
+                  activitiesDB.addActivityIfNonExisting(
+                      Activity(
+                          "",
+                          point.id,
+                          ActivityType.HIKING,
+                          point.tags.name,
+                          from = point.tags.from,
+                          to = point.tags.to))
+                } catch (e: Exception) {
+                  errorToast.showToast(ErrorType.ERROR_DATABASE)
+                  return@launch
+                }
               }
-            }
-            ActivityType.BIKING -> {
-              val castedPoint = point as Relation
-              activitiesIdsHolder.add(castedPoint.id)
-              val distance =
-                  if (point.tags.distance.isEmpty()) 0f else point.tags.distance.toFloat()
-
-              // Call surrounded by try-catch block to make handle exceptions caused by database
-              try {
-                activitiesDB.addActivityIfNonExisting(
-                    Activity(
-                        "",
-                        point.id,
-                        ActivityType.BIKING,
-                        point.tags.name,
-                        from = point.tags.from,
-                        to = point.tags.to,
-                        distance = distance))
-              } catch (e: Exception) {
-                errorToast.showToast(ErrorType.ERROR_DATABASE)
+              ActivityType.BIKING -> {
+                val castedPoint = point as Relation
+                activitiesIdsHolder.add(castedPoint.id)
+                val distance =
+                    if (point.tags.distance.isEmpty()) 0f else point.tags.distance.toFloat()
+                // Call surrounded by try-catch block to make handle exceptions caused by database
+                try {
+                  activitiesDB.addActivityIfNonExisting(
+                      Activity(
+                          "",
+                          point.id,
+                          ActivityType.BIKING,
+                          point.tags.name,
+                          from = point.tags.from,
+                          to = point.tags.to,
+                          distance = distance))
+                } catch (e: Exception) {
+                  errorToast.showToast(ErrorType.ERROR_DATABASE)
+                }
               }
             }
           }
-        }
-
-        // Call surrounded by try-catch block to make handle exceptions caused by database
-        try {
           activitiesHolder.addAll(
               activitiesDB.getActivitiesByOSMIds(activitiesIdsHolder, _state.value.showCompleted))
-        } catch (e: Exception) {
-          errorToast.showToast(ErrorType.ERROR_DATABASE)
-          return@launch
+          markerListHolder.addAll(activitiesToMarkers(activitiesHolder))
         }
-        markerListHolder.addAll(activitiesToMarkers(activitiesHolder))
-        // remove duplicates
-        markerListHolder.distinct()
       }
-      _state.value =
-          _state.value.copy(
-              activities = activitiesHolder.distinct(),
-              activityIds = activitiesIdsHolder.distinct(),
-              markerList = markerListHolder)
+      _state.value = _state.value.copy(activities = activitiesHolder, markerList = markerListHolder)
       // order the activities by the selected ordering
       updateActivitiesByOrdering()
       _state.value =

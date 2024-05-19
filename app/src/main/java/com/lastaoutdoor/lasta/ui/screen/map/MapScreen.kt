@@ -67,7 +67,9 @@ fun InformationSheet(
                 text = selectedMarker?.name ?: "No name",
                 style = MaterialTheme.typography.headlineLarge)
             Text(
-                "${LocalContext.current.getString(R.string.activity_type)} ${selectedMarker?.description ?: LocalContext.current.getString(R.string.activity_type)}",
+                text =
+                    selectedMarker?.activity?.resourcesToString(LocalContext.current)
+                        ?: LocalContext.current.getString(R.string.unknown_activity_type),
                 style = MaterialTheme.typography.bodyLarge)
           }
         }

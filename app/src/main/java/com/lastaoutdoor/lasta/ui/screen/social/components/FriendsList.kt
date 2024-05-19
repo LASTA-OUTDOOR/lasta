@@ -1,6 +1,7 @@
 package com.lastaoutdoor.lasta.ui.screen.social.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -30,6 +31,7 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.utils.ConnectionState
 
@@ -103,24 +105,54 @@ fun FriendsCard(friend: UserModel, navToFriend: () -> Unit) {
 
           // Text information
           Column(modifier = Modifier.padding(8.dp)) {
-            Text(text = friend.userName ?: "Name error", fontWeight = FontWeight.Bold)
-            // little easteregg
-            if (friend.userName == "Jérémy Doffey" || friend.userName == "Thimphou") {
-              Text(text = "scrum angel uwu")
-            }
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()) {
+                  Text(text = friend.userName, fontWeight = FontWeight.Bold)
+                  Text(text = friend.language.resourcesToString(LocalContext.current))
+                }
             // display the user's sport preference
             Row(modifier = Modifier.testTag("FriendPrefActivity")) {
-              Text(text = friend.prefActivity.toString() + " - ")
-              // print the level of the levels index of prefActivity
-              if (friend.prefActivity == ActivityType.HIKING) {
-                Text(text = friend.levels.hikingLevel.toString())
-              } else if (friend.prefActivity == ActivityType.CLIMBING) {
-                Text(text = friend.levels.climbingLevel.toString())
-              } else if (friend.prefActivity == ActivityType.BIKING) {
-                Text(text = friend.levels.bikingLevel.toString())
-              }
-
-              Text(text = " - " + friend.language.toString())
+              val prefActivity = friend.prefActivity
+              val prefActivityLevel =
+                  when (prefActivity) {
+                    ActivityType.CLIMBING -> friend.levels.climbingLevel
+                    ActivityType.HIKING -> friend.levels.hikingLevel
+                    ActivityType.BIKING -> friend.levels.bikingLevel
+                  }
+              Text(
+                  modifier = Modifier.testTag("friendInfo"),
+                  text =
+                      when (prefActivity) {
+                        ActivityType.CLIMBING ->
+                            when (prefActivityLevel) {
+                              UserLevel.BEGINNER ->
+                                  LocalContext.current.getString(R.string.climbing_newcomer)
+                              UserLevel.INTERMEDIATE ->
+                                  LocalContext.current.getString(R.string.climbing_amateur)
+                              UserLevel.ADVANCED ->
+                                  LocalContext.current.getString(R.string.climbing_expert)
+                            }
+                        ActivityType.HIKING ->
+                            when (prefActivityLevel) {
+                              UserLevel.BEGINNER ->
+                                  LocalContext.current.getString(R.string.hiking_newcomer)
+                              UserLevel.INTERMEDIATE ->
+                                  LocalContext.current.getString(R.string.hiking_amateur)
+                              UserLevel.ADVANCED ->
+                                  LocalContext.current.getString(R.string.hiking_expert)
+                            }
+                        ActivityType.BIKING ->
+                            when (prefActivityLevel) {
+                              UserLevel.BEGINNER ->
+                                  LocalContext.current.getString(R.string.biking_newcomer)
+                              UserLevel.INTERMEDIATE ->
+                                  LocalContext.current.getString(R.string.biking_amateur)
+                              UserLevel.ADVANCED ->
+                                  LocalContext.current.getString(R.string.biking_expert)
+                            }
+                      })
             }
           }
         }
