@@ -151,7 +151,6 @@ constructor(
         tokenDBRepository.uploadUserToken(userId, token)
         fetchActivities()
       } catch (e: Exception) {
-        e.printStackTrace()
         errorToast.showToast(ErrorType.ERROR_DATABASE)
         return@launch
       }
@@ -180,8 +179,7 @@ constructor(
       val suggestions =
           when (val response = radarRepository.getSuggestions(query)) {
             is Response.Failure -> {
-              response.e.printStackTrace()
-              errorToast.showToast(ErrorType.ERROR_RADAR_API)
+                errorToast.showToast(ErrorType.ERROR_RADAR_API)
               return@launch
             }
             is Response.Success -> {
@@ -231,7 +229,6 @@ constructor(
         val osmData =
             when (response) {
               is Response.Failure -> {
-                response.e.printStackTrace()
                 errorToast.showToast(ErrorType.ERROR_OSM_API)
                 return@launch
               }
@@ -252,7 +249,6 @@ constructor(
                 activitiesDB.addActivityIfNonExisting(
                     Activity("", point.id, ActivityType.CLIMBING, point.tags.name))
               } catch (e: Exception) {
-                e.printStackTrace()
                 errorToast.showToast(ErrorType.ERROR_DATABASE)
                 return@launch
               }
@@ -270,7 +266,6 @@ constructor(
                         from = point.tags.from,
                         to = point.tags.to))
               } catch (e: Exception) {
-                e.printStackTrace()
                 errorToast.showToast(ErrorType.ERROR_DATABASE)
                 return@launch
               }
@@ -291,7 +286,6 @@ constructor(
                         to = point.tags.to,
                         distance = distance))
               } catch (e: Exception) {
-                e.printStackTrace()
                 errorToast.showToast(ErrorType.ERROR_DATABASE)
               }
             }
@@ -301,7 +295,6 @@ constructor(
           activitiesHolder.addAll(
               activitiesDB.getActivitiesByOSMIds(activitiesIdsHolder, _state.value.showCompleted))
         } catch (e: Exception) {
-          e.printStackTrace()
           errorToast.showToast(ErrorType.ERROR_DATABASE)
           return@launch
         }
@@ -425,7 +418,6 @@ constructor(
           ActivityType.CLIMBING -> showClimbingItinerary(id, itinerary as NodeWay, startPosition)
         }
       } catch (e: Exception) {
-        e.printStackTrace()
         errorToast.showToast(ErrorType.ERROR_OSM_API)
         return@launch
       }
