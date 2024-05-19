@@ -100,8 +100,6 @@ fun FilterScreen(
 
   val selectedActivitiesTypes = collectSelectedActivitiesTypes()
 
-  var checkedBox by remember { mutableStateOf(true) }
-
   Column(modifier = Modifier.fillMaxSize().testTag("filterScreen")) {
     MediumTopAppBar(
         title = {
