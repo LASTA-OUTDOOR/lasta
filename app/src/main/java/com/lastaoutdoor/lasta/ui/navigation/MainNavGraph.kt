@@ -201,7 +201,11 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
     composable(DestinationRoute.Tracking.route) { entry ->
       val trackingViewModel: TrackingViewModel = hiltViewModel(entry)
       val state = trackingViewModel.state.collectAsState().value
-      TrackingScreen(state, trackingViewModel::registerSensorListener, trackingViewModel::updateStepCount)
+      TrackingScreen(
+          state,
+          trackingViewModel.locationCallback,
+          trackingViewModel::registerSensorListener,
+          trackingViewModel::updateStepCount)
     }
 
     // Filter Screen

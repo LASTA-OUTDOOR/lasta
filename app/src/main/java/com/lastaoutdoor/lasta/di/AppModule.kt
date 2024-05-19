@@ -1,7 +1,6 @@
 package com.lastaoutdoor.lasta.di
 
 import android.content.Context
-import android.hardware.Sensor
 import android.hardware.SensorManager
 import androidx.room.Room
 import com.google.android.gms.auth.api.identity.Identity

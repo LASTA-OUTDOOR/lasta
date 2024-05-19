@@ -5,15 +5,22 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import androidx.lifecycle.ViewModel
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.SphericalUtil
+import com.lastaoutdoor.lasta.models.api.Position
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import javax.inject.Inject
 
 @HiltViewModel
-class TrackingViewModel @Inject constructor(sensorManager: SensorManager): ViewModel() {
+class TrackingViewModel @Inject constructor(sensorManager: SensorManager) : ViewModel() {
 
-  private val _state = MutableStateFlow(TrackingState(sensorManager, sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)))
+  private val _state =
+      MutableStateFlow(
+          TrackingState(sensorManager, sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)))
   val state: StateFlow<TrackingState> = _state
 
   private var isFirst = true
@@ -32,30 +39,54 @@ class TrackingViewModel @Inject constructor(sensorManager: SensorManager): ViewM
   }
 
   fun registerSensorListener(
-    sensorManager: SensorManager?,
-    sensor: Sensor?,
-    onStepCountChanged: (Int) -> Unit
+      sensorManager: SensorManager?,
+      sensor: Sensor?,
+      onStepCountChanged: (Int) -> Unit
   ): SensorEventListener {
     val sensorEventListener =
-      object : SensorEventListener {
-        override fun onSensorChanged(event: SensorEvent) {
-          if (event.sensor.type == Sensor.TYPE_STEP_COUNTER) {
-            val stepCount = event.values[0].toInt()
-            onStepCountChanged(stepCount)
+        object : SensorEventListener {
+          override fun onSensorChanged(event: SensorEvent) {
+            if (event.sensor.type == Sensor.TYPE_STEP_COUNTER) {
+              val stepCount = event.values[0].toInt()
+              onStepCountChanged(stepCount)
+            }
+          }
+
+          override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+            // Do nothing
           }
         }
-
-        override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-          // Do nothing
-        }
-      }
     sensorManager?.registerListener(sensorEventListener, sensor, SensorManager.SENSOR_DELAY_NORMAL)
     return sensorEventListener
   }
+
+  val locationCallback =
+      object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+          val location = locationResult.lastLocation
+          location?.let {
+            // Add the new position to the list of positions at the end
+            _state.value =
+                _state.value.copy(
+                    positions = _state.value.positions.plus(Position(it.latitude, it.longitude)))
+            if (_state.value.positions.size > 1) {
+              val distance =
+                  SphericalUtil.computeDistanceBetween(
+                      LatLng(_state.value.positions.last().lat, _state.value.positions.last().lon),
+                      LatLng(
+                          _state.value.positions[_state.value.positions.size - 2].lat,
+                          _state.value.positions[_state.value.positions.size - 2].lon))
+              _state.value = _state.value.copy(distances = _state.value.distances.plus(distance))
+            }
+          }
+        }
+      }
 }
 
 data class TrackingState(
-  val sensorManager: SensorManager,
-  val sensor: Sensor? = null,
-  val stepCount: Int = 0
+    val sensorManager: SensorManager,
+    val sensor: Sensor? = null,
+    val stepCount: Int = 0,
+    val positions: List<Position> = emptyList(),
+    val distances: List<Double> = emptyList()
 )

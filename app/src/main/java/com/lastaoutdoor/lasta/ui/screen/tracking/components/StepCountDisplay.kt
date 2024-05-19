@@ -1,16 +1,13 @@
-package com.lastaoutdoor.lasta.ui.components
+package com.lastaoutdoor.lasta.ui.screen.tracking.components
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import android.hardware.Sensor
-import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,17 +17,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lastaoutdoor.lasta.R
@@ -38,7 +29,12 @@ import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
 import com.lastaoutdoor.lasta.viewmodel.TrackingState
 
 @Composable
-fun StepCountDisplay(modifier: Modifier, trackingState: TrackingState, registerSensorListener: (SensorManager, Sensor?, (Int) -> Unit) -> SensorEventListener, updateStepCount: (Int) -> Unit) {
+fun StepCountDisplay(
+    modifier: Modifier,
+    trackingState: TrackingState,
+    registerSensorListener: (SensorManager, Sensor?, (Int) -> Unit) -> SensorEventListener,
+    updateStepCount: (Int) -> Unit
+) {
 
   var sensorEventListener: SensorEventListener? = null
 
@@ -49,7 +45,9 @@ fun StepCountDisplay(modifier: Modifier, trackingState: TrackingState, registerS
         if (isGranted) {
           // Permission is granted, register sensor listener
           sensorEventListener =
-              registerSensorListener(trackingState.sensorManager, trackingState.sensor) { updateStepCount(it) }
+              registerSensorListener(trackingState.sensorManager, trackingState.sensor) {
+                updateStepCount(it)
+              }
         }
         // if the user does not grant the permission, the sensorEventListener will not be registered
       }
@@ -63,7 +61,9 @@ fun StepCountDisplay(modifier: Modifier, trackingState: TrackingState, registerS
       if (context.checkSelfPermission(Manifest.permission.ACTIVITY_RECOGNITION) ==
           PackageManager.PERMISSION_GRANTED) {
         // Permission is already granted, register sensor listener
-        registerSensorListener(trackingState.sensorManager, trackingState.sensor) { updateStepCount(it) }
+        registerSensorListener(trackingState.sensorManager, trackingState.sensor) {
+          updateStepCount(it)
+        }
       } else {
         // Permission is not granted, request it
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
