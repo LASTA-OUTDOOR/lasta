@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import com.google.android.gms.location.LocationCallback
 import com.lastaoutdoor.lasta.ui.screen.tracking.components.LocationsDisplay
 import com.lastaoutdoor.lasta.ui.screen.tracking.components.StepCountDisplay
@@ -22,7 +23,7 @@ fun TrackingScreen(
     updateStepCount: (Int) -> Unit
 ) {
   Column(
-      modifier = Modifier.fillMaxSize(),
+      modifier = Modifier.fillMaxSize().testTag("TrackingScreen"),
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.SpaceAround) {
         LocationsDisplay(Modifier.weight(0.7f), trackingState, locationCallback)

@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
@@ -40,7 +41,7 @@ fun LocationsDisplay(
     onDispose { fusedLocationClient.removeLocationUpdates(locationCallback) }
   }
 
-  Box(contentAlignment = Alignment.Center, modifier = modifier) {
+  Box(contentAlignment = Alignment.Center, modifier = modifier.testTag("LocationsDisplay")) {
     // Display LazyColumn with the list of positions reversed
     LazyColumn {
       trackingState.positions.reversed().forEachIndexed { index, position ->
