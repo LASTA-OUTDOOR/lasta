@@ -7,14 +7,16 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
 import java.util.Locale
 
 @Composable
 fun BottomBar(tabs: Array<BottomBarTab>, currentRoute: String, navigateToRoute: (String) -> Unit) {
-  NavigationBar {
+  NavigationBar(modifier = Modifier.testTag("bottomBar")) {
     tabs.forEach { tab ->
       val selected = currentRoute == tab.route
       NavigationBarItem(
