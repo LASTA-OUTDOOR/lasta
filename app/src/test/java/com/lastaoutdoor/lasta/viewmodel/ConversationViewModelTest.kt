@@ -1,9 +1,12 @@
 package com.lastaoutdoor.lasta.viewmodel
 
 import FakeSocialDB
+import com.lastaoutdoor.lasta.utils.ErrorToast
+import com.lastaoutdoor.lasta.utils.ErrorType
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeConnectivityviewRepo
 import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserDB
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,11 +26,15 @@ class ConversationViewModelTest {
   private var fakeUserDB = FakeUserDB()
   private var fakePreferencesRepository = FakePreferencesRepository()
   private var fakeConnectivityViewRepo = FakeConnectivityviewRepo()
+  private var errorToast = mockk<ErrorToast>()
 
   @Before
   fun setUp() {
     viewModel =
-        ConversationViewModel(fakeUserDB, mockk(), mockk(), fakeSocialDB, fakePreferencesRepository)
+        ConversationViewModel(
+            fakeUserDB, mockk(), mockk(), fakeSocialDB, fakePreferencesRepository, errorToast)
+
+    every { errorToast.showToast(ErrorType.ERROR_DATABASE) } returns Unit
   }
 
   @ExperimentalCoroutinesApi val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
@@ -54,5 +61,31 @@ class ConversationViewModelTest {
     viewModel.send("message")
     viewModel.updateFriendUserId("friendId")
     assert(viewModel.friendUserId.isNotEmpty())
+  }
+
+  @Test
+  fun `update conversation with exception`() {
+    fakeUserDB.shouldThrowException = true
+    fakeSocialDB.shouldThrowException = true
+    try {
+      viewModel.updateConversation()
+    } catch (e: Exception) {
+      errorToast.showToast(ErrorType.ERROR_DATABASE)
+    }
+    fakeUserDB.shouldThrowException = false
+    fakeSocialDB.shouldThrowException = false
+  }
+
+  @Test
+  fun `send message with exception`() {
+    fakeUserDB.shouldThrowException = true
+    fakeSocialDB.shouldThrowException = true
+    try {
+      viewModel.send("message")
+    } catch (e: Exception) {
+      errorToast.showToast(ErrorType.ERROR_DATABASE)
+    }
+    fakeUserDB.shouldThrowException = false
+    fakeSocialDB.shouldThrowException = false
   }
 }

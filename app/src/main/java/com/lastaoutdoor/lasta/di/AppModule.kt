@@ -13,6 +13,7 @@ import com.lastaoutdoor.lasta.repository.app.ConnectivityRepository
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.offline.ActivityDao
 import com.lastaoutdoor.lasta.repository.offline.ActivityDatabase
+import com.lastaoutdoor.lasta.utils.ErrorToast
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -59,5 +60,11 @@ object AppModule {
   @Singleton
   fun provideTaskRepository(taskDao: ActivityDao): ActivityDatabaseImpl {
     return ActivityDatabaseImpl(taskDao)
+  }
+
+  @Provides
+  @Singleton
+  fun provideErrorToast(@ApplicationContext context: Context): ErrorToast {
+    return ErrorToast(context)
   }
 }

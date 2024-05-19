@@ -14,6 +14,8 @@ import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
 import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
+import com.lastaoutdoor.lasta.utils.ErrorToast
+import com.lastaoutdoor.lasta.utils.ErrorType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +31,8 @@ constructor(
     private val tokenDBRepo: TokenDBRepository,
     private val fcmAPI: FCMApi,
     val repository: SocialDBRepository,
-    val preferences: PreferencesRepository
+    val preferences: PreferencesRepository,
+    private val errorToast: ErrorToast
 ) : ViewModel() {
 
   private val _user = MutableStateFlow(UserModel(""))
@@ -57,9 +60,15 @@ constructor(
   // refresh the conversation
   fun updateConversation() {
     viewModelScope.launch {
-      _friend.value = userRepository.getUserById(friendUserId) ?: UserModel("")
-      if (friendUserId.isNotEmpty())
-          conversation = repository.getConversation(_user.value, _friend.value)
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
+      try {
+        _friend.value = userRepository.getUserById(friendUserId) ?: UserModel("")
+        if (friendUserId.isNotEmpty())
+            conversation = repository.getConversation(_user.value, _friend.value)
+      } catch (e: Exception) {
+        errorToast.showToast(ErrorType.ERROR_DATABASE)
+      }
     }
   }
 
@@ -82,6 +91,8 @@ constructor(
   fun send(message: String) {
     viewModelScope.launch {
       if (message.isNotEmpty()) {
+
+        // Call surrounded by try-catch block to make handle exceptions caused by database
         try {
           repository.sendMessage(userId, friendUserId, message)
           updateConversation()
@@ -89,7 +100,7 @@ constructor(
             fcmAPI.sendMessage(SendMessageDto(it, NotificationBody(user.value.userName, message)))
           }
         } catch (e: Exception) {
-          e.printStackTrace()
+          errorToast.showToast(ErrorType.ERROR_DATABASE)
         }
       }
     }

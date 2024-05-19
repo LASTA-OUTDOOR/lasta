@@ -183,4 +183,15 @@
     <string name="friend_request_notif">wants to be your friend!</string>
     <string name="friend_request_accepted_notif">accepted your friend request!</string>
     <string name="friend_request_declined_notif">declined your friend request!</string>
+
+    <!--Errors-->
+    <string name="error_unexpected" translatable="false">An unexpected error has occured.</string>
+    <string name="error_sign_in" translatable="false">A SignIn error has occured.</string>
+    <string name="error_sign_out" translatable="false">A Sign Out error has occured.</string>
+    <string name="error_database" translatable="false">"A database error has occured. "</string>
+    <string name="error_dao" translatable="false">A DAO error has occured.</string>
+    <string name="error_messaging" translatable="false">A messaging error has occured.</string>
+    <string name="error_radar_api" translatable="false">A Radar API error has occured.</string>
+    <string name="error_osm_api" translatable="false">A OSM API error has occured.</string>
+    <string name="error_weather" translatable="false">A Weather error has occured.</string>
 </resources>

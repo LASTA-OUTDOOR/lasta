@@ -3,9 +3,13 @@ package com.lastaoutdoor.lasta.viewmodel
 import com.lastaoutdoor.lasta.models.user.ClimbingUserActivity
 import com.lastaoutdoor.lasta.models.user.UserActivity
 import com.lastaoutdoor.lasta.models.user.UserModel
+import com.lastaoutdoor.lasta.utils.ErrorToast
+import com.lastaoutdoor.lasta.utils.ErrorType
 import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserActivityRepo
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserDB
+import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -19,6 +23,9 @@ import org.junit.Rule
 import org.junit.Test
 
 class ProfileScreenViewModelTest {
+
+  private val errorToast = mockk<ErrorToast>(relaxed = true)
+
   @ExperimentalCoroutinesApi @get:Rule val mainDispatcherRule = MainDispatcherRule()
   private lateinit var viewModel: ProfileScreenViewModel
   private val tm: com.lastaoutdoor.lasta.data.time.TimeProvider =
@@ -31,7 +38,13 @@ class ProfileScreenViewModelTest {
   fun setUp() {
     viewModel =
         ProfileScreenViewModel(
-            userActDb, timeProvider = tm, userDBRepo = userDb, preferences = prefDB)
+            userActDb,
+            timeProvider = tm,
+            userDBRepo = userDb,
+            preferences = prefDB,
+            errorToast = errorToast)
+
+    every { errorToast.showToast(ErrorType.ERROR_DATABASE) } returns Unit
   }
 
   @ExperimentalCoroutinesApi val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
@@ -65,5 +78,16 @@ class ProfileScreenViewModelTest {
     assertEquals(viewModel.user.value, UserModel(""))
     assertEquals(viewModel.isCurrentUser.value, false)
     assertEquals(viewModel.activities.value, emptyList<UserActivity>())
+  }
+
+  @Test
+  fun `test updateUser with no connection`() {
+    userDb.shouldThrowException = true
+    try {
+      viewModel.updateUser("id")
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
+    }
+    userDb.shouldThrowException = false
   }
 }

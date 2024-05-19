@@ -22,6 +22,8 @@ import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
 import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import com.lastaoutdoor.lasta.utils.ConnectionState
+import com.lastaoutdoor.lasta.utils.ErrorToast
+import com.lastaoutdoor.lasta.utils.ErrorType
 import com.lastaoutdoor.lasta.utils.TimeFrame
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -42,7 +44,8 @@ constructor(
     connectionRepo: ConnectivityRepository,
     val preferences: PreferencesRepository,
     private val tokenDBRepository: TokenDBRepository,
-    private val fcmAPI: FCMApi
+    private val fcmAPI: FCMApi,
+    private val errorToast: ErrorToast
 ) : ViewModel() {
 
   // get the user id
@@ -118,30 +121,38 @@ constructor(
               android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             // get current user id from the flow
             val userId = preferences.userPreferencesFlow.first().user.userId
-            val friendId = userDBRepo.getUserByEmail(email)?.userId
-            if (friendId == null) {
-              context.getString(R.string.no_account)
-            } else if (userId == friendId) {
-              context.getString(R.string.no_fr_yourself)
-            } else if (friendRequests.any { it.userId == friendId }) {
-              context.getString(R.string.no_fr_twice)
-            } else if (friends.any { it.userId == friendId }) {
-              context.getString(R.string.no_fr)
-            } else {
-              try {
-                repository.sendFriendRequest(userId, friendId)
-                tokenDBRepository.getUserTokenById(friendId)?.let {
-                  fcmAPI.sendMessage(
-                      SendMessageDto(
-                          it,
-                          NotificationBody(
-                              context.getString(R.string.new_friend_request_notif),
-                              "${user.userName} ${context.getString(R.string.friend_request_notif)}")))
+
+            // Call surrounded by try-catch block to make handle exceptions caused by database
+            try {
+              val friendId = userDBRepo.getUserByEmail(email)?.userId
+              if (friendId == null) {
+                context.getString(R.string.no_account)
+              } else if (userId == friendId) {
+                context.getString(R.string.no_fr_yourself)
+              } else if (friendRequests.any { it.userId == friendId }) {
+                context.getString(R.string.no_fr_twice)
+              } else if (friends.any { it.userId == friendId }) {
+                context.getString(R.string.no_fr)
+              } else {
+                // Call surrounded by try-catch block to make handle unexpected exceptions
+                try {
+                  repository.sendFriendRequest(userId, friendId)
+                  tokenDBRepository.getUserTokenById(friendId)?.let {
+                    fcmAPI.sendMessage(
+                        SendMessageDto(
+                            it,
+                            NotificationBody(
+                                context.getString(R.string.new_friend_request_notif),
+                                "${user.userName} ${context.getString(R.string.friend_request_notif)}")))
+                  }
+                } catch (e: Exception) {
+                  errorToast.showToast(ErrorType.ERROR_UNEXPECTED)
                 }
-              } catch (e: Exception) {
-                e.printStackTrace()
+                context.getString(R.string.fr_req_sent)
               }
-              context.getString(R.string.fr_req_sent)
+            } catch (e: Exception) {
+              errorToast.showToast(ErrorType.ERROR_DATABASE)
+              context.getString(R.string.inv_email)
             }
           } else {
             context.getString(R.string.inv_email)
@@ -151,6 +162,8 @@ constructor(
 
   fun acceptFriend(friend: UserModel) {
     viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle unexpected exceptions
       try {
         repository.acceptFriendRequest(user.userId, friend.userId)
         tokenDBRepository.getUserTokenById(friend.userId)?.let {
@@ -165,7 +178,7 @@ constructor(
         refreshFriends()
         refreshFriendsActivities()
       } catch (e: Exception) {
-        e.printStackTrace()
+        errorToast.showToast(ErrorType.ERROR_UNEXPECTED)
       }
     }
   }
@@ -173,6 +186,8 @@ constructor(
   // Decline a friend request
   fun declineFriend(friend: UserModel) {
     viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle unexpected exceptions
       try {
         repository.declineFriendRequest(user.userId, friend.userId)
         tokenDBRepository.getUserTokenById(friend.userId)?.let {
@@ -185,7 +200,7 @@ constructor(
         // update the list of friends
         refreshFriendRequests()
       } catch (e: Exception) {
-        e.printStackTrace()
+        errorToast.showToast(ErrorType.ERROR_UNEXPECTED)
       }
     }
   }
@@ -193,23 +208,43 @@ constructor(
   // Refresh the list of friends request
   fun refreshFriendRequests() {
     viewModelScope.launch {
-      friendRequests = repository.getFriendRequests(user.userId)
-      hasFriendRequest = friendRequests.isNotEmpty()
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
+      try {
+        friendRequests = repository.getFriendRequests(user.userId)
+        hasFriendRequest = friendRequests.isNotEmpty()
+      } catch (e: Exception) {
+        errorToast.showToast(ErrorType.ERROR_DATABASE)
+      }
     }
   }
 
   // Refresh the list of friends
   fun refreshFriends() {
     viewModelScope.launch {
-      val userModel = userDBRepo.getUserById(user.userId)
-      preferences.updateFriends(userModel?.friends ?: emptyList())
-      friends = repository.getFriends(userModel?.friends ?: emptyList())
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
+      try {
+        val userModel = userDBRepo.getUserById(user.userId)
+        friends = repository.getFriends(userModel?.friends ?: emptyList())
+        preferences.updateFriends(userModel?.friends ?: emptyList())
+      } catch (e: Exception) {
+        errorToast.showToast(ErrorType.ERROR_DATABASE)
+      }
     }
   }
 
   // Refresh the list of friends
   fun refreshMessages() {
-    viewModelScope.launch { messages = repository.getAllConversations(user.userId) }
+    viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
+      try {
+        messages = repository.getAllConversations(user.userId)
+      } catch (e: Exception) {
+        errorToast.showToast(ErrorType.ERROR_DATABASE)
+      }
+    }
   }
 
   // This displays the friend picker (in order to send a message)
@@ -239,7 +274,14 @@ constructor(
 
   fun refreshFriendsActivities() {
     viewModelScope.launch {
-      latestFriendActivities = repository.getLatestFriendActivities(user.userId, timeFrame, friends)
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
+      try {
+        latestFriendActivities =
+            repository.getLatestFriendActivities(user.userId, timeFrame, friends)
+      } catch (e: Exception) {
+        errorToast.showToast(ErrorType.ERROR_DATABASE)
+      }
     }
   }
 }

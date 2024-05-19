@@ -11,6 +11,8 @@ import com.google.firebase.auth.AuthCredential
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.auth.AuthRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
+import com.lastaoutdoor.lasta.utils.ErrorToast
+import com.lastaoutdoor.lasta.utils.ErrorType
 import com.lastaoutdoor.lasta.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -22,7 +24,8 @@ class AuthViewModel
 constructor(
     private val authRepo: AuthRepository,
     private val userDBRepository: UserDBRepository,
-    val oneTapClient: SignInClient
+    val oneTapClient: SignInClient,
+    private val errorToast: ErrorToast
 ) : ViewModel() {
 
   var beginSignInResult: BeginSignInResult? by mutableStateOf(null)
@@ -32,58 +35,79 @@ constructor(
 
   fun startGoogleSignIn() {
     viewModelScope.launch {
-      authRepo.startGoogleSignIn().collect { response ->
-        when (response) {
-          is Response.Loading -> {}
-          is Response.Success -> {
-            beginSignInResult = response.data
-          }
-          is Response.Failure -> {
-            response.e.printStackTrace()
-            throw response.e
+
+      // Call surrounded by try-catch block to make handle exceptions for sign in
+      try {
+        authRepo.startGoogleSignIn().collect { response ->
+          when (response) {
+            is Response.Loading -> {}
+            is Response.Success -> {
+              beginSignInResult = response.data
+            }
+            is Response.Failure -> {
+              errorToast.showToast(ErrorType.ERROR_SIGN_IN)
+            }
           }
         }
+      } catch (e: Exception) {
+        errorToast.showToast(ErrorType.ERROR_SIGN_IN)
       }
     }
   }
 
   fun finishGoogleSignIn(googleCredential: AuthCredential) {
     viewModelScope.launch {
-      authRepo.finishGoogleSignIn(googleCredential).collect { response ->
-        when (response) {
-          is Response.Loading -> {}
-          is Response.Success -> {
-            user = response.data
-          }
-          is Response.Failure -> {
-            response.e.printStackTrace()
-            throw response.e
+      // Call surrounded by try-catch block to make handle exceptions for sign in
+      try {
+        authRepo.finishGoogleSignIn(googleCredential).collect { response ->
+          when (response) {
+            is Response.Loading -> {}
+            is Response.Success -> {
+              user = response.data
+            }
+            is Response.Failure -> {
+              errorToast.showToast(ErrorType.ERROR_SIGN_IN)
+            }
           }
         }
+      } catch (e: Exception) {
+        errorToast.showToast(ErrorType.ERROR_SIGN_IN)
       }
     }
   }
 
   fun signOut() {
     viewModelScope.launch {
-      authRepo.signOut().collect { response ->
-        when (response) {
-          is Response.Loading -> {}
-          is Response.Success -> {
-            user = null
-            beginSignInResult = null
-            signedOut = true
-          }
-          is Response.Failure -> {
-            response.e.printStackTrace()
-            throw response.e
+
+      // Call surrounded by try-catch block to make handle exceptions for sign out
+      try {
+        authRepo.signOut().collect { response ->
+          when (response) {
+            is Response.Loading -> {}
+            is Response.Success -> {
+              user = null
+              beginSignInResult = null
+              signedOut = true
+            }
+            is Response.Failure -> {
+              errorToast.showToast(ErrorType.ERROR_SIGN_OUT)
+            }
           }
         }
+      } catch (e: Exception) {
+        errorToast.showToast(ErrorType.ERROR_SIGN_OUT)
       }
     }
   }
 
   fun updateFieldInUser(userId: String, field: String, value: Any) {
-    viewModelScope.launch { userDBRepository.updateField(userId, field, value) }
+    viewModelScope.launch {
+      // Call surrounded by try-catch block to make handle exceptions caused by database
+      try {
+        userDBRepository.updateField(userId, field, value)
+      } catch (e: Exception) {
+        errorToast.showToast(ErrorType.ERROR_DATABASE)
+      }
+    }
   }
 }

@@ -2,7 +2,9 @@ package com.lastaoutdoor.lasta.viewmodel
 
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
+import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeWeatherRepository
+import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -18,6 +20,7 @@ class WeatherViewModelTest {
   @Mock private var weatherRepository = FakeWeatherRepository()
   private lateinit var application: Application
   private lateinit var weatherViewModel: WeatherViewModel
+  private val errorToast = mockk<ErrorToast>()
 
   @ExperimentalCoroutinesApi val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
 
@@ -37,7 +40,7 @@ class WeatherViewModelTest {
   @Before
   fun setup() {
     application = ApplicationProvider.getApplicationContext()
-    weatherViewModel = WeatherViewModel(weatherRepository, application)
+    weatherViewModel = WeatherViewModel(weatherRepository, application, errorToast)
   }
 
   /*@Test
