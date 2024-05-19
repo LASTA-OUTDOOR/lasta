@@ -84,6 +84,7 @@ class MoreInfoScreenTest {
           favorites = emptyList(),
           flipFavorite = { _ -> },
           navigateBack = { /*TODO*/},
+          navigateToTracking = {},
           downloadActivity = {},
           setWeatherBackToUserLoc = {},
           clearSelectedMarker = {})

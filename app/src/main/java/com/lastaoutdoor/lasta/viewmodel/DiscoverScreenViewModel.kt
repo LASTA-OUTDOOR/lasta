@@ -90,7 +90,7 @@ data class DiscoverScreenState(
     val selectedActivityTypes: List<ActivityType> = listOf(ActivityType.HIKING),
     val selectedLevels: UserActivitiesLevel =
         UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER),
-    val showCompleted: Boolean = false
+    val showCompleted: Boolean = true
 )
 
 @HiltViewModel

@@ -88,6 +88,7 @@ fun MoreInfoScreen(
     favorites: List<String>,
     flipFavorite: (String) -> Unit,
     navigateBack: () -> Unit,
+    navigateToTracking: () -> Unit,
     downloadActivity: (Activity) -> Unit,
     setWeatherBackToUserLoc: () -> Unit,
     clearSelectedMarker: () -> Unit
@@ -130,7 +131,7 @@ fun MoreInfoScreen(
                 }
                 Spacer(modifier = Modifier.height(5.dp))
                 Box(modifier = Modifier.weight(0.15f), contentAlignment = Alignment.Center) {
-                  StartButton()
+                  StartButton(navigateToTracking)
                 }
               }
         }
@@ -160,14 +161,12 @@ fun MoreInfoScreen(
 
 // Start button : once clicked, the activity tracking starts
 @Composable
-fun StartButton() {
+fun StartButton(navigateToTracking: () -> Unit) {
   Row(
       modifier = Modifier.fillMaxWidth().testTag("MoreInfoStartButton"),
       horizontalArrangement = Arrangement.Center) {
         ElevatedButton(
-            onClick = {
-              /** TODO : Start Activity */
-            },
+            onClick = { navigateToTracking() },
             modifier = Modifier.fillMaxWidth(0.8f).height(48.dp), // takes up 80% of the width
             colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
               Text(
