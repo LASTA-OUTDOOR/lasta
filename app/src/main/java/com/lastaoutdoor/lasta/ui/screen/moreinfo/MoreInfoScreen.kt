@@ -18,6 +18,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -39,6 +42,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -67,6 +71,7 @@ import com.lastaoutdoor.lasta.ui.theme.RedDifficulty
 import com.lastaoutdoor.lasta.ui.theme.YellowDifficulty
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenCallBacks
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenState
+import java.util.Locale
 
 // MoreInfoScreen : displays all the information of an activity
 @Composable
@@ -80,6 +85,8 @@ fun MoreInfoScreen(
     writeNewRating: (String, Rating, String) -> Unit,
     currentUser: UserModel?,
     weather: WeatherResponse?,
+    favorites: List<String>,
+    flipFavorite: (String) -> Unit,
     navigateBack: () -> Unit,
     downloadActivity: (Activity) -> Unit,
     setWeatherBackToUserLoc: () -> Unit,
@@ -95,7 +102,7 @@ fun MoreInfoScreen(
           Column(modifier = Modifier.padding(5.dp)) {
             Spacer(modifier = Modifier.height(20.dp))
             // contains the top icon buttons
-            TopBar(activityToDisplay, downloadActivity) {
+            TopBar(activityToDisplay, downloadActivity, favorites, flipFavorite) {
               discoverScreenCallBacks.fetchActivities()
               navigateBack()
               setWeatherBackToUserLoc()
@@ -130,7 +137,7 @@ fun MoreInfoScreen(
   } else {
     Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoMap")) {
       val marker = goToMarker(activityToDisplay)
-      TopBar(activityToDisplay, downloadActivity) {
+      TopBar(activityToDisplay, downloadActivity, favorites, flipFavorite) {
         discoverScreenCallBacks.fetchActivities()
         navigateBack()
         setWeatherBackToUserLoc()
@@ -221,7 +228,7 @@ fun ViewOnMapButton(isMapDisplayed: MutableState<Boolean>) {
                   LocalContext.current.getString(R.string.on_map),
                   style =
                       TextStyle(
-                          fontSize = 16.sp,
+                          fontSize = if (Locale.getDefault().language == "de") 14.sp else 16.sp,
                           lineHeight = 24.sp,
                           fontWeight = FontWeight(500),
                           letterSpacing = 0.15.sp,
@@ -341,6 +348,8 @@ fun ElevatedDifficultyDisplay(activityToDisplay: Activity) {
 fun TopBar(
     activityToDisplay: Activity,
     downloadActivity: (Activity) -> Unit,
+    favorites: List<String>,
+    flipFavorite: (String) -> Unit,
     navigateBack: () -> Unit
 ) {
 
@@ -351,7 +360,12 @@ fun TopBar(
     Spacer(modifier = Modifier.weight(1f))
     TopBarLogo(R.drawable.download_button) { downloadActivity(activityToDisplay) }
     TopBarLogo(R.drawable.share) { shareActivity(activityToDisplay, context) }
-    TopBarLogo(R.drawable.favourite) {}
+    // if activity is in favorites, display the filled heart, else display the empty heart
+    if (favorites.contains(activityToDisplay.activityId)) {
+      TopBarLogo(Icons.Filled.Favorite) { flipFavorite(activityToDisplay.activityId) }
+    } else {
+      TopBarLogo(Icons.Filled.FavoriteBorder) { flipFavorite(activityToDisplay.activityId) }
+    }
   }
 }
 
@@ -365,6 +379,18 @@ fun TopBarLogo(logoPainterId: Int, isFriendProf: Boolean = false, f: () -> Unit)
         modifier = Modifier.width(26.dp).height(26.dp),
         // put to white if bool else put to default color
         tint = if (isFriendProf) Color.White else MaterialTheme.colorScheme.onSurface)
+  }
+}
+
+// Logo of the top bar for vector images
+@Composable
+fun TopBarLogo(logoPainterId: ImageVector, f: () -> Unit) {
+  IconButton(modifier = Modifier.testTag("TopBarLogo"), onClick = { f() }) {
+    Icon(
+        imageVector = logoPainterId,
+        contentDescription = "Top Bar logo fav",
+        modifier = Modifier.width(26.dp).height(26.dp),
+        tint = MaterialTheme.colorScheme.onSurface)
   }
 }
 
@@ -484,31 +510,18 @@ fun AddRatingButton(
                               selectedStarCount.intValue
                       val division =
                           newMeanRating.toDouble() / (activityToDisplay.ratings.size + 1.0)
-                      val string = String.format("%.1f", division)
+                      val string = String.format(Locale.US, "%.1f", division)
 
-                      // Change activities list
-                      val newActivities = activities.toMutableList()
-                      val index =
-                          newActivities.indexOfFirst {
-                            it.activityId == activityToDisplay.activityId
-                          }
-                      if (index != -1) {
-                        newActivities[index] =
-                            activityToDisplay.copy(
-                                rating = division.toFloat(),
-                                numRatings = activityToDisplay.numRatings + 1)
-
-                        if (currentUser != null) {
-                          writeNewRating(
-                              activityToDisplay.activityId,
-                              Rating(
-                                  currentUser.userId,
-                                  text.value,
-                                  selectedStarCount.intValue.toString()),
-                              string)
-                          updateActivity(newActivities)
-                        }
+                      if (currentUser != null) {
+                        writeNewRating(
+                            activityToDisplay.activityId,
+                            Rating(
+                                currentUser.userId,
+                                text.value,
+                                selectedStarCount.intValue.toString()),
+                            string)
                       }
+
                       isReviewing.value = false
                     },
                     modifier =
