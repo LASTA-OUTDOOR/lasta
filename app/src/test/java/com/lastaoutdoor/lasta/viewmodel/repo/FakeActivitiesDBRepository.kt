@@ -8,44 +8,44 @@ import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
 
 class FakeActivitiesDBRepository() : ActivitiesDBRepository {
 
-    var shouldThrowException = false
+  var shouldThrowException = false
 
   override suspend fun addActivityIfNonExisting(activity: Activity): Boolean {
-      if (shouldThrowException) {
-          throw Exception("FakeActivitiesDBRepository: addActivityIfNonExisting failed")
-      }
-        return true
+    if (shouldThrowException) {
+      throw Exception("FakeActivitiesDBRepository: addActivityIfNonExisting failed")
+    }
+    return true
   }
 
   override suspend fun getActivityById(activityId: String): Activity? {
     if (shouldThrowException) {
       throw Exception("FakeActivitiesDBRepository: getActivityById failed")
     }
-      return Activity(
-          "id",
-          1,
-          ActivityType.BIKING,
-          "activityImageUrl",
-          Position(0.0, 0.0),
-          2f,
-          3,
-      )
+    return Activity(
+        "id",
+        1,
+        ActivityType.BIKING,
+        "activityImageUrl",
+        Position(0.0, 0.0),
+        2f,
+        3,
+    )
   }
 
   override suspend fun getActivitiesByIds(activityIds: List<String>): List<Activity> {
     if (shouldThrowException) {
       throw Exception("FakeActivitiesDBRepository: getActivitiesByIds failed")
     }
-      return listOf(
-          Activity(
-              "id",
-              1,
-              ActivityType.BIKING,
-              "activityImageUrl",
-              Position(0.0, 0.0),
-              2f,
-              3,
-          ))
+    return listOf(
+        Activity(
+            "id",
+            1,
+            ActivityType.BIKING,
+            "activityImageUrl",
+            Position(0.0, 0.0),
+            2f,
+            3,
+        ))
   }
 
   override suspend fun getActivitiesByOSMIds(
@@ -55,16 +55,16 @@ class FakeActivitiesDBRepository() : ActivitiesDBRepository {
     if (shouldThrowException) {
       throw Exception("FakeActivitiesDBRepository: getActivitiesByOSMIds failed")
     }
-      return listOf(
-          Activity(
-              "id",
-              1,
-              ActivityType.BIKING,
-              "activityImageUrl",
-              Position(0.0, 0.0),
-              2f,
-              3,
-          ))
+    return listOf(
+        Activity(
+            "id",
+            1,
+            ActivityType.BIKING,
+            "activityImageUrl",
+            Position(0.0, 0.0),
+            2f,
+            3,
+        ))
   }
 
   override suspend fun updateStartPosition(activityId: String, position: Position) {
@@ -74,8 +74,8 @@ class FakeActivitiesDBRepository() : ActivitiesDBRepository {
   }
 
   override fun addRating(activityId: String, rating: Rating, newMeanRating: String) {
-      if (shouldThrowException) {
-          throw Exception("FakeActivitiesDBRepository: addRating failed")
-      }
+    if (shouldThrowException) {
+      throw Exception("FakeActivitiesDBRepository: addRating failed")
+    }
   }
 }

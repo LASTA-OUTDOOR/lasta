@@ -5,6 +5,7 @@ import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
 class FakeTokenDBRepo : TokenDBRepository {
 
   var shouldThrowException = false
+
   override fun uploadUserToken(userId: String, token: String) {
     if (shouldThrowException) {
       throw Exception("FakeTokenDBRepo: uploadUserToken failed")

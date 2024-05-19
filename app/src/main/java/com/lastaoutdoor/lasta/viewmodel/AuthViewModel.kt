@@ -35,6 +35,8 @@ constructor(
 
   fun startGoogleSignIn() {
     viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle exceptions for sign in
       try {
         authRepo.startGoogleSignIn().collect { response ->
           when (response) {
@@ -55,6 +57,7 @@ constructor(
 
   fun finishGoogleSignIn(googleCredential: AuthCredential) {
     viewModelScope.launch {
+      // Call surrounded by try-catch block to make handle exceptions for sign in
       try {
         authRepo.finishGoogleSignIn(googleCredential).collect { response ->
           when (response) {
@@ -75,6 +78,8 @@ constructor(
 
   fun signOut() {
     viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle exceptions for sign out
       try {
         authRepo.signOut().collect { response ->
           when (response) {
@@ -97,6 +102,7 @@ constructor(
 
   fun updateFieldInUser(userId: String, field: String, value: Any) {
     viewModelScope.launch {
+      // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
         userDBRepository.updateField(userId, field, value)
       } catch (e: Exception) {

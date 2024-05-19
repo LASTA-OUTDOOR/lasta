@@ -56,11 +56,12 @@ constructor(
               val favoritesIds = userPreferences.user.favorites
               _favoritesIds.value = favoritesIds
               if (favoritesIds.isNotEmpty()) {
+
+                // Call surrounded by try-catch block to make handle exceptions caused by database
                 try {
                   val favorites = activitiesDB.getActivitiesByIds(favoritesIds)
                   _favorites.value = favorites
                 } catch (e: Exception) {
-                  e.printStackTrace()
                   errorToast.showToast(ErrorType.ERROR_DATABASE)
                 }
               } else {
@@ -69,12 +70,13 @@ constructor(
             }
           }
           ConnectionState.OFFLINE -> {
+
+            // Call surrounded by try-catch block to make handle exceptions caused by database
             try {
               val act = offlineActivityDB.getAllActivities()
               _favoritesIds.value = act.map { it.activityId }
               _favorites.value = act
             } catch (e: Exception) {
-              e.printStackTrace()
               errorToast.showToast(ErrorType.ERROR_DATABASE)
             }
           }

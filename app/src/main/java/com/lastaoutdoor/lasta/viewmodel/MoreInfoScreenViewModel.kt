@@ -67,15 +67,17 @@ constructor(
         is Response.Success -> {
           val osmData = response.data!!
           val updatedActivity = activity.copy(startPosition = osmData.getPosition())
+
+          // Call surrounded by try-catch block to make handle exceptions caused by database
           try {
             activityDB.updateStartPosition(activity.activityId, osmData.getPosition())
             activityToDisplay.value = updatedActivity
           } catch (e: Exception) {
-            e.printStackTrace()
             errorToast.showToast(ErrorType.ERROR_DATABASE)
           }
         }
         is Response.Failure -> {
+          // Handle OSM API exceptions
           errorToast.showToast(ErrorType.ERROR_OSM_API)
         }
       }
@@ -100,10 +102,10 @@ constructor(
 
   fun downloadActivity(a: Activity) {
     viewModelScope.launch {
+      // Call surrounded by try-catch block to make handle exceptions caused by the DAO
       try {
         activitydaoImpl.insertActivity(a)
       } catch (e: Exception) {
-        e.printStackTrace()
         errorToast.showToast(ErrorType.ERROR_DAO)
       }
     }
@@ -112,12 +114,13 @@ constructor(
   fun getUserModels(userIds: List<String>) {
     viewModelScope.launch {
       val users = ArrayList<UserModel?>()
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
         for (userId in userIds) {
           users.add(userDB.getUserById(userId))
         }
       } catch (e: Exception) {
-        e.printStackTrace()
         errorToast.showToast(ErrorType.ERROR_DATABASE)
       }
       _usersList.value = users
@@ -126,11 +129,12 @@ constructor(
 
   fun writeNewRating(activityId: String, rating: Rating, newMeanRating: String) {
     viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
         activityDB.addRating(activityId, rating, newMeanRating)
         activityToDisplay.value = activityDB.getActivityById(activityId) ?: dummyActivity
       } catch (e: Exception) {
-        e.printStackTrace()
         errorToast.showToast(ErrorType.ERROR_DATABASE)
       }
     }

@@ -45,12 +45,13 @@ constructor(
         getApplication(), Manifest.permission.ACCESS_FINE_LOCATION) ==
         PackageManager.PERMISSION_GRANTED) {
       viewModelScope.launch {
+
+        // Call surrounded by try-catch block to make handle exceptions caused by Weather API
         try {
           val location = fusedLocationClient.lastLocation.await()
           val weather = weatherRepository.getWeatherWithLoc(location.latitude, location.longitude)
           _weather.postValue(weather)
         } catch (e: Exception) {
-          e.printStackTrace()
           errorToast.showToast(ErrorType.ERROR_WEATHER)
         }
       }
@@ -59,11 +60,12 @@ constructor(
 
   fun changeLocOfWeather(a: Activity) {
     viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle exceptions caused by Weather API
       try {
         val weather = weatherRepository.getWeatherWithLoc(a.startPosition.lat, a.startPosition.lon)
         _weather.postValue(weather)
       } catch (e: Exception) {
-        e.printStackTrace()
         errorToast.showToast(ErrorType.ERROR_WEATHER)
       }
     }

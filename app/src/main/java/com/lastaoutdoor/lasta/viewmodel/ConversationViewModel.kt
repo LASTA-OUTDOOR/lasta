@@ -60,6 +60,8 @@ constructor(
   // refresh the conversation
   fun updateConversation() {
     viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
         _friend.value = userRepository.getUserById(friendUserId) ?: UserModel("")
         if (friendUserId.isNotEmpty())
@@ -89,6 +91,8 @@ constructor(
   fun send(message: String) {
     viewModelScope.launch {
       if (message.isNotEmpty()) {
+
+        // Call surrounded by try-catch block to make handle exceptions caused by database
         try {
           repository.sendMessage(userId, friendUserId, message)
           updateConversation()

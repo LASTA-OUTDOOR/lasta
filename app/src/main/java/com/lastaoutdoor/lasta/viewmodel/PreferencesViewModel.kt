@@ -57,6 +57,8 @@ constructor(
 
   fun updateDescription(description: String) {
     viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
         userDB.updateField(userId.first(), "description", description)
         preferences.updateDescription(description)
@@ -68,6 +70,8 @@ constructor(
 
   fun updateLanguage(language: Language) {
     viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
         userDB.updateField(userId.first(), "language", language)
         preferences.updateLanguage(language)
@@ -79,6 +83,8 @@ constructor(
 
   fun updatePrefActivity(activityType: ActivityType) {
     viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
         userDB.updateField(userId.first(), "prefActivity", activityType)
         preferences.updatePrefActivity(activityType)
@@ -90,6 +96,8 @@ constructor(
 
   fun updateActivityLevels(userActivitiesLevel: UserActivitiesLevel) {
     viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
         userDB.updateField(userId.first(), "levels", userActivitiesLevel)
         preferences.updateActivityLevels(userActivitiesLevel)
@@ -101,6 +109,8 @@ constructor(
 
   fun updateClimbingLevel(level: UserLevel) {
     viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
         userDB.updateField(
             userId.first(),
@@ -118,6 +128,8 @@ constructor(
 
   fun updateHikingLevel(level: UserLevel) {
     viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
         userDB.updateField(
             userId.first(),
@@ -135,6 +147,8 @@ constructor(
 
   fun updateBikingLevel(level: UserLevel) {
     viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
         userDB.updateField(
             userId.first(),
@@ -162,6 +176,7 @@ constructor(
     viewModelScope.launch {
       if (favorites.first().contains(favoriteId)) {
         try {
+          // Call surrounded by try-catch block to make handle exceptions caused by database
           val newFavorites = favorites.first().filter { it.isNotEmpty() }.toMutableList()
           userDB.removeFavorite(userId.first(), favoriteId)
           newFavorites.remove(favoriteId)
@@ -171,6 +186,7 @@ constructor(
         }
       } else {
         try {
+          // Call surrounded by try-catch block to make handle exceptions caused by database
           val newFavorites = favorites.first().filter { it.isNotEmpty() }.toMutableList()
           userDB.addFavorite(userId.first(), favoriteId)
           newFavorites.add(favoriteId)

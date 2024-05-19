@@ -135,6 +135,8 @@ constructor(
 
   init {
     viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
         _state.value =
             _state.value.copy(
@@ -179,7 +181,7 @@ constructor(
       val suggestions =
           when (val response = radarRepository.getSuggestions(query)) {
             is Response.Failure -> {
-                errorToast.showToast(ErrorType.ERROR_RADAR_API)
+              errorToast.showToast(ErrorType.ERROR_RADAR_API)
               return@launch
             }
             is Response.Success -> {
@@ -245,6 +247,8 @@ constructor(
             ActivityType.CLIMBING -> {
               val castedPoint = point as NodeWay
               activitiesIdsHolder.add(castedPoint.id)
+
+              // Call surrounded by try-catch block to make handle exceptions caused by database
               try {
                 activitiesDB.addActivityIfNonExisting(
                     Activity("", point.id, ActivityType.CLIMBING, point.tags.name))
@@ -256,6 +260,8 @@ constructor(
             ActivityType.HIKING -> {
               val castedPoint = point as Relation
               activitiesIdsHolder.add(castedPoint.id)
+
+              // Call surrounded by try-catch block to make handle exceptions caused by database
               try {
                 activitiesDB.addActivityIfNonExisting(
                     Activity(
@@ -275,6 +281,8 @@ constructor(
               activitiesIdsHolder.add(castedPoint.id)
               val distance =
                   if (point.tags.distance.isEmpty()) 0f else point.tags.distance.toFloat()
+
+              // Call surrounded by try-catch block to make handle exceptions caused by database
               try {
                 activitiesDB.addActivityIfNonExisting(
                     Activity(
@@ -291,6 +299,8 @@ constructor(
             }
           }
         }
+
+        // Call surrounded by try-catch block to make handle exceptions caused by database
         try {
           activitiesHolder.addAll(
               activitiesDB.getActivitiesByOSMIds(activitiesIdsHolder, _state.value.showCompleted))
@@ -403,6 +413,8 @@ constructor(
 
   private fun showItinerary(id: Long, startPosition: LatLng, activityType: ActivityType) {
     viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle exceptions caused by the OSM API
       try {
         val response =
             when (activityType) {

@@ -122,6 +122,7 @@ constructor(
             // get current user id from the flow
             val userId = preferences.userPreferencesFlow.first().user.userId
 
+            // Call surrounded by try-catch block to make handle exceptions caused by database
             try {
               val friendId = userDBRepo.getUserByEmail(email)?.userId
               if (friendId == null) {
@@ -133,6 +134,7 @@ constructor(
               } else if (friends.any { it.userId == friendId }) {
                 context.getString(R.string.no_fr)
               } else {
+                // Call surrounded by try-catch block to make handle unexpected exceptions
                 try {
                   repository.sendFriendRequest(userId, friendId)
                   tokenDBRepository.getUserTokenById(friendId)?.let {
@@ -160,6 +162,8 @@ constructor(
 
   fun acceptFriend(friend: UserModel) {
     viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle unexpected exceptions
       try {
         repository.acceptFriendRequest(user.userId, friend.userId)
         tokenDBRepository.getUserTokenById(friend.userId)?.let {
@@ -182,6 +186,8 @@ constructor(
   // Decline a friend request
   fun declineFriend(friend: UserModel) {
     viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle unexpected exceptions
       try {
         repository.declineFriendRequest(user.userId, friend.userId)
         tokenDBRepository.getUserTokenById(friend.userId)?.let {
@@ -202,6 +208,8 @@ constructor(
   // Refresh the list of friends request
   fun refreshFriendRequests() {
     viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
         friendRequests = repository.getFriendRequests(user.userId)
         hasFriendRequest = friendRequests.isNotEmpty()
@@ -214,6 +222,8 @@ constructor(
   // Refresh the list of friends
   fun refreshFriends() {
     viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
         val userModel = userDBRepo.getUserById(user.userId)
         friends = repository.getFriends(userModel?.friends ?: emptyList())
@@ -227,6 +237,8 @@ constructor(
   // Refresh the list of friends
   fun refreshMessages() {
     viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
         messages = repository.getAllConversations(user.userId)
       } catch (e: Exception) {
@@ -262,6 +274,8 @@ constructor(
 
   fun refreshFriendsActivities() {
     viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
         latestFriendActivities =
             repository.getLatestFriendActivities(user.userId, timeFrame, friends)

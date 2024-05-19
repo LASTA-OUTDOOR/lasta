@@ -1,15 +1,17 @@
 package com.lastaoutdoor.lasta.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.lastaoutdoor.lasta.data.offline.ActivityDatabaseImpl
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.repository.offline.ActivityDao
 import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivitiesDBRepository
+import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivityDatabaseImpl
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeConnectivityviewRepo
 import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
 import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -45,7 +47,7 @@ class FavoritesScreenViewModelTest {
   private val preferencesRepository = FakePreferencesRepository()
   private val activitiesRepo = FakeActivitiesDBRepository()
   private val dao: ActivityDao = mockk()
-  private val loc = ActivityDatabaseImpl(dao)
+  private val loc = FakeActivityDatabaseImpl(dao)
   private val con = FakeConnectivityviewRepo()
   private val errorToast = mockk<ErrorToast>()
 
@@ -55,6 +57,7 @@ class FavoritesScreenViewModelTest {
     coEvery { dao.deleteActivity(any()) } returns Unit
     coEvery { dao.insertActivity(any()) } returns Unit
     coEvery { dao.getActivity(any()) } returns Activity("id", 10)
+    every { errorToast.showToast(any()) } returns Unit
   }
 
   @Test
@@ -82,6 +85,38 @@ class FavoritesScreenViewModelTest {
 
       assert(favoritesScreenViewModel.favorites.value.isNotEmpty())
       favoritesScreenViewModel.viewModelScope.cancel("")
+    }
+  }
+
+  @Test
+  fun `test fetchFavorites while connected with exception`() {
+    runBlocking {
+      val con = FakeConnectivityviewRepo()
+      con.connectionState = flowOf(ConnectionState.CONNECTED)
+      activitiesRepo.shouldThrowException = true
+      try {
+        favoritesScreenViewModel =
+            FavoritesScreenViewModel(preferencesRepository, activitiesRepo, loc, con, errorToast)
+      } catch (e: Exception) {
+        coVerify { errorToast.showToast(any()) }
+      }
+      activitiesRepo.shouldThrowException = false
+    }
+  }
+
+  @Test
+  fun `test fetchFavorites while offline with exception`() {
+    runBlocking {
+      val con = FakeConnectivityviewRepo()
+      con.connectionState = flowOf(ConnectionState.OFFLINE)
+      loc.shouldThrowException = true
+      try {
+        favoritesScreenViewModel =
+            FavoritesScreenViewModel(preferencesRepository, activitiesRepo, loc, con, errorToast)
+      } catch (e: Exception) {
+        coVerify { errorToast.showToast(any()) }
+      }
+      loc.shouldThrowException = false
     }
   }
 }

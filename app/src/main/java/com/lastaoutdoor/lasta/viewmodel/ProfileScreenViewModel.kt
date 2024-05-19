@@ -84,6 +84,8 @@ constructor(
 
   fun addFakeActivity() {
     viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
         repository.addUserActivity(
             "mqROPreWZScUdFi0AOPTUcsNRn72",
@@ -112,11 +114,12 @@ constructor(
   /** Fetches the user activities from the repository. */
   private fun fetchUserActivities() {
     viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
         _activitiesCache.value =
             repository.getUserActivities(_user.value.userId).sortedBy { it.timeStarted }
       } catch (e: Exception) {
-        e.printStackTrace()
         errorToast.showToast(ErrorType.ERROR_DATABASE)
       }
       applyFilters()
@@ -125,6 +128,8 @@ constructor(
 
   private fun fetchUserSingeSportActivities(activityType: ActivityType) {
     viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
         when (activityType) {
           ActivityType.CLIMBING ->
@@ -140,7 +145,6 @@ constructor(
                   repository.getUserBikingActivities(_user.value.userId).sortedBy { it.timeStarted }
         }
       } catch (e: Exception) {
-        e.printStackTrace()
         errorToast.showToast(ErrorType.ERROR_DATABASE)
       }
       applyFilters()
@@ -195,6 +199,8 @@ constructor(
    */
   fun updateUser(userId: String) {
     viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
         val user = userDBRepo.getUserById(userId)
         if (user != null) {
