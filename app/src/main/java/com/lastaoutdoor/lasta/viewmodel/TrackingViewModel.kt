@@ -38,6 +38,7 @@ class TrackingViewModel @Inject constructor(sensorManager: SensorManager) : View
     _state.value = _state.value.copy(stepCount = newStepCount - globalStepCount)
   }
 
+  /** Register a sensor listener to listen to the step counter sensor */
   fun registerSensorListener(
       sensorManager: SensorManager,
       sensor: Sensor?,
