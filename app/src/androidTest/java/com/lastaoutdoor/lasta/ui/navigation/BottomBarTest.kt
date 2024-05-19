@@ -9,10 +9,10 @@ import com.lastaoutdoor.lasta.ui.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import java.util.Locale
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.util.Locale
 
 @HiltAndroidTest
 @UninstallModules(AppModule::class)
