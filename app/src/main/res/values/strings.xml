@@ -38,7 +38,7 @@
     <string name = "map">Map</string>
 
     <!--Filter-->
-    <string name = "show_completed_activities">Show completed activities</string>
+    <string name = "show_completed_activities">Show known activities</string>
     <string name = "filter_options">Filter Options</string>
     <string name = "filter_activity_type">Filter by activity type</string>
     <string name = "filter_difficulty_level">Filter by difficulty level</string>
@@ -70,13 +70,16 @@
     <string name = "pitches">Pitches</string>
     <string name = "time">Time</string>
     <string name = "elevation">Elevation</string>
+    <string name = "bio" translatable="false">Bio</string>
+    <string name = "enter_bio">Enter your Bio...</string>
+    <string name = "cancel">Cancel</string>
+    <string name="save">Save</string>
     <!--Setup-->
     <string name = "select_languague">Select your language</string>
     <string name = "languague">Language</string>
     <string name = "select_fav_activity">Select your favorite outdoor activity</string>
     <string name = "select_lev_activity">Select your level of experience</string>
     <string name = "finish">Finish</string>
-    <string name="setup_title">Settings</string>
     <string name="submit_settings">Submit Selected Settings</string>
     <string name="submit_settings_prompt">Are you sure you want to submit these settings ? \n(Note : You will still be able to change your preferences in the settings of the profile page)</string>
 
@@ -84,6 +87,7 @@
     <string name="activity_type">Activity Type</string>
     <string name="not_specified">not specified</string>
     <string name="no_name">No name</string>
+    <string name="unknown_activity_type">Unknown activity type</string>
     <!--UpperSheet-->
     <string name = "modify_search">Modify your search settings</string>
     <!--Range search-->
@@ -117,6 +121,15 @@
     <string name = "no_fr_yourself">You cannot add yourself as a friend</string>
     <string name = "no_fr_twice">You already sent a friend request to this user</string>
     <string name = "inv_email">The email address is not valid</string>
+    <string name = "hiking_newcomer">Hiking Beginner</string>
+    <string name ="hiking_amateur">Hiking Amateur</string>
+    <string name ="hiking_expert">Hiking Expert</string>
+    <string name = "climbing_newcomer">Climbing Beginner</string>
+    <string name ="climbing_amateur">Climbing Amateur</string>
+    <string name ="climbing_expert">Climbing Expert</string>
+    <string name = "biking_newcomer">Biking Beginner</string>
+    <string name ="biking_amateur">Biking Amateur</string>
+    <string name ="biking_expert">Biking Expert</string>
 
     <!--Weather Report-->
     <string name = "weather_report">Weather Report</string>
@@ -147,7 +160,7 @@
     <string name="beginner">Beginner</string>
     <string name="intermediate">Intermediate</string>
     <string name="advanced">Advanced</string>
-    <string name="show_completed_activities_description">Enabling this option will display all previously completed activities</string>
+    <string name="show_completed_activities_description">Enabling this option will only display activities with known position</string>
     <string name="erase_options">Clear all</string>
     <string name="ride">Ride</string>
     <string name="recent_activities">Recent Activities</string>
@@ -170,4 +183,15 @@
     <string name="friend_request_notif">wants to be your friend!</string>
     <string name="friend_request_accepted_notif">accepted your friend request!</string>
     <string name="friend_request_declined_notif">declined your friend request!</string>
+
+    <!--Errors-->
+    <string name="error_unexpected" translatable="false">An unexpected error has occured.</string>
+    <string name="error_sign_in" translatable="false">A SignIn error has occured.</string>
+    <string name="error_sign_out" translatable="false">A Sign Out error has occured.</string>
+    <string name="error_database" translatable="false">"A database error has occured. "</string>
+    <string name="error_dao" translatable="false">A DAO error has occured.</string>
+    <string name="error_messaging" translatable="false">A messaging error has occured.</string>
+    <string name="error_radar_api" translatable="false">A Radar API error has occured.</string>
+    <string name="error_osm_api" translatable="false">A OSM API error has occured.</string>
+    <string name="error_weather" translatable="false">A Weather error has occured.</string>
 </resources>

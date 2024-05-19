@@ -1,22 +1,30 @@
 package com.lastaoutdoor.lasta.viewmodel
 
 import com.google.android.gms.maps.model.LatLng
+import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.activity.ClimbingStyle
 import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.models.api.Position
+import com.lastaoutdoor.lasta.models.api.Relation
+import com.lastaoutdoor.lasta.models.api.SimpleWay
+import com.lastaoutdoor.lasta.models.api.Tags
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
-import com.lastaoutdoor.lasta.repository.api.ActivityRepository
+import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
+import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.utils.OrderingBy
 import com.lastaoutdoor.lasta.utils.Response
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivitiesDBRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivityRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeRadarRepository
+import com.lastaoutdoor.lasta.viewmodel.repo.FakeTokenDBRepo
 import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.Dispatchers
@@ -48,10 +56,12 @@ class DiscoveryScreenViewModelTest() {
   private var repo = FakeActivityRepository()
 
   private lateinit var viewModel: DiscoverScreenViewModel
-  private lateinit var repository: ActivityRepository
+  private lateinit var repository: FakeActivityRepository
   private lateinit var activitiesDB: FakeActivitiesDBRepository
   private lateinit var prefRepo: FakePreferencesRepository
   private lateinit var radarRepo: FakeRadarRepository
+  private lateinit var tokenDB: FakeTokenDBRepo
+  private val errorToast = mockk<ErrorToast>()
 
   @ExperimentalCoroutinesApi
   @Before
@@ -68,11 +78,16 @@ class DiscoveryScreenViewModelTest() {
 
   @Before
   fun setUp() {
-    repository = mockk(relaxed = true)
+    repository = FakeActivityRepository()
     prefRepo = FakePreferencesRepository()
     radarRepo = FakeRadarRepository()
     activitiesDB = FakeActivitiesDBRepository()
-    viewModel = DiscoverScreenViewModel(repository, prefRepo, activitiesDB, radarRepo, mockk())
+    tokenDB = FakeTokenDBRepo()
+    every { errorToast.showToast(any()) } returns Unit
+    every { errorToast.showToast(any(), any()) } returns Unit
+
+    viewModel =
+        DiscoverScreenViewModel(repository, prefRepo, activitiesDB, radarRepo, tokenDB, errorToast)
     repo.currResponse = Response.Success(null)
   }
 
@@ -80,10 +95,6 @@ class DiscoveryScreenViewModelTest() {
   @Test
   fun fetchBikingActivities() {
     runBlocking {
-      val fakeRel = FakeActivityRepository().fakeRel
-      coEvery { repository.getBikingRoutesInfo(any(), any(), any()) } returns
-          Response.Success(listOf(fakeRel))
-
       viewModel.updateActivityType(listOf(ActivityType.BIKING))
 
       assertEquals(viewModel.state.value.selectedActivityTypes, listOf(ActivityType.BIKING))
@@ -100,6 +111,14 @@ class DiscoveryScreenViewModelTest() {
                   2f,
                   3,
               )))
+
+      repository.currResponse = Response.Failure(Throwable())
+      try {
+        viewModel.updateActivityType(listOf(ActivityType.BIKING))
+      } catch (e: Exception) {
+        coVerify { errorToast.showToast(any()) }
+      }
+      repository.currResponse = Response.Success(null)
     }
   }
 
@@ -107,10 +126,6 @@ class DiscoveryScreenViewModelTest() {
   @Test
   fun fetchHikingActivities() {
     runBlocking {
-      val fakeRel = FakeActivityRepository().fakeRel
-      coEvery { repository.getHikingRoutesInfo(any(), any(), any()) } returns
-          Response.Success(listOf(fakeRel))
-
       viewModel.updateActivityType(listOf(ActivityType.HIKING))
 
       assertEquals(viewModel.state.value.selectedActivityTypes, listOf(ActivityType.HIKING))
@@ -127,6 +142,14 @@ class DiscoveryScreenViewModelTest() {
                   2f,
                   3,
               )))
+
+      repository.currResponse = Response.Failure(Throwable())
+      try {
+        viewModel.updateActivityType(listOf(ActivityType.HIKING))
+      } catch (e: Exception) {
+        coVerify { errorToast.showToast(any()) }
+      }
+      repository.currResponse = Response.Success(null)
     }
   }
 
@@ -134,10 +157,6 @@ class DiscoveryScreenViewModelTest() {
   @Test
   fun fetchClimbingActivities() {
     runBlocking {
-      val fakeNode = FakeActivityRepository().fakeNode
-      coEvery { repository.getClimbingPointsInfo(any(), any(), any()) } returns
-          Response.Success(listOf(fakeNode))
-
       viewModel.updateActivityType(listOf(ActivityType.CLIMBING))
 
       assertEquals(viewModel.state.value.selectedActivityTypes, listOf(ActivityType.CLIMBING))
@@ -154,6 +173,14 @@ class DiscoveryScreenViewModelTest() {
                   2f,
                   3,
               )))
+
+      repository.currResponse = Response.Failure(Throwable())
+      try {
+        viewModel.updateActivityType(listOf(ActivityType.CLIMBING))
+      } catch (e: Exception) {
+        coVerify { errorToast.showToast(any()) }
+      }
+      repository.currResponse = Response.Success(null)
     }
   }
 
@@ -256,25 +283,80 @@ class DiscoveryScreenViewModelTest() {
 
   @Test
   fun update_selectedMarker() {
+    // biking, id = 0
     viewModel.updateSelectedMarker(
         Marker(0, "name", LatLng(0.0, 0.0), "description", 1, ActivityType.BIKING))
     assertEquals(
         viewModel.state.value.selectedMarker,
         Marker(0, "name", LatLng(0.0, 0.0), "description", 1, ActivityType.BIKING))
     viewModel.clearSelectedMarker()
-    // hiking
+
+    // biking, id != 0
     viewModel.updateSelectedMarker(
-        Marker(0, "name", LatLng(0.0, 0.0), "description", 1, ActivityType.HIKING))
+        Marker(
+            1,
+            "name",
+            LatLng(0.0, 0.0),
+            "description",
+            R.drawable.biking_icon,
+            ActivityType.BIKING))
     assertEquals(
         viewModel.state.value.selectedMarker,
-        Marker(0, "name", LatLng(0.0, 0.0), "description", 1, ActivityType.HIKING))
+        Marker(
+            1,
+            "name",
+            LatLng(0.0, 0.0),
+            "description",
+            R.drawable.biking_icon,
+            ActivityType.BIKING))
     viewModel.clearSelectedMarker()
+
+    // hiking, id != 0
+    viewModel.updateSelectedMarker(
+        Marker(
+            1,
+            "name",
+            LatLng(0.0, 0.0),
+            "description",
+            R.drawable.hiking_icon,
+            ActivityType.HIKING))
+    assertEquals(
+        viewModel.state.value.selectedMarker,
+        Marker(
+            1,
+            "name",
+            LatLng(0.0, 0.0),
+            "description",
+            R.drawable.hiking_icon,
+            ActivityType.HIKING))
+    viewModel.clearSelectedMarker()
+
     // climbing
     viewModel.updateSelectedMarker(
-        Marker(0, "name", LatLng(0.0, 0.0), "description", 1, ActivityType.CLIMBING))
+        Marker(
+            2,
+            "name",
+            LatLng(0.0, 0.0),
+            "description",
+            R.drawable.climbing_icon,
+            ActivityType.CLIMBING))
     assertEquals(
         viewModel.state.value.selectedMarker,
-        Marker(0, "name", LatLng(0.0, 0.0), "description", 1, ActivityType.CLIMBING))
+        Marker(
+            2,
+            "name",
+            LatLng(0.0, 0.0),
+            "description",
+            R.drawable.climbing_icon,
+            ActivityType.CLIMBING))
+
+    // marker icon null
+    viewModel.updateSelectedMarker(
+        Marker(2, "name", LatLng(0.0, 0.0), "description", -1, ActivityType.CLIMBING))
+
+    // marker null
+    viewModel.updateSelectedMarker(null)
+    assertEquals(viewModel.state.value.selectedItinerary, null)
   }
 
   @Test
@@ -365,7 +447,7 @@ class DiscoveryScreenViewModelTest() {
 
   @Test
   fun testActivitiesToMarkers() {
-    val testActivity =
+    val testActivityBiking =
         Activity(
             "id",
             1,
@@ -382,10 +464,22 @@ class DiscoveryScreenViewModelTest() {
             "from",
             "to",
             1f)
-    val marker = viewModel.activitiesToMarkers(listOf(testActivity))
-    assert(marker.isNotEmpty())
-    assert(marker.size == 1)
-    assert(marker.first().position == LatLng(0.0, 0.0))
+    val markerBiking = viewModel.activitiesToMarkers(listOf(testActivityBiking))
+    assert(markerBiking.isNotEmpty())
+    assert(markerBiking.size == 1)
+    assert(markerBiking.first().position == LatLng(0.0, 0.0))
+
+    val testActivityHiking = testActivityBiking.copy(activityType = ActivityType.HIKING)
+    val markerHiking = viewModel.activitiesToMarkers(listOf(testActivityHiking))
+    assert(markerHiking.isNotEmpty())
+    assert(markerHiking.size == 1)
+    assert(markerHiking.first().position == LatLng(0.0, 0.0))
+
+    val testActivityClimbing = testActivityBiking.copy(activityType = ActivityType.CLIMBING)
+    val markerClimbing = viewModel.activitiesToMarkers(listOf(testActivityClimbing))
+    assert(markerClimbing.isNotEmpty())
+    assert(markerClimbing.size == 1)
+    assert(markerClimbing.first().position == LatLng(0.0, 0.0))
   }
 
   @Test
@@ -393,8 +487,113 @@ class DiscoveryScreenViewModelTest() {
     viewModel.setSelectedActivitiesType(listOf(ActivityType.BIKING))
     assert(viewModel.state.value.selectedActivityTypes.contains(ActivityType.BIKING))
 
-    assert(viewModel.state.value.selectedZoom == 13f)
+    assert(viewModel.state.value.selectedZoom == 16f)
     assert(viewModel.state.value.initialPosition == LatLng(46.519962, 6.633597))
     assert(viewModel.state.value.initialZoom == 11f)
+  }
+
+  @Test
+  fun testShowItinerary() {
+    val id = 0L
+    val startPosition = LatLng(0.0, 0.0)
+    var activityType = ActivityType.HIKING
+
+    val method =
+        viewModel.javaClass.getDeclaredMethod(
+            "showItinerary", Long::class.java, LatLng::class.java, ActivityType::class.java)
+    method.isAccessible = true
+
+    repository.currResponse = Response.Success(null)
+
+    method.invoke(viewModel, id, startPosition, activityType)
+
+    assert(viewModel.state.value.selectedItinerary != null)
+
+    activityType = ActivityType.BIKING
+    method.invoke(viewModel, id, startPosition, activityType)
+    assert(viewModel.state.value.selectedItinerary != null)
+
+    activityType = ActivityType.CLIMBING
+    method.invoke(viewModel, id, startPosition, activityType)
+    assert(viewModel.state.value.selectedItinerary != null)
+  }
+
+  @Suppress("UNCHECKED_CAST")
+  @Test
+  fun testShowRouteItinerary() {
+
+    val ways = listOf(SimpleWay(listOf(Position(0.0, 0.0), Position(15.0, 15.0))))
+
+    val relation: Relation = Relation("test", 1L, Tags(), ways as List<SimpleWay>?)
+
+    val method =
+        viewModel.javaClass.getDeclaredMethod(
+            "showRouteItinerary", Long::class.java, Relation::class.java, LatLng::class.java)
+    method.isAccessible = true
+
+    method.invoke(viewModel, 0L, relation, LatLng(14.0, 14.0))
+
+    assert(viewModel.state.value.selectedItinerary != null)
+  }
+
+  @Test
+  fun `init test with exception`() {
+    tokenDB.shouldThrowException = true
+    try {
+      DiscoverScreenViewModel(repository, prefRepo, activitiesDB, radarRepo, tokenDB, errorToast)
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(any()) }
+    }
+    tokenDB.shouldThrowException = false
+  }
+
+  @Test
+  fun `showItinerary with exception`() {
+    repository.shouldThrowException = true
+    val method =
+        viewModel.javaClass.getDeclaredMethod(
+            "showItinerary", Long::class.java, LatLng::class.java, ActivityType::class.java)
+    try {
+      method.isAccessible = true
+      method.invoke(viewModel, 0L, LatLng(0.0, 0.0), ActivityType.BIKING)
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(any()) }
+    }
+    repository.shouldThrowException = false
+  }
+
+  @Test
+  fun `fetchActivities() with exception`() {
+    activitiesDB.shouldThrowException = true
+    try {
+      viewModel.fetchActivities()
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(any()) }
+    }
+    activitiesDB.shouldThrowException = false
+  }
+
+  @Test
+  fun `fetchActivities() with exception 2`() {
+    val actualDB = mockk<ActivitiesDBRepository>()
+    coEvery { actualDB.getActivitiesByOSMIds(any(), true) } throws Exception()
+
+    try {
+      DiscoverScreenViewModel(repository, prefRepo, actualDB, radarRepo, tokenDB, errorToast)
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(any()) }
+    }
+  }
+
+  @Test
+  fun `fetchActivities() with exception 3`() {
+    val actualDB = mockk<ActivitiesDBRepository>()
+    coEvery { actualDB.addActivityIfNonExisting(any()) } throws Exception()
+
+    try {
+      DiscoverScreenViewModel(repository, prefRepo, actualDB, radarRepo, tokenDB, errorToast)
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(any()) }
+    }
   }
 }

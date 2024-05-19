@@ -14,16 +14,23 @@ class FakeActivityRepository() : ActivityRepository {
 
   val fakeNode = NodeWay("node", 10, 1.0, 1.0, Position(0.0, 0.0), Tags("name"))
   val fakeRel = Relation("node", 10, Tags("name"), listOf(SimpleWay(listOf(Position(0.0, 0.0)))))
+  var shouldThrowException = false
 
   override suspend fun getClimbingPointsInfo(
       range: Int,
       lat: Double,
       lon: Double
   ): Response<List<NodeWay>> {
+    if (shouldThrowException) {
+      throw Exception("thrown")
+    }
     return Response.Success(listOf(fakeNode))
   }
 
   override suspend fun getClimbingPointById(id: Long): Response<NodeWay> {
+    if (shouldThrowException) {
+      throw Exception("thrown")
+    }
     return when (currResponse) {
       is Response.Failure -> Response.Failure(t)
       Response.Loading -> Response.Loading
@@ -36,10 +43,16 @@ class FakeActivityRepository() : ActivityRepository {
       lat: Double,
       lon: Double
   ): Response<List<Relation>> {
+    if (shouldThrowException) {
+      throw Exception("thrown")
+    }
     return Response.Success(listOf(fakeRel))
   }
 
   override suspend fun getHikingRouteById(id: Long): Response<Relation> {
+    if (shouldThrowException) {
+      throw Exception("thrown")
+    }
     return when (currResponse) {
       is Response.Failure -> Response.Failure(t)
       Response.Loading -> Response.Loading
@@ -52,10 +65,16 @@ class FakeActivityRepository() : ActivityRepository {
       lat: Double,
       lon: Double
   ): Response<List<Relation>> {
+    if (shouldThrowException) {
+      throw Exception("thrown")
+    }
     return Response.Success(listOf(fakeRel))
   }
 
   override suspend fun getBikingRouteById(id: Long): Response<Relation> {
+    if (shouldThrowException) {
+      throw Exception("thrown")
+    }
     return when (currResponse) {
       is Response.Failure -> Response.Failure(t)
       Response.Loading -> Response.Loading

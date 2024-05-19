@@ -76,8 +76,8 @@ fun RangeSearchComposable(
                 Row {
                   Slider(
                       value = range.toFloat(),
-                      onValueChange = { setRange(it.toDouble().coerceIn(1000.0, 50000.0)) },
-                      valueRange = 0f..50000f,
+                      onValueChange = { setRange(it.toDouble().coerceIn(1000.0, 30000.0)) },
+                      valueRange = 0f..30000f,
                       steps = 100,
                       modifier = Modifier.width(300.dp).testTag("listSearchOptionsSlider"))
                   Text(
@@ -129,8 +129,8 @@ fun RangeSearchComposable(
                 Row {
                   Slider(
                       value = range.toFloat(),
-                      onValueChange = { setRange(it.toDouble().coerceIn(1000.0, 50000.0)) },
-                      valueRange = 0f..50000f,
+                      onValueChange = { setRange(it.toDouble().coerceIn(1000.0, 30000.0)) },
+                      valueRange = 0f..30000f,
                       steps = 100,
                       modifier = Modifier.width(300.dp).testTag("mapRangeSearchSlider"))
                   Text(

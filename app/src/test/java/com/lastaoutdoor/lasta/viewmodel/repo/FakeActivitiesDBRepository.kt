@@ -7,11 +7,20 @@ import com.lastaoutdoor.lasta.models.api.Position
 import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
 
 class FakeActivitiesDBRepository() : ActivitiesDBRepository {
+
+  var shouldThrowException = false
+
   override suspend fun addActivityIfNonExisting(activity: Activity): Boolean {
+    if (shouldThrowException) {
+      throw Exception("FakeActivitiesDBRepository: addActivityIfNonExisting failed")
+    }
     return true
   }
 
   override suspend fun getActivityById(activityId: String): Activity? {
+    if (shouldThrowException) {
+      throw Exception("FakeActivitiesDBRepository: getActivityById failed")
+    }
     return Activity(
         "id",
         1,
@@ -24,6 +33,9 @@ class FakeActivitiesDBRepository() : ActivitiesDBRepository {
   }
 
   override suspend fun getActivitiesByIds(activityIds: List<String>): List<Activity> {
+    if (shouldThrowException) {
+      throw Exception("FakeActivitiesDBRepository: getActivitiesByIds failed")
+    }
     return listOf(
         Activity(
             "id",
@@ -40,6 +52,9 @@ class FakeActivitiesDBRepository() : ActivitiesDBRepository {
       osmIds: List<Long>,
       onlyKnown: Boolean
   ): List<Activity> {
+    if (shouldThrowException) {
+      throw Exception("FakeActivitiesDBRepository: getActivitiesByOSMIds failed")
+    }
     return listOf(
         Activity(
             "id",
@@ -53,10 +68,14 @@ class FakeActivitiesDBRepository() : ActivitiesDBRepository {
   }
 
   override suspend fun updateStartPosition(activityId: String, position: Position) {
-    // do nothing
+    if (shouldThrowException) {
+      throw Exception("FakeActivitiesDBRepository: updateStartPosition failed")
+    }
   }
 
   override fun addRating(activityId: String, rating: Rating, newMeanRating: String) {
-    TODO("Not yet implemented")
+    if (shouldThrowException) {
+      throw Exception("FakeActivitiesDBRepository: addRating failed")
+    }
   }
 }

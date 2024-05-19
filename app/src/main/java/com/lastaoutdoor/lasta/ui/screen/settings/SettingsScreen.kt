@@ -137,7 +137,13 @@ fun SettingsScreen(
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.error)) {
                   Text(
                       text = LocalContext.current.getString(R.string.delete_account),
-                      style = MaterialTheme.typography.headlineMedium)
+                      style =
+                          when (language) {
+                            Language.ENGLISH -> MaterialTheme.typography.headlineMedium
+                            Language.FRENCH -> MaterialTheme.typography.bodySmall
+                            Language.GERMAN -> MaterialTheme.typography.headlineMedium
+                          },
+                      maxLines = 1)
                 }
           }
         }

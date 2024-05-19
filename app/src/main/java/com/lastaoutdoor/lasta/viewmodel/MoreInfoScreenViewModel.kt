@@ -15,6 +15,8 @@ import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
 import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
+import com.lastaoutdoor.lasta.utils.ErrorToast
+import com.lastaoutdoor.lasta.utils.ErrorType
 import com.lastaoutdoor.lasta.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -28,7 +30,8 @@ constructor(
     private val activityRepository: ActivityRepository,
     private val activityDB: ActivitiesDBRepository,
     private val activitydaoImpl: ActivityDatabaseImpl,
-    private val userDB: UserDBRepository
+    private val userDB: UserDBRepository,
+    private val errorToast: ErrorToast
 ) : ViewModel() {
   /* Just a default activity to fill in the mutable state*/
   private val dummyActivity = Activity("", 0, ActivityType.CLIMBING, "Dummy")
@@ -64,11 +67,18 @@ constructor(
         is Response.Success -> {
           val osmData = response.data!!
           val updatedActivity = activity.copy(startPosition = osmData.getPosition())
-          activityDB.updateStartPosition(activity.activityId, osmData.getPosition())
-          activityToDisplay.value = updatedActivity
+
+          // Call surrounded by try-catch block to make handle exceptions caused by database
+          try {
+            activityDB.updateStartPosition(activity.activityId, osmData.getPosition())
+            activityToDisplay.value = updatedActivity
+          } catch (e: Exception) {
+            errorToast.showToast(ErrorType.ERROR_DATABASE)
+          }
         }
         is Response.Failure -> {
-          /*TODO*/
+          // Handle OSM API exceptions
+          errorToast.showToast(ErrorType.ERROR_OSM_API)
         }
       }
     }
@@ -79,7 +89,7 @@ constructor(
         when (activity.activityType) {
           ActivityType.CLIMBING -> R.drawable.climbing_icon
           ActivityType.HIKING -> R.drawable.hiking_icon
-          ActivityType.BIKING -> R.drawable.hiking_icon
+          ActivityType.BIKING -> R.drawable.biking_icon
         }
     return Marker(
         activity.osmId,
@@ -91,14 +101,27 @@ constructor(
   }
 
   fun downloadActivity(a: Activity) {
-    viewModelScope.launch { activitydaoImpl.insertActivity(a) }
+    viewModelScope.launch {
+      // Call surrounded by try-catch block to make handle exceptions caused by the DAO
+      try {
+        activitydaoImpl.insertActivity(a)
+      } catch (e: Exception) {
+        errorToast.showToast(ErrorType.ERROR_DAO)
+      }
+    }
   }
 
   fun getUserModels(userIds: List<String>) {
     viewModelScope.launch {
       val users = ArrayList<UserModel?>()
-      for (userId in userIds) {
-        users.add(userDB.getUserById(userId))
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
+      try {
+        for (userId in userIds) {
+          users.add(userDB.getUserById(userId))
+        }
+      } catch (e: Exception) {
+        errorToast.showToast(ErrorType.ERROR_DATABASE)
       }
       _usersList.value = users
     }
@@ -106,8 +129,14 @@ constructor(
 
   fun writeNewRating(activityId: String, rating: Rating, newMeanRating: String) {
     viewModelScope.launch {
-      activityDB.addRating(activityId, rating, newMeanRating)
-      activityToDisplay.value = activityDB.getActivityById(activityId) ?: dummyActivity
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
+      try {
+        activityDB.addRating(activityId, rating, newMeanRating)
+        activityToDisplay.value = activityDB.getActivityById(activityId) ?: dummyActivity
+      } catch (e: Exception) {
+        errorToast.showToast(ErrorType.ERROR_DATABASE)
+      }
     }
     _ratings.value.add(rating)
   }

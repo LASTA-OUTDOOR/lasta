@@ -15,7 +15,8 @@
     <string name="sign_in_google">Mit Google anmelden</string>
     <string name="offline">Sie sind Offline</string>
     <string name="start">Beginnen</string>
-    <string name="on_map">auf Karte anzeigen</string>
+    <string name="on_map">Auf Karte anzeigen</string>
+    <string name="unknown_activity_type">Unbekannter Aktivitätstyp</string>
     <string name="biking">Radfahren</string>
     <string name="hiking_lvl">Wanderniveau</string>
     <string name="preferences">Präferenzen</string>
@@ -27,11 +28,11 @@
     <string name="pitches">Seillängen</string>
     <string name="time">Zeit</string>
     <string name="elevation">Höhe</string>
+    <string name="enter_bio">Ihre Bio eingeben...</string>
     <string name="select_languague">Wählen Sie Ihre Sprache</string>
     <string name="languague">Sprache</string>
     <string name="select_fav_activity">Wählen Sie Ihre Lieblingsaktivität</string>
     <string name="finish">Beenden</string>
-    <string name="setup_title">Einstellungen</string>
     <string name="activity_type">Aktivitätstyp</string>
     <string name="not_specified">nicht angegeben</string>
     <string name="no_name">Kein Name</string>
@@ -70,7 +71,7 @@
     <string name = "wind_speed">Windgeschwindigkeit</string>
     <string name = "humidity">Feuchtigkeit</string>
     <string name = "no_loc">Wetterbericht nicht verfügbar! Erlauben Sie dieser Anwendung, Ihren Standort zu verwenden, und versuchen Sie es erneut.</string>
-    <string name="show_completed_activities">Abgeschlossene Aktivitäten anzeigen</string>
+    <string name="show_completed_activities">Bekannte Aktivitäten anzeigen</string>
     <string name="filter_options">" Filteroptionen"</string>
     <string name="filter_activity_type">"Filtern Sie nach Aktivitätstyp "</string>
     <string name="filter_difficulty_level">Filtern Sie nach Schwierigkeitsgrad</string>
@@ -83,7 +84,7 @@
     <string name="type_message">Schreibe deine Nachricht hier</string>
     <string name="your_message">"Deine Nachricht "</string>
     <string name="send_message">Senden</string>
-    <string name="Account_settings">Kontoeinstellungen</string>
+    <string name="Account_settings">Einstellungen</string>
     <string name="delete_account">Konto löschen</string>
     <string name="delete_account_prompt">Möchten Sie Ihr Konto wirklich löschen?</string>
     <string name="tab_favorites">Favoriten</string>
@@ -105,7 +106,7 @@
     <string name="beginner">Anfänger</string>
     <string name="intermediate">Fortgeschritten</string>
     <string name="advanced">Erweitert</string>
-    <string name="show_completed_activities_description">Durch Aktivieren dieser Option werden alle zuvor abgeschlossenen Aktivitäten angezeigt.</string>
+    <string name="show_completed_activities_description">Wenn Sie diese Option aktivieren, werden alle Aktivitäten mit bekanntem Standort angezeigt.</string>
     <string name="erase_options">Alles löschen</string>
     <string name="ride">Radtour</string>
     <string name="recent_activities">Neueste Aktivitäten</string>
@@ -126,9 +127,20 @@
     <string name="general_settings">Allgemeine Einstellungen</string>
     <string name="activity_settings">"Aktivitätseinstellungen "</string>
     <string name = "select_lev_activity">Wählen Sie Ihr Nivaue in diese Aktivität</string>
-    <string name = "Account_setup">Einstellungen</string>
+    <string name = "Account_setup">Einrichtung</string>
     <string name="submit_settings">Ausgewählte Einstellungen senden</string>
     <string name="submit_settings_prompt">Sind Sie sicher, dass Sie diese Einstellungen übermitteln möchten? (Hinweis: Sie können Ihre Präferenzen weiterhin in den Einstellungen der Profilseite ändern.)</string>
     <string name="yes">Ja</string>
     <string name="no">Nein</string>
+    <string name="cancel">Kündigen</string>
+    <string name="save">Speichern</string>
+    <string name = "hiking_newcomer">Wandern Anfänger</string>
+    <string name ="hiking_amateur">Wandern Amateur</string>
+    <string name ="hiking_expert">Wandern Experte</string>
+    <string name = "climbing_newcomer">Klettern Anfänger</string>
+    <string name ="climbing_amateur">Klettern Amateur</string>
+    <string name ="climbing_expert">Klettern Experte</string>
+    <string name = "biking_newcomer">Biking Anfänger</string>
+    <string name ="biking_amateur">Biking Amateur</string>
+    <string name ="biking_expert">Biking Experte</string>
 </resources>
