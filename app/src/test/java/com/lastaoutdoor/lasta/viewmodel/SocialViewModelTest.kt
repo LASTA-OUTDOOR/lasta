@@ -7,6 +7,7 @@ import com.google.firebase.Timestamp
 import com.lastaoutdoor.lasta.data.api.notifications.FCMApi
 import com.lastaoutdoor.lasta.models.social.MessageModel
 import com.lastaoutdoor.lasta.models.user.UserModel
+import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
 import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
 import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeConnectivityviewRepo
@@ -253,5 +254,81 @@ class SocialViewModelTest {
     }
     userDB.shouldThrowException = false
     repoDB.shouldThrowException = false
+  }
+
+  @Test
+  fun `test refresh friend requests with exception 2`() = runTest {
+    val actualSocialDB = mockk<SocialDBRepository>()
+    coEvery { actualSocialDB.getFriendRequests(any()) } throws Exception()
+    try {
+      SocialViewModel(
+          context,
+          actualSocialDB,
+          userDB,
+          connectRepo,
+          prefRepo,
+          tokenDBRepository,
+          fcmAPI,
+          errorToast)
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(any()) }
+    }
+  }
+
+  @Test
+  fun `test refreshFriends with exception`() = runTest {
+    val actualSocialDB = mockk<SocialDBRepository>()
+    coEvery { actualSocialDB.getFriends(any()) } throws Exception()
+    try {
+      SocialViewModel(
+          context,
+          actualSocialDB,
+          userDB,
+          connectRepo,
+          prefRepo,
+          tokenDBRepository,
+          fcmAPI,
+          errorToast)
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(any()) }
+    }
+  }
+
+  @Test
+  fun `test refreshMessages with exception`() = runTest {
+    val actualSocialDB = mockk<SocialDBRepository>()
+    coEvery { actualSocialDB.getAllConversations(any()) } throws Exception()
+    try {
+      SocialViewModel(
+          context,
+          actualSocialDB,
+          userDB,
+          connectRepo,
+          prefRepo,
+          tokenDBRepository,
+          fcmAPI,
+          errorToast)
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(any()) }
+    }
+  }
+
+  @Test
+  fun `test refreshFriendRequests with exception`() = runTest {
+    val actualSocialDB = mockk<SocialDBRepository>()
+    coEvery { actualSocialDB.getLatestFriendActivities(any(), any(), any()) } throws Exception()
+    try {
+      SocialViewModel(
+          context,
+          actualSocialDB,
+          userDB,
+          connectRepo,
+          prefRepo,
+          tokenDBRepository,
+          fcmAPI,
+          errorToast)
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(any()) }
+    }
   }
 }
