@@ -19,10 +19,11 @@ fun TrackingScreen() {
       modifier = Modifier.fillMaxSize(),
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.SpaceAround) {
-        LocationScreen()
+        LocationScreen(Modifier.weight(0.7f))
         StepCountDisplay(
             stepCounterSensor =
                 (LocalContext.current.getSystemService(Context.SENSOR_SERVICE) as SensorManager)
-                    .getDefaultSensor(Sensor.TYPE_STEP_COUNTER))
+                    .getDefaultSensor(Sensor.TYPE_STEP_COUNTER),
+            Modifier.weight(0.3f))
       }
 }

@@ -38,7 +38,7 @@ import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
 // val stepCounterSensor =
 // context.getSystemService(Context.SENSOR_SERVICE).getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
 @Composable
-fun StepCountDisplay(stepCounterSensor: Sensor?) {
+fun StepCountDisplay(stepCounterSensor: Sensor?, modifier: Modifier) {
 
   // internal mutable variables to keep track of the current step count
 
@@ -85,7 +85,7 @@ fun StepCountDisplay(stepCounterSensor: Sensor?) {
 
   if (stepCounterSensor == null) {
     // Step counter sensor not available
-    UnavailableStepCounter()
+    UnavailableStepCounter(modifier)
   } else {
     // Step counter sensor available
     DisposableEffect(key1 = stepCounterSensor) {
@@ -101,14 +101,14 @@ fun StepCountDisplay(stepCounterSensor: Sensor?) {
       onDispose { sensorManager.unregisterListener(sensorEventListener) }
     }
     Modifier.testTag("StepCountDisplayTag")
-    StepsTakenField(globalStepCount)
+    StepsTakenField(globalStepCount, modifier)
   }
 }
 
 @Composable
-fun UnavailableStepCounter() {
+fun UnavailableStepCounter(modifier: Modifier) {
   Column(
-      modifier = Modifier.fillMaxSize().testTag("UnavailableStepCounterTag"),
+      modifier = modifier.fillMaxSize().testTag("UnavailableStepCounterTag"),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally) {
         Text(LocalContext.current.getString(R.string.step_count_unavailable))
@@ -117,10 +117,11 @@ fun UnavailableStepCounter() {
 }
 
 @Composable
-fun StepsTakenField(globalStepCount: Int) {
+fun StepsTakenField(globalStepCount: Int, modifier: Modifier) {
   Column(
       verticalArrangement = Arrangement.Center,
-      horizontalAlignment = Alignment.CenterHorizontally) {
+      horizontalAlignment = Alignment.CenterHorizontally,
+      modifier = modifier) {
         Text(
             LocalContext.current.getString(R.string.step_count),
             color = PrimaryBlue,
