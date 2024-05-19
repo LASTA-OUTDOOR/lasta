@@ -39,7 +39,7 @@ class TrackingViewModel @Inject constructor(sensorManager: SensorManager) : View
   }
 
   fun registerSensorListener(
-      sensorManager: SensorManager?,
+      sensorManager: SensorManager,
       sensor: Sensor?,
       onStepCountChanged: (Int) -> Unit
   ): SensorEventListener {
@@ -56,7 +56,7 @@ class TrackingViewModel @Inject constructor(sensorManager: SensorManager) : View
             // Do nothing
           }
         }
-    sensorManager?.registerListener(sensorEventListener, sensor, SensorManager.SENSOR_DELAY_NORMAL)
+    sensorManager.registerListener(sensorEventListener, sensor, SensorManager.SENSOR_DELAY_NORMAL)
     return sensorEventListener
   }
 
