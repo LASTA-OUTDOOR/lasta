@@ -39,6 +39,7 @@ import com.lastaoutdoor.lasta.viewmodel.MoreInfoScreenViewModel
 import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 import com.lastaoutdoor.lasta.viewmodel.ProfileScreenViewModel
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
+import com.lastaoutdoor.lasta.viewmodel.TrackingViewModel
 import com.lastaoutdoor.lasta.viewmodel.WeatherViewModel
 
 @SuppressLint("StateFlowValueCalledInComposition")
@@ -197,7 +198,11 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           weatherViewModel::fetchWeatherWithUserLoc,
           discoverScreenViewModel::clearSelectedMarker)
     }
-    composable(DestinationRoute.Tracking.route) { TrackingScreen() }
+    composable(DestinationRoute.Tracking.route) { entry ->
+      val trackingViewModel: TrackingViewModel = hiltViewModel(entry)
+      val state = trackingViewModel.state.collectAsState().value
+      TrackingScreen(state, trackingViewModel::registerSensorListener, trackingViewModel::updateStepCount)
+    }
 
     // Filter Screen
     composable(DestinationRoute.Filter.route) { entry ->

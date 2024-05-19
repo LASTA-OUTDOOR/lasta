@@ -1,7 +1,7 @@
 package com.lastaoutdoor.lasta.ui.screen.tracking
 
-import android.content.Context
 import android.hardware.Sensor
+import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,21 +9,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import com.lastaoutdoor.lasta.ui.components.StepCountDisplay
 import com.lastaoutdoor.lasta.ui.screen.tracking.components.LocationScreen
+import com.lastaoutdoor.lasta.viewmodel.TrackingState
 
 @Composable
-fun TrackingScreen() {
+fun TrackingScreen(trackingState: TrackingState, registerSensorListener: (SensorManager, Sensor?, (Int) -> Unit) -> SensorEventListener, updateStepCount: (Int) -> Unit) {
   Column(
       modifier = Modifier.fillMaxSize(),
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.SpaceAround) {
         LocationScreen(Modifier.weight(0.7f))
-        StepCountDisplay(
-            stepCounterSensor =
-                (LocalContext.current.getSystemService(Context.SENSOR_SERVICE) as SensorManager)
-                    .getDefaultSensor(Sensor.TYPE_STEP_COUNTER),
-            Modifier.weight(0.3f))
+        StepCountDisplay(Modifier.weight(0.3f), trackingState, registerSensorListener, updateStepCount)
       }
 }
