@@ -67,4 +67,16 @@ class AppModuleTest {
         AppModule.provideTaskRepository(AppModule.provideDao(AppModule.provideAppDatabase(context)))
     assertNotNull(taskRepository)
   }
+
+  @Test
+  fun `Error toast is provided`() {
+    val errorToast = AppModule.provideErrorToast(context)
+    assertNotNull(errorToast)
+  }
+
+  @Test
+  fun `Step counter is provided`() {
+    val stepCounter = AppModule.provideStepCounter(context)
+    assertNotNull(stepCounter)
+  }
 }
