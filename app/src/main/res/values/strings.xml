@@ -55,6 +55,9 @@
     <!--More Info-->
     <string name = "start">Start</string>
     <string name = "on_map">View on Map</string>
+    <string name = "share_options">Share</string>
+    <string name = "share_in_app">Share in app</string>
+    <string name = "share_outside">Share outside the app</string>
     <!--Profile-->
     <string name = "climbing">Climbing</string>
     <string name = "hiking">Hiking</string>

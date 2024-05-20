@@ -62,8 +62,8 @@ import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
 import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
-import com.lastaoutdoor.lasta.ui.components.shareActivity
 import com.lastaoutdoor.lasta.ui.screen.map.mapScreen
+import com.lastaoutdoor.lasta.ui.screen.moreinfo.components.ShareOptionsDialog
 import com.lastaoutdoor.lasta.ui.theme.Black
 import com.lastaoutdoor.lasta.ui.theme.GreenDifficulty
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
@@ -351,14 +351,14 @@ fun TopBar(
     flipFavorite: (String) -> Unit,
     navigateBack: () -> Unit
 ) {
-
-  val context = LocalContext.current
+    val openDialog = remember { mutableStateOf(false) }
+    ShareOptionsDialog(activityToDisplay, openDialog)
 
   Row(modifier = Modifier.fillMaxWidth().testTag("Top Bar")) {
     TopBarLogo(R.drawable.arrow_back) { navigateBack() }
     Spacer(modifier = Modifier.weight(1f))
     TopBarLogo(R.drawable.download_button) { downloadActivity(activityToDisplay) }
-    TopBarLogo(R.drawable.share) { shareActivity(activityToDisplay, context) }
+    TopBarLogo(R.drawable.share) { openDialog.value = true }
     // if activity is in favorites, display the filled heart, else display the empty heart
     if (favorites.contains(activityToDisplay.activityId)) {
       TopBarLogo(Icons.Filled.Favorite) { flipFavorite(activityToDisplay.activityId) }

@@ -143,4 +143,7 @@
     <string name = "biking_newcomer">Biking Anfänger</string>
     <string name ="biking_amateur">Biking Amateur</string>
     <string name ="biking_expert">Biking Experte</string>
+    <string name = "share_options">Teilen</string>
+    <string name = "share_in_app">In der App teilen</string>
+    <string name = "share_outside">Außerhalb der App teilen</string>
 </resources>
