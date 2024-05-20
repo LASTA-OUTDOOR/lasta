@@ -130,6 +130,9 @@
     <string name = "biking_newcomer">Biking Beginner</string>
     <string name ="biking_amateur">Biking Amateur</string>
     <string name ="biking_expert">Biking Expert</string>
+    <string name ="no_friends_in_common">No friends in common</string>
+    <string name ="one_friends_in_common">1 friend in common</string>
+    <string name ="friends_in_common">friends in common</string>
 
     <!--Weather Report-->
     <string name = "weather_report">Weather Report</string>

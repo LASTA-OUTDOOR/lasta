@@ -1,6 +1,5 @@
 package com.lastaoutdoor.lasta.ui.screen.social.components
 
-import android.media.tv.TvContract.Channels.Logo
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,14 +26,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.models.activity.ActivityType
-import com.lastaoutdoor.lasta.models.user.Language
-import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.utils.ConnectionState
 
@@ -70,7 +68,7 @@ fun FriendsList(
               friendRequestFeedback, clearFriendRequestFeedback, hideAddFriendDialog, requestFriend)
       LazyColumn {
         items(friends.size) {
-          FriendsCard(friends[it]) { navigateToFriendProfile(friends[it].userId) }
+          FriendsCard(friends[it], friends) { navigateToFriendProfile(friends[it].userId) }
         }
       }
     }
@@ -78,19 +76,18 @@ fun FriendsList(
 }
 
 @Composable
-fun FriendsCard(friend: UserModel, navToFriend: () -> Unit) {
+fun FriendsCard(friend: UserModel, friendList: List<UserModel>, navToFriend: () -> Unit) {
   Card(
       colors =
           CardDefaults.cardColors(
               containerColor = MaterialTheme.colorScheme.surfaceVariant,
           ),
       modifier =
-      Modifier
-          .height(height = 130.dp)
-          .fillMaxWidth()
-          .padding(8.dp)
-          .testTag("FriendCard")
-          .clickable { navToFriend() }) {
+          Modifier.height(height = 140.dp)
+              .fillMaxWidth()
+              .padding(8.dp)
+              .testTag("FriendCard")
+              .clickable { navToFriend() }) {
         Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
 
           // Profile picture
@@ -105,10 +102,7 @@ fun FriendsCard(friend: UserModel, navToFriend: () -> Unit) {
               contentDescription = "Profile Picture",
               contentScale = ContentScale.Crop,
               error = painterResource(R.drawable.default_profile_icon),
-              modifier = Modifier
-                  .clip(RoundedCornerShape(100.dp))
-                  .size(60.dp)
-                  .fillMaxHeight())
+              modifier = Modifier.clip(RoundedCornerShape(100.dp)).size(60.dp).fillMaxHeight())
 
           // Text information
           Column(modifier = Modifier.padding(8.dp)) {
@@ -117,72 +111,42 @@ fun FriendsCard(friend: UserModel, navToFriend: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()) {
                   Text(text = friend.userName, fontWeight = FontWeight.Bold)
-                  Row{
-                      Text(text = friend.language.resourcesToString(LocalContext.current))
-                      Image(
-                          painter = when (friend.language) {
-                              Language.ENGLISH -> painterResource(R.drawable.english_logo)
-                              Language.FRENCH -> painterResource(R.drawable.french_logo)
-                              Language.GERMAN -> painterResource(R.drawable.german_logo)
-                          },
-                          contentDescription = "language logo",
-                          modifier = Modifier.size(25.dp, 25.dp)
-                      )
+                  Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = friend.language.resourcesToString(LocalContext.current),
+                        modifier = Modifier.padding(5.dp))
+                    Image(
+                        painter = friend.language.getIcon(),
+                        contentDescription = "language logo",
+                        modifier = Modifier.size(25.dp, 25.dp))
                   }
                 }
           }
         }
-      Row(modifier = Modifier
-          .testTag("FriendPrefActivity")
-          .fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
-          // display the user's sport preference
-              val prefActivity = friend.prefActivity
-              val prefActivityLevel =
-                  when (prefActivity) {
-                      ActivityType.CLIMBING -> friend.levels.climbingLevel
-                      ActivityType.HIKING -> friend.levels.hikingLevel
-                      ActivityType.BIKING -> friend.levels.bikingLevel
+        Row(
+            modifier = Modifier.testTag("FriendPrefActivity").fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween) {
+              // displays the user's sport preference
+              Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    modifier = Modifier.testTag("friendInfo").padding(5.dp),
+                    text = friend.descrText(),
+                    fontSize = 15.sp)
+                Image(
+                    painter = friend.prefActivity.getIcon(),
+                    contentDescription = "Preferred activity logo",
+                    modifier = Modifier.size(25.dp, 25.dp))
+              }
+              // displays the number of friends in common
+              val friendsInCommonText =
+                  when (friend.getCommonFriends(friendList)) {
+                    0 -> LocalContext.current.getString(R.string.no_friends_in_common)
+                    1 -> LocalContext.current.getString(R.string.one_friends_in_common)
+                    else ->
+                        "${friend.getCommonFriends(friendList)} ${LocalContext.current.getString(R.string.friends_in_common)}"
                   }
-              Text(
-                  modifier = Modifier.testTag("friendInfo"),
-                  text =
-                  when (prefActivity) {
-                      ActivityType.CLIMBING ->
-                          when (prefActivityLevel) {
-                              UserLevel.BEGINNER ->
-                                  LocalContext.current.getString(R.string.climbing_newcomer)
-                              UserLevel.INTERMEDIATE ->
-                                  LocalContext.current.getString(R.string.climbing_amateur)
-                              UserLevel.ADVANCED ->
-                                  LocalContext.current.getString(R.string.climbing_expert)
-                          }
-                      ActivityType.HIKING ->
-                          when (prefActivityLevel) {
-                              UserLevel.BEGINNER ->
-                                  LocalContext.current.getString(R.string.hiking_newcomer)
-                              UserLevel.INTERMEDIATE ->
-                                  LocalContext.current.getString(R.string.hiking_amateur)
-                              UserLevel.ADVANCED ->
-                                  LocalContext.current.getString(R.string.hiking_expert)
-                          }
-                      ActivityType.BIKING ->
-                          when (prefActivityLevel) {
-                              UserLevel.BEGINNER ->
-                                  LocalContext.current.getString(R.string.biking_newcomer)
-                              UserLevel.INTERMEDIATE ->
-                                  LocalContext.current.getString(R.string.biking_amateur)
-                              UserLevel.ADVANCED ->
-                                  LocalContext.current.getString(R.string.biking_expert)
-                          }
-                  })
-              Image(painter = when (prefActivity) {
-                    ActivityType.CLIMBING -> painterResource(R.drawable.climbing_roundicon)
-                    ActivityType.HIKING -> painterResource(R.drawable.hiking_roundicon)
-                    ActivityType.BIKING -> painterResource(R.drawable.biking_roundicon)
-
-              },
-                  contentDescription = "Preferred activity logo",
-                  modifier = Modifier.size(25.dp,25.dp))
-          }
+              Row { Text(text = friendsInCommonText, fontSize = 12.sp, textAlign = TextAlign.End) }
+            }
       }
 }

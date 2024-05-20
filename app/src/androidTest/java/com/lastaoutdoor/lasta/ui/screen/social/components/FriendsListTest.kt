@@ -145,7 +145,8 @@ class FriendsListTest {
                   levels =
                       UserActivitiesLevel(
                           UserLevel.INTERMEDIATE, UserLevel.INTERMEDIATE, UserLevel.INTERMEDIATE),
-                  prefActivity = ActivityType.CLIMBING)) {}
+                  prefActivity = ActivityType.CLIMBING),
+          listOf()) {}
     }
     composeRule.onNodeWithTag("FriendCard").assertIsDisplayed()
   }
@@ -161,7 +162,8 @@ class FriendsListTest {
                   levels =
                       UserActivitiesLevel(
                           UserLevel.INTERMEDIATE, UserLevel.INTERMEDIATE, UserLevel.INTERMEDIATE),
-                  prefActivity = ActivityType.HIKING)) {}
+                  prefActivity = ActivityType.HIKING),
+          listOf()) {}
     }
     composeRule.onNodeWithTag("FriendCard").assertIsDisplayed()
   }
@@ -177,7 +179,8 @@ class FriendsListTest {
                   levels =
                       UserActivitiesLevel(
                           UserLevel.INTERMEDIATE, UserLevel.INTERMEDIATE, UserLevel.INTERMEDIATE),
-                  prefActivity = ActivityType.BIKING)) {}
+                  prefActivity = ActivityType.BIKING),
+          listOf()) {}
     }
     composeRule.onNodeWithTag("FriendCard").assertIsDisplayed()
   }
@@ -193,7 +196,8 @@ class FriendsListTest {
                   levels =
                       UserActivitiesLevel(
                           UserLevel.ADVANCED, UserLevel.ADVANCED, UserLevel.ADVANCED),
-                  prefActivity = ActivityType.CLIMBING)) {}
+                  prefActivity = ActivityType.CLIMBING),
+          listOf()) {}
     }
     composeRule.onNodeWithTag("FriendCard").assertIsDisplayed()
   }
@@ -209,7 +213,8 @@ class FriendsListTest {
                   levels =
                       UserActivitiesLevel(
                           UserLevel.ADVANCED, UserLevel.ADVANCED, UserLevel.ADVANCED),
-                  prefActivity = ActivityType.HIKING)) {}
+                  prefActivity = ActivityType.HIKING),
+          listOf()) {}
     }
     composeRule.onNodeWithTag("FriendCard").assertIsDisplayed()
   }
@@ -225,7 +230,8 @@ class FriendsListTest {
                   levels =
                       UserActivitiesLevel(
                           UserLevel.ADVANCED, UserLevel.ADVANCED, UserLevel.ADVANCED),
-                  prefActivity = ActivityType.BIKING)) {}
+                  prefActivity = ActivityType.BIKING),
+          listOf()) {}
     }
     composeRule.onNodeWithTag("FriendCard").assertIsDisplayed()
   }
