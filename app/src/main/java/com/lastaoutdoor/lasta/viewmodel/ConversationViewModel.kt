@@ -17,11 +17,11 @@ import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.utils.ErrorType
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
 @HiltViewModel
 class ConversationViewModel
@@ -98,6 +98,29 @@ constructor(
           updateConversation()
           tokenDBRepo.getUserTokenById(friendUserId)?.let {
             fcmAPI.sendMessage(SendMessageDto(it, NotificationBody(user.value.userName, message)))
+          }
+        } catch (e: Exception) {
+          errorToast.showToast(ErrorType.ERROR_DATABASE)
+        }
+      }
+    }
+  }
+
+  //send a message to a friend
+    fun sendMessageToFriend(message: String, friendId: String) {
+    viewModelScope.launch {
+      if (message.isNotEmpty()) {
+        // Call surrounded by try-catch block to make handle exceptions caused by database
+        try {
+          repository.sendMessage(userId, friendId, message)
+          updateConversation()
+          tokenDBRepo.getUserTokenById(friendId)?.let {
+            fcmAPI.sendMessage(
+              SendMessageDto(
+                it,
+                NotificationBody(user.value.userName, message)
+              )
+            )
           }
         } catch (e: Exception) {
           errorToast.showToast(ErrorType.ERROR_DATABASE)

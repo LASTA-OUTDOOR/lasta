@@ -84,6 +84,7 @@ fun MoreInfoScreen(
     getUserModels: (List<String>) -> Unit,
     writeNewRating: (String, Rating, String) -> Unit,
     currentUser: UserModel?,
+    shareToFriend: (String, String) -> Unit,
     weather: WeatherResponse?,
     favorites: List<String>,
     flipFavorite: (String) -> Unit,
@@ -103,11 +104,13 @@ fun MoreInfoScreen(
           Column(modifier = Modifier.padding(5.dp)) {
             Spacer(modifier = Modifier.height(20.dp))
             // contains the top icon buttons
-            TopBar(activityToDisplay, downloadActivity, favorites, flipFavorite) {
-              discoverScreenCallBacks.fetchActivities()
-              navigateBack()
-              setWeatherBackToUserLoc()
-            }
+              if (currentUser != null) {
+                  TopBar(activityToDisplay, downloadActivity, favorites, flipFavorite, currentUser.friends, shareToFriend) {
+                      discoverScreenCallBacks.fetchActivities()
+                      navigateBack()
+                      setWeatherBackToUserLoc()
+                  }
+              }
             // displays activity title and duration
             ActivityTitleZone(activityToDisplay)
             WeatherReportBig(weather, true)
@@ -138,11 +141,13 @@ fun MoreInfoScreen(
   } else {
     Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoMap")) {
       val marker = goToMarker(activityToDisplay)
-      TopBar(activityToDisplay, downloadActivity, favorites, flipFavorite) {
-        discoverScreenCallBacks.fetchActivities()
-        navigateBack()
-        setWeatherBackToUserLoc()
-      }
+        if (currentUser != null) {
+            TopBar(activityToDisplay, downloadActivity, favorites, flipFavorite, currentUser.friends, shareToFriend) {
+                discoverScreenCallBacks.fetchActivities()
+                navigateBack()
+                setWeatherBackToUserLoc()
+            }
+        }
       mapScreen(
           discoverScreenState.mapState,
           discoverScreenState.initialPosition,
@@ -349,10 +354,12 @@ fun TopBar(
     downloadActivity: (Activity) -> Unit,
     favorites: List<String>,
     flipFavorite: (String) -> Unit,
+    friends: List<String>,
+    shareToFriend: (String, String) -> Unit,
     navigateBack: () -> Unit
 ) {
     val openDialog = remember { mutableStateOf(false) }
-    ShareOptionsDialog(activityToDisplay, openDialog)
+    ShareOptionsDialog(activityToDisplay, openDialog, friends, shareToFriend)
 
   Row(modifier = Modifier.fillMaxWidth().testTag("Top Bar")) {
     TopBarLogo(R.drawable.arrow_back) { navigateBack() }
