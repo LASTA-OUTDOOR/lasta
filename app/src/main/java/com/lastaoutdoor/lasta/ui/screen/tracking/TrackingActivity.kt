@@ -87,11 +87,6 @@ class TrackingActivity : ComponentActivity() {
     }
   }
 
-  override fun onNavigateUp(): Boolean {
-    applicationContext.startActivity(Intent(applicationContext, MainActivity::class.java))
-    return true
-  }
-
   private fun changeLocale(old: Locale, new: Locale) {
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
