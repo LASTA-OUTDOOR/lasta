@@ -2,6 +2,7 @@ package com.lastaoutdoor.lasta.ui.screen.moreinfo.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -44,34 +45,39 @@ fun ShareOptionsDialog(
         title = {
           Text(
               text = LocalContext.current.getString(R.string.share_options),
-              style = MaterialTheme.typography.displayMedium)
+              style = MaterialTheme.typography.displayMedium,
+              color = MaterialTheme.colorScheme.onBackground,
+          )
         },
         text = {
           Column(
               modifier = Modifier.fillMaxWidth(),
               horizontalAlignment = Alignment.CenterHorizontally) {
                 Button(
-                    modifier = Modifier.testTag("shareInAppButton"),
+                    modifier = Modifier.testTag("shareInAppButton").fillMaxWidth(0.7f),
                     onClick = {
                       showFriendSharePicker.value = true
                       openDialog.value = false
                     },
                     colors =
                         ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.secondary)) {
+                            containerColor = MaterialTheme.colorScheme.primary),
+                    shape = RoundedCornerShape(20)) {
                       Text(
                           LocalContext.current.getString(R.string.share_in_app),
                           style = MaterialTheme.typography.bodySmall)
                     }
+
                 Button(
-                    modifier = Modifier.testTag("shareOutsideButton"),
+                    modifier = Modifier.testTag("shareOutsideButton").fillMaxWidth(0.7f),
                     onClick = {
                       shareActivity(activity, context)
                       openDialog.value = false
                     },
                     colors =
                         ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.secondary)) {
+                            containerColor = MaterialTheme.colorScheme.primary),
+                    shape = RoundedCornerShape(20)) {
                       Text(
                           LocalContext.current.getString(R.string.share_outside),
                           style = MaterialTheme.typography.bodySmall)
