@@ -73,7 +73,7 @@ class MainActivity : ComponentActivity() {
     setContent { LastaTheme { AppNavGraph() } }
   }
 
-  fun changeLocale(old: Locale, new: Locale): Unit {
+  private fun changeLocale(old: Locale, new: Locale) {
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       if (old != new) {

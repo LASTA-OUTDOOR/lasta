@@ -36,6 +36,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.lastaoutdoor.lasta.ui.screen.tracking.TrackingActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Lasta"
+            android:screenOrientation="portrait">
+        </activity>
         <service android:name=".services.PushNotificationService"
             android:exported="false">
             <intent-filter>
