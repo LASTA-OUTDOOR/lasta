@@ -16,6 +16,7 @@ enum class ActivityType(@StringRes val activityText: Int) {
     return context.getString(this.activityText)
   }
 
+  // returns the icon for the activity type
   @Composable
   fun getIcon(): Painter {
     return when (this) {

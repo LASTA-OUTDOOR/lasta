@@ -24,6 +24,7 @@ enum class Language(@StringRes val languageText: Int) {
     }
   }
 
+  // returns the icon for the language
   @Composable
   fun getIcon(): Painter {
     return when (this) {

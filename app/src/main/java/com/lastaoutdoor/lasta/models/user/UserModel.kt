@@ -43,7 +43,7 @@ data class UserModel(
         favorites)
   }
 
-  // Returns the description text for
+  // Returns the description text for the preferred activity and level
   @Composable
   fun descrText(): String {
     val prefActivity = this.prefActivity
