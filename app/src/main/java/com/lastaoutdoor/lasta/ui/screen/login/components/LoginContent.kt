@@ -200,7 +200,7 @@ fun PagerContent(page: Int) {
           Icons.Filled.AccountBox,
           contentDescription = "Community Icon",
           modifier = Modifier.fillMaxSize(0.6f).testTag("CommunityIcon"),
-          tint = MaterialTheme.colorScheme.onPrimary)
+          tint = MaterialTheme.colorScheme.onBackground)
       Text(
           text = LocalContext.current.getString(R.string.login_friends_text),
           Modifier.padding(10.dp).testTag("CommunityText"),
@@ -215,7 +215,7 @@ fun PagerContent(page: Int) {
           contentScale = ContentScale.Fit,
           // we want it to be colored with the theme
           colorFilter =
-              androidx.compose.ui.graphics.ColorFilter.tint(MaterialTheme.colorScheme.onPrimary))
+              androidx.compose.ui.graphics.ColorFilter.tint(MaterialTheme.colorScheme.onBackground))
       Text(
           text = LocalContext.current.getString(R.string.login_free_text),
           Modifier.padding(10.dp).testTag("JoinText"),
