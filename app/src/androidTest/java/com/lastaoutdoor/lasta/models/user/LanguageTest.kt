@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.models.activity
+package com.lastaoutdoor.lasta.models.user
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -11,34 +11,34 @@ import org.junit.Test
 
 @HiltAndroidTest
 @UninstallModules(AppModule::class)
-class ActivityTypeTest {
-
+class LanguageTest {
   @get:Rule val composeTestRule = createComposeRule()
 
   @Test
-  fun test_GetIconClimbing() {
+  fun testGetIconEnglish() {
     composeTestRule.setContent {
       androidx.compose.foundation.Image(
-          painter = ActivityType.CLIMBING.getIcon(), contentDescription = "Climbing Icon")
+          painter = Language.ENGLISH.getIcon(), contentDescription = "English Icon")
     }
-    composeTestRule.onNodeWithContentDescription("Climbing Icon").assertIsDisplayed()
+
+    composeTestRule.onNodeWithContentDescription("English Icon").assertIsDisplayed()
   }
 
   @Test
-  fun test_GetIconHiking() {
+  fun testGetIconFrench() {
     composeTestRule.setContent {
       androidx.compose.foundation.Image(
-          painter = ActivityType.HIKING.getIcon(), contentDescription = "Hiking Icon")
+          painter = Language.FRENCH.getIcon(), contentDescription = "French Icon")
     }
-    composeTestRule.onNodeWithContentDescription("Hiking Icon").assertIsDisplayed()
+    composeTestRule.onNodeWithContentDescription("French Icon").assertIsDisplayed()
   }
 
   @Test
-  fun test_GetIconBiking() {
+  fun testGetIconGerman() {
     composeTestRule.setContent {
       androidx.compose.foundation.Image(
-          painter = ActivityType.BIKING.getIcon(), contentDescription = "Biking Icon")
+          painter = Language.GERMAN.getIcon(), contentDescription = "German Icon")
     }
-    composeTestRule.onNodeWithContentDescription("Biking Icon").assertIsDisplayed()
+    composeTestRule.onNodeWithContentDescription("German Icon").assertIsDisplayed()
   }
 }
