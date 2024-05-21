@@ -14,46 +14,78 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.components.shareActivity
 
+/** Dialog to select a friend to share an activity with */
 @Composable
-fun ShareOptionsDialog(activity: Activity, openDialog: MutableState<Boolean>, friends : List<UserModel>, shareToFriend : (String, String) -> Unit) {
-    val context = LocalContext.current
-    val showFriendSharePicker = remember { mutableStateOf(false) }
+fun ShareOptionsDialog(
+    activity: Activity,
+    openDialog: MutableState<Boolean>,
+    friends: List<UserModel>,
+    shareToFriend: (String, String) -> Unit
+) {
+  val context = LocalContext.current
+  val showFriendSharePicker = remember { mutableStateOf(false) }
 
-    //Instanciate the friend share picker dialog with the activity to share and the list of friends
-    if (showFriendSharePicker.value) {
-        FriendSharePicker(activity, friends, { showFriendSharePicker.value = false }, shareToFriend)
-    }
+  // Instanciate the friend share picker dialog with the activity to share and the list of friends
+  if (showFriendSharePicker.value) {
+    FriendSharePicker(activity, friends, { showFriendSharePicker.value = false }, shareToFriend)
+  }
 
-    if (openDialog.value) {
-        AlertDialog(
-            onDismissRequest = { openDialog.value = false },
-            title = { Text(text = LocalContext.current.getString(R.string.share_options), style = MaterialTheme.typography.displayMedium) },
-            text = {
-                Column (modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Button(onClick = {
-                        showFriendSharePicker.value = true
-                        openDialog.value = false
-                    }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)) {
-                        Text(LocalContext.current.getString(R.string.share_in_app), style = MaterialTheme.typography.bodySmall)
+  if (openDialog.value) {
+    // Dialog to select between sharing the activity in the app or outside
+    AlertDialog(
+        modifier = Modifier.testTag("shareOptionsDialog"),
+        onDismissRequest = { openDialog.value = false },
+        title = {
+          Text(
+              text = LocalContext.current.getString(R.string.share_options),
+              style = MaterialTheme.typography.displayMedium)
+        },
+        text = {
+          Column(
+              modifier = Modifier.fillMaxWidth(),
+              horizontalAlignment = Alignment.CenterHorizontally) {
+                Button(
+                    modifier = Modifier.testTag("shareInAppButton"),
+                    onClick = {
+                      showFriendSharePicker.value = true
+                      openDialog.value = false
+                    },
+                    colors =
+                        ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondary)) {
+                      Text(
+                          LocalContext.current.getString(R.string.share_in_app),
+                          style = MaterialTheme.typography.bodySmall)
                     }
-                    Button(onClick = {
-                        shareActivity(activity, context)
-                        openDialog.value = false
-                    }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)) {
-                        Text(LocalContext.current.getString(R.string.share_outside), style = MaterialTheme.typography.bodySmall)
+                Button(
+                    modifier = Modifier.testTag("shareOutsideButton"),
+                    onClick = {
+                      shareActivity(activity, context)
+                      openDialog.value = false
+                    },
+                    colors =
+                        ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondary)) {
+                      Text(
+                          LocalContext.current.getString(R.string.share_outside),
+                          style = MaterialTheme.typography.bodySmall)
                     }
-                }
-            },
-            confirmButton = {
-                Button(onClick = { openDialog.value = false }) {
-                    Text(LocalContext.current.getString(R.string.cancel), style = MaterialTheme.typography.bodyMedium)
-                }
-            }
-        )
-    }
+              }
+        },
+        confirmButton = {
+          Button(
+              modifier = Modifier.testTag("closeShareOptionsButton"),
+              onClick = { openDialog.value = false }) {
+                Text(
+                    LocalContext.current.getString(R.string.cancel),
+                    style = MaterialTheme.typography.bodyMedium)
+              }
+        })
+  }
 }

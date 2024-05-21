@@ -167,8 +167,8 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
     composable(DestinationRoute.MoreInfo.route) { entry ->
       val discoverScreenViewModel: DiscoverScreenViewModel = entry.sharedViewModel(navController)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
-        val conversationViewModel: ConversationViewModel = entry.sharedViewModel(navController)
-        val socialViewModel: SocialViewModel = entry.sharedViewModel(navController)
+      val conversationViewModel: ConversationViewModel = entry.sharedViewModel(navController)
+      val socialViewModel: SocialViewModel = entry.sharedViewModel(navController)
 
       val activityToDisplay = moreInfoScreenViewModel.activityToDisplay.value
       val usersList = moreInfoScreenViewModel.usersList.collectAsState().value
@@ -181,7 +181,6 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val discoverScreenState: DiscoverScreenState =
           discoverScreenViewModel.state.collectAsState().value
       val discoverScreenCallBacks: DiscoverScreenCallBacks = discoverScreenViewModel.callbacks
-
 
       MoreInfoScreen(
           activityToDisplay,

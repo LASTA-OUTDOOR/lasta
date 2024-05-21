@@ -34,7 +34,7 @@ fun shareActivity(activity: Activity, context: Context) {
   val textFromActivity =
       context.getString(R.string.share_body) +
           "\n${activity.name} \n" +
-          context.getString(R.string.share_base_url) + //TODO: Add the URL of the app on github
+          context.getString(R.string.share_base_url) + // TODO: Add the URL of the app on github
           activity.activityId
 
   shareText(textFromActivity, context)
