@@ -9,6 +9,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -18,18 +20,23 @@ import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.components.shareActivity
 
 @Composable
-fun ShareOptionsDialog(activity: Activity, openDialog: MutableState<Boolean>, friends : List<String>, shareToFriend : (String, String) -> Unit) {
+fun ShareOptionsDialog(activity: Activity, openDialog: MutableState<Boolean>, friends : List<UserModel>, shareToFriend : (String, String) -> Unit) {
     val context = LocalContext.current
+    val showFriendSharePicker = remember { mutableStateOf(false) }
+
+    //Instanciate the friend share picker dialog with the activity to share and the list of friends
+    if (showFriendSharePicker.value) {
+        FriendSharePicker(activity, friends, { showFriendSharePicker.value = false }, shareToFriend)
+    }
+
     if (openDialog.value) {
         AlertDialog(
             onDismissRequest = { openDialog.value = false },
             title = { Text(text = LocalContext.current.getString(R.string.share_options), style = MaterialTheme.typography.displayMedium) },
             text = {
                 Column (modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Button(onClick = { 
-                        FriendSharePicker(friends = , hideFriendPicker = { /*TODO*/ }) {
-                            
-                        }
+                    Button(onClick = {
+                        showFriendSharePicker.value = true
                         openDialog.value = false
                     }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)) {
                         Text(LocalContext.current.getString(R.string.share_in_app), style = MaterialTheme.typography.bodySmall)

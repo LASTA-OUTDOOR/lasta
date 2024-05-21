@@ -85,6 +85,7 @@ fun MoreInfoScreen(
     writeNewRating: (String, Rating, String) -> Unit,
     currentUser: UserModel?,
     shareToFriend: (String, String) -> Unit,
+    friends: List<UserModel>,
     weather: WeatherResponse?,
     favorites: List<String>,
     flipFavorite: (String) -> Unit,
@@ -105,7 +106,7 @@ fun MoreInfoScreen(
             Spacer(modifier = Modifier.height(20.dp))
             // contains the top icon buttons
               if (currentUser != null) {
-                  TopBar(activityToDisplay, downloadActivity, favorites, flipFavorite, currentUser.friends, shareToFriend) {
+                  TopBar(activityToDisplay, downloadActivity, favorites, flipFavorite, friends, shareToFriend) {
                       discoverScreenCallBacks.fetchActivities()
                       navigateBack()
                       setWeatherBackToUserLoc()
@@ -142,7 +143,7 @@ fun MoreInfoScreen(
     Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoMap")) {
       val marker = goToMarker(activityToDisplay)
         if (currentUser != null) {
-            TopBar(activityToDisplay, downloadActivity, favorites, flipFavorite, currentUser.friends, shareToFriend) {
+            TopBar(activityToDisplay, downloadActivity, favorites, flipFavorite, friends, shareToFriend) {
                 discoverScreenCallBacks.fetchActivities()
                 navigateBack()
                 setWeatherBackToUserLoc()
@@ -354,7 +355,7 @@ fun TopBar(
     downloadActivity: (Activity) -> Unit,
     favorites: List<String>,
     flipFavorite: (String) -> Unit,
-    friends: List<String>,
+    friends: List<UserModel>,
     shareToFriend: (String, String) -> Unit,
     navigateBack: () -> Unit
 ) {

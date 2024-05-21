@@ -168,6 +168,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val discoverScreenViewModel: DiscoverScreenViewModel = entry.sharedViewModel(navController)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
         val conversationViewModel: ConversationViewModel = entry.sharedViewModel(navController)
+        val socialViewModel: SocialViewModel = entry.sharedViewModel(navController)
 
       val activityToDisplay = moreInfoScreenViewModel.activityToDisplay.value
       val usersList = moreInfoScreenViewModel.usersList.collectAsState().value
@@ -192,6 +193,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           moreInfoScreenViewModel::writeNewRating,
           currentUser,
           conversationViewModel::sendMessageToFriend,
+          socialViewModel.friends,
           weather,
           favorites,
           preferencesViewModel::flipFavorite,

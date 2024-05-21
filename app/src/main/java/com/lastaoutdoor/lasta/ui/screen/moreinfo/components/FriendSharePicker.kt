@@ -20,12 +20,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.screen.social.components.FriendRow
 
 // Dialog to select a friend to share an activity with
 @Composable
 fun FriendSharePicker(
+    activityShared: Activity,
     friends: List<UserModel>,
     hideFriendPicker: () -> Unit,
     shareToFriend: (String, String) -> Unit
@@ -43,7 +45,7 @@ fun FriendSharePicker(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth().padding(16.dp))
 
-            FriendLazyColumn(friends, hideFriendPicker, shareToFriend)
+            FriendLazyColumn(activityShared, friends, hideFriendPicker, shareToFriend)
         }
     }
 }
@@ -51,6 +53,7 @@ fun FriendSharePicker(
 // List of all friends to select from when sharing an activity
 @Composable
 private fun FriendLazyColumn(
+    activityShared : Activity,
     friends: List<UserModel>,
     hideFriendPicker: () -> Unit,
     shareToFriend: (String, String) -> Unit
