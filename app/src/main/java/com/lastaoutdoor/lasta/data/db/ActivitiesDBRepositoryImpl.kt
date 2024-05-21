@@ -156,4 +156,65 @@ constructor(context: Context, database: FirebaseFirestore) : ActivitiesDBReposit
     document.update("numRatings", FieldValue.increment(1))
     document.update("rating", newMeanRating)
   }
+    override suspend fun deleteRating(activity: Activity, userId: String): Activity {
+        val document = activitiesCollection.document(activity.activityId)
+
+        // Fetch the current ratings from the activity document
+        val activitySnapshot = document.get().await()
+        val currentRatings = activitySnapshot.get("ratings") as? List<Map<String, Any>> ?: emptyList()
+
+        // Find the rating to be removed
+        val ratingToRemove = currentRatings.find { it["userId"] == userId }
+
+        if (ratingToRemove != null) {
+            // Update the document to remove the rating
+            document.update(
+                "ratings",
+                FieldValue.arrayRemove(ratingToRemove)
+            ).await()
+
+            // Recalculate the number of ratings
+            val newNumRatings = activity.numRatings - 1
+
+            // Recalculate the new average rating
+            val newRatings = currentRatings.filter { it["userId"] != userId }
+            val newMeanRating = if (newNumRatings > 0) {
+                newRatings.map { it["rating"].toString().toFloat() }.average()
+            } else {
+                0.0
+            }
+
+            // Update the numRatings and meanRating in the document
+            document.update("numRatings", newNumRatings).await()
+            document.update("meanRating", newMeanRating).await()
+
+            // Create a new copy of the activity with the updated values
+            val updatedActivity = activity.copy(
+                numRatings = newNumRatings,
+                ratings = newRatings.map {
+                    Rating(
+                        userId = it["userId"].toString(),
+                        comment = it["comment"].toString(),
+                        rating = it["rating"].toString()
+                    )
+                },
+                rating = newMeanRating.toFloat()
+            )
+            return updatedActivity
+        }
+        return activity
+    }
+
+    override suspend fun deleteAllUserRatings(userId: String): List<Activity> {
+        val query = activitiesCollection.whereArrayContains("ratings.userId", userId).get().await()
+        val newActivityList = mutableListOf<Activity>()
+        if (!query.isEmpty) {
+            val documents = query.documents
+            for (document in documents) {
+                val activity = convertDocumentToActivity(document)
+                newActivityList.add(deleteRating(activity, userId))
+            }
+        }
+        return newActivityList
+    }
 }

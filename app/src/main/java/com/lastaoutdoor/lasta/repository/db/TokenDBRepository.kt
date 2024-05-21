@@ -10,4 +10,12 @@ interface TokenDBRepository {
 
   /** Get multiple tokens from database for topics */
   // suspend fun getTokensByIds(userIds: List<String>): List<String>
+
+    /**
+     * Delete user token from database
+     *
+     * @param userId The ID of the user.
+     */
+    fun deleteUserToken(userId: String)
+
 }

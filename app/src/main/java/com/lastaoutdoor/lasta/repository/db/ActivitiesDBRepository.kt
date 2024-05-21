@@ -52,11 +52,32 @@ interface ActivitiesDBRepository {
    */
   suspend fun updateStartPosition(activityId: String, position: Position)
 
+  /**
+   * Adds a rating to an activity.
+   *
+   * @param activityId The ID of the activity.
+   * @param rating The rating to add.
+   * @param newMeanRating The new mean rating of the activity.
+   */
   fun addRating(activityId: String, rating: Rating, newMeanRating: String)
 
-  // suspend fun addRating(activity: Activity, rating: Rating)
+    /**
+     * Deletes a rating from an activity.
+     *
+     * @param activity The activity to delete the rating from.
+     * @param userId The ID of the user who rated the activity.
+     * @return The activity with the rating deleted.
+     */
+  suspend fun deleteRating(activity: Activity, userId: String): Activity
 
-  // suspend fun deleteRating(activity: Activity, userId: String)
+  /**
+   * Deletes all ratings of a user.
+   *
+   * @param userId The ID of the user.
+   *
+   * @return The activities with the ratings deleted.
+   */
+  suspend fun deleteAllUserRatings(userId: String): List<Activity>
 
   // suspend fun updateDifficulty(activity: Activity, difficulty: Difficulty)
 
