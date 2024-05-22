@@ -7,6 +7,7 @@ import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.activity.ClimbingStyle
 import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.models.activity.Rating
+import java.util.Date
 
 class Converters {
   @TypeConverter
@@ -92,5 +93,13 @@ class Converters {
   fun fromModel(u: UserModel): String {
     val gson = Gson()
     return gson.toJson(u)
+  }
+  @TypeConverter
+  fun fromDate(d: Date): String{
+    return Gson().toJson(d)
+  }
+  @TypeConverter
+  fun toDate(s : String): Date{
+    return Gson().fromJson(s, TypeToken.get(Date::class.java))
   }
 }
