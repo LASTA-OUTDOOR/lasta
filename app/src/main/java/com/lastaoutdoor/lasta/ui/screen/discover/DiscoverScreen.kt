@@ -287,13 +287,14 @@ fun HeaderComposable(
                   Card(
                       modifier =
                           Modifier.fillMaxWidth().padding(4.dp).testTag("suggestion").clickable {
-                            fManager.clearFocus()
                             setSelectedLocality(Pair(suggestion.key, suggestion.value))
                             changeText(suggestion.key)
                             updateInitialPosition(suggestion.value)
                             moveCamera(CameraUpdateFactory.newLatLng(suggestion.value))
                             fetchActivities()
                             clearSuggestions()
+                            fManager.clearFocus()
+
                           }) {
                         Text(modifier = Modifier.padding(8.dp).height(20.dp), text = suggestion.key)
                       }
