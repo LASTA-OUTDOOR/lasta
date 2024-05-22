@@ -8,5 +8,5 @@ interface WeatherRepository {
 
   suspend fun getWeatherWithLoc(lat: Double, lon: Double): WeatherResponse
 
-    suspend fun getForecastWeather(lat: Double, lon: Double): WeatherForecastResponse
+  suspend fun getForecastWeather(lat: Double, lon: Double): WeatherForecastResponse
 }

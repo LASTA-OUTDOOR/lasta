@@ -211,7 +211,7 @@ fun HeaderComposable(
   val displayWeather = remember { mutableStateOf(false) }
   if (displayWeather.value) {
     Dialog(onDismissRequest = { displayWeather.value = false }) {
-      Surface { WeatherReportBig(weather = weather, displayWind = false) }
+      Surface { WeatherReportBig(weather = weather, displayWind = false) {} }
     }
   }
   Surface(

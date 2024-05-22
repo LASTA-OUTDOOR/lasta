@@ -14,7 +14,7 @@ class WeatherRepositoryImpl @Inject constructor(private val weatherApiService: W
     return weatherApiService.getWeatherWithLoc(lat, lon, BuildConfig.WEATHER_API_KEY)
   }
 
-    override suspend fun getForecastWeather(lat: Double, lon: Double): WeatherForecastResponse {
-        return weatherApiService.getForecastWeather(lat, lon, BuildConfig.WEATHER_API_KEY)
-    }
+  override suspend fun getForecastWeather(lat: Double, lon: Double): WeatherForecastResponse {
+    return weatherApiService.getForecastWeather(lat, lon, BuildConfig.WEATHER_API_KEY)
+  }
 }
