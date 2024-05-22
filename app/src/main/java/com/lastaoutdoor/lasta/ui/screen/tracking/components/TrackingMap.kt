@@ -3,6 +3,7 @@ package com.lastaoutdoor.lasta.ui.screen.tracking.components
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,7 +23,7 @@ import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.utils.getScaledBitmapDescriptor
 
 @Composable
-fun TrackingMap(modifier: Modifier = Modifier, startPosition: LatLng, initialZoom: Float) {
+fun TrackingMap(startPosition: LatLng, initialZoom: Float, modifier: Modifier = Modifier) {
   var uiSettings by remember { mutableStateOf(MapUiSettings(zoomControlsEnabled = false)) }
   var properties by remember { mutableStateOf(MapProperties(mapType = MapType.TERRAIN)) }
 
@@ -30,9 +31,16 @@ fun TrackingMap(modifier: Modifier = Modifier, startPosition: LatLng, initialZoo
     position = CameraPosition.fromLatLngZoom(startPosition, initialZoom)
   }
 
+  LaunchedEffect(key1 = startPosition) {
+    cameraPositionState.position = CameraPosition.fromLatLngZoom(startPosition, initialZoom)
+  }
+
   Box(modifier.fillMaxSize()) {
     GoogleMap(
-        modifier = Modifier.matchParentSize(), properties = properties, uiSettings = uiSettings) {
+        modifier = Modifier.matchParentSize(),
+        properties = properties,
+        uiSettings = uiSettings,
+        cameraPositionState = cameraPositionState) {
           Marker(
               state = MarkerState(position = startPosition),
               title = "My position",

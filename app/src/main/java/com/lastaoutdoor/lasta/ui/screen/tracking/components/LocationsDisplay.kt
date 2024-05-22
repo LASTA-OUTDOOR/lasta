@@ -28,8 +28,8 @@ fun LocationsDisplay(
   val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
   val locationRequest = remember {
     LocationRequest.create().apply {
-      interval = 3000
-      fastestInterval = 3000
+      interval = 1500
+      fastestInterval = 1500
       priority = LocationRequest.PRIORITY_HIGH_ACCURACY
     }
   }
