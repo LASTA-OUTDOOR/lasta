@@ -129,7 +129,7 @@ private fun HorizontalPagerIndicator(
               if (page == currentPage) {
                 indicatorColor
               } else {
-                indicatorColor.copy(alpha = 0.5f)
+                indicatorColor.copy(alpha = 0.2f)
               }
           Canvas(
               modifier =
