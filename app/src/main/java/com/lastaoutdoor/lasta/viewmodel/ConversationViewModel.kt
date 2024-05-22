@@ -17,11 +17,11 @@ import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.utils.ErrorType
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
 @HiltViewModel
 class ConversationViewModel
@@ -106,7 +106,7 @@ constructor(
     }
   }
 
-  // send a message to a friend
+  // send a message to a friend of the user
   fun sendMessageToFriend(message: String, friendId: String) {
     viewModelScope.launch {
       if (message.isNotEmpty()) {
