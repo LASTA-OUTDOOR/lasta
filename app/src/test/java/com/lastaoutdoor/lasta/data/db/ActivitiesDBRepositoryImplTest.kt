@@ -1,7 +1,6 @@
 package com.lastaoutdoor.lasta.data.db
 
 import android.content.Context
-import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
@@ -310,29 +309,31 @@ class ActivitiesDBRepositoryImplTest {
 
   @Test
   fun `Delete rating works correctly`() = runTest {
-    val activity = Activity(
-      activityId = "activityId",
-      osmId = 0,
-      activityType = ActivityType.CLIMBING,
-      name = "name",
-      startPosition = Position(0.0, 0.0),
-      rating = 5.0f,
-      numRatings = 2,
-      ratings = listOf(Rating("userId", "comment", "5"), Rating("otherUserId", "otherComment", "4")),
-      difficulty = Difficulty.EASY,
-      activityImageUrl = "activityImageUrl",
-      climbingStyle = ClimbingStyle.OUTDOOR,
-      elevationTotal = 100.0f,
-      from = "from",
-      to = "to",
-      distance = 10.0f
-    )
+    val activity =
+        Activity(
+            activityId = "activityId",
+            osmId = 0,
+            activityType = ActivityType.CLIMBING,
+            name = "name",
+            startPosition = Position(0.0, 0.0),
+            rating = 5.0f,
+            numRatings = 2,
+            ratings =
+                listOf(
+                    Rating("userId", "comment", "5"), Rating("otherUserId", "otherComment", "4")),
+            difficulty = Difficulty.EASY,
+            activityImageUrl = "activityImageUrl",
+            climbingStyle = ClimbingStyle.OUTDOOR,
+            elevationTotal = 100.0f,
+            from = "from",
+            to = "to",
+            distance = 10.0f)
 
     every { documentSnapshot1.exists() } returns true
-    every { documentSnapshot1.get("ratings") } returns listOf(
-      hashMapOf("userId" to "userId", "comment" to "comment", "rating" to "5"),
-      hashMapOf("userId" to "otherUserId", "comment" to "otherComment", "rating" to "4")
-    )
+    every { documentSnapshot1.get("ratings") } returns
+        listOf(
+            hashMapOf("userId" to "userId", "comment" to "comment", "rating" to "5"),
+            hashMapOf("userId" to "otherUserId", "comment" to "otherComment", "rating" to "4"))
 
     coEvery { documentReference.get() } returns getTask
     coEvery { getTask.await() } returns documentSnapshot1
@@ -386,16 +387,16 @@ class ActivitiesDBRepositoryImplTest {
     every { documentSnapshot2.getDouble("distance") } returns 10.0
 
     every { documentSnapshot1.exists() } returns true
-    every { documentSnapshot1.get("ratings") } returns listOf(
-      hashMapOf("userId" to "userId", "comment" to "comment", "rating" to "5"),
-      hashMapOf("userId" to "otherUserId", "comment" to "otherComment", "rating" to "4")
-    )
+    every { documentSnapshot1.get("ratings") } returns
+        listOf(
+            hashMapOf("userId" to "userId", "comment" to "comment", "rating" to "5"),
+            hashMapOf("userId" to "otherUserId", "comment" to "otherComment", "rating" to "4"))
 
     every { documentSnapshot2.exists() } returns true
-    every { documentSnapshot2.get("ratings") } returns listOf(
-      hashMapOf("userId" to "userId", "comment" to "comment", "rating" to "5"),
-      hashMapOf("userId" to "otherUserId", "comment" to "otherComment", "rating" to "4")
-    )
+    every { documentSnapshot2.get("ratings") } returns
+        listOf(
+            hashMapOf("userId" to "userId", "comment" to "comment", "rating" to "5"),
+            hashMapOf("userId" to "otherUserId", "comment" to "otherComment", "rating" to "4"))
 
     coEvery { documentReference.update(any() as String, any()) } returns updateTask
 
@@ -414,7 +415,5 @@ class ActivitiesDBRepositoryImplTest {
     coVerify(exactly = 2) { documentReference.update("ratings", any()) }
     coVerify(exactly = 2) { documentReference.update("numRatings", any()) }
     coVerify(exactly = 2) { documentReference.update("meanRating", any()) }
-
   }
-
 }

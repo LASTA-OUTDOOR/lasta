@@ -29,6 +29,5 @@ class FakeUserActivityRepo() : UserActivitiesDBRepository {
     return emptyList()
   }
 
-  override suspend fun deleteUserActivities(userId: String) {
-  }
+  override suspend fun deleteUserActivities(userId: String) {}
 }

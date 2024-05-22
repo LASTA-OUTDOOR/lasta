@@ -1,7 +1,6 @@
 package com.lastaoutdoor.lasta.data.db
 
 import android.content.Context
-import com.google.android.gms.tasks.Task
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.CollectionReference
@@ -394,6 +393,4 @@ class SocialDBRepoTest {
     activitiesRepository.deleteAllConversations("userId")
     coVerify { documentReference.delete() }
   }
-
-
 }

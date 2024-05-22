@@ -71,8 +71,7 @@ constructor(context: Context, database: FirebaseFirestore) : UserActivitiesDBRep
     return userActivities.filterIsInstance<BikingUserActivity>()
   }
 
-
-    override suspend fun deleteUserActivities(userId: String) {
-        userActivitiesCollection.document(userId).delete().await()
-    }
+  override suspend fun deleteUserActivities(userId: String) {
+    userActivitiesCollection.document(userId).delete().await()
+  }
 }

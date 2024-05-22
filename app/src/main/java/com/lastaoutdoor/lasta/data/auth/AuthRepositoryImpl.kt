@@ -97,7 +97,7 @@ constructor(
     return try {
       val userToDelete = auth.currentUser
       if (userToDelete != null) {
-        //Delete on all repositories
+        // Delete on all repositories
         userDBRepo.deleteUser(userToDelete.uid)
         userToDelete.delete().await()
         flow { emit(Response.Success(true)) }

@@ -58,6 +58,5 @@ interface UserDBRepository {
    *
    * @param userId the user ID to delete the data
    */
-
-    suspend fun deleteUser(userId: String)
+  suspend fun deleteUser(userId: String)
 }
