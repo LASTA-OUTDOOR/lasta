@@ -82,6 +82,8 @@ class MoreInfoScreenTest {
           currentUser = currentUser,
           weather = null,
           favorites = emptyList(),
+          weatherForecast = null,
+          dateWeatherForecast = "",
           flipFavorite = { _ -> },
           navigateBack = { /*TODO*/},
           navigateToTracking = {},

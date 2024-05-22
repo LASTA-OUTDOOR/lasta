@@ -36,7 +36,7 @@ class WeatherReportTest {
   fun whenNullWeather_isDisplayed() {
     composeRule.activity.setContent {
       val fakeWeatherResponse = null
-      WeatherReportBig(weather = fakeWeatherResponse, displayWind = true)
+      WeatherReportBig(weather = fakeWeatherResponse, displayWind = true) {}
     }
     composeRule.onNodeWithTag("NoLocMessage").assertIsDisplayed()
   }
@@ -46,7 +46,7 @@ class WeatherReportTest {
     composeRule.activity.setContent {
       val fakeWeatherResponse =
           WeatherResponse("name", Main(3.0, 4.0), listOf(Weather("descr", "iconid")), Wind(5.0))
-      WeatherReportBig(weather = fakeWeatherResponse, displayWind = true)
+      WeatherReportBig(weather = fakeWeatherResponse, displayWind = true) {}
     }
     composeRule.onNodeWithTag("temp").assertIsDisplayed()
     composeRule.onNodeWithTag("WeatherName").assertIsDisplayed()
@@ -59,7 +59,7 @@ class WeatherReportTest {
     composeRule.activity.setContent {
       val fakeWeatherResponse =
           WeatherResponse("name", Main(3.0, 4.0), listOf(Weather("descr", "iconid")), Wind(5.0))
-      WeatherReportBig(weather = fakeWeatherResponse, displayWind = false)
+      WeatherReportBig(weather = fakeWeatherResponse, displayWind = false) {}
     }
 
     composeRule.onNodeWithTag("WindDisplay").assertIsNotDisplayed()
