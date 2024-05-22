@@ -14,7 +14,6 @@ import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -86,7 +85,6 @@ fun mapScreen(
     state: MapState,
     initialPosition: LatLng,
     initialZoom: Float,
-    updateMarkers: (LatLng, Double) -> Unit,
     updateSelectedMarker: (Marker) -> Unit,
     clearSelectedItinerary: () -> Unit,
     selectedZoom: Float,
@@ -111,34 +109,10 @@ fun mapScreen(
       selectedMarker = selectedMarker,
       onDismissRequest = { isSheetOpen = false })
 
-  LaunchedEffect(cameraPositionState.isMoving) {
-    if (!cameraPositionState.isMoving) {
-
-      // center coordinates of the map
-      val centerLocation = cameraPositionState.position.target
-
-      // top left coordinates of the map
-      val topLeftLocation =
-          cameraPositionState.projection?.visibleRegion?.farLeft
-              ?: cameraPositionState.position.target
-
-      // SphericalUtil is a utility class that provides methods to compute distances between two
-      // points on sphere (due to the earth being a sphere)
-      val rad = SphericalUtil.computeDistanceBetween(centerLocation, topLeftLocation)
-
-      // update the markers based on the new center and radius
-      updateMarkers(centerLocation, rad)
-    }
-  }
-
-  // LaunchedEffect will draw the markers directly without a need to trigger the camera movement
-  LaunchedEffect(Unit) { updateMarkers(cameraPositionState.position.target, 5000.0) }
-
   // draw the map
   GoogleMapComposable(
       cameraPositionState,
       state,
-      updateMarkers,
       updateSelectedMarker,
       selectedZoom,
       { isSheetOpen = true },
@@ -160,7 +134,6 @@ fun mapScreen(
 private fun GoogleMapComposable(
     cameraPositionState: CameraPositionState,
     state: MapState,
-    updateMarkers: (LatLng, Double) -> Unit,
     updateSelectedMarker: (Marker) -> Unit,
     selectedZoom: Float,
     updateSheet: () -> Unit,
@@ -191,7 +164,6 @@ private fun GoogleMapComposable(
             cameraPositionState.projection?.visibleRegion?.farLeft
                 ?: cameraPositionState.position.target
         val rad = SphericalUtil.computeDistanceBetween(centerLocation, topLeftLocation)
-        updateMarkers(centerLocation, rad)
       },
   ) {
 

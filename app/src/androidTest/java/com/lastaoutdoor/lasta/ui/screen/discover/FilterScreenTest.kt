@@ -54,7 +54,6 @@ class FilterScreenTest {
           setRange = {},
           setSelectedLocality = {},
           updatePermission = {},
-          updateMarkers = { _, _ -> },
           updateSelectedMarker = {},
           clearSelectedItinerary = {},
           updateOrderingBy = {},

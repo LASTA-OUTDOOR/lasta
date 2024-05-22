@@ -249,12 +249,6 @@ class DiscoveryScreenViewModelTest() {
   }
 
   @Test
-  fun testUpdateMarkers() {
-    viewModel.updateMarkers(LatLng(46.519962, 6.633597), 10000.0)
-    assertEquals(viewModel.state.value.markerList, emptyList<Marker>())
-  }
-
-  @Test
   fun filterWithDiff_worksAsIntended() {
     val userActivitiesLevel =
         UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.ADVANCED, UserLevel.INTERMEDIATE)
