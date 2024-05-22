@@ -7,9 +7,11 @@ import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.ClimbingUserActivity
 import com.lastaoutdoor.lasta.models.user.UserActivity
 import com.lastaoutdoor.lasta.models.user.UserModel
+import com.lastaoutdoor.lasta.repository.app.ConnectivityRepository
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.db.UserActivitiesDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
+import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.utils.ErrorType
 import com.lastaoutdoor.lasta.utils.TimeFrame
@@ -20,8 +22,10 @@ import java.time.ZoneId
 import java.util.Date
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 /**
@@ -39,8 +43,10 @@ constructor(
     private val timeProvider: TimeProvider,
     private val preferences: PreferencesRepository,
     private val userDBRepo: UserDBRepository,
-    private val errorToast: ErrorToast
-) : ViewModel() {
+    private val errorToast: ErrorToast,
+    private val connectivityRepositoryImpl: ConnectivityRepository,
+
+    ) : ViewModel() {
 
   /** The current user. */
   private val _user = MutableStateFlow(UserModel(""))
@@ -65,9 +71,15 @@ constructor(
   /** The selected sport for filtering activities. */
   private val _sport = MutableStateFlow(ActivityType.CLIMBING)
   val sport = _sport
+  private val _isConnected =
+     connectivityRepositoryImpl.connectionState.stateIn(
+            initialValue = ConnectionState.OFFLINE,
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000))
 
   /** Initializes the ViewModel by fetching the current user and user activities. */
   init {
+
     fetchCurrentUser()
     fetchUserSingeSportActivities(sport.value)
     // addFakeActivity()
@@ -128,25 +140,42 @@ constructor(
 
   private fun fetchUserSingeSportActivities(activityType: ActivityType) {
     viewModelScope.launch {
-
-      // Call surrounded by try-catch block to make handle exceptions caused by database
-      try {
-        when (activityType) {
-          ActivityType.CLIMBING ->
-              _activitiesCache.value =
-                  repository.getUserClimbingActivities(_user.value.userId).sortedBy {
-                    it.timeStarted
+      _isConnected.collect{cs ->
+          if(cs == ConnectionState.CONNECTED){
+              try {
+                  when (activityType) {
+                      ActivityType.CLIMBING ->
+                          _activitiesCache.value =
+                              repository.getUserClimbingActivities(_user.value.userId).sortedBy {
+                                  it.timeStarted
+                              }
+                      ActivityType.HIKING ->
+                          _activitiesCache.value =
+                              repository.getUserHikingActivities(_user.value.userId).sortedBy { it.timeStarted }
+                      ActivityType.BIKING ->
+                          _activitiesCache.value =
+                              repository.getUserBikingActivities(_user.value.userId).sortedBy { it.timeStarted }
                   }
-          ActivityType.HIKING ->
-              _activitiesCache.value =
-                  repository.getUserHikingActivities(_user.value.userId).sortedBy { it.timeStarted }
-          ActivityType.BIKING ->
-              _activitiesCache.value =
-                  repository.getUserBikingActivities(_user.value.userId).sortedBy { it.timeStarted }
-        }
-      } catch (e: Exception) {
-        errorToast.showToast(ErrorType.ERROR_DATABASE)
+              } catch (e: Exception) {
+                  errorToast.showToast(ErrorType.ERROR_DATABASE)
+              }
+          }else{
+              when (activityType) {
+                  ActivityType.CLIMBING ->
+                      _activitiesCache.value =
+                          //TODO
+                  ActivityType.HIKING ->
+                      _activitiesCache.value =
+                              //TODO
+                  ActivityType.BIKING ->
+                      _activitiesCache.value =
+              //TODO
+              }
+          }
+
       }
+      // Call surrounded by try-catch block to make handle exceptions caused by database
+
       applyFilters()
     }
   }

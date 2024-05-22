@@ -2,11 +2,14 @@ package com.lastaoutdoor.lasta.models.user
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.firebase.auth.FirebaseUser
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 
 data class UserModel(
+
     val userId: String,
     val userName: String = "",
     val email: String = "",
