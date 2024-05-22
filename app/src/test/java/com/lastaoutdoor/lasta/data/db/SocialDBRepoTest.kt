@@ -1,6 +1,7 @@
 package com.lastaoutdoor.lasta.data.db
 
 import android.content.Context
+import com.google.android.gms.tasks.Task
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.CollectionReference
@@ -29,6 +30,7 @@ import java.time.LocalDate
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 import org.junit.Before
 import org.junit.Test
 import org.robolectric.annotation.Config
@@ -377,4 +379,21 @@ class SocialDBRepoTest {
   }
 
    */
+
+  @Test
+  fun `test deleteAllConversations`() = runBlocking {
+    every { documentSnapshot.exists() } returns true
+    every { documentSnapshot.reference } returns documentReference
+    every { documentReference.delete() } returns task2
+    val queryAnswer = mockk<Query>()
+    every { collectionReference.whereArrayContains("members", "userId") } returns queryAnswer
+    every { queryAnswer.get() } returns task
+    every { task.await() } returns querySN
+    val documents = listOf(documentSnapshot)
+    every { querySN.documents } returns documents
+    activitiesRepository.deleteAllConversations("userId")
+    coVerify { documentReference.delete() }
+  }
+
+
 }
