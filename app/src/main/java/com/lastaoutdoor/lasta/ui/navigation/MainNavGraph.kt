@@ -315,7 +315,6 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           discoverScreenViewModel.state.collectAsState().value
       val discoverScreenCallBacks: DiscoverScreenCallBacks = discoverScreenViewModel.callbacks
       RangeSearchComposable(
-          discoverScreenState.range,
           discoverScreenState.selectedLocality,
           discoverScreenViewModel::setRange,
           { navController.navigateUp() },

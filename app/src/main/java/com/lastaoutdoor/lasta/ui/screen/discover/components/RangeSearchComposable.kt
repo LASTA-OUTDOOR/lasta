@@ -1,6 +1,5 @@
 package com.lastaoutdoor.lasta.ui.screen.discover.components
 
-import androidx.compose.ui.graphics.Path
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,37 +22,52 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.ui.screen.map.mapScreen
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
+import com.lastaoutdoor.lasta.utils.radiusToZoom
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenCallBacks
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RangeSearchComposable(
-    range: Double,
     selectedLocality: Pair<String, LatLng>,
     setRange: (Double) -> Unit,
     navigateBack: () -> Unit,
     discoverScreenState: DiscoverScreenState,
     discoverScreenCallBacks: DiscoverScreenCallBacks
 ) {
+  val configuration = LocalConfiguration.current
+  val screenWidthDp = configuration.screenWidthDp.dp
+  val screenWidthPx = screenWidthDp.toPx() // Convert dp to pixels
+
+  val initialRadius = 10000.0
+
+  val initialZoom = radiusToZoom(initialRadius, discoverScreenState.centerPoint.latitude)
+
+  var radius by remember { mutableDoubleStateOf(initialRadius) }
 
   // list view search popup
   Column(modifier = Modifier.fillMaxSize()) {
@@ -65,60 +79,64 @@ fun RangeSearchComposable(
           }
         })
 
-    Box(modifier = Modifier.weight(0.6f)) {
-      mapScreen(
-          discoverScreenState.mapState,
-          discoverScreenState.initialPosition,
-          discoverScreenState.initialZoom,
-          discoverScreenCallBacks.updateMarkers,
-          discoverScreenCallBacks.updateSelectedMarker,
-          discoverScreenCallBacks.clearSelectedItinerary,
-          discoverScreenState.selectedZoom,
-          null,
-          discoverScreenState.selectedItinerary,
-          discoverScreenState.markerList,
-          discoverScreenCallBacks.clearSelectedMarker)
+    Box(modifier = Modifier.weight(0.5f)) {
+      val cameraPositionState =
+          mapScreen(
+              discoverScreenState.mapState,
+              discoverScreenState.initialPosition,
+              initialZoom,
+              discoverScreenCallBacks.updateMarkers,
+              {},
+              {},
+              discoverScreenState.selectedZoom,
+              null,
+              null,
+              discoverScreenState.markerList,
+              discoverScreenCallBacks.clearSelectedMarker,
+              true)
 
-      Canvas( modifier = Modifier
-          .fillMaxSize()
-          // ONLY ADD THIS
-          .graphicsLayer {
-              alpha = .99f
-          }) {
-        val width = size.width
-        val height = size.height
-        val circleRadius = 150.dp.toPx()
-        val circleCenterX = width / 2
-        val circleCenterY = height / 2
+      Canvas(
+          modifier =
+              Modifier.fillMaxSize()
+                  // ONLY ADD THIS
+                  .graphicsLayer { alpha = .99f }) {
 
-          // Destination
-          drawRect(Color.Black.copy(alpha = 0.8f))
+            // Destination
+            drawRect(Color.Black.copy(alpha = 0.8f))
 
-          // Source
-          drawCircle(
-              color = Color.Transparent,
-              blendMode = BlendMode.Clear,
-              radius = circleRadius,
-          )
+            // Source
+            drawCircle(
+                color = Color.Transparent,
+                blendMode = BlendMode.Clear,
+                radius = screenWidthPx / 2 - 16.dp.toPx())
+          }
+
+      // Here you can add controls or UI elements to adjust zoom and radius
+      // Example: Update the camera position when the radius changes
+      LaunchedEffect(radius) {
+        val newZoom = radiusToZoom(radius, discoverScreenState.centerPoint.latitude)
+        cameraPositionState(CameraUpdateFactory.zoomTo(newZoom))
       }
     }
 
     DisplaySlider(
-        range = range,
+        radius = radius,
         setRange = setRange,
         selectedLocality = selectedLocality,
         navigateBack = navigateBack,
-        discoverScreenCallBacks = discoverScreenCallBacks)
+        discoverScreenCallBacks = discoverScreenCallBacks,
+        updateRadius = { newRadius -> radius = newRadius })
   }
 }
 
 @Composable
 fun DisplaySlider(
-    range: Double,
+    radius: Double,
     setRange: (Double) -> Unit,
     selectedLocality: Pair<String, LatLng>,
     navigateBack: () -> Unit,
-    discoverScreenCallBacks: DiscoverScreenCallBacks
+    discoverScreenCallBacks: DiscoverScreenCallBacks,
+    updateRadius: (Double) -> Unit
 ) {
   Column(
       horizontalAlignment = Alignment.CenterHorizontally,
@@ -137,14 +155,14 @@ fun DisplaySlider(
         // Slider to select the range
         Row {
           Slider(
-              value = range.toFloat(),
-              onValueChange = { setRange(it.toDouble().coerceIn(1000.0, 30000.0)) },
-              valueRange = 0f..30000f,
-              steps = 100,
+              value = radius.toFloat(),
+              onValueChange = { updateRadius(it.toDouble()) },
+              valueRange = 10000f..50000f,
+              steps = 1000,
               modifier = Modifier.width(300.dp).testTag("listSearchOptionsSlider"))
           Text(
               // put range in km
-              text = "${(range / 1000).toInt()}km",
+              text = "${(radius / 1000).toInt()}km",
               style = MaterialTheme.typography.bodyMedium,
               modifier = Modifier.padding(8.dp))
         }
@@ -152,8 +170,8 @@ fun DisplaySlider(
         // Button to apply the range
         ElevatedButton(
             onClick = {
-              discoverScreenCallBacks.updateRange(range)
-              discoverScreenCallBacks.updateInitialPosition(selectedLocality.second)
+              discoverScreenCallBacks.updateRange(radius)
+              // discoverScreenCallBacks.updateInitialPosition(selectedLocality.second)
               navigateBack()
             },
             modifier = Modifier.width(305.dp).height(48.dp).testTag("listSearchOptionsApplyButton"),
@@ -168,4 +186,10 @@ fun DisplaySlider(
                       ))
             }
       }
+}
+
+@Composable
+fun Dp.toPx(): Float {
+  val density = LocalDensity.current
+  return with(density) { this@toPx.toPx() }
 }

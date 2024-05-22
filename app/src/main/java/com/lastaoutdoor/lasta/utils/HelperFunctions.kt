@@ -25,6 +25,9 @@ import java.time.temporal.TemporalAdjusters
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.log2
 
 /* Initial data for the application */
 val firstValidDate: LocalDate = LocalDate.of(1970, 1, 1)
@@ -208,4 +211,20 @@ fun getScaledBitmapDescriptor(
   vectorDrawable.draw(canvas)
 
   return BitmapDescriptorFactory.fromBitmap(bitmap)
+}
+
+/**
+ * Converts a radius in meters to a zoom level for a Google Map.
+ *
+ * This function is used to convert a radius in meters to a zoom level for a Google Map. The zoom
+ * level is a value between 0 and 21 that determines the level of detail shown on the map. A larger
+ * zoom level corresponds to a higher level of detail.
+ *
+ * @param radiusInMeters The radius in meters.
+ * @param latitude The latitude of the center of the map.
+ * @return The zoom level for the given radius.
+ */
+fun radiusToZoom(radiusInMeters: Double, latitude: Double): Float {
+  val scale = radiusInMeters / 100.0 // Convert meters to kilometers
+  return (log2(156543.03 * cos(latitude * PI / 180) / scale)).toFloat() * 1.1f
 }
