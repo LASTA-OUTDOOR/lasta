@@ -50,6 +50,11 @@
     <string name = "more_info">More Info</string>
     <!--Login-->
     <string name = "sign_in_google">Sign in with Google</string>
+    <string name="login_swipe_text">Swipe to learn more…</string>
+    <string name="login_activities_text">Lasta allows you to find nearby outdoor activities and track your performances.</string>
+    <string name="login_friends_text">You are more of a social sportsman ? We got you covered ! Invite and add your friends in the app and watch their latest activities.</string>
+    <string name="login_free_text">The best part ? It is totally free !
+Sign in to join our fantastic sports addict community!</string>
     <!--Main-->
     <string name = "offline">You are offline</string>
     <!--More Info-->
@@ -130,6 +135,9 @@
     <string name = "biking_newcomer">Biking Beginner</string>
     <string name ="biking_amateur">Biking Amateur</string>
     <string name ="biking_expert">Biking Expert</string>
+    <string name ="no_friends_in_common">No friends in common</string>
+    <string name ="one_friends_in_common">1 friend in common</string>
+    <string name ="friends_in_common">friends in common</string>
 
     <!--Weather Report-->
     <string name = "weather_report">Weather Report</string>
@@ -194,4 +202,5 @@
     <string name="error_radar_api" translatable="false">A Radar API error has occured.</string>
     <string name="error_osm_api" translatable="false">A OSM API error has occured.</string>
     <string name="error_weather" translatable="false">A Weather error has occured.</string>
+
 </resources>
