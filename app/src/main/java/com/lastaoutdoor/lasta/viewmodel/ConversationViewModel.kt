@@ -113,7 +113,6 @@ constructor(
         // Call surrounded by try-catch block to make handle exceptions caused by database
         try {
           repository.sendMessage(userId, friendId, message)
-          updateConversation()
           tokenDBRepo.getUserTokenById(friendId)?.let {
             fcmAPI.sendMessage(SendMessageDto(it, NotificationBody(user.value.userName, message)))
           }
