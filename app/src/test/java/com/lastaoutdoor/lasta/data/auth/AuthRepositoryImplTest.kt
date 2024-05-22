@@ -251,4 +251,14 @@ class AuthRepositoryImplTest {
       }
     }
   }
+
+  @Test
+  fun `deleteAccount works emits loading then success`() = runTest {
+    every { oneTapClient.signOut() } returns signOutTask
+    every { auth.signOut() } returns Unit
+    every { auth.currentUser } returns mockk()
+    every { auth.currentUser?.delete() } returns signOutTask
+    coEvery { userDBRepo.deleteUser(any()) } returns Unit
+    authRepo.deleteAccount().collect { assert(it is Response.Success) }
+  }
 }

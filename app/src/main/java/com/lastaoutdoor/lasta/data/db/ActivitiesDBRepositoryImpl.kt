@@ -180,7 +180,7 @@ constructor(context: Context, database: FirebaseFirestore) : ActivitiesDBReposit
           if (newNumRatings > 0) {
             newRatings.map { it["rating"].toString().toFloat() }.average()
           } else {
-            0.0
+            1.0
           }
 
       // Update the numRatings and meanRating in the document

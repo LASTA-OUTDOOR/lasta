@@ -95,6 +95,7 @@ constructor(
 
   override suspend fun deleteAccount(): Flow<Response<Boolean>> {
     return try {
+      signOut()
       val userToDelete = auth.currentUser
       if (userToDelete != null) {
         // Delete on all repositories
