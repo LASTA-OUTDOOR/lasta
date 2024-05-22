@@ -50,6 +50,11 @@
     <string name = "more_info">More Info</string>
     <!--Login-->
     <string name = "sign_in_google">Sign in with Google</string>
+    <string name="login_swipe_text">Swipe to learn more…</string>
+    <string name="login_activities_text">Lasta allows you to find nearby outdoor activities and track your performances.</string>
+    <string name="login_friends_text">You are more of a social sportsman ? We got you covered ! Invite and add your friends in the app and watch their latest activities.</string>
+    <string name="login_free_text">The best part ? It is totally free !
+Sign in to join our fantastic sports addict community!</string>
     <!--Main-->
     <string name = "offline">You are offline</string>
     <!--More Info-->
@@ -80,7 +85,6 @@
     <string name = "select_fav_activity">Select your favorite outdoor activity</string>
     <string name = "select_lev_activity">Select your level of experience</string>
     <string name = "finish">Finish</string>
-    <string name="setup_title">Settings</string>
     <string name="submit_settings">Submit Selected Settings</string>
     <string name="submit_settings_prompt">Are you sure you want to submit these settings ? \n(Note : You will still be able to change your preferences in the settings of the profile page)</string>
 
@@ -88,6 +92,7 @@
     <string name="activity_type">Activity Type</string>
     <string name="not_specified">not specified</string>
     <string name="no_name">No name</string>
+    <string name="unknown_activity_type">Unknown activity type</string>
     <!--UpperSheet-->
     <string name = "modify_search">Modify your search settings</string>
     <!--Range search-->
@@ -121,6 +126,18 @@
     <string name = "no_fr_yourself">You cannot add yourself as a friend</string>
     <string name = "no_fr_twice">You already sent a friend request to this user</string>
     <string name = "inv_email">The email address is not valid</string>
+    <string name = "hiking_newcomer">Hiking Beginner</string>
+    <string name ="hiking_amateur">Hiking Amateur</string>
+    <string name ="hiking_expert">Hiking Expert</string>
+    <string name = "climbing_newcomer">Climbing Beginner</string>
+    <string name ="climbing_amateur">Climbing Amateur</string>
+    <string name ="climbing_expert">Climbing Expert</string>
+    <string name = "biking_newcomer">Biking Beginner</string>
+    <string name ="biking_amateur">Biking Amateur</string>
+    <string name ="biking_expert">Biking Expert</string>
+    <string name ="no_friends_in_common">No friends in common</string>
+    <string name ="one_friends_in_common">1 friend in common</string>
+    <string name ="friends_in_common">friends in common</string>
 
     <!--Weather Report-->
     <string name = "weather_report">Weather Report</string>
@@ -174,4 +191,16 @@
     <string name="friend_request_notif">wants to be your friend!</string>
     <string name="friend_request_accepted_notif">accepted your friend request!</string>
     <string name="friend_request_declined_notif">declined your friend request!</string>
+
+    <!--Errors-->
+    <string name="error_unexpected" translatable="false">An unexpected error has occured.</string>
+    <string name="error_sign_in" translatable="false">A SignIn error has occured.</string>
+    <string name="error_sign_out" translatable="false">A Sign Out error has occured.</string>
+    <string name="error_database" translatable="false">"A database error has occured. "</string>
+    <string name="error_dao" translatable="false">A DAO error has occured.</string>
+    <string name="error_messaging" translatable="false">A messaging error has occured.</string>
+    <string name="error_radar_api" translatable="false">A Radar API error has occured.</string>
+    <string name="error_osm_api" translatable="false">A OSM API error has occured.</string>
+    <string name="error_weather" translatable="false">A Weather error has occured.</string>
+
 </resources>

@@ -7,12 +7,12 @@
     <string name="filter">Trier</string>
     <string name="rating">Note</string>
     <string name="difficulty">Difficulté</string>
-    <string name="setup_title">Paramètres</string>
     <string name="more_info">Plus d\'Info</string>
     <string name="sign_in_google">Connexion avec Google</string>
     <string name="offline">Vous êtes hors ligne</string>
     <string name="start">Commencer</string>
     <string name="on_map">Voir sur la carte</string>
+    <string name="unknown_activity_type">Type d\'activité inconnu</string>
     <string name="biking">Cyclisme</string>
     <string name="hiking_lvl">Niveau de randonnée</string>
     <string name="preferences">Préférences</string>
@@ -84,8 +84,8 @@
     <string name="type_message">Ecris ton message ici</string>
     <string name="your_message">Ton message</string>
     <string name="send_message">Envoyer</string>
-    <string name="Account_settings">Paramètres du compte</string>
-    <string name="delete_account">Supprimer compte</string>
+    <string name="Account_settings">Paramètres</string>
+    <string name="delete_account">Supprimer le compte</string>
     <string name="delete_account_prompt">Voulez-vous vraiment supprimer votre compte ?</string>
     <string name="tab_favorites">Favoris</string>
     <string name="tab_socials">Amis</string>
@@ -134,4 +134,20 @@
     <string name="no">Non</string>
     <string name="cancel">Annuler</string>
     <string name="save">Sauvegarder</string>
+    <string name = "hiking_newcomer">Novice de la randonnée</string>
+    <string name ="hiking_amateur">Amateur de randonnée</string>
+    <string name ="hiking_expert">Expert en randonnée</string>
+    <string name = "climbing_newcomer">Novice de l\'escalade</string>
+    <string name ="climbing_amateur">Amateur d\'escalade</string>
+    <string name ="climbing_expert">Expert en escalade</string>
+    <string name = "biking_newcomer">Novice du cyclisme</string>
+    <string name ="biking_amateur">Amateur de cyclisme</string>
+    <string name ="biking_expert">Expert en cyclisme</string>
+    <string name="login_swipe_text">Glisse pour plus d\'infos…</string>
+    <string name="login_activities_text">Lasta vous permet de trouver des activités de plein air à proximité et de suivre vos performances.</string>
+    <string name="login_friends_text">Vous êtes plutôt un sportif social ? Nous avons ce qu\'il vous faut ! Invitez et ajoutez vos amis dans l\'application et regardez leurs dernières activités.</string>
+    <string name="login_free_text">Le plus beau ? C\'est totalement gratuit ! Inscrivez-vous pour rejoindre notre fantastique communauté d\'accros au sport !</string>
+    <string name ="no_friends_in_common">Pas d\'amis en commun</string>
+    <string name ="one_friends_in_common">1 ami en commun</string>
+    <string name ="friends_in_common">amis en commun</string>
 </resources>

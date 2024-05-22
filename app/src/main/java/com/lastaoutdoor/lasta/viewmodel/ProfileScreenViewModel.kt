@@ -10,6 +10,8 @@ import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.db.UserActivitiesDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
+import com.lastaoutdoor.lasta.utils.ErrorToast
+import com.lastaoutdoor.lasta.utils.ErrorType
 import com.lastaoutdoor.lasta.utils.TimeFrame
 import com.lastaoutdoor.lasta.utils.filterTrailsByTimeFrame
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,7 +38,8 @@ constructor(
     private val repository: UserActivitiesDBRepository,
     private val timeProvider: TimeProvider,
     private val preferences: PreferencesRepository,
-    private val userDBRepo: UserDBRepository
+    private val userDBRepo: UserDBRepository,
+    private val errorToast: ErrorToast
 ) : ViewModel() {
 
   /** The current user. */
@@ -81,48 +84,68 @@ constructor(
 
   fun addFakeActivity() {
     viewModelScope.launch {
-      repository.addUserActivity(
-          "mqROPreWZScUdFi0AOPTUcsNRn72",
-          ClimbingUserActivity(
-              activityId = "yK9p3WUklEfPd9U1RHlM",
-              timeStarted =
-                  Date.from(
-                      LocalDate.of(2024, 5, 7)
-                          .atTime(16, 32, 45)
-                          .atZone(ZoneId.systemDefault())
-                          .toInstant()),
-              timeFinished =
-                  Date.from(
-                      LocalDate.of(2024, 5, 7)
-                          .atTime(17, 21, 45)
-                          .atZone(ZoneId.systemDefault())
-                          .toInstant()),
-              numPitches = 5,
-              totalElevation = 449.3f))
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
+      try {
+        repository.addUserActivity(
+            "mqROPreWZScUdFi0AOPTUcsNRn72",
+            ClimbingUserActivity(
+                activityId = "yK9p3WUklEfPd9U1RHlM",
+                timeStarted =
+                    Date.from(
+                        LocalDate.of(2024, 5, 7)
+                            .atTime(16, 32, 45)
+                            .atZone(ZoneId.systemDefault())
+                            .toInstant()),
+                timeFinished =
+                    Date.from(
+                        LocalDate.of(2024, 5, 7)
+                            .atTime(17, 21, 45)
+                            .atZone(ZoneId.systemDefault())
+                            .toInstant()),
+                numPitches = 5,
+                totalElevation = 449.3f))
+      } catch (e: Exception) {
+        errorToast.showToast(ErrorType.ERROR_DATABASE)
+      }
     }
   }
 
   /** Fetches the user activities from the repository. */
   private fun fetchUserActivities() {
     viewModelScope.launch {
-      _activitiesCache.value =
-          repository.getUserActivities(_user.value.userId).sortedBy { it.timeStarted }
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
+      try {
+        _activitiesCache.value =
+            repository.getUserActivities(_user.value.userId).sortedBy { it.timeStarted }
+      } catch (e: Exception) {
+        errorToast.showToast(ErrorType.ERROR_DATABASE)
+      }
       applyFilters()
     }
   }
 
   private fun fetchUserSingeSportActivities(activityType: ActivityType) {
     viewModelScope.launch {
-      when (activityType) {
-        ActivityType.CLIMBING ->
-            _activitiesCache.value =
-                repository.getUserClimbingActivities(_user.value.userId).sortedBy { it.timeStarted }
-        ActivityType.HIKING ->
-            _activitiesCache.value =
-                repository.getUserHikingActivities(_user.value.userId).sortedBy { it.timeStarted }
-        ActivityType.BIKING ->
-            _activitiesCache.value =
-                repository.getUserBikingActivities(_user.value.userId).sortedBy { it.timeStarted }
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
+      try {
+        when (activityType) {
+          ActivityType.CLIMBING ->
+              _activitiesCache.value =
+                  repository.getUserClimbingActivities(_user.value.userId).sortedBy {
+                    it.timeStarted
+                  }
+          ActivityType.HIKING ->
+              _activitiesCache.value =
+                  repository.getUserHikingActivities(_user.value.userId).sortedBy { it.timeStarted }
+          ActivityType.BIKING ->
+              _activitiesCache.value =
+                  repository.getUserBikingActivities(_user.value.userId).sortedBy { it.timeStarted }
+        }
+      } catch (e: Exception) {
+        errorToast.showToast(ErrorType.ERROR_DATABASE)
       }
       applyFilters()
     }
@@ -176,8 +199,16 @@ constructor(
    */
   fun updateUser(userId: String) {
     viewModelScope.launch {
-      val user = userDBRepo.getUserById(userId)
-      if (user != null) updateUser(user)
+
+      // Call surrounded by try-catch block to make handle exceptions caused by database
+      try {
+        val user = userDBRepo.getUserById(userId)
+        if (user != null) {
+          updateUser(user)
+        }
+      } catch (e: Exception) {
+        errorToast.showToast(ErrorType.ERROR_DATABASE)
+      }
     }
   }
 }

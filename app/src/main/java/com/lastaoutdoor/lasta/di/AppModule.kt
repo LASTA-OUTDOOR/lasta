@@ -1,6 +1,7 @@
 package com.lastaoutdoor.lasta.di
 
 import android.content.Context
+import android.hardware.SensorManager
 import androidx.room.Room
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -13,6 +14,7 @@ import com.lastaoutdoor.lasta.repository.app.ConnectivityRepository
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.offline.ActivityDao
 import com.lastaoutdoor.lasta.repository.offline.ActivityDatabase
+import com.lastaoutdoor.lasta.utils.ErrorToast
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -59,5 +61,17 @@ object AppModule {
   @Singleton
   fun provideTaskRepository(taskDao: ActivityDao): ActivityDatabaseImpl {
     return ActivityDatabaseImpl(taskDao)
+  }
+
+  @Provides
+  @Singleton
+  fun provideErrorToast(@ApplicationContext context: Context): ErrorToast {
+    return ErrorToast(context)
+  }
+
+  @Provides
+  @Singleton
+  fun provideStepCounter(@ApplicationContext context: Context): SensorManager {
+    return context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
   }
 }

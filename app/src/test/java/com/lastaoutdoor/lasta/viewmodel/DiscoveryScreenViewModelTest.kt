@@ -13,12 +13,18 @@ import com.lastaoutdoor.lasta.models.api.Tags
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
+import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
+import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.utils.OrderingBy
 import com.lastaoutdoor.lasta.utils.Response
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivitiesDBRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivityRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeRadarRepository
+import com.lastaoutdoor.lasta.viewmodel.repo.FakeTokenDBRepo
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.Dispatchers
@@ -54,6 +60,8 @@ class DiscoveryScreenViewModelTest() {
   private lateinit var activitiesDB: FakeActivitiesDBRepository
   private lateinit var prefRepo: FakePreferencesRepository
   private lateinit var radarRepo: FakeRadarRepository
+  private lateinit var tokenDB: FakeTokenDBRepo
+  private val errorToast = mockk<ErrorToast>()
 
   @ExperimentalCoroutinesApi
   @Before
@@ -74,7 +82,12 @@ class DiscoveryScreenViewModelTest() {
     prefRepo = FakePreferencesRepository()
     radarRepo = FakeRadarRepository()
     activitiesDB = FakeActivitiesDBRepository()
-    viewModel = DiscoverScreenViewModel(repository, prefRepo, activitiesDB, radarRepo, mockk())
+    tokenDB = FakeTokenDBRepo()
+    every { errorToast.showToast(any()) } returns Unit
+    every { errorToast.showToast(any(), any()) } returns Unit
+
+    viewModel =
+        DiscoverScreenViewModel(repository, prefRepo, activitiesDB, radarRepo, tokenDB, errorToast)
     repo.currResponse = Response.Success(null)
   }
 
@@ -98,6 +111,14 @@ class DiscoveryScreenViewModelTest() {
                   2f,
                   3,
               )))
+
+      repository.currResponse = Response.Failure(Throwable())
+      try {
+        viewModel.updateActivityType(listOf(ActivityType.BIKING))
+      } catch (e: Exception) {
+        coVerify { errorToast.showToast(any()) }
+      }
+      repository.currResponse = Response.Success(null)
     }
   }
 
@@ -121,6 +142,14 @@ class DiscoveryScreenViewModelTest() {
                   2f,
                   3,
               )))
+
+      repository.currResponse = Response.Failure(Throwable())
+      try {
+        viewModel.updateActivityType(listOf(ActivityType.HIKING))
+      } catch (e: Exception) {
+        coVerify { errorToast.showToast(any()) }
+      }
+      repository.currResponse = Response.Success(null)
     }
   }
 
@@ -144,6 +173,14 @@ class DiscoveryScreenViewModelTest() {
                   2f,
                   3,
               )))
+
+      repository.currResponse = Response.Failure(Throwable())
+      try {
+        viewModel.updateActivityType(listOf(ActivityType.CLIMBING))
+      } catch (e: Exception) {
+        coVerify { errorToast.showToast(any()) }
+      }
+      repository.currResponse = Response.Success(null)
     }
   }
 
@@ -497,5 +534,66 @@ class DiscoveryScreenViewModelTest() {
     method.invoke(viewModel, 0L, relation, LatLng(14.0, 14.0))
 
     assert(viewModel.state.value.selectedItinerary != null)
+  }
+
+  @Test
+  fun `init test with exception`() {
+    tokenDB.shouldThrowException = true
+    try {
+      DiscoverScreenViewModel(repository, prefRepo, activitiesDB, radarRepo, tokenDB, errorToast)
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(any()) }
+    }
+    tokenDB.shouldThrowException = false
+  }
+
+  @Test
+  fun `showItinerary with exception`() {
+    repository.shouldThrowException = true
+    val method =
+        viewModel.javaClass.getDeclaredMethod(
+            "showItinerary", Long::class.java, LatLng::class.java, ActivityType::class.java)
+    try {
+      method.isAccessible = true
+      method.invoke(viewModel, 0L, LatLng(0.0, 0.0), ActivityType.BIKING)
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(any()) }
+    }
+    repository.shouldThrowException = false
+  }
+
+  @Test
+  fun `fetchActivities() with exception`() {
+    activitiesDB.shouldThrowException = true
+    try {
+      viewModel.fetchActivities()
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(any()) }
+    }
+    activitiesDB.shouldThrowException = false
+  }
+
+  @Test
+  fun `fetchActivities() with exception 2`() {
+    val actualDB = mockk<ActivitiesDBRepository>()
+    coEvery { actualDB.getActivitiesByOSMIds(any(), true) } throws Exception()
+
+    try {
+      DiscoverScreenViewModel(repository, prefRepo, actualDB, radarRepo, tokenDB, errorToast)
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(any()) }
+    }
+  }
+
+  @Test
+  fun `fetchActivities() with exception 3`() {
+    val actualDB = mockk<ActivitiesDBRepository>()
+    coEvery { actualDB.addActivityIfNonExisting(any()) } throws Exception()
+
+    try {
+      DiscoverScreenViewModel(repository, prefRepo, actualDB, radarRepo, tokenDB, errorToast)
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(any()) }
+    }
   }
 }

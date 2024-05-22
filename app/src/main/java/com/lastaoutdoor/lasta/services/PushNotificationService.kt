@@ -1,4 +1,4 @@
-package com.lastaoutdoor.lasta.notifications
+package com.lastaoutdoor.lasta.services
 
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage

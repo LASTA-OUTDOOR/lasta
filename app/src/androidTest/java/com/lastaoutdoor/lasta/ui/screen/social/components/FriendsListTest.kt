@@ -4,8 +4,11 @@ import androidx.activity.compose.setContent
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
+import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.MainActivity
 import com.lastaoutdoor.lasta.utils.ConnectionState
@@ -130,5 +133,125 @@ class FriendsListTest {
     composeRule.onNodeWithTag("AddFriendDialog").assertIsDisplayed()
     // click on submit button
     composeRule.onNodeWithTag("SubmitButton").performClick()
+  }
+
+  // Test climbing intermediate friend has correct text
+  @Test
+  fun climbingIntermediateFriendIsDisplayed() {
+    composeRule.activity.setContent {
+      FriendsCard(
+          friend =
+              UserModel(
+                  "1",
+                  levels =
+                      UserActivitiesLevel(
+                          UserLevel.INTERMEDIATE, UserLevel.INTERMEDIATE, UserLevel.INTERMEDIATE),
+                  prefActivity = ActivityType.CLIMBING),
+          listOf()) {}
+    }
+    composeRule.onNodeWithTag("FriendCard").assertIsDisplayed()
+  }
+
+  // Test hiking intermediate friend has correct text
+  @Test
+  fun hikingIntermediateFriendIsDisplayed() {
+    composeRule.activity.setContent {
+      FriendsCard(
+          friend =
+              UserModel(
+                  "1",
+                  levels =
+                      UserActivitiesLevel(
+                          UserLevel.INTERMEDIATE, UserLevel.INTERMEDIATE, UserLevel.INTERMEDIATE),
+                  prefActivity = ActivityType.HIKING),
+          listOf()) {}
+    }
+    composeRule.onNodeWithTag("FriendCard").assertIsDisplayed()
+  }
+
+  // Test biking intermediate friend has correct text
+  @Test
+  fun bikingIntermediateFriendIsDisplayed() {
+    composeRule.activity.setContent {
+      FriendsCard(
+          friend =
+              UserModel(
+                  "1",
+                  levels =
+                      UserActivitiesLevel(
+                          UserLevel.INTERMEDIATE, UserLevel.INTERMEDIATE, UserLevel.INTERMEDIATE),
+                  prefActivity = ActivityType.BIKING),
+          listOf()) {}
+    }
+    composeRule.onNodeWithTag("FriendCard").assertIsDisplayed()
+  }
+
+  // Test climbing advanced friend has correct text
+  @Test
+  fun climbingAdvancedFriendIsDisplayed() {
+    composeRule.activity.setContent {
+      FriendsCard(
+          friend =
+              UserModel(
+                  "1",
+                  levels =
+                      UserActivitiesLevel(
+                          UserLevel.ADVANCED, UserLevel.ADVANCED, UserLevel.ADVANCED),
+                  prefActivity = ActivityType.CLIMBING),
+          listOf()) {}
+    }
+    composeRule.onNodeWithTag("FriendCard").assertIsDisplayed()
+  }
+
+  // Test hiking advanced friend has correct text
+  @Test
+  fun hikingAdvancedFriendIsDisplayed() {
+    composeRule.activity.setContent {
+      FriendsCard(
+          friend =
+              UserModel(
+                  "1",
+                  levels =
+                      UserActivitiesLevel(
+                          UserLevel.ADVANCED, UserLevel.ADVANCED, UserLevel.ADVANCED),
+                  prefActivity = ActivityType.HIKING),
+          listOf()) {}
+    }
+    composeRule.onNodeWithTag("FriendCard").assertIsDisplayed()
+  }
+
+  // Test biking advanced friend has correct text
+  @Test
+  fun bikingAdvancedFriendIsDisplayed() {
+    composeRule.activity.setContent {
+      FriendsCard(
+          friend =
+              UserModel(
+                  "1",
+                  levels =
+                      UserActivitiesLevel(
+                          UserLevel.ADVANCED, UserLevel.ADVANCED, UserLevel.ADVANCED),
+                  prefActivity = ActivityType.BIKING),
+          listOf()) {}
+    }
+    composeRule.onNodeWithTag("FriendCard").assertIsDisplayed()
+  }
+
+  @Test
+  fun testFriendsCard_with1CommonFriends() {
+    val userModel = UserModel(userId = "1", friends = listOf("17", "3", "4"))
+    val friendList =
+        listOf(UserModel(userId = "2"), UserModel(userId = "3"), UserModel(userId = "7"))
+    composeRule.activity.setContent { FriendsCard(userModel, friendList) {} }
+    composeRule.onNodeWithText("1 friend in common").assertIsDisplayed()
+  }
+
+  @Test
+  fun testFriendsCard_with2CommonFriends() {
+    val userModel = UserModel(userId = "1", friends = listOf("2", "3", "4"))
+    val friendList =
+        listOf(UserModel(userId = "2"), UserModel(userId = "3"), UserModel(userId = "7"))
+    composeRule.activity.setContent { FriendsCard(userModel, friendList) {} }
+    composeRule.onNodeWithText("2 friends in common").assertIsDisplayed()
   }
 }

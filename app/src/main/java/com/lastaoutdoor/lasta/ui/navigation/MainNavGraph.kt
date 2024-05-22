@@ -26,6 +26,7 @@ import com.lastaoutdoor.lasta.ui.screen.social.ConversationScreen
 import com.lastaoutdoor.lasta.ui.screen.social.FriendProfileScreen
 import com.lastaoutdoor.lasta.ui.screen.social.NotificationsScreen
 import com.lastaoutdoor.lasta.ui.screen.social.SocialScreen
+import com.lastaoutdoor.lasta.ui.screen.tracking.TrackingScreen
 import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.utils.PermissionManager
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
@@ -38,6 +39,7 @@ import com.lastaoutdoor.lasta.viewmodel.MoreInfoScreenViewModel
 import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 import com.lastaoutdoor.lasta.viewmodel.ProfileScreenViewModel
 import com.lastaoutdoor.lasta.viewmodel.SocialViewModel
+import com.lastaoutdoor.lasta.viewmodel.TrackingViewModel
 import com.lastaoutdoor.lasta.viewmodel.WeatherViewModel
 
 @SuppressLint("StateFlowValueCalledInComposition")
@@ -172,6 +174,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val weather = weatherViewModel.weather.observeAsState().value
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
       val currentUser = preferencesViewModel.user.collectAsState(initial = UserModel("")).value
+      val favorites = preferencesViewModel.favorites.collectAsState(initial = emptyList()).value
 
       val discoverScreenState: DiscoverScreenState =
           discoverScreenViewModel.state.collectAsState().value
@@ -187,10 +190,22 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           moreInfoScreenViewModel::writeNewRating,
           currentUser,
           weather,
+          favorites,
+          preferencesViewModel::flipFavorite,
           { navController.navigateUp() },
+          { navController.navigate(DestinationRoute.Tracking.route) },
           moreInfoScreenViewModel::downloadActivity,
           weatherViewModel::fetchWeatherWithUserLoc,
           discoverScreenViewModel::clearSelectedMarker)
+    }
+    composable(DestinationRoute.Tracking.route) { entry ->
+      val trackingViewModel: TrackingViewModel = hiltViewModel(entry)
+      val state = trackingViewModel.state.collectAsState().value
+      TrackingScreen(
+          state,
+          trackingViewModel.locationCallback,
+          trackingViewModel::registerSensorListener,
+          trackingViewModel::updateStepCount)
     }
 
     // Filter Screen

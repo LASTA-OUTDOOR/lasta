@@ -107,6 +107,7 @@ fun DiscoverScreen(
               discoverScreenState.screen,
               discoverScreenState.range,
               discoverScreenState.selectedLocality,
+              discoverScreenCallBacks.fetchActivities,
               discoverScreenCallBacks.setScreen,
               { isRangePopup = true },
               navigateToFilter,
@@ -146,6 +147,7 @@ fun DiscoverScreen(
           discoverScreenState.screen,
           discoverScreenState.range,
           discoverScreenState.selectedLocality,
+          discoverScreenCallBacks.fetchActivities,
           discoverScreenCallBacks.setScreen,
           { isRangePopup = true },
           navigateToFilter,
@@ -186,6 +188,7 @@ fun HeaderComposable(
     screen: DiscoverDisplayType,
     range: Double,
     selectedLocality: Pair<String, LatLng>,
+    fetchActivities: () -> Unit,
     setScreen: (DiscoverDisplayType) -> Unit,
     updatePopup: () -> Unit,
     navigateToFilter: () -> Unit,
@@ -289,6 +292,7 @@ fun HeaderComposable(
                             changeText(suggestion.key)
                             updateInitialPosition(suggestion.value)
                             moveCamera(CameraUpdateFactory.newLatLng(suggestion.value))
+                            fetchActivities()
                             clearSuggestions()
                           }) {
                         Text(modifier = Modifier.padding(8.dp).height(20.dp), text = suggestion.key)

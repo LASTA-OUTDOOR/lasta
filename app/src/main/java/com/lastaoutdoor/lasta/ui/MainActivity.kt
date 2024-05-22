@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.lastaoutdoor.lasta.data.db.UserDBRepositoryImpl
 import com.lastaoutdoor.lasta.data.preferences.PreferencesRepositoryImpl
+import com.lastaoutdoor.lasta.di.AppModule.provideErrorToast
 import com.lastaoutdoor.lasta.di.NetworkModule.provideFirebaseFirestore
 import com.lastaoutdoor.lasta.ui.navigation.AppNavGraph
 import com.lastaoutdoor.lasta.ui.theme.LastaTheme
@@ -36,7 +37,8 @@ class MainActivity : ComponentActivity() {
         val vm =
             PreferencesViewModel(
                 PreferencesRepositoryImpl(applicationContext),
-                UserDBRepositoryImpl(applicationContext, provideFirebaseFirestore()))
+                UserDBRepositoryImpl(applicationContext, provideFirebaseFirestore()),
+                provideErrorToast(applicationContext))
         // Get the user's language from PreferencesViewModel
         val language =
             vm.language.stateIn(
@@ -72,6 +74,7 @@ class MainActivity : ComponentActivity() {
   }
 
   fun changeLocale(old: Locale, new: Locale): Unit {
+
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       if (old != new) {
         // Set the new Locale.

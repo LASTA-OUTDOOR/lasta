@@ -1,7 +1,8 @@
 package com.lastaoutdoor.lasta.ui.screen.social.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,12 +25,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.lastaoutdoor.lasta.R
-import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.utils.ConnectionState
 
@@ -65,7 +66,7 @@ fun FriendsList(
               friendRequestFeedback, clearFriendRequestFeedback, hideAddFriendDialog, requestFriend)
       LazyColumn {
         items(friends.size) {
-          FriendsCard(friends[it]) { navigateToFriendProfile(friends[it].userId) }
+          FriendsCard(friends[it], friends) { navigateToFriendProfile(friends[it].userId) }
         }
       }
     }
@@ -73,14 +74,14 @@ fun FriendsList(
 }
 
 @Composable
-fun FriendsCard(friend: UserModel, navToFriend: () -> Unit) {
+fun FriendsCard(friend: UserModel, friendList: List<UserModel>, navToFriend: () -> Unit) {
   Card(
       colors =
           CardDefaults.cardColors(
               containerColor = MaterialTheme.colorScheme.surfaceVariant,
           ),
       modifier =
-          Modifier.height(height = 100.dp)
+          Modifier.height(height = 140.dp)
               .fillMaxWidth()
               .padding(8.dp)
               .testTag("FriendCard")
@@ -102,27 +103,51 @@ fun FriendsCard(friend: UserModel, navToFriend: () -> Unit) {
               modifier = Modifier.clip(RoundedCornerShape(100.dp)).size(60.dp).fillMaxHeight())
 
           // Text information
-          Column(modifier = Modifier.padding(8.dp)) {
-            Text(text = friend.userName ?: "Name error", fontWeight = FontWeight.Bold)
-            // little easteregg
-            if (friend.userName == "Jérémy Doffey" || friend.userName == "Thimphou") {
-              Text(text = "scrum angel uwu")
-            }
-            // display the user's sport preference
-            Row(modifier = Modifier.testTag("FriendPrefActivity")) {
-              Text(text = friend.prefActivity.toString() + " - ")
-              // print the level of the levels index of prefActivity
-              if (friend.prefActivity == ActivityType.HIKING) {
-                Text(text = friend.levels.hikingLevel.toString())
-              } else if (friend.prefActivity == ActivityType.CLIMBING) {
-                Text(text = friend.levels.climbingLevel.toString())
-              } else if (friend.prefActivity == ActivityType.BIKING) {
-                Text(text = friend.levels.bikingLevel.toString())
+          Row(
+              horizontalArrangement = Arrangement.SpaceBetween,
+              verticalAlignment = Alignment.CenterVertically,
+              modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+                Text(text = friend.userName, fontWeight = FontWeight.Bold)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                  Text(
+                      text = friend.language.resourcesToString(LocalContext.current),
+                      modifier = Modifier.padding(5.dp))
+                  Image(
+                      painter = friend.language.getIcon(),
+                      contentDescription = "language logo",
+                      modifier = Modifier.size(25.dp, 25.dp))
+                }
               }
-
-              Text(text = " - " + friend.language.toString())
-            }
-          }
         }
+        Row(
+            modifier = Modifier.testTag("FriendPrefActivity").fillMaxWidth().padding(4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween) {
+              // displays the user's sport preference
+              Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    modifier = Modifier.testTag("friendInfo").padding(5.dp),
+                    text = friend.descrText(),
+                    style = MaterialTheme.typography.labelMedium)
+                Image(
+                    painter = friend.prefActivity.getIcon(),
+                    contentDescription = "Preferred activity logo",
+                    modifier = Modifier.size(25.dp, 25.dp))
+              }
+              // displays the number of friends in common
+              val friendsInCommonText =
+                  when (friend.getCommonFriends(friendList)) {
+                    0 -> LocalContext.current.getString(R.string.no_friends_in_common)
+                    1 -> LocalContext.current.getString(R.string.one_friends_in_common)
+                    else ->
+                        "${friend.getCommonFriends(friendList)} ${LocalContext.current.getString(R.string.friends_in_common)}"
+                  }
+              Row {
+                Text(
+                    text = friendsInCommonText,
+                    style = MaterialTheme.typography.labelSmall,
+                    textAlign = TextAlign.End)
+              }
+            }
       }
 }
