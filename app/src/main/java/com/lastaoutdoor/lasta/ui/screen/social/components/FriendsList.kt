@@ -3,7 +3,6 @@ package com.lastaoutdoor.lasta.ui.screen.social.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -83,7 +82,7 @@ fun FriendsCard(friend: UserModel, friendList: List<UserModel>, navToFriend: () 
               containerColor = MaterialTheme.colorScheme.surfaceVariant,
           ),
       modifier =
-          Modifier.height(height = 140.dp)
+          Modifier.height(height = 150.dp)
               .fillMaxWidth()
               .padding(8.dp)
               .testTag("FriendCard")
@@ -105,26 +104,24 @@ fun FriendsCard(friend: UserModel, friendList: List<UserModel>, navToFriend: () 
               modifier = Modifier.clip(RoundedCornerShape(100.dp)).size(60.dp).fillMaxHeight())
 
           // Text information
-          Column(modifier = Modifier.padding(8.dp)) {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()) {
-                  Text(text = friend.userName, fontWeight = FontWeight.Bold)
-                  Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = friend.language.resourcesToString(LocalContext.current),
-                        modifier = Modifier.padding(5.dp))
-                    Image(
-                        painter = friend.language.getIcon(),
-                        contentDescription = "language logo",
-                        modifier = Modifier.size(25.dp, 25.dp))
-                  }
+          Row(
+              horizontalArrangement = Arrangement.SpaceBetween,
+              verticalAlignment = Alignment.CenterVertically,
+              modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+                Text(text = friend.userName, fontWeight = FontWeight.Bold)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                  Text(
+                      text = friend.language.resourcesToString(LocalContext.current),
+                      modifier = Modifier.padding(5.dp))
+                  Image(
+                      painter = friend.language.getIcon(),
+                      contentDescription = "language logo",
+                      modifier = Modifier.size(25.dp, 25.dp))
                 }
-          }
+              }
         }
         Row(
-            modifier = Modifier.testTag("FriendPrefActivity").fillMaxWidth(),
+            modifier = Modifier.testTag("FriendPrefActivity").fillMaxWidth().padding(4.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
               // displays the user's sport preference
