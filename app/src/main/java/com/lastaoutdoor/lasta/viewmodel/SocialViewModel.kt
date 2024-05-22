@@ -280,6 +280,7 @@ constructor(
         latestFriendActivities =
             repository.getLatestFriendActivities(user.userId, timeFrame, friends)
       } catch (e: Exception) {
+        e.printStackTrace()
         errorToast.showToast(ErrorType.ERROR_DATABASE)
       }
     }

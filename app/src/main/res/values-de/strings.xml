@@ -146,4 +146,11 @@
     <string name = "share_options">Teilen</string>
     <string name = "share_in_app">In der App teilen</string>
     <string name = "share_outside">Außerhalb der App teilen</string>
+    <string name="login_swipe_text">Wischen Sie, um mehr zu erfahren…</string>
+    <string name="login_activities_text">Mit Lasta können Sie Outdoor-Aktivitäten in Ihrer Nähe finden und Ihre Leistungen verfolgen.</string>
+    <string name="login_friends_text">Sie sind eher ein geselliger Sportler? Wir haben alles für Sie! Lade deine Freunde ein, füge sie in der App hinzu und verfolge ihre neuesten Aktivitäten.</string>
+    <string name="login_free_text">Und das Beste daran? Es ist völlig kostenlos! Melde dich an und werde Teil unserer fantastischen Sportsüchtigen-Community!</string>
+    <string name ="no_friends_in_common">Keine gemeinsamen Freunde</string>
+    <string name ="one_friends_in_common">1 gemeinsamer Freund</string>
+    <string name ="friends_in_common">gemeinsame Freunde</string>
 </resources>
