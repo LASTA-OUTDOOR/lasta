@@ -1,7 +1,6 @@
 package com.lastaoutdoor.lasta.ui.screen.tracking
 
 import android.app.LocaleManager
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.LocaleList
@@ -18,7 +17,6 @@ import com.lastaoutdoor.lasta.data.db.UserDBRepositoryImpl
 import com.lastaoutdoor.lasta.data.preferences.PreferencesRepositoryImpl
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.di.NetworkModule
-import com.lastaoutdoor.lasta.ui.MainActivity
 import com.lastaoutdoor.lasta.ui.theme.LastaTheme
 import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 import com.lastaoutdoor.lasta.viewmodel.TrackingViewModel
