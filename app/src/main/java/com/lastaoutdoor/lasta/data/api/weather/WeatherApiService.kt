@@ -16,4 +16,11 @@ interface WeatherApiService {
       @Query("lon") lon: Double,
       @Query("appid") apiKey: String
   ): WeatherResponse
+
+  @GET("forecast")
+  suspend fun getForecastWeather(
+      @Query("lat") lat: Double,
+      @Query("lon") lon: Double,
+      @Query("appid") apiKey: String
+  ): WeatherForecastResponse
 }

@@ -3,6 +3,7 @@ package com.lastaoutdoor.lasta.viewmodel
 import android.Manifest
 import android.app.Application
 import android.content.pm.PackageManager
+import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -10,6 +11,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.lastaoutdoor.lasta.data.api.weather.WeatherForecastResponse
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.repository.api.WeatherRepository
@@ -35,6 +37,9 @@ constructor(
 
   private val _weather = MutableLiveData<WeatherResponse>()
   val weather: LiveData<WeatherResponse> = _weather
+
+  private val _weatherForecast = MutableLiveData<WeatherForecastResponse>()
+  val weatherForecast: LiveData<WeatherForecastResponse> = _weatherForecast
 
   init {
     fetchWeatherWithUserLoc()
@@ -65,6 +70,23 @@ constructor(
       try {
         val weather = weatherRepository.getWeatherWithLoc(a.startPosition.lat, a.startPosition.lon)
         _weather.postValue(weather)
+        val weatherForecast = weatherRepository.getForecastWeather(a.startPosition.lat, a.startPosition.lon)
+        _weatherForecast.postValue(weatherForecast)
+        Log.d("debug","Weather forecast : $weatherForecast")
+      } catch (e: Exception) {
+        errorToast.showToast(ErrorType.ERROR_WEATHER)
+      }
+    }
+  }
+
+  // get forecast for target activity location
+  fun fetchWeatherForecast(a: Activity) {
+    viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle exceptions caused by Weather API
+      try {
+        val weatherForecast = weatherRepository.getForecastWeather(a.startPosition.lat, a.startPosition.lon)
+        _weatherForecast.postValue(weatherForecast)
       } catch (e: Exception) {
         errorToast.showToast(ErrorType.ERROR_WEATHER)
       }
