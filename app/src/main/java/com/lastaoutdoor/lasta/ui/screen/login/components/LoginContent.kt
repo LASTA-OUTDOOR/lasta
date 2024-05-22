@@ -50,6 +50,7 @@ fun LoginContent(onLoginClick: () -> Unit) {
       modifier = Modifier.fillMaxSize().padding(15.dp).testTag("loginScreen"),
       verticalArrangement = Arrangement.SpaceAround,
       horizontalAlignment = Alignment.CenterHorizontally) {
+
         Text(
             text = LocalContext.current.getString(R.string.app_name_uppercase),
             modifier = Modifier.width(256.dp).height(65.dp).testTag("appName"),
@@ -59,6 +60,9 @@ fun LoginContent(onLoginClick: () -> Unit) {
                     lineHeight = 64.sp,
                     color = MaterialTheme.colorScheme.primary,
                     textAlign = TextAlign.Center,
+                    fontStyle = MaterialTheme.typography.titleLarge.fontStyle,
+                    fontWeight = MaterialTheme.typography.titleLarge.fontWeight,
+                    fontFamily = MaterialTheme.typography.titleLarge.fontFamily
                 ))
 
         LoginPager()
