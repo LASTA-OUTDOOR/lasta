@@ -110,7 +110,7 @@ constructor(
   fun sendMessageToFriend(message: String, friendId: String) {
     viewModelScope.launch {
       if (message.isNotEmpty()) {
-        // Call surrounded by try-catch block to make handle exceptions caused by database
+        // Call surrounded by try-catch block to handle exceptions caused by database
         try {
           repository.sendMessage(userId, friendId, message)
           tokenDBRepo.getUserTokenById(friendId)?.let {
