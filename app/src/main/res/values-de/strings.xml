@@ -143,4 +143,7 @@
     <string name = "biking_newcomer">Biking Anfänger</string>
     <string name ="biking_amateur">Biking Amateur</string>
     <string name ="biking_expert">Biking Experte</string>
+    <string name ="no_friends_in_common">Keine gemeinsamen Freunde</string>
+    <string name ="one_friends_in_common">1 gemeinsamer Freund</string>
+    <string name ="friends_in_common">gemeinsame Freunde</string>
 </resources>
