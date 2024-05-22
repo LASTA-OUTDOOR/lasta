@@ -27,7 +27,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
@@ -82,7 +81,7 @@ fun FriendsCard(friend: UserModel, friendList: List<UserModel>, navToFriend: () 
               containerColor = MaterialTheme.colorScheme.surfaceVariant,
           ),
       modifier =
-          Modifier.height(height = 150.dp)
+          Modifier.height(height = 140.dp)
               .fillMaxWidth()
               .padding(8.dp)
               .testTag("FriendCard")
@@ -129,7 +128,7 @@ fun FriendsCard(friend: UserModel, friendList: List<UserModel>, navToFriend: () 
                 Text(
                     modifier = Modifier.testTag("friendInfo").padding(5.dp),
                     text = friend.descrText(),
-                    fontSize = 15.sp)
+                    style = MaterialTheme.typography.labelMedium)
                 Image(
                     painter = friend.prefActivity.getIcon(),
                     contentDescription = "Preferred activity logo",
@@ -143,7 +142,12 @@ fun FriendsCard(friend: UserModel, friendList: List<UserModel>, navToFriend: () 
                     else ->
                         "${friend.getCommonFriends(friendList)} ${LocalContext.current.getString(R.string.friends_in_common)}"
                   }
-              Row { Text(text = friendsInCommonText, fontSize = 12.sp, textAlign = TextAlign.End) }
+              Row {
+                Text(
+                    text = friendsInCommonText,
+                    style = MaterialTheme.typography.labelSmall,
+                    textAlign = TextAlign.End)
+              }
             }
       }
 }
