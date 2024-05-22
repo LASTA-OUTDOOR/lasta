@@ -5,11 +5,14 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import com.lastaoutdoor.lasta.data.MockTask
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -72,5 +75,41 @@ class TokenDBRepositoryImplTest {
     every { documentSnapshot.exists() } returns false
     assert(tokenDB.getUserTokenById("userId") == null)
     assert(tokenDB.getUserTokenById("") == null)
+  }
+
+  @Test
+  fun `deleteUserToken works fine`() = runTest {
+    // Mock data
+    val userId = "userId"
+    val otherDocumentId = "otherDocumentId"
+    val documentSnapshot1: DocumentSnapshot = mockk(relaxed = true)
+    val documentSnapshot2: DocumentSnapshot = mockk(relaxed = true)
+    val documentReference1: DocumentReference = mockk(relaxed = true)
+    val documentReference2: DocumentReference = mockk(relaxed = true)
+
+    // Configure behavior for document 1
+    every { documentReference1.delete() } returns updateTask
+
+    // Configure behavior for document 2
+    every { documentReference2.get() } returns getTask
+    every { getTask.result } returns documentSnapshot2
+
+    // Configure tokenCollection mock
+    every { tokenCollection.document(userId) } returns documentReference1
+    every { tokenCollection.document(otherDocumentId) } returns documentReference2
+
+    // Call the function with userId
+    tokenDB.deleteUserToken(userId)
+
+    // Verify that delete was called on the document reference with the specified userId
+    coVerify(exactly = 1) { documentReference1.delete() }
+
+    // Call the function with an empty userId
+    tokenDB.deleteUserToken("")
+
+    // Call the function with otherDocumentId
+    tokenDB.deleteUserToken(otherDocumentId)
+
+    coVerify(exactly = 1) { documentReference2.delete() }
   }
 }
