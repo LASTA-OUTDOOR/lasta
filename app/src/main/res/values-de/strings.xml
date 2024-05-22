@@ -150,4 +150,5 @@
     <string name ="no_friends_in_common">Keine gemeinsamen Freunde</string>
     <string name ="one_friends_in_common">1 gemeinsamer Freund</string>
     <string name ="friends_in_common">gemeinsame Freunde</string>
+    <string name="offline_text">"Sie sind zur Zeit Offline, bitte verbinden Sie sich mit dem Internet um sich in Lasta einzuloggen! "</string>
 </resources>
