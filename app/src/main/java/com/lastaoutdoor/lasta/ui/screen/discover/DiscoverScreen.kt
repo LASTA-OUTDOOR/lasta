@@ -64,7 +64,6 @@ import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
 import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
 import com.lastaoutdoor.lasta.ui.components.WeatherReportSmall
 import com.lastaoutdoor.lasta.ui.components.searchBarComponent
-import com.lastaoutdoor.lasta.ui.screen.discover.components.ModalUpperSheet
 import com.lastaoutdoor.lasta.ui.screen.discover.components.RangeSearchComposable
 import com.lastaoutdoor.lasta.ui.screen.map.mapScreen
 import com.lastaoutdoor.lasta.utils.OrderingBy
@@ -87,12 +86,9 @@ fun DiscoverScreen(
   var isRangePopup by rememberSaveable { mutableStateOf(false) }
 
   RangeSearchComposable(
-      discoverScreenState.screen,
       discoverScreenState.range,
-      discoverScreenState.localities,
       discoverScreenState.selectedLocality,
       discoverScreenCallBacks.setRange,
-      discoverScreenCallBacks.setSelectedLocality,
       isRangePopup,
       discoverScreenCallBacks = discoverScreenCallBacks,
       onDismissRequest = { isRangePopup = false })
@@ -178,8 +174,6 @@ fun DiscoverScreen(
     }
   }
 
-  // Add the modal upper sheet
-  ModalUpperSheet(isRangePopup = isRangePopup)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
