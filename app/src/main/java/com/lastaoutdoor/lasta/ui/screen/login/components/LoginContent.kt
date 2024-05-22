@@ -37,11 +37,9 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lastaoutdoor.lasta.R
-import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -50,7 +48,6 @@ fun LoginContent(onLoginClick: () -> Unit) {
       modifier = Modifier.fillMaxSize().padding(15.dp).testTag("loginScreen"),
       verticalArrangement = Arrangement.SpaceAround,
       horizontalAlignment = Alignment.CenterHorizontally) {
-
         Text(
             text = LocalContext.current.getString(R.string.app_name_uppercase),
             modifier = Modifier.width(256.dp).height(65.dp).testTag("appName"),
@@ -62,8 +59,7 @@ fun LoginContent(onLoginClick: () -> Unit) {
                     textAlign = TextAlign.Center,
                     fontStyle = MaterialTheme.typography.titleLarge.fontStyle,
                     fontWeight = MaterialTheme.typography.titleLarge.fontWeight,
-                    fontFamily = MaterialTheme.typography.titleLarge.fontFamily
-                ))
+                    fontFamily = MaterialTheme.typography.titleLarge.fontFamily))
 
         LoginPager()
 
@@ -113,8 +109,7 @@ fun LoginPager() {
         HorizontalPagerIndicator(
             pageCount = pagerState.pageCount,
             currentPage = pagerState.currentPage,
-            targetPage = pagerState.targetPage,
-            currentPageOffsetFraction = pagerState.currentPageOffsetFraction)
+        )
       }
 }
 
@@ -122,48 +117,27 @@ fun LoginPager() {
 private fun HorizontalPagerIndicator(
     pageCount: Int,
     currentPage: Int,
-    targetPage: Int,
-    currentPageOffsetFraction: Float,
-    unselectedIndicatorSize: Dp = 12.dp,
-    selectedIndicatorSize: Dp = 14.dp,
-    indicatorPadding: Dp = 6.dp
 ) {
   Row(
       horizontalArrangement = Arrangement.Center,
       verticalAlignment = Alignment.CenterVertically,
-      modifier =
-          Modifier.wrapContentSize()
-              .height(selectedIndicatorSize + indicatorPadding * 2)
-              .testTag("pageIndicator")) {
+      modifier = Modifier.wrapContentSize().height(30.dp).testTag("pageIndicator")) {
         val indicatorColor = MaterialTheme.colorScheme.primary
 
-        // draw an indicator for each page
         repeat(pageCount) { page ->
-          // calculate color and size of the indicator
-          val (color, size) =
-              if (currentPage == page || targetPage == page) {
-                // calculate page offset
-                val pageOffset = ((currentPage - page) + currentPageOffsetFraction).absoluteValue
-                // calculate offset percentage between 0.0 and 1.0
-                val offsetPercentage = 1f - pageOffset.coerceIn(0f, 1f)
-
-                val size =
-                    unselectedIndicatorSize +
-                        ((selectedIndicatorSize - unselectedIndicatorSize) * offsetPercentage)
-
-                indicatorColor.copy(alpha = offsetPercentage) to size
+          val color =
+              if (page == currentPage) {
+                indicatorColor
               } else {
-                indicatorColor.copy(alpha = 0.1f) to unselectedIndicatorSize
+                indicatorColor.copy(alpha = 0.5f)
               }
-
           Canvas(
               modifier =
                   Modifier.padding(
                       // apply horizontal padding, so that each indicator is same width
-                      horizontal =
-                          ((selectedIndicatorSize + indicatorPadding * 2) - size) / 2 + 8.dp,
-                      vertical = size / 4),
-              onDraw = { drawCircle(color = color, radius = size.toPx() / 2) })
+                      horizontal = 14.dp,
+                      vertical = 30.dp),
+              onDraw = { drawCircle(color = color, radius = 6.dp.toPx()) })
         }
       }
 }
@@ -173,57 +147,77 @@ private fun HorizontalPagerIndicator(
 fun PagerContent(page: Int) {
   when (page) {
     0 -> {
-      // Fist page : LOGO + ask to swipe
-      Image(
-          painter = painterResource(id = R.drawable.app_logo),
-          contentDescription = "App Logo",
-          modifier = Modifier.size(240.dp).clip(CircleShape).testTag("loginLogo"),
-          contentScale = ContentScale.Crop)
-      Text(
-          text = LocalContext.current.getString(R.string.login_swipe_text),
-          Modifier.testTag("swipeText"),
-          textAlign = TextAlign.Center)
+      FirstPage()
     }
     1 -> {
-      // Second page : Short description and explain activities
-      Text(
-          text = LocalContext.current.getString(R.string.login_activities_text),
-          Modifier.padding(10.dp).testTag("activityText"),
-          textAlign = TextAlign.Center)
-
-      Image(
-          painter = painterResource(id = R.drawable.activities_example),
-          contentDescription = "App Logo",
-          modifier = Modifier.size(350.dp).testTag("activitiesExample"),
-          contentScale = ContentScale.Fit)
+      SecondPage()
     }
     2 -> {
-      // Third page : Short description and explain social
-      // android's contact icon
-      Icon(
-          Icons.Filled.AccountBox,
-          contentDescription = "Community Icon",
-          modifier = Modifier.fillMaxSize(0.6f).testTag("CommunityIcon"),
-          tint = MaterialTheme.colorScheme.onBackground)
-      Text(
-          text = LocalContext.current.getString(R.string.login_friends_text),
-          Modifier.padding(10.dp).testTag("CommunityText"),
-          textAlign = TextAlign.Center)
+      ThirdPage()
     }
     3 -> {
-      // Fourth page : It's free, try it now !
-      Image(
-          painter = painterResource(id = R.drawable.handshake),
-          contentDescription = "App Logo",
-          modifier = Modifier.size(250.dp).testTag("handshakeImage"),
-          contentScale = ContentScale.Fit,
-          // we want it to be colored with the theme
-          colorFilter =
-              androidx.compose.ui.graphics.ColorFilter.tint(MaterialTheme.colorScheme.onBackground))
-      Text(
-          text = LocalContext.current.getString(R.string.login_free_text),
-          Modifier.padding(10.dp).testTag("JoinText"),
-          textAlign = TextAlign.Center)
+      FourthPage()
     }
   }
+}
+
+@Composable
+fun FirstPage() {
+  // Fist page : LOGO + ask to swipe
+  Image(
+      painter = painterResource(id = R.drawable.app_logo),
+      contentDescription = "App Logo",
+      modifier = Modifier.size(240.dp).clip(CircleShape).testTag("loginLogo"),
+      contentScale = ContentScale.Crop)
+  Text(
+      text = LocalContext.current.getString(R.string.login_swipe_text),
+      Modifier.testTag("swipeText"),
+      textAlign = TextAlign.Center)
+}
+
+@Composable
+fun SecondPage() {
+  // Second page : Short description and explain activities
+  Text(
+      text = LocalContext.current.getString(R.string.login_activities_text),
+      Modifier.padding(10.dp).testTag("activityText"),
+      textAlign = TextAlign.Center)
+
+  Image(
+      painter = painterResource(id = R.drawable.activities_example),
+      contentDescription = "App Logo",
+      modifier = Modifier.size(350.dp).testTag("activitiesExample"),
+      contentScale = ContentScale.Fit)
+}
+
+@Composable
+fun ThirdPage() {
+  // Third page : Short description and explain social
+  // android's contact icon
+  Icon(
+      Icons.Filled.AccountBox,
+      contentDescription = "Community Icon",
+      modifier = Modifier.fillMaxSize(0.6f).testTag("CommunityIcon"),
+      tint = MaterialTheme.colorScheme.onBackground)
+  Text(
+      text = LocalContext.current.getString(R.string.login_friends_text),
+      Modifier.padding(10.dp).testTag("CommunityText"),
+      textAlign = TextAlign.Center)
+}
+
+@Composable
+fun FourthPage() {
+  // Fourth page : It's free, try it now !
+  Image(
+      painter = painterResource(id = R.drawable.handshake),
+      contentDescription = "App Logo",
+      modifier = Modifier.size(250.dp).testTag("handshakeImage"),
+      contentScale = ContentScale.Fit,
+      // we want it to be colored with the theme
+      colorFilter =
+          androidx.compose.ui.graphics.ColorFilter.tint(MaterialTheme.colorScheme.onBackground))
+  Text(
+      text = LocalContext.current.getString(R.string.login_free_text),
+      Modifier.padding(10.dp).testTag("JoinText"),
+      textAlign = TextAlign.Center)
 }
