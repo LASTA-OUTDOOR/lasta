@@ -27,7 +27,7 @@ fun TrackingScreen(
     updateStepCount: (Int) -> Unit
 ) {
   val startPoint = LatLng(46.519962, 6.633597)
-  val initialZoom = 11f
+  val initialZoom = 17f
   Scaffold {
     Column(
         modifier = Modifier.padding(it).fillMaxSize().testTag("TrackingScreen"),
@@ -37,6 +37,7 @@ fun TrackingScreen(
               if (trackingState.positions.isEmpty()) startPoint
               else LatLng(trackingState.positions.last().lat, trackingState.positions.last().lon),
               initialZoom,
+            trackingState.positions.map { position -> LatLng(position.lat, position.lon) },
               Modifier.weight(0.6f))
           LocationsDisplay(Modifier.weight(0.3f), trackingState, locationCallback)
           StepCountDisplay(
