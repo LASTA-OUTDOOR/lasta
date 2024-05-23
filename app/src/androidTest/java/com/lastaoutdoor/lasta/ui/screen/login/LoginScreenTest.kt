@@ -8,6 +8,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import com.google.android.gms.auth.api.identity.Identity
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.ui.MainActivity
+import com.lastaoutdoor.lasta.utils.ConnectionState
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -30,7 +31,16 @@ class LoginScreenTest {
     hiltRule.inject()
     composeRule.activity.setContent {
       LoginScreen(
-          null, null, false, {}, {}, Identity.getSignInClient(LocalContext.current), {}, {}, {})
+          null,
+          null,
+          false,
+          {},
+          {},
+          Identity.getSignInClient(LocalContext.current),
+          {},
+          {},
+          {},
+          ConnectionState.CONNECTED)
     }
   }
 
