@@ -238,6 +238,7 @@ fun ActivityCard(
   Card(
       modifier =
           Modifier.padding(8.dp)
+              .testTag("ActivityShared$activityId")
               .fillMaxWidth(0.7f)
               .clickable(
                   onClick = {

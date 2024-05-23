@@ -1,6 +1,7 @@
 package com.lastaoutdoor.lasta.viewmodel
 
 import FakeSocialDB
+import android.content.Context
 import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.utils.ErrorType
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeConnectivityviewRepo
@@ -24,6 +25,7 @@ class ConversationViewModelTest {
   private lateinit var viewModel: ConversationViewModel
   private var fakeSocialDB = FakeSocialDB()
   private var fakeUserDB = FakeUserDB()
+  private val context: Context = mockk()
   private var fakePreferencesRepository = FakePreferencesRepository()
   private var fakeConnectivityViewRepo = FakeConnectivityviewRepo()
   private var errorToast = mockk<ErrorToast>()
@@ -32,7 +34,13 @@ class ConversationViewModelTest {
   fun setUp() {
     viewModel =
         ConversationViewModel(
-            fakeUserDB, mockk(), mockk(), fakeSocialDB, fakePreferencesRepository, errorToast)
+            context,
+            fakeUserDB,
+            mockk(),
+            mockk(),
+            fakeSocialDB,
+            fakePreferencesRepository,
+            errorToast)
 
     every { errorToast.showToast(ErrorType.ERROR_DATABASE) } returns Unit
   }
@@ -59,7 +67,7 @@ class ConversationViewModelTest {
     viewModel.hideSendMessageDialog()
     viewModel.showSendMessageDialog()
     viewModel.send("message")
-    viewModel.sendMessageToFriend("message", "friendId")
+    viewModel.shareActivityToFriend("message", "friendId")
     viewModel.updateFriendUserId("friendId")
     assert(viewModel.friendUserId.isNotEmpty())
   }
@@ -95,7 +103,7 @@ class ConversationViewModelTest {
     fakeUserDB.shouldThrowException = true
     fakeSocialDB.shouldThrowException = true
     try {
-      viewModel.sendMessageToFriend("message", "friendId")
+      viewModel.shareActivityToFriend("message", "friendId")
     } catch (e: Exception) {
       errorToast.showToast(ErrorType.ERROR_DATABASE)
     }
@@ -105,7 +113,7 @@ class ConversationViewModelTest {
 
   @Test
   fun `send message to friend with empty message`() {
-    viewModel.sendMessageToFriend("", "friendId")
+    viewModel.shareActivityToFriend("", "friendId")
     viewModel.conversation?.let { assert(it.equals("")) }
   }
 }

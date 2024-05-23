@@ -97,6 +97,36 @@ class MoreInfoScreenViewModelTest {
   }
 
   @Test
+  fun testChangeActivityToDisplayByID() {
+    val fakeDb = FakeActivityRepository()
+    val fk = FakeActivitiesDBRepository()
+    val fakeUserDB = FakeUserDB()
+    val moreInfoScreenViewModel =
+        MoreInfoScreenViewModel(fakeDb, fk, ActivityDatabaseImpl(mockk()), fakeUserDB, errorToast)
+    val fakeActivity =
+        Activity("id", 10, activityType = ActivityType.CLIMBING, difficulty = Difficulty.EASY)
+    moreInfoScreenViewModel.changeActivityToDisplayByID("id")
+    assertEquals(moreInfoScreenViewModel.activityToDisplay.value!!.activityId, "id")
+  }
+
+  @Test
+  fun testChangeActivityToDisplayByID_with_exception() {
+    val fakeDb = FakeActivityRepository()
+    val fk = FakeActivitiesDBRepository()
+    val fakeUserDB = FakeUserDB()
+    val moreInfoScreenViewModel =
+        MoreInfoScreenViewModel(fakeDb, fk, ActivityDatabaseImpl(mockk()), fakeUserDB, errorToast)
+    fakeDb.currResponse = Response.Failure(Exception())
+    fk.shouldThrowException = true
+    try {
+      moreInfoScreenViewModel.changeActivityToDisplayByID("uwhd")
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
+    }
+    fk.shouldThrowException = false
+  }
+
+  @Test
   fun testGetUserModels() {
     val fakeDb = FakeActivityRepository()
     val fk = FakeActivitiesDBRepository()
