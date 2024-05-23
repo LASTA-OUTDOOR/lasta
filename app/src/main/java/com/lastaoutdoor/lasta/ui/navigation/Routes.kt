@@ -41,4 +41,6 @@ sealed class DestinationRoute(override val route: String) : Route(route) {
   object FriendProfile : DestinationRoute("FriendProfile")
 
   object Settings : DestinationRoute("Settings")
+
+  object RangeSearch : DestinationRoute("RangeSearch")
 }

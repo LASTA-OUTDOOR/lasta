@@ -59,7 +59,7 @@ data class DiscoverScreenCallBacks(
     val updateRange: (Double) -> Unit,
     val setSelectedLevels: (UserActivitiesLevel) -> Unit,
     val setSelectedActivitiesType: (List<ActivityType>) -> Unit,
-    val setShowCompleted: (Boolean) -> Unit
+    val setShowCompleted: (Boolean) -> Unit,
 )
 
 // Data class to store all the state of the viewmodel
@@ -69,17 +69,12 @@ data class DiscoverScreenState(
     val activityIds: List<Long> = emptyList(),
     val screen: DiscoverDisplayType = DiscoverDisplayType.LIST,
     val range: Double = INITIAL_RANGE,
-    val localities: List<Pair<String, LatLng>> =
-        listOf(
-            "Ecublens" to LatLng(46.519962, 6.633597),
-            "Geneva" to LatLng(46.2043907, 6.1431577),
-            "Payerne" to LatLng(46.834190, 6.928969),
-            "Matterhorn" to LatLng(45.980537, 7.641618)),
+    val startingLocality: Pair<String, LatLng> = "Ecublens" to LatLng(46.519962, 6.633597),
     val centerPoint: LatLng =
-        localities[0].second, // default center point is Ecublens (to fetch activities from)
-    val selectedLocality: Pair<String, LatLng> = localities[0],
+        startingLocality.second, // default center point is Ecublens (to fetch activities from)
+    val selectedLocality: Pair<String, LatLng> = startingLocality,
     val mapState: MapState = MapState(),
-    val initialPosition: LatLng = localities[0].second,
+    val initialPosition: LatLng = startingLocality.second,
     val initialZoom: Float = 11f,
     val selectedZoom: Float = 16f, // Zoom level when focusing on a marker
     val selectedMarker: Marker? = null, // no marker is initially selected
@@ -90,7 +85,7 @@ data class DiscoverScreenState(
     val selectedActivityTypes: List<ActivityType> = listOf(ActivityType.HIKING),
     val selectedLevels: UserActivitiesLevel =
         UserActivitiesLevel(UserLevel.BEGINNER, UserLevel.BEGINNER, UserLevel.BEGINNER),
-    val showCompleted: Boolean = true
+    val showCompleted: Boolean = true,
 )
 
 @HiltViewModel

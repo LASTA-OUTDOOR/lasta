@@ -18,6 +18,7 @@ import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.screen.discover.DiscoverScreen
 import com.lastaoutdoor.lasta.ui.screen.discover.FilterScreen
+import com.lastaoutdoor.lasta.ui.screen.discover.components.RangeSearchComposable
 import com.lastaoutdoor.lasta.ui.screen.favorites.FavoritesScreen
 import com.lastaoutdoor.lasta.ui.screen.moreinfo.MoreInfoScreen
 import com.lastaoutdoor.lasta.ui.screen.profile.ProfileScreen
@@ -69,6 +70,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           preferencesViewModel::flipFavorite,
           { navController.navigate(DestinationRoute.Filter.route) },
           { navController.navigate(DestinationRoute.MoreInfo.route) },
+          { navController.navigate(DestinationRoute.RangeSearch.route) },
           moreInfoScreenViewModel::changeActivityToDisplay,
           weatherViewModel::changeLocOfWeather,
           weather,
@@ -304,6 +306,16 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
             navController.popBackStack()
             navController.navigate(BaseRoute.Login.route)
           })
+    }
+
+    // Range Search Screen
+    composable(DestinationRoute.RangeSearch.route) { entry ->
+      val discoverScreenViewModel: DiscoverScreenViewModel = entry.sharedViewModel(navController)
+      val discoverScreenState: DiscoverScreenState =
+          discoverScreenViewModel.state.collectAsState().value
+      val discoverScreenCallBacks: DiscoverScreenCallBacks = discoverScreenViewModel.callbacks
+      RangeSearchComposable(
+          { navController.navigateUp() }, discoverScreenState, discoverScreenCallBacks)
     }
   }
 }
