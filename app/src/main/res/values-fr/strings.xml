@@ -90,6 +90,9 @@
     <string name="tab_favorites">Favoris</string>
     <string name="tab_socials">Amis</string>
     <string name="sport_level">Niveau</string>
+    <string name="sport_level_hiking">Niveau de Randonnée</string>
+    <string name="sport_level_climbing">Niveau d\'Escalade</string>
+    <string name="sport_level_biking">Niveau de Cyclisme</string>
     <string name="no_account">" L'adresse e-mail n'est associée à aucun compte"</string>
     <string name="no_fr">" Vous êtes déjà amis avec cet utilisateur"</string>
     <string name="fr_req_sent">Demande d\'ami envoyée</string>

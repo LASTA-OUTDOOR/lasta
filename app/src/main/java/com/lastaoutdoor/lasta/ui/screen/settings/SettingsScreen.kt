@@ -17,7 +17,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -88,17 +87,14 @@ fun SettingsScreen(
 
   LazyColumn(
       modifier =
-      Modifier
-          .fillMaxSize()
-          .padding(horizontal = 16.dp, vertical = 8.dp)
-          .testTag("settingsScreen"),
+          Modifier.fillMaxSize()
+              .padding(horizontal = 16.dp, vertical = 8.dp)
+              .testTag("settingsScreen"),
       verticalArrangement = Arrangement.SpaceEvenly,
       horizontalAlignment = Alignment.CenterHorizontally) {
         item {
           MediumTopAppBar(
-              modifier = Modifier
-                  .fillMaxWidth()
-                  .testTag("settingsAppBar"),
+              modifier = Modifier.fillMaxWidth().testTag("settingsAppBar"),
               title = {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -126,37 +122,37 @@ fun SettingsScreen(
         }
 
         item {
+          SettingsHeader(setUpOrSetting = SettingsType.ACCOUNT)
 
-            SettingsHeader(setUpOrSetting = SettingsType.ACCOUNT)
+          Spacer(modifier = Modifier.height(24.dp))
 
-            Spacer(modifier = Modifier.height(24.dp))
+          FlowRow(
+              modifier = Modifier.fillMaxWidth(),
+              horizontalArrangement = Arrangement.SpaceBetween) {
+                Button(
+                    onClick = { signOutAndNavigate() },
+                    modifier = Modifier.testTag("settingsSignOut")) {
+                      Text(
+                          text = LocalContext.current.getString(R.string.sign_out),
+                          textAlign = TextAlign.Center)
+                    }
 
-            FlowRow(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround ) {
-            Button(
-                onClick = { signOutAndNavigate() },
-                modifier = Modifier.testTag("settingsSignOut")) {
-                  Text(
-                      text = LocalContext.current.getString(R.string.sign_out)
-                          , textAlign = TextAlign.Center)
-                }
-
-            OutlinedButton(
-                modifier = Modifier.testTag("settingsDeleteAccount"),
-                onClick = { showDeleteDialog.value = true },
-                colors =
-                    ButtonDefaults.outlinedButtonColors(
-                        contentColor = MaterialTheme.colorScheme.error,
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.error)) {
-                  Text(
-                      text = LocalContext.current.getString(R.string.delete_account),
-                      maxLines = 1
-                      , textAlign = TextAlign.Center)
-                }
+                OutlinedButton(
+                    modifier = Modifier.testTag("settingsDeleteAccount"),
+                    onClick = { showDeleteDialog.value = true },
+                    colors =
+                        ButtonDefaults.outlinedButtonColors(
+                            contentColor = MaterialTheme.colorScheme.error,
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.error)) {
+                      Text(
+                          text = LocalContext.current.getString(R.string.delete_account),
+                          maxLines = 1,
+                          textAlign = TextAlign.Center)
+                    }
 
                 Spacer(modifier = Modifier.height(24.dp))
-
-          }
+              }
         }
       }
 }

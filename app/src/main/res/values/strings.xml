@@ -166,6 +166,9 @@ Sign in to join our fantastic sports addict community!</string>
     <string name= "delete_account">Delete Account</string>
     <string name = "delete_account_prompt">Are you sure you want to delete your account?</string>
     <string name="sport_level">Level</string>
+    <string name="sport_level_hiking">Hiking level</string>
+    <string name="sport_level_climbing">Climbing level</string>
+    <string name="sport_level_biking">Biking level</string>
     <string name="english">English</string>
     <string name="french">French</string>
     <string name="german">German</string>

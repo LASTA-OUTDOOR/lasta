@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Settings
@@ -59,7 +58,6 @@ fun SettingsComponent(
     Spacer(modifier = Modifier.height(24.dp))
     ActivityLevelsComponent(levels, updateClimbingLevel, updateHikingLevel, updateBikingLevel)
     Spacer(modifier = Modifier.height(24.dp))
-
   }
 }
 
@@ -133,7 +131,7 @@ fun SettingsHeader(setUpOrSetting: SettingsType) {
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.padding(horizontal = 16.dp).testTag("settingsHeader"),
             textAlign = TextAlign.Justify)
-      } else if(setUpOrSetting == SettingsType.ACTIVITY) {
+      } else if (setUpOrSetting == SettingsType.ACTIVITY) {
         Text(
             text = LocalContext.current.getString(R.string.activity_settings),
             fontWeight = FontWeight.Bold,
@@ -141,7 +139,7 @@ fun SettingsHeader(setUpOrSetting: SettingsType) {
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.padding(horizontal = 16.dp).testTag("settingsHeader"),
             textAlign = TextAlign.Justify)
-      } else if(setUpOrSetting == SettingsType.ACCOUNT) {
+      } else if (setUpOrSetting == SettingsType.ACCOUNT) {
         Text(
             text = LocalContext.current.getString(R.string.Account_settings),
             fontWeight = FontWeight.Bold,
@@ -165,7 +163,6 @@ fun LanguageSelectionComponent(
       horizontalArrangement = Arrangement.SpaceBetween,
       modifier = Modifier.fillMaxWidth(),
       verticalAlignment = Alignment.CenterVertically) {
-
         Button(
             onClick = {},
             modifier = Modifier.testTag("languageDropDownButton"),
@@ -197,7 +194,7 @@ fun FavoriteActivityComponent(
     prefActivity: ActivityType,
     updatePrefActivity: (ActivityType) -> Unit,
 ) {
-  Column(horizontalAlignment = Alignment.CenterHorizontally) {
+  Column(horizontalAlignment = Alignment.Start) {
     Text(
         text = stringResource(id = R.string.select_fav_activity),
         style = MaterialTheme.typography.headlineSmall,
@@ -231,7 +228,7 @@ fun ActivityLevelsComponent(
     updateHikingLevel: (UserLevel) -> Unit,
     updateBikingLevel: (UserLevel) -> Unit,
 ) {
-  Column(horizontalAlignment = Alignment.CenterHorizontally) {
+  Column(horizontalAlignment = Alignment.Start) {
     Text(
         text = stringResource(id = R.string.select_lev_activity),
         style = MaterialTheme.typography.headlineSmall,
@@ -248,8 +245,6 @@ fun ActivityLevelsComponent(
           modifier = Modifier.fillMaxWidth(),
           horizontalArrangement = Arrangement.SpaceBetween,
           verticalAlignment = Alignment.CenterVertically) {
-
-
             Button(
                 onClick = {},
                 modifier = Modifier.testTag("activityDropDownButton${activity.name}"),
@@ -275,7 +270,15 @@ fun ActivityLevelsComponent(
                         }
                       },
                       toStr = { level -> level.resourcesToString(LocalContext.current) },
-                      fieldText = activity.resourcesToString(LocalContext.current) + " " + LocalContext.current.getString(R.string.sport_level),
+                      fieldText =
+                          when (activity) {
+                            ActivityType.CLIMBING ->
+                                LocalContext.current.getString(R.string.sport_level_climbing)
+                            ActivityType.HIKING ->
+                                LocalContext.current.getString(R.string.sport_level_hiking)
+                            ActivityType.BIKING ->
+                                LocalContext.current.getString(R.string.sport_level_biking)
+                          },
                       modifier = Modifier.testTag("settings${activity.name}Level"))
                 }
           }

@@ -89,7 +89,12 @@
     <string name="delete_account_prompt">Möchten Sie Ihr Konto wirklich löschen?</string>
     <string name="tab_favorites">Favoriten</string>
     <string name="tab_socials">Freunde</string>
+
     <string name="sport_level">Niveau</string>
+    <string name="sport_level_hiking">Wanderniveau</string>
+    <string name="sport_level_climbing">Kletterniveau</string>
+    <string name="sport_level_biking">Radfahrniveau</string>
+
     <string name="no_account">Die E-Mail-Adresse ist nicht mit dem Wettbewerb verbunden</string>
     <string name="no_fr">" Sie sind bereits mit diesem Benutzer befreundet"</string>
     <string name="fr_req_sent">"Freundschaftsanfrage gesendet "</string>
