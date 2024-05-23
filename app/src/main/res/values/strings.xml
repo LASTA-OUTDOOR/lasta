@@ -160,7 +160,8 @@ Sign in to join our fantastic sports addict community!</string>
     <!--Settings-->
     <string name = "general_settings">General Settings</string>
     <string name = "activity_settings">Activity Settings</string>
-    <string name = "Account_settings">Settings</string>
+    <string name = "Account_settings">Account Settings</string>
+    <string name = "settings">Settings</string>
     <string name = "Account_setup">Setup</string>
     <string name= "delete_account">Delete Account</string>
     <string name = "delete_account_prompt">Are you sure you want to delete your account?</string>

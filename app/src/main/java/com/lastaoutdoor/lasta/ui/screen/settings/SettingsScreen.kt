@@ -2,10 +2,13 @@ package com.lastaoutdoor.lasta.ui.screen.settings
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -14,6 +17,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -27,15 +31,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.Language
+import com.lastaoutdoor.lasta.models.user.SettingsType
 import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun SettingsScreen(
     language: Language,
@@ -82,14 +88,17 @@ fun SettingsScreen(
 
   LazyColumn(
       modifier =
-          Modifier.fillMaxSize()
-              .padding(horizontal = 16.dp, vertical = 8.dp)
-              .testTag("settingsScreen"),
+      Modifier
+          .fillMaxSize()
+          .padding(horizontal = 16.dp, vertical = 8.dp)
+          .testTag("settingsScreen"),
       verticalArrangement = Arrangement.SpaceEvenly,
       horizontalAlignment = Alignment.CenterHorizontally) {
         item {
           MediumTopAppBar(
-              modifier = Modifier.fillMaxWidth().testTag("settingsAppBar"),
+              modifier = Modifier
+                  .fillMaxWidth()
+                  .testTag("settingsAppBar"),
               title = {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -117,16 +126,20 @@ fun SettingsScreen(
         }
 
         item {
-          Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
+
+            SettingsHeader(setUpOrSetting = SettingsType.ACCOUNT)
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            FlowRow(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround ) {
             Button(
                 onClick = { signOutAndNavigate() },
                 modifier = Modifier.testTag("settingsSignOut")) {
                   Text(
-                      text = LocalContext.current.getString(R.string.sign_out),
-                      style = MaterialTheme.typography.headlineMedium)
+                      text = LocalContext.current.getString(R.string.sign_out)
+                          , textAlign = TextAlign.Center)
                 }
 
-            Spacer(modifier = Modifier.weight(1f))
             OutlinedButton(
                 modifier = Modifier.testTag("settingsDeleteAccount"),
                 onClick = { showDeleteDialog.value = true },
@@ -137,14 +150,12 @@ fun SettingsScreen(
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.error)) {
                   Text(
                       text = LocalContext.current.getString(R.string.delete_account),
-                      style =
-                          when (language) {
-                            Language.ENGLISH -> MaterialTheme.typography.headlineMedium
-                            Language.FRENCH -> MaterialTheme.typography.bodySmall
-                            Language.GERMAN -> MaterialTheme.typography.headlineMedium
-                          },
-                      maxLines = 1)
+                      maxLines = 1
+                      , textAlign = TextAlign.Center)
                 }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
           }
         }
       }

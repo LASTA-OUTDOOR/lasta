@@ -58,6 +58,8 @@ fun SettingsComponent(
     FavoriteActivityComponent(prefActivity, updatePrefActivity) // Favorite Activity Selection
     Spacer(modifier = Modifier.height(24.dp))
     ActivityLevelsComponent(levels, updateClimbingLevel, updateHikingLevel, updateBikingLevel)
+    Spacer(modifier = Modifier.height(24.dp))
+
   }
 }
 
@@ -94,7 +96,7 @@ fun TitleComponent(setUpOrSetting: Boolean) { // Setup if true, Settings if fals
           textAlign = TextAlign.Center)
     } else {
       Text(
-          text = LocalContext.current.getString(R.string.Account_settings),
+          text = LocalContext.current.getString(R.string.settings),
           fontWeight = FontWeight.Bold,
           style = MaterialTheme.typography.displayLarge,
           modifier = Modifier.testTag("settingsTitle"),
@@ -131,9 +133,17 @@ fun SettingsHeader(setUpOrSetting: SettingsType) {
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.padding(horizontal = 16.dp).testTag("settingsHeader"),
             textAlign = TextAlign.Justify)
-      } else {
+      } else if(setUpOrSetting == SettingsType.ACTIVITY) {
         Text(
             text = LocalContext.current.getString(R.string.activity_settings),
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.padding(horizontal = 16.dp).testTag("settingsHeader"),
+            textAlign = TextAlign.Justify)
+      } else if(setUpOrSetting == SettingsType.ACCOUNT) {
+        Text(
+            text = LocalContext.current.getString(R.string.Account_settings),
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.bodySmall,
@@ -155,12 +165,7 @@ fun LanguageSelectionComponent(
       horizontalArrangement = Arrangement.SpaceBetween,
       modifier = Modifier.fillMaxWidth(),
       verticalAlignment = Alignment.CenterVertically) {
-        Text(
-            text = LocalContext.current.getString(R.string.languague) + " :",
-            color = MaterialTheme.colorScheme.onBackground,
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.width(8.dp))
+
         Button(
             onClick = {},
             modifier = Modifier.testTag("languageDropDownButton"),
@@ -200,7 +205,7 @@ fun FavoriteActivityComponent(
     Spacer(modifier = Modifier.height(8.dp))
     FlowRow(
         modifier = Modifier.testTag("settingsFavActivity").fillMaxWidth(),
-        horizontalArrangement = Arrangement.Start) {
+        horizontalArrangement = Arrangement.SpaceEvenly) {
           for (activity in ActivityType.values()) {
             val tag = "settings${activity.name}"
             Button(
@@ -214,7 +219,6 @@ fun FavoriteActivityComponent(
                         contentColor = MaterialTheme.colorScheme.onPrimary)) {
                   Text(text = activity.resourcesToString(LocalContext.current))
                 }
-            Spacer(modifier = Modifier.weight(1f))
           }
         }
   }
@@ -244,12 +248,8 @@ fun ActivityLevelsComponent(
           modifier = Modifier.fillMaxWidth(),
           horizontalArrangement = Arrangement.SpaceBetween,
           verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = activity.resourcesToString(LocalContext.current) + " :",
-                color = MaterialTheme.colorScheme.onBackground,
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.headlineMedium)
-            Spacer(modifier = Modifier.width(20.dp))
+
+
             Button(
                 onClick = {},
                 modifier = Modifier.testTag("activityDropDownButton${activity.name}"),
@@ -275,7 +275,7 @@ fun ActivityLevelsComponent(
                         }
                       },
                       toStr = { level -> level.resourcesToString(LocalContext.current) },
-                      fieldText = LocalContext.current.getString(R.string.sport_level),
+                      fieldText = activity.resourcesToString(LocalContext.current) + " " + LocalContext.current.getString(R.string.sport_level),
                       modifier = Modifier.testTag("settings${activity.name}Level"))
                 }
           }
