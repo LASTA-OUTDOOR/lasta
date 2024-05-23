@@ -1,5 +1,6 @@
 package com.lastaoutdoor.lasta.ui.screen.social
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -77,7 +78,11 @@ fun ConversationScreen(
                 // display 10 Text for testing
                 items(conversationModel.messages.size) {
                   // see this function maybe can be wrong
-                  ShowMessage(conversationModel.messages[it], user)
+                  ShowMessage(
+                      conversationModel.messages[it],
+                      user,
+                      changeActivityToDisplay,
+                      navigateToMoreInfo)
                 }
               }
 
@@ -142,7 +147,12 @@ fun Header(backCallBack: () -> Unit, friend: UserModel) {
 }
 
 @Composable
-fun ShowMessage(message: MessageModel, user: UserModel) {
+fun ShowMessage(
+    message: MessageModel,
+    user: UserModel,
+    changeActivityToDisplay: (String) -> Unit,
+    navigateToMoreInfo: () -> Unit
+) {
 
   var arrangement = Arrangement.Start
   var backgroundColor = MaterialTheme.colorScheme.surfaceContainer
@@ -153,6 +163,10 @@ fun ShowMessage(message: MessageModel, user: UserModel) {
     backgroundColor = MaterialTheme.colorScheme.primary
     textColor = MaterialTheme.colorScheme.onPrimary
   }
+
+  val isActivityShared = message.content.startsWith("|$@!|")
+  val messageParts = message.content.split("|")
+  val activityName = if (isActivityShared) messageParts[3] else message.content
 
   Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = arrangement) {
     Card(
@@ -166,7 +180,17 @@ fun ShowMessage(message: MessageModel, user: UserModel) {
                 disabledContentColor = backgroundColor,
                 disabledContainerColor = textColor,
             )) {
-          Text(message.content, modifier = Modifier.padding(8.dp))
+          if (isActivityShared) {
+            Text(
+                text = activityName,
+                modifier =
+                    Modifier.padding(8.dp).clickable {
+                      (messageParts[2])
+                    } // Pass the activityId when clicked
+                )
+          } else {
+            Text(text = message.content, modifier = Modifier.padding(8.dp))
+          }
         }
   }
 }

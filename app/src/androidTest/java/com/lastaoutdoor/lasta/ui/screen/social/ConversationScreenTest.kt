@@ -41,10 +41,12 @@ class ConversationScreenTest {
       ConversationScreen(
           conversationModel = null,
           refresh = {},
+          changeActivityToDisplay = {},
           user = UserModel("1"),
           friend = UserModel("2"),
           send = {},
-          navigateBack = {})
+          navigateBack = {},
+          navigateToMoreInfo = {})
     }
     composeRule.onNodeWithTag("ConversationScreen").assertIsNotDisplayed()
   }
@@ -60,10 +62,12 @@ class ConversationScreenTest {
                   messages = listOf(MessageModel(UserModel("1"), "2", Timestamp(0, 0))),
                   lastMessage = MessageModel(UserModel("2"), "1", Timestamp(0, 0))),
           refresh = {},
+          changeActivityToDisplay = {},
           user = UserModel("1"),
           friend = UserModel("2"),
           send = {},
-          navigateBack = {})
+          navigateBack = {},
+          navigateToMoreInfo = {})
     }
     composeRule.onNodeWithTag("ConversationScreen").assertIsDisplayed()
     composeRule.onNodeWithTag("ConversationScreenHeader").assertIsDisplayed()
@@ -84,11 +88,13 @@ class ConversationScreenTest {
                   members = listOf(UserModel("1"), UserModel("2")),
                   messages = listOf(MessageModel(UserModel("1"), "2", Timestamp(0, 0))),
                   lastMessage = MessageModel(UserModel("2"), "1", Timestamp(0, 0))),
+          changeActivityToDisplay = {},
           refresh = {},
           user = UserModel("1"),
           friend = UserModel("2"),
           send = { clicked = true },
-          navigateBack = {})
+          navigateBack = {},
+          navigateToMoreInfo = {})
     }
     composeRule.onNodeWithTag("SendMessageButton").assertIsDisplayed()
     composeRule.onNodeWithTag("SendMessageButton").performClick()
