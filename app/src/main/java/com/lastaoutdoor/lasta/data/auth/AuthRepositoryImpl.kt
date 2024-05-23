@@ -93,19 +93,18 @@ constructor(
     }
   }
 
-  override suspend fun deleteAccount(): Flow<Response<Boolean>> {
-    return try {
-      val userToDelete = auth.currentUser
-      if (userToDelete != null) {
-        // Delete on all repositories
-        userDBRepo.deleteUser(userToDelete.uid)
-        userToDelete.delete().await()
-        flow { emit(Response.Success(true)) }
+  override suspend fun deleteAccount(): Flow<Response<Boolean>> = flow {
+    try {
+      emit(Response.Loading)
+      val user = auth.currentUser
+      if (user != null) {
+        user.delete().await()
+        emit(Response.Success(true))
       } else {
-        flow { emit(Response.Failure(NoSuchElementException("User is null"))) }
+        emit(Response.Failure(NoSuchElementException("User is null")))
       }
     } catch (e: Exception) {
-      flow { emit(Response.Failure(e)) }
+      emit(Response.Failure(e))
     }
   }
 }
