@@ -147,5 +147,5 @@
     <string name ="one_friends_in_common">1 gemeinsamer Freund</string>
     <string name ="friends_in_common">gemeinsame Freunde</string>
     <string name = "at_hour">um</string>
-    <string name = "forecasted_weather">Wettervorhersage für morgen den</string>
+    <string name = "forecasted_weather">Morgen</string>
 </resources>

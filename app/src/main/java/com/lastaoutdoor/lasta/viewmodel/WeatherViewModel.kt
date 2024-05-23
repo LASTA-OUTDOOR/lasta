@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.Application
 import android.content.pm.PackageManager
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -12,7 +11,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.weather.WeatherForecast
 import com.lastaoutdoor.lasta.data.api.weather.WeatherForecastResponse
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
@@ -97,6 +95,6 @@ constructor(
   fun getForecastDate(): String {
     if (_weatherForecast.value == null) return ""
     val resp = _weatherForecast.value!!.list[8]
-    return "${resp.dt.substring(8,10)}.${resp.dt.substring(5,7)} ${LocalContext.current.getString(R.string.at_hour)} ${resp.dt.substring(11, 16)}h"
+    return "${resp.dt.substring(11, 16)}h"
   }
 }

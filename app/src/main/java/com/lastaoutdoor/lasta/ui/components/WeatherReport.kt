@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Card
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -29,7 +30,6 @@ import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.data.api.weather.getWeatherIconFromId
 import com.lastaoutdoor.lasta.data.api.weather.kelvinToCelsius
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
-import java.math.RoundingMode
 
 private const val KELVIN_CONST = 273.15
 
@@ -42,8 +42,7 @@ fun WeatherReportBig(weather: WeatherResponse?, displayWind: Boolean, onClick: (
 
   if (weather != null) {
     // the query is answered with a temperature in Kelvin, which we convert to Celsius
-    val finalTemp =
-        (weather.main.temp - KELVIN_CONST).toBigDecimal().setScale(1, RoundingMode.UP).toDouble()
+    val finalTemp = kelvinToCelsius((weather.main.temp))
     Row(
         modifier = Modifier.fillMaxWidth().clickable { onClick() }.testTag("WeatherReportBig"),
         verticalAlignment = Alignment.CenterVertically,
@@ -146,15 +145,15 @@ fun WeatherForecastDisplay(weatherForecast: WeatherForecast?, date: String) {
     val finalTemp = kelvinToCelsius(weatherForecast.main.temp)
 
     // display the forecast
-    Surface {
+    Card {
       Column(
           modifier = Modifier.padding(8.dp).fillMaxWidth().testTag("forecast"),
           verticalArrangement = Arrangement.Center,
           horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = LocalContext.current.getString(R.string.forecasted_weather),
+                text =
+                    "${LocalContext.current.getString(R.string.forecasted_weather)} ${LocalContext.current.getString(R.string.at_hour)} $date",
             )
-            Text(text = date)
 
             Row(
                 modifier = Modifier.fillMaxWidth().padding(8.dp),
