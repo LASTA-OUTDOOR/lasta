@@ -44,7 +44,6 @@ const val FIREBASE_COMPARISONS_LIMIT = 25
 data class DiscoverScreenCallBacks(
     val fetchActivities: () -> Unit,
     val setScreen: (DiscoverDisplayType) -> Unit,
-    val setRange: (Double) -> Unit,
     val setSelectedLocality: (Pair<String, LatLng>) -> Unit,
     val updatePermission: (Boolean) -> Unit,
     val updateMarkers: (LatLng, Double) -> Unit,
@@ -110,7 +109,6 @@ constructor(
       DiscoverScreenCallBacks(
           fetchActivities = ::fetchActivities,
           setScreen = { screen -> setScreen(screen) },
-          setRange = { range -> setRange(range) },
           setSelectedLocality = { locality -> setSelectedLocality(locality) },
           updatePermission = { value -> updatePermission(value) },
           updateMarkers = { centerLocation, rad -> updateMarkers(centerLocation, rad) },
@@ -317,11 +315,6 @@ constructor(
 
   fun setScreen(screen: DiscoverDisplayType) {
     _state.value = _state.value.copy(screen = screen)
-  }
-
-  // Set the range for the activities
-  fun setRange(range: Double) {
-    _state.value = _state.value.copy(range = range)
   }
 
   // toggle wether we show completed activities or not

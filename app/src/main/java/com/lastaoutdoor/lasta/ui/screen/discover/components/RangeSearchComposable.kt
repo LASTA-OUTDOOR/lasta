@@ -1,15 +1,15 @@
 package com.lastaoutdoor.lasta.ui.screen.discover.components
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ButtonDefaults
@@ -36,11 +36,9 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.ui.screen.map.mapScreen
@@ -72,10 +70,20 @@ fun RangeSearchComposable(
 
     // Top app bar
     TopAppBar(
-        title = { Text(text = "hey") },
+        title = {
+          Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+            Text(
+                text = LocalContext.current.getString(R.string.modify_search),
+                style = MaterialTheme.typography.displaySmall,
+                color = MaterialTheme.colorScheme.onBackground)
+          }
+        },
         actions = {
           IconButton(onClick = navigateBack) {
-            Icon(Icons.Default.Close, contentDescription = "Close")
+            Icon(
+                Icons.Default.Close,
+                contentDescription = "Close",
+                tint = MaterialTheme.colorScheme.primary)
           }
         })
 
@@ -103,7 +111,7 @@ fun RangeSearchComposable(
                   .graphicsLayer { alpha = .99f }) {
 
             // Destination
-            drawRect(Color.Black.copy(alpha = 0.7f))
+            drawRect(Color.Black.copy(alpha = 0.6f))
 
             // Source
             drawCircle(
@@ -139,32 +147,34 @@ fun DisplaySlider(
 ) {
   Column(
       horizontalAlignment = Alignment.CenterHorizontally,
-      modifier = Modifier.fillMaxWidth().padding(16.dp).testTag("searchOptions")) {
-        // Select the City
-        Text(
-            text = LocalContext.current.getString(R.string.locality),
-            style = TextStyle(fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
-        Spacer(modifier = Modifier.height(8.dp))
-        // Dropdown to select the city
+      modifier = Modifier.fillMaxWidth().testTag("searchOptions")) {
+        Spacer(modifier = Modifier.fillMaxHeight(0.025f))
+
         // Select the distance radius
         Text(
             text = LocalContext.current.getString(R.string.dist_radius),
-            style = TextStyle(fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight(500)))
-        Spacer(modifier = Modifier.height(8.dp))
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Bold)
+
         // Slider to select the range
-        Row {
-          Slider(
-              value = radius.toFloat(),
-              onValueChange = { updateRadius(it.toDouble()) },
-              valueRange = 10000f..30000f,
-              steps = 1000,
-              modifier = Modifier.width(300.dp).testTag("listSearchOptionsSlider"))
-          Text(
-              // put range in km
-              text = "${(radius / 1000).toInt()}km",
-              style = MaterialTheme.typography.bodyMedium,
-              modifier = Modifier.padding(8.dp))
-        }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+              Slider(
+                  value = radius.toFloat(),
+                  onValueChange = { updateRadius(it.toDouble()) },
+                  valueRange = 10000f..30000f,
+                  steps = 1000,
+                  modifier = Modifier.weight(0.7f).testTag("listSearchOptionsSlider"))
+              Text(
+                  // put range in km
+                  text = "${(radius / 1000).toInt()}km",
+                  style = MaterialTheme.typography.bodyMedium,
+                  modifier = Modifier.padding(8.dp))
+            }
+
+        Spacer(modifier = Modifier.fillMaxHeight(0.025f))
 
         // Button to apply the range
         ElevatedButton(
@@ -173,16 +183,11 @@ fun DisplaySlider(
               // discoverScreenCallBacks.updateInitialPosition(selectedLocality.second)
               navigateBack()
             },
-            modifier = Modifier.width(305.dp).height(48.dp).testTag("listSearchOptionsApplyButton"),
+            modifier = Modifier.fillMaxWidth(0.7f).testTag("listSearchOptionsApplyButton"),
             colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
               Text(
                   LocalContext.current.getString(R.string.search),
-                  style =
-                      TextStyle(
-                          fontSize = 22.sp,
-                          lineHeight = 28.sp,
-                          fontWeight = FontWeight(400),
-                      ))
+                  style = MaterialTheme.typography.displaySmall)
             }
       }
 }

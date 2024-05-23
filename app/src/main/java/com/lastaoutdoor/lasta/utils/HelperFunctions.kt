@@ -230,7 +230,7 @@ fun calculateZoomLevel(
     latitude: Double
 ): Float {
   val diameter = 2 * radiusInMeters
-  val groundResolution =  Math.E * diameter / screenWidthInPixels
+  val groundResolution = Math.E * diameter / screenWidthInPixels
   val googleMapConstant = 156543.03 // converts from degrees to meters
   return (log2(googleMapConstant * cos(Math.toRadians(latitude)) / groundResolution)).toFloat()
 }
