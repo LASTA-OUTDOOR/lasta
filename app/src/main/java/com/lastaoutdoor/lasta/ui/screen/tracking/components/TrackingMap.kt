@@ -1,11 +1,14 @@
 package com.lastaoutdoor.lasta.ui.screen.tracking.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchColors
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -15,7 +18,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraMoveStartedReason
@@ -37,9 +43,7 @@ fun TrackingMap(
     positions: List<LatLng>,
     modifier: Modifier = Modifier
 ) {
-  var isFollowingMarker by remember {
-    mutableStateOf(true)
-  }
+  var isFollowingMarker by remember { mutableStateOf(true) }
 
   val uiSettings by remember { mutableStateOf(MapUiSettings(zoomControlsEnabled = false)) }
   val properties by remember { mutableStateOf(MapProperties(mapType = MapType.TERRAIN)) }
@@ -48,6 +52,11 @@ fun TrackingMap(
 
   val cameraPositionState = rememberCameraPositionState {
     position = CameraPosition.fromLatLngZoom(currentPosition, initialZoom)
+  }
+
+  fun centerCamera() {
+    isFollowingMarker = true
+    cameraPositionState.position = CameraPosition.fromLatLngZoom(currentPosition, zoom)
   }
 
   LaunchedEffect(key1 = cameraPositionState.position.target) {
@@ -86,6 +95,15 @@ fun TrackingMap(
               width = 20f,
           )
         }
-    Switch(checked = isFollowingMarker, onCheckedChange = { isFollowingMarker = it })
+    IconButton(
+        onClick = { centerCamera() },
+        modifier =
+            Modifier.size(48.dp).offset(x = 8.dp, y = 8.dp).background(Color.White, CircleShape)) {
+          Icon(
+              painter = painterResource(id = R.drawable.center_location_icon),
+              contentDescription = "My location",
+              modifier = Modifier.size(32.dp),
+              tint = if (isFollowingMarker) MaterialTheme.colorScheme.primary else Color.Gray)
+        }
   }
 }
