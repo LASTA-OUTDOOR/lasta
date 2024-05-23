@@ -1,7 +1,10 @@
+@file:OptIn(ExperimentalAnimationApi::class)
+
 package com.lastaoutdoor.lasta.ui.navigation
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
