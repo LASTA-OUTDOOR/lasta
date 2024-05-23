@@ -13,9 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.lastaoutdoor.lasta.utils.createColorString
+import com.lastaoutdoor.lasta.viewmodel.TrackingState
 
 @Composable
-fun TrackingInfo(modifier: Modifier = Modifier) {
+fun TrackingInfo(modifier: Modifier = Modifier, trackingState: TrackingState) {
 
   val greyColor = Color(0xFFB6B6B6)
 
@@ -76,7 +77,7 @@ fun TrackingInfo(modifier: Modifier = Modifier) {
                   modifier = Modifier.weight(0.5f),
                   first = "Steps ",
                   second = "/ total",
-                  info = "2135",
+                  info = trackingState.stepCount.toString(),
                   greyColor = greyColor)
               InfoColumn(
                   modifier = Modifier.weight(0.5f),

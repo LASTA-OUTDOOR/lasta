@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -98,7 +99,10 @@ fun TrackingMap(
     IconButton(
         onClick = { centerCamera() },
         modifier =
-            Modifier.size(48.dp).offset(x = 8.dp, y = 8.dp).background(Color.White, CircleShape)) {
+            Modifier.size(48.dp)
+                .offset(x = (-8).dp, y = 8.dp)
+                .align(Alignment.TopEnd)
+                .background(Color.White, CircleShape)) {
           Icon(
               painter = painterResource(id = R.drawable.center_location_icon),
               contentDescription = "My location",

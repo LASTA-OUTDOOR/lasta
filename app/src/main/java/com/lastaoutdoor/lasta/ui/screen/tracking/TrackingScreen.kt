@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.maps.model.LatLng
+import com.lastaoutdoor.lasta.ui.screen.tracking.components.TrackingDispatchers
 import com.lastaoutdoor.lasta.ui.screen.tracking.components.TrackingInfo
 import com.lastaoutdoor.lasta.ui.screen.tracking.components.TrackingMap
 import com.lastaoutdoor.lasta.viewmodel.TrackingState
@@ -37,6 +38,11 @@ fun TrackingScreen(
 ) {
   val startPoint = LatLng(46.519962, 6.633597)
   val initialZoom = 17f
+  TrackingDispatchers(
+      trackingState = trackingState,
+      locationCallback = locationCallback,
+      registerSensorListener = registerSensorListener,
+      updateStepCount = updateStepCount)
   Scaffold {
     Column(
         modifier = Modifier.padding(it).fillMaxSize().testTag("TrackingScreen"),
@@ -47,11 +53,7 @@ fun TrackingScreen(
               initialZoom,
               trackingState.positions.map { position -> LatLng(position.lat, position.lon) },
               Modifier.weight(0.4f))
-          //          LocationsDisplay(Modifier.weight(0.3f), trackingState, locationCallback)
-          //          StepCountDisplay(
-          //              Modifier.weight(0.2f), trackingState, registerSensorListener,
-          // updateStepCount)
-          TrackingInfo(Modifier.weight(0.5f))
+          TrackingInfo(Modifier.weight(0.5f), trackingState)
           Row(
               modifier = Modifier.weight(0.1f).fillMaxSize(),
               verticalAlignment = Alignment.Top,
