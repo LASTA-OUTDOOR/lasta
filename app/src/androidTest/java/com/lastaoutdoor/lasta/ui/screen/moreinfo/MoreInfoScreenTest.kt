@@ -39,7 +39,6 @@ class MoreInfoScreenTest {
       DiscoverScreenCallBacks(
           fetchActivities = {},
           setScreen = {},
-          setRange = {},
           setSelectedLocality = {},
           updatePermission = {},
           updateMarkers = { _, _ -> },

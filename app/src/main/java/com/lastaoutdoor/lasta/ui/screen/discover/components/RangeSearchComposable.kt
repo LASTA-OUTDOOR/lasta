@@ -66,7 +66,7 @@ fun RangeSearchComposable(
   var radius by remember { mutableDoubleStateOf(initialRadius) }
 
   // This is the main composable that will display the range search screen
-  Column(modifier = Modifier.fillMaxSize()) {
+  Column(modifier = Modifier.fillMaxSize().testTag("rangeSearch")) {
 
     // Top app bar
     TopAppBar(
