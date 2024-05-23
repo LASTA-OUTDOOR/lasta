@@ -73,7 +73,15 @@ private fun FriendLazyColumn(
                 hideFriendPicker()
                 // Share the activity with the selected friend by sending its id
                 shareToFriend(
-                    "|$@!|" + activityShared.activityId + "|" + activityShared.name, friend.userId)
+                    "|$@!|" +
+                        activityShared.activityId +
+                        "|" +
+                        activityShared.name +
+                        "|" +
+                        activityShared.activityType.name +
+                        "|" +
+                        activityShared.difficulty.name,
+                    friend.userId)
               },
           colors =
               CardColors(

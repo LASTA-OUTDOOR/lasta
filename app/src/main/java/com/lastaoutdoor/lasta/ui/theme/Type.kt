@@ -114,7 +114,7 @@ val Typography =
                 letterSpacing = 0.sp),
         labelMedium =
             TextStyle(
-                fontFamily = customFontFamilyItalic,
+                fontFamily = customFontFamily,
                 fontWeight = FontWeight.Medium,
                 fontSize = 16.sp,
                 lineHeight = 24.sp,
