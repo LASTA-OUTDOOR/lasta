@@ -26,8 +26,7 @@ fun TrackingInfo(modifier: Modifier = Modifier, trackingState: TrackingState) {
             modifier = Modifier.weight(0.25f).fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween) {
               Text(
-                  createColorString(
-                      "Duration ", "/ time", MaterialTheme.colorScheme.primary, Grey),
+                  createColorString("Duration ", "/ time", MaterialTheme.colorScheme.primary, Grey),
                   style = MaterialTheme.typography.bodySmall,
                   modifier = Modifier.weight(0.2f))
               Row(
@@ -103,7 +102,8 @@ fun InfoColumn(
         modifier = Modifier.weight(0.2f))
     Text(
         info,
-        modifier = Modifier.weight(0.8f).fillMaxSize().padding(vertical = 12.dp, horizontal = 20.dp),
+        modifier =
+            Modifier.weight(0.8f).fillMaxSize().padding(vertical = 12.dp, horizontal = 20.dp),
         style = MaterialTheme.typography.displayMedium)
   }
 }

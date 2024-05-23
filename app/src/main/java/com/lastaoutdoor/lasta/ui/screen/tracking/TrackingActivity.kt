@@ -1,13 +1,22 @@
 package com.lastaoutdoor.lasta.ui.screen.tracking
 
 import android.app.LocaleManager
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
 import android.os.LocaleList
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.core.os.LocaleListCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -17,6 +26,7 @@ import com.lastaoutdoor.lasta.data.db.UserDBRepositoryImpl
 import com.lastaoutdoor.lasta.data.preferences.PreferencesRepositoryImpl
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.di.NetworkModule
+import com.lastaoutdoor.lasta.services.StopwatchService
 import com.lastaoutdoor.lasta.ui.theme.LastaTheme
 import com.lastaoutdoor.lasta.viewmodel.PreferencesViewModel
 import com.lastaoutdoor.lasta.viewmodel.TrackingViewModel
@@ -26,8 +36,32 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+@ExperimentalAnimationApi
 @AndroidEntryPoint
 class TrackingActivity : ComponentActivity() {
+
+  private var isBound by mutableStateOf(false)
+  private lateinit var stopwatchService: StopwatchService
+  private val connection =
+      object : ServiceConnection {
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+          val binder = service as StopwatchService.StopwatchBinder
+          stopwatchService = binder.getService()
+          isBound = true
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName) {
+          isBound = false
+        }
+      }
+
+  override fun onStart() {
+    super.onStart()
+    Intent(this, StopwatchService::class.java).also { intent ->
+      bindService(intent, connection, Context.BIND_AUTO_CREATE)
+    }
+  }
+
   override fun onCreate(savedInstanceState: Bundle?) {
     enableEdgeToEdge()
     super.onCreate(savedInstanceState)
@@ -76,13 +110,20 @@ class TrackingActivity : ComponentActivity() {
       val trackingViewModel: TrackingViewModel = hiltViewModel()
       val state = trackingViewModel.state.collectAsState().value
       LastaTheme {
-        TrackingScreen(
-            trackingState = state,
-            locationCallback = trackingViewModel.locationCallback,
-            registerSensorListener = trackingViewModel::registerSensorListener,
-            trackingViewModel::updateStepCount)
+        if (isBound) {
+          TrackingScreen(
+              stopwatchService = stopwatchService,
+              trackingState = state,
+              locationCallback = trackingViewModel.locationCallback,
+              registerSensorListener = trackingViewModel::registerSensorListener,
+              trackingViewModel::updateStepCount)
+        }
       }
     }
+  }
+
+  override fun onStop() {
+    super.onStop()
   }
 
   private fun changeLocale(old: Locale, new: Locale) {
