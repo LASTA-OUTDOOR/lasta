@@ -57,4 +57,39 @@ class WeatherRepositoryImplTest {
     }
     assertEquals(null, actualResponse)
   }
+
+  @Test
+  fun testgetForecastWeather() {
+    // Mock response from WeatherApiService
+    val expectedResponse =
+        WeatherForecastResponse(
+            listOf(WeatherForecast(MainForecast(2.0, 3.0, 4.0, 5.0), listOf(), "dt")))
+    runBlocking {
+      `when`(weatherApiService.getForecastWeather(0.0, 0.0, "apiKey")).thenReturn(expectedResponse)
+    }
+
+    // Call the method under test
+    val actualResponse = runBlocking { weatherRepository.getForecastWeather(0.0, 0.0) }
+
+    // Verify that the method from WeatherApiService was called with the correct arguments
+    runBlocking {
+      `when`(weatherApiService.getForecastWeather(0.0, 0.0, "apiKey")).thenReturn(expectedResponse)
+    }
+    assertEquals(null, actualResponse)
+  }
+
+  @Test
+  fun weatherForecastTest() {
+    val mainForecast = MainForecast(2.0, 3.0, 2.0, 0.0)
+    val weatherForecast = WeatherForecast(mainForecast, listOf(Weather("main", "icon")), "dt")
+    val weatherForecastResponse = WeatherForecastResponse(listOf(weatherForecast))
+    assertEquals(2.0, weatherForecast.main.temp)
+    assertEquals(3.0, weatherForecast.main.tempMin)
+    assertEquals(2.0, weatherForecast.main.tempMax)
+    assertEquals(0.0, weatherForecast.main.hum)
+    assertEquals("main", weatherForecast.weather.first().description)
+    assertEquals("icon", weatherForecast.weather.first().icon)
+    assertEquals("dt", weatherForecast.dt)
+    assertEquals(weatherForecast, weatherForecastResponse.list.first())
+  }
 }

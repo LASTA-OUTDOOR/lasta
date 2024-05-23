@@ -45,7 +45,7 @@ fun WeatherReportBig(weather: WeatherResponse?, displayWind: Boolean, onClick: (
     val finalTemp =
         (weather.main.temp - KELVIN_CONST).toBigDecimal().setScale(1, RoundingMode.UP).toDouble()
     Row(
-        modifier = Modifier.fillMaxWidth().clickable { onClick() },
+        modifier = Modifier.fillMaxWidth().clickable { onClick() }.testTag("WeatherReportBig"),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly) {
           Row(verticalAlignment = Alignment.CenterVertically) {
@@ -148,7 +148,7 @@ fun WeatherForecastDisplay(weatherForecast: WeatherForecast?, date: String) {
     // display the forecast
     Surface {
       Column(
-          modifier = Modifier.padding(8.dp).fillMaxWidth(),
+          modifier = Modifier.padding(8.dp).fillMaxWidth().testTag("forecast"),
           verticalArrangement = Arrangement.Center,
           horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
@@ -168,7 +168,7 @@ fun WeatherForecastDisplay(weatherForecast: WeatherForecast?, date: String) {
                                   getWeatherIconFromId(
                                       weatherForecast.weather.firstOrNull()?.icon ?: "01d")),
                       contentDescription = "Weather Icon",
-                      modifier = Modifier.size(50.dp))
+                      modifier = Modifier.size(50.dp).testTag("forecastIcon"))
                   Text(
                       text =
                           "${LocalContext.current.getString(R.string.humidity)} ${weatherForecast.main.hum}%")
