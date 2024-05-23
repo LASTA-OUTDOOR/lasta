@@ -33,6 +33,9 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.social.ConversationModel
@@ -167,6 +170,7 @@ fun ShowMessage(
   val isActivityShared = message.content.startsWith("|$@!|")
   val messageParts = message.content.split("|")
   val activityName = if (isActivityShared) messageParts[3] else message.content
+  val activityId = if (isActivityShared) messageParts[2] else ""
 
   Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = arrangement) {
     Card(
@@ -182,10 +186,20 @@ fun ShowMessage(
             )) {
           if (isActivityShared) {
             Text(
-                text = activityName,
+                text =
+                    AnnotatedString(
+                        text = activityName,
+                        spanStyles =
+                            listOf(
+                                AnnotatedString.Range(
+                                    item = SpanStyle(textDecoration = TextDecoration.Underline),
+                                    start = 0,
+                                    end = activityName.length))),
+                style = MaterialTheme.typography.labelMedium,
                 modifier =
                     Modifier.padding(8.dp).clickable {
-                      (messageParts[2])
+                      changeActivityToDisplay.invoke(activityId)
+                      navigateToMoreInfo()
                     } // Pass the activityId when clicked
                 )
           } else {
