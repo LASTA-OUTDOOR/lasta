@@ -65,8 +65,8 @@ import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
 import com.lastaoutdoor.lasta.ui.components.WeatherForecastDisplay
 import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
-import com.lastaoutdoor.lasta.ui.components.shareActivity
 import com.lastaoutdoor.lasta.ui.screen.map.mapScreen
+import com.lastaoutdoor.lasta.ui.screen.moreinfo.components.ShareOptionsDialog
 import com.lastaoutdoor.lasta.ui.theme.Black
 import com.lastaoutdoor.lasta.ui.theme.GreenDifficulty
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
@@ -87,6 +87,8 @@ fun MoreInfoScreen(
     getUserModels: (List<String>) -> Unit,
     writeNewRating: (String, Rating, String) -> Unit,
     currentUser: UserModel?,
+    shareToFriend: (String, String) -> Unit,
+    friends: List<UserModel>,
     weather: WeatherResponse?,
     favorites: List<String>,
     weatherForecast: WeatherForecast?,
@@ -114,10 +116,18 @@ fun MoreInfoScreen(
           Column(modifier = Modifier.padding(5.dp)) {
             Spacer(modifier = Modifier.height(20.dp))
             // contains the top icon buttons
-            TopBar(activityToDisplay, downloadActivity, favorites, flipFavorite) {
-              discoverScreenCallBacks.fetchActivities()
-              navigateBack()
-              setWeatherBackToUserLoc()
+            if (currentUser != null) {
+              TopBar(
+                  activityToDisplay,
+                  downloadActivity,
+                  favorites,
+                  flipFavorite,
+                  friends,
+                  shareToFriend) {
+                    discoverScreenCallBacks.fetchActivities()
+                    navigateBack()
+                    setWeatherBackToUserLoc()
+                  }
             }
             // displays activity title and duration
             ActivityTitleZone(activityToDisplay)
@@ -148,10 +158,13 @@ fun MoreInfoScreen(
   } else {
     Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoMap")) {
       val marker = goToMarker(activityToDisplay)
-      TopBar(activityToDisplay, downloadActivity, favorites, flipFavorite) {
-        discoverScreenCallBacks.fetchActivities()
-        navigateBack()
-        setWeatherBackToUserLoc()
+      if (currentUser != null) {
+        TopBar(
+            activityToDisplay, downloadActivity, favorites, flipFavorite, friends, shareToFriend) {
+              discoverScreenCallBacks.fetchActivities()
+              navigateBack()
+              setWeatherBackToUserLoc()
+            }
       }
       mapScreen(
           discoverScreenState.mapState,
@@ -359,16 +372,18 @@ fun TopBar(
     downloadActivity: (Activity) -> Unit,
     favorites: List<String>,
     flipFavorite: (String) -> Unit,
+    friends: List<UserModel>,
+    shareToFriend: (String, String) -> Unit,
     navigateBack: () -> Unit
 ) {
-
-  val context = LocalContext.current
+  val openDialog = remember { mutableStateOf(false) }
+  ShareOptionsDialog(activityToDisplay, openDialog, friends, shareToFriend)
 
   Row(modifier = Modifier.fillMaxWidth().testTag("Top Bar")) {
     TopBarLogo(R.drawable.arrow_back) { navigateBack() }
     Spacer(modifier = Modifier.weight(1f))
     TopBarLogo(R.drawable.download_button) { downloadActivity(activityToDisplay) }
-    TopBarLogo(R.drawable.share) { shareActivity(activityToDisplay, context) }
+    TopBarLogo(R.drawable.share) { openDialog.value = true }
     // if activity is in favorites, display the filled heart, else display the empty heart
     if (favorites.contains(activityToDisplay.activityId)) {
       TopBarLogo(Icons.Filled.Favorite) { flipFavorite(activityToDisplay.activityId) }

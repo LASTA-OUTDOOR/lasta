@@ -36,6 +36,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -71,6 +72,8 @@ import com.lastaoutdoor.lasta.utils.OrderingBy
 import com.lastaoutdoor.lasta.viewmodel.DiscoverDisplayType
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenCallBacks
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun DiscoverScreen(
@@ -284,16 +287,23 @@ fun HeaderComposable(
                       .heightIn(0.dp, 130.dp)) {
                 items(suggestions.count()) { i ->
                   val suggestion = suggestions.entries.elementAt(i)
+                  val scope = rememberCoroutineScope()
                   Card(
                       modifier =
                           Modifier.fillMaxWidth().padding(4.dp).testTag("suggestion").clickable {
-                            fManager.clearFocus()
-                            setSelectedLocality(Pair(suggestion.key, suggestion.value))
-                            changeText(suggestion.key)
-                            updateInitialPosition(suggestion.value)
-                            moveCamera(CameraUpdateFactory.newLatLng(suggestion.value))
-                            fetchActivities()
-                            clearSuggestions()
+                            scope.launch {
+                              fManager.clearFocus()
+                              setSelectedLocality(Pair(suggestion.key, suggestion.value))
+                              updateInitialPosition(suggestion.value)
+                              moveCamera(CameraUpdateFactory.newLatLng(suggestion.value))
+                              fetchActivities()
+                              // add a delay because otherwise the focus suggestion are redisplayed
+                              // if you were on the keyboard (probably due to changeText and
+                              // clearFocus)
+                              delay(300)
+                              changeText(suggestion.key)
+                              clearSuggestions()
+                            }
                           }) {
                         Text(modifier = Modifier.padding(8.dp).height(20.dp), text = suggestion.key)
                       }

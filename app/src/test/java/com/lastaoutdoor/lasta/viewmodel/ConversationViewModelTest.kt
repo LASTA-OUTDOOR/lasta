@@ -59,6 +59,7 @@ class ConversationViewModelTest {
     viewModel.hideSendMessageDialog()
     viewModel.showSendMessageDialog()
     viewModel.send("message")
+    viewModel.sendMessageToFriend("message", "friendId")
     viewModel.updateFriendUserId("friendId")
     assert(viewModel.friendUserId.isNotEmpty())
   }
@@ -87,5 +88,24 @@ class ConversationViewModelTest {
     }
     fakeUserDB.shouldThrowException = false
     fakeSocialDB.shouldThrowException = false
+  }
+
+  @Test
+  fun `send message to friend with exception`() {
+    fakeUserDB.shouldThrowException = true
+    fakeSocialDB.shouldThrowException = true
+    try {
+      viewModel.sendMessageToFriend("message", "friendId")
+    } catch (e: Exception) {
+      errorToast.showToast(ErrorType.ERROR_DATABASE)
+    }
+    fakeUserDB.shouldThrowException = false
+    fakeSocialDB.shouldThrowException = false
+  }
+
+  @Test
+  fun `send message to friend with empty message`() {
+    viewModel.sendMessageToFriend("", "friendId")
+    viewModel.conversation?.let { assert(it.equals("")) }
   }
 }

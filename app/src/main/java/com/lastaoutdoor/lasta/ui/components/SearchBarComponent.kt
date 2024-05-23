@@ -65,5 +65,6 @@ fun searchBarComponent(modifier: Modifier, onSearch: (String) -> Unit): (String)
       modifier = modifier.height(56.dp), // Match Material Design height for text fields,
       keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
       keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }))
+
   return { s: String -> searchText = TextFieldValue(s) }
 }

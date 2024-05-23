@@ -3,6 +3,7 @@ package com.lastaoutdoor.lasta.ui.screen.moreinfo
 import android.annotation.SuppressLint
 import androidx.activity.compose.setContent
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
@@ -88,6 +89,8 @@ class MoreInfoScreenTest {
           weather =
               WeatherResponse(
                   "Paris", main = Main(0.0, 0.0), weather = emptyList(), wind = Wind(0.0)),
+          shareToFriend = { _, _ -> },
+          friends = emptyList(),
           favorites = emptyList(),
           weatherForecast =
               WeatherForecast(
@@ -193,8 +196,36 @@ class MoreInfoScreenTest {
           downloadActivity = {},
           favorites = listOf("3"),
           navigateBack = {},
-          flipFavorite = {})
+          flipFavorite = {},
+          friends = emptyList(),
+          shareToFriend = { _, _ -> })
     }
     composeRule.onNodeWithTag("Top Bar").assertIsDisplayed()
+  }
+
+  // Test ShareOptionsDialog
+  @Test
+  fun shareOptionsDialog_isDisplayed() {
+    composeRule.onNodeWithContentDescription("Top Bar logo ${R.drawable.share}").performClick()
+    composeRule.onNodeWithTag("shareOptionsDialog").assertIsDisplayed()
+    composeRule.onNodeWithTag("closeShareOptionsButton").performClick()
+    composeRule.onNodeWithTag("shareOptionsDialog").assertIsNotDisplayed()
+  }
+
+  // Test ShareOptionsDialog with shareOutsideButton
+  @Test
+  fun shareOptionsDialog_shareOutsideButton_isDisplayed() {
+    composeRule.onNodeWithContentDescription("Top Bar logo ${R.drawable.share}").performClick()
+    composeRule.onNodeWithTag("shareOutsideButton").assertIsDisplayed()
+    composeRule.onNodeWithTag("shareOutsideButton").performClick()
+  }
+
+  // Test ShareOptionsDialog with shareInAppButton
+  @Test
+  fun shareOptionsDialog_shareInAppButton_isDisplayed() {
+    composeRule.onNodeWithContentDescription("Top Bar logo ${R.drawable.share}").performClick()
+    composeRule.onNodeWithTag("shareInAppButton").assertIsDisplayed()
+    composeRule.onNodeWithTag("shareInAppButton").performClick()
+    composeRule.onNodeWithTag("friendSharePicker").assertIsDisplayed()
   }
 }
