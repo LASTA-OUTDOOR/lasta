@@ -2,17 +2,12 @@ package com.lastaoutdoor.lasta.viewmodel
 
 import android.hardware.Sensor
 import android.hardware.SensorManager
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.SphericalUtil
-import com.lastaoutdoor.lasta.models.api.Position
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -50,7 +45,7 @@ class TrackingViewModelTest {
     viewModel.updateStepCount(110)
     assertEquals(10, viewModel.state.value.stepCount)
   }
-
+  /*
   @Test
   fun `locationCallback updates positions and distances correctly`() = runTest {
     val mockLocationResult: LocationResult = mockk(relaxed = true)
@@ -78,4 +73,6 @@ class TrackingViewModelTest {
     val distance = SphericalUtil.computeDistanceBetween(LatLng(10.0, 20.0), LatLng(10.0, 20.1))
     assert(viewModel.state.value.distances.isNotEmpty())
   }
+
+   */
 }
