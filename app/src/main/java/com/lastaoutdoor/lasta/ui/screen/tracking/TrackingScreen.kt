@@ -71,7 +71,7 @@ fun TrackingScreen(
               initialZoom,
               trackingState.positions.map { position -> LatLng(position.lat, position.lon) },
               Modifier.weight(0.4f))
-          TrackingInfo(Modifier.weight(0.5f), trackingState)
+          TrackingInfo(Modifier.weight(0.5f), trackingState, hours, minutes, seconds)
           Row(
               modifier = Modifier.weight(0.1f).fillMaxSize(),
               verticalAlignment = Alignment.Top,

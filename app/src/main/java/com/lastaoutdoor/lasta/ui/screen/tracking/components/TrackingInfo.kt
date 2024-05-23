@@ -17,7 +17,13 @@ import com.lastaoutdoor.lasta.utils.createColorString
 import com.lastaoutdoor.lasta.viewmodel.TrackingState
 
 @Composable
-fun TrackingInfo(modifier: Modifier = Modifier, trackingState: TrackingState) {
+fun TrackingInfo(
+    modifier: Modifier = Modifier,
+    trackingState: TrackingState,
+    hours: String,
+    minutes: String,
+    seconds: String
+) {
 
   Column(
       modifier = modifier.fillMaxSize().padding(16.dp),
@@ -33,7 +39,7 @@ fun TrackingInfo(modifier: Modifier = Modifier, trackingState: TrackingState) {
                   modifier = Modifier.weight(0.8f).fillMaxSize(),
                   horizontalArrangement = Arrangement.Center,
                   verticalAlignment = Alignment.CenterVertically) {
-                    Text("00:16:54", style = MaterialTheme.typography.displayLarge)
+                    Text("$hours:$minutes:$seconds", style = MaterialTheme.typography.displayLarge)
                   }
             }
         Row(

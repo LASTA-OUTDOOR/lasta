@@ -23,13 +23,13 @@ object NotificationModule {
   @Provides
   fun provideNotificationBuilder(@ApplicationContext context: Context): NotificationCompat.Builder {
     return NotificationCompat.Builder(context, Constants.NOTIFICATION_CHANNEL_ID)
-      .setContentTitle("Stopwatch")
-      .setContentText("00:00:00")
-      .setSmallIcon(R.drawable.app_logo)
-      .setOngoing(true)
-      .addAction(0, "Stop", StopwatchServiceHelper.stopPendingIntent(context))
-      .addAction(0, "Cancel", StopwatchServiceHelper.cancelPendingIntent(context))
-      .setContentIntent(StopwatchServiceHelper.clickPendingIntent(context))
+        .setContentTitle("Stopwatch")
+        .setContentText("00:00:00")
+        .setSmallIcon(R.drawable.app_logo)
+        .setOngoing(true)
+        .addAction(0, "Stop", StopwatchServiceHelper.stopPendingIntent(context))
+        .addAction(0, "Cancel", StopwatchServiceHelper.cancelPendingIntent(context))
+        .setContentIntent(StopwatchServiceHelper.clickPendingIntent(context))
   }
 
   @ServiceScoped
