@@ -173,17 +173,21 @@ constructor(
   fun fetchSuggestions(query: String) {
     viewModelScope.launch {
       val suggestions =
-          when (val response = radarRepository.getSuggestions(query)) {
-            is Response.Failure -> {
-              errorToast.showToast(ErrorType.ERROR_RADAR_API)
-              return@launch
+          if (query.isNotEmpty()) {
+            when (val response = radarRepository.getSuggestions(query)) {
+              is Response.Failure -> {
+                errorToast.showToast(ErrorType.ERROR_RADAR_API)
+                return@launch
+              }
+              is Response.Success -> {
+                response.data ?: emptyList()
+              }
+              is Response.Loading -> {
+                emptyList<RadarSuggestion>()
+              }
             }
-            is Response.Success -> {
-              response.data ?: emptyList()
-            }
-            is Response.Loading -> {
-              emptyList<RadarSuggestion>()
-            }
+          } else {
+            emptyList()
           }
       _state.value =
           _state.value.copy(
