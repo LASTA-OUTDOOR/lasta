@@ -32,7 +32,6 @@ class TrackingViewModelTest {
 
   @After
   fun tearDown() {
-    viewModel.viewModelScope.cancel()
     clearAllMocks()
   }
 
