@@ -16,16 +16,27 @@ interface ActivityDao {
 
   @Query("SELECT * FROM activity WHERE activityId = :id")
   suspend fun getActivity(id: String): Activity
+
   @Upsert suspend fun insertClimbingActivity(a: ClimbingUserActivity)
+
   @Upsert suspend fun insertHikingActivity(a: HikingUserActivity)
+
   @Upsert suspend fun insertBikingActivity(a: BikingUserActivity)
-  @Upsert suspend fun insertUserPreferences(u : UserPreferences)
-  @Query("SELECT * from USERPREFERENCES") suspend fun getUserPreferences() : List<UserPreferences>
+
+  @Upsert suspend fun insertUserPreferences(u: UserPreferences)
+
+  @Query("SELECT * from USERPREFERENCES") suspend fun getUserPreferences(): List<UserPreferences>
+
   @Query("SELECT * FROM activity") suspend fun getAllActivities(): List<Activity>
-  @Query("SELECT * FROM ClimbingUserActivity") suspend fun getClimbingActivities():List<ClimbingUserActivity>
-  @Query("SELECT * FROM HikingUserActivity") suspend fun getHikingActivities():List<HikingUserActivity>
-  @Query("SELECT * FROM BikingUserActivity") suspend fun getBikingActivities():List<BikingUserActivity>
+
+  @Query("SELECT * FROM ClimbingUserActivity")
+  suspend fun getClimbingActivities(): List<ClimbingUserActivity>
+
+  @Query("SELECT * FROM HikingUserActivity")
+  suspend fun getHikingActivities(): List<HikingUserActivity>
+
+  @Query("SELECT * FROM BikingUserActivity")
+  suspend fun getBikingActivities(): List<BikingUserActivity>
 
   @Delete suspend fun deleteActivity(a: Activity)
-
 }

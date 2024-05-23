@@ -3,7 +3,6 @@ package com.lastaoutdoor.lasta.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.lastaoutdoor.lasta.repository.app.ConnectivityRepository
-import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeAuthRepo
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeConnectivityviewRepo
@@ -30,7 +29,7 @@ class AuthViewModelTest {
   val oneTap: SignInClient = mockk()
   private lateinit var vm: AuthViewModel
   val errorToast = mockk<ErrorToast>()
-  val connectDb : ConnectivityRepository = FakeConnectivityviewRepo()
+  val connectDb: ConnectivityRepository = FakeConnectivityviewRepo()
 
   @ExperimentalCoroutinesApi
   @Before
@@ -38,7 +37,7 @@ class AuthViewModelTest {
 
     Dispatchers.setMain(testDispatcher)
     vm = AuthViewModel(db, userDB, oneTap, errorToast, connectDb)
-    //every { connectDb.connectionState } returns flowOf(ConnectionState.CONNECTED)
+    // every { connectDb.connectionState } returns flowOf(ConnectionState.CONNECTED)
     every { errorToast.showToast(any()) } returns Unit
   }
 

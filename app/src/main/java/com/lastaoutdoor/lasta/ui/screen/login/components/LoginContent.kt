@@ -44,20 +44,14 @@ import com.lastaoutdoor.lasta.utils.ConnectionState
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun LoginContent(onLoginClick: () -> Unit, isConnected : ConnectionState) {
+fun LoginContent(onLoginClick: () -> Unit, isConnected: ConnectionState) {
   Column(
-      modifier = Modifier
-          .fillMaxSize()
-          .padding(15.dp)
-          .testTag("loginScreen"),
+      modifier = Modifier.fillMaxSize().padding(15.dp).testTag("loginScreen"),
       verticalArrangement = Arrangement.SpaceAround,
       horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = LocalContext.current.getString(R.string.app_name_uppercase),
-            modifier = Modifier
-                .width(256.dp)
-                .height(65.dp)
-                .testTag("appName"),
+            modifier = Modifier.width(256.dp).height(65.dp).testTag("appName"),
             style =
                 TextStyle(
                     fontSize = 57.sp,
@@ -70,10 +64,10 @@ fun LoginContent(onLoginClick: () -> Unit, isConnected : ConnectionState) {
 
         LoginPager()
 
-        if(isConnected == ConnectionState.CONNECTED){
-            OnlineButton(onLoginClick)
-        }else{
-            OfflineText()
+        if (isConnected == ConnectionState.CONNECTED) {
+          OnlineButton(onLoginClick)
+        } else {
+          OfflineText()
         }
       }
 }
@@ -93,13 +87,9 @@ fun LoginPager() {
         // pages of content
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier
-                .testTag("HorizontalPager")
-                .fillMaxHeight(0.9f)) { page ->
+            modifier = Modifier.testTag("HorizontalPager").fillMaxHeight(0.9f)) { page ->
               Column(
-                  modifier = Modifier
-                      .fillMaxWidth()
-                      .fillMaxHeight(),
+                  modifier = Modifier.fillMaxWidth().fillMaxHeight(),
                   horizontalAlignment = Alignment.CenterHorizontally,
                   verticalArrangement = Arrangement.SpaceEvenly) {
                     PagerContent(page = page)
@@ -120,10 +110,7 @@ private fun HorizontalPagerIndicator(
   Row(
       horizontalArrangement = Arrangement.Center,
       verticalAlignment = Alignment.CenterVertically,
-      modifier = Modifier
-          .wrapContentSize()
-          .height(30.dp)
-          .testTag("pageIndicator")) {
+      modifier = Modifier.wrapContentSize().height(30.dp).testTag("pageIndicator")) {
         val indicatorColor = MaterialTheme.colorScheme.primary
 
         repeat(pageCount) { page ->
@@ -169,10 +156,7 @@ fun FirstPage() {
   Image(
       painter = painterResource(id = R.drawable.app_logo),
       contentDescription = "App Logo",
-      modifier = Modifier
-          .size(240.dp)
-          .clip(CircleShape)
-          .testTag("loginLogo"),
+      modifier = Modifier.size(240.dp).clip(CircleShape).testTag("loginLogo"),
       contentScale = ContentScale.Crop)
   Text(
       text = LocalContext.current.getString(R.string.login_swipe_text),
@@ -185,17 +169,13 @@ fun SecondPage() {
   // Second page : Short description and explain activities
   Text(
       text = LocalContext.current.getString(R.string.login_activities_text),
-      Modifier
-          .padding(10.dp)
-          .testTag("activityText"),
+      Modifier.padding(10.dp).testTag("activityText"),
       textAlign = TextAlign.Center)
 
   Image(
       painter = painterResource(id = R.drawable.activities_example),
       contentDescription = "App Logo",
-      modifier = Modifier
-          .size(350.dp)
-          .testTag("activitiesExample"),
+      modifier = Modifier.size(350.dp).testTag("activitiesExample"),
       contentScale = ContentScale.Fit)
 }
 
@@ -206,15 +186,11 @@ fun ThirdPage() {
   Icon(
       Icons.Filled.AccountBox,
       contentDescription = "Community Icon",
-      modifier = Modifier
-          .fillMaxSize(0.6f)
-          .testTag("CommunityIcon"),
+      modifier = Modifier.fillMaxSize(0.6f).testTag("CommunityIcon"),
       tint = MaterialTheme.colorScheme.onBackground)
   Text(
       text = LocalContext.current.getString(R.string.login_friends_text),
-      Modifier
-          .padding(10.dp)
-          .testTag("CommunityText"),
+      Modifier.padding(10.dp).testTag("CommunityText"),
       textAlign = TextAlign.Center)
 }
 
@@ -224,43 +200,39 @@ fun FourthPage() {
   Image(
       painter = painterResource(id = R.drawable.handshake),
       contentDescription = "App Logo",
-      modifier = Modifier
-          .size(250.dp)
-          .testTag("handshakeImage"),
+      modifier = Modifier.size(250.dp).testTag("handshakeImage"),
       contentScale = ContentScale.Fit,
       // we want it to be colored with the theme
       colorFilter =
           androidx.compose.ui.graphics.ColorFilter.tint(MaterialTheme.colorScheme.onBackground))
   Text(
       text = LocalContext.current.getString(R.string.login_free_text),
-      Modifier
-          .padding(10.dp)
-          .testTag("JoinText"),
+      Modifier.padding(10.dp).testTag("JoinText"),
       textAlign = TextAlign.Center)
 }
+
 @Composable
-fun OnlineButton(onLoginClick: () -> Unit){
-    Button(
-        onClick = { onLoginClick() },
-        shape = RoundedCornerShape(30.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-        border = BorderStroke(1.dp, Color.Gray),
-        modifier = Modifier.testTag("loginButton"),
-        content = {
-            Image(
-                painter = painterResource(id = R.drawable.google_logo),
-                contentDescription = "Google Logo",
-                modifier = Modifier.size(24.dp))
-            Text(
-                text = LocalContext.current.getString(R.string.sign_in_google),
-                modifier = Modifier.padding(6.dp),
-                color = Color.Black,
-                fontSize = 14.sp)
-        })
-}
-@Composable
-fun OfflineText(){
-    Text(LocalContext.current.getString(R.string.offline_text), textAlign = TextAlign.Center)
+fun OnlineButton(onLoginClick: () -> Unit) {
+  Button(
+      onClick = { onLoginClick() },
+      shape = RoundedCornerShape(30.dp),
+      colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+      border = BorderStroke(1.dp, Color.Gray),
+      modifier = Modifier.testTag("loginButton"),
+      content = {
+        Image(
+            painter = painterResource(id = R.drawable.google_logo),
+            contentDescription = "Google Logo",
+            modifier = Modifier.size(24.dp))
+        Text(
+            text = LocalContext.current.getString(R.string.sign_in_google),
+            modifier = Modifier.padding(6.dp),
+            color = Color.Black,
+            fontSize = 14.sp)
+      })
 }
 
-
+@Composable
+fun OfflineText() {
+  Text(LocalContext.current.getString(R.string.offline_text), textAlign = TextAlign.Center)
+}

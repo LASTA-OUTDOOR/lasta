@@ -17,27 +17,26 @@ import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.utils.ErrorType
 import com.lastaoutdoor.lasta.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 @HiltViewModel
 class AuthViewModel
 @Inject
 constructor(
-  private val authRepo: AuthRepository,
-  private val userDBRepository: UserDBRepository,
-  val oneTapClient: SignInClient,
-  private val errorToast: ErrorToast,
-  private val connectivityRepositoryImpl: ConnectivityRepository,
-
-  ) : ViewModel() {
+    private val authRepo: AuthRepository,
+    private val userDBRepository: UserDBRepository,
+    val oneTapClient: SignInClient,
+    private val errorToast: ErrorToast,
+    private val connectivityRepositoryImpl: ConnectivityRepository,
+) : ViewModel() {
   val isConnected =
-   connectivityRepositoryImpl.connectionState.stateIn(
-      initialValue = ConnectionState.OFFLINE,
-      scope = viewModelScope,
-      started = SharingStarted.WhileSubscribed(5000))
+      connectivityRepositoryImpl.connectionState.stateIn(
+          initialValue = ConnectionState.OFFLINE,
+          scope = viewModelScope,
+          started = SharingStarted.WhileSubscribed(5000))
   var beginSignInResult: BeginSignInResult? by mutableStateOf(null)
   var user: UserModel? by mutableStateOf(null)
   var signedOut: Boolean by mutableStateOf(false)

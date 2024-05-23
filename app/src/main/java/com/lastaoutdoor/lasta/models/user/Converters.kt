@@ -94,12 +94,14 @@ class Converters {
     val gson = Gson()
     return gson.toJson(u)
   }
+
   @TypeConverter
-  fun fromDate(d: Date): String{
+  fun fromDate(d: Date): String {
     return Gson().toJson(d)
   }
+
   @TypeConverter
-  fun toDate(s : String): Date{
+  fun toDate(s: String): Date {
     return Gson().fromJson(s, TypeToken.get(Date::class.java))
   }
 }

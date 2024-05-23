@@ -5,7 +5,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -30,43 +29,42 @@ fun LoginScreen(
     updatePreferencesOnLogin: (UserModel) -> Unit,
     navigateToSetup: () -> Unit,
     navigateToMain: () -> Unit,
-    isConnected : ConnectionState
-
+    isConnected: ConnectionState
 ) {
 
-    val launcher =
-          rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
-              if (result.resultCode == Activity.RESULT_OK) {
-                  try {
-                      val credentials = oneTapClient.getSignInCredentialFromIntent(result.data)
-                      val googleIdToken = credentials.googleIdToken
-                      val googleCredentials = GoogleAuthProvider.getCredential(googleIdToken, null)
-                      finishGoogleSignIn(googleCredentials)
-                  } catch (it: ApiException) {
-                      print(it)
-                  }
-              }
+  val launcher =
+      rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
+          result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+          try {
+            val credentials = oneTapClient.getSignInCredentialFromIntent(result.data)
+            val googleIdToken = credentials.googleIdToken
+            val googleCredentials = GoogleAuthProvider.getCredential(googleIdToken, null)
+            finishGoogleSignIn(googleCredentials)
+          } catch (it: ApiException) {
+            print(it)
           }
-
-      LaunchedEffect(key1 = beginSignInResult) {
-          beginSignInResult?.let {
-              val intent = IntentSenderRequest.Builder(it.pendingIntent.intentSender).build()
-              launcher.launch(intent)
-          }
+        }
       }
 
-      LaunchedEffect(key1 = user) {
-          user?.let {
-              updatePreferencesOnLogin(it)
-              if (isSignUp) {
-                  navigateToSetup()
-              } else {
-                  navigateToMain()
-              }
-          }
-      }
-      Spacer(modifier = Modifier.testTag("loginScreenMain"))
-
-      LoginContent(onLoginClick = { startGoogleSignIn() }, isConnected)
+  LaunchedEffect(key1 = beginSignInResult) {
+    beginSignInResult?.let {
+      val intent = IntentSenderRequest.Builder(it.pendingIntent.intentSender).build()
+      launcher.launch(intent)
+    }
   }
 
+  LaunchedEffect(key1 = user) {
+    user?.let {
+      updatePreferencesOnLogin(it)
+      if (isSignUp) {
+        navigateToSetup()
+      } else {
+        navigateToMain()
+      }
+    }
+  }
+  Spacer(modifier = Modifier.testTag("loginScreenMain"))
+
+  LoginContent(onLoginClick = { startGoogleSignIn() }, isConnected)
+}

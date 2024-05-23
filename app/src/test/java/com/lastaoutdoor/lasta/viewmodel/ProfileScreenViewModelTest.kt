@@ -37,8 +37,9 @@ class ProfileScreenViewModelTest {
   private val prefDB = FakePreferencesRepository()
   private val userActDb = FakeUserActivityRepo()
   private val connec = FakeConnectivityviewRepo()
-  private val dao : ActivityDao = mockk()
+  private val dao: ActivityDao = mockk()
   private val off = FakeActivityDatabaseImpl(dao)
+
   @Before
   fun setUp() {
     viewModel =
@@ -48,7 +49,8 @@ class ProfileScreenViewModelTest {
             userDBRepo = userDb,
             preferences = prefDB,
             errorToast = errorToast,
-         offlineActivityDB = off, connectivityRepositoryImpl =  connec)
+            offlineActivityDB = off,
+            connectivityRepositoryImpl = connec)
 
     every { errorToast.showToast(ErrorType.ERROR_DATABASE) } returns Unit
   }

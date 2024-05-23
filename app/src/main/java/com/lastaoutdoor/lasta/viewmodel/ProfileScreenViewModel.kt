@@ -47,9 +47,7 @@ constructor(
     private val errorToast: ErrorToast,
     private val connectivityRepositoryImpl: ConnectivityRepository,
     private val offlineActivityDB: ActivityDatabaseImpl,
-
-
-    ) : ViewModel() {
+) : ViewModel() {
 
   /** The current user. */
   private val _user = MutableStateFlow(UserModel(""))
@@ -75,10 +73,10 @@ constructor(
   private val _sport = MutableStateFlow(ActivityType.CLIMBING)
   val sport = _sport
   private val _isConnected =
-     connectivityRepositoryImpl.connectionState.stateIn(
-            initialValue = ConnectionState.OFFLINE,
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000))
+      connectivityRepositoryImpl.connectionState.stateIn(
+          initialValue = ConnectionState.OFFLINE,
+          scope = viewModelScope,
+          started = SharingStarted.WhileSubscribed(5000))
 
   /** Initializes the ViewModel by fetching the current user and user activities. */
   init {
@@ -143,40 +141,38 @@ constructor(
 
   private fun fetchUserSingeSportActivities(activityType: ActivityType) {
     viewModelScope.launch {
-      _isConnected.collect{cs ->
-          if(cs == ConnectionState.CONNECTED){
-              try {
-                  when (activityType) {
-                      ActivityType.CLIMBING ->
-                          _activitiesCache.value =
-                              repository.getUserClimbingActivities(_user.value.userId).sortedBy {
-                                  it.timeStarted
-                              }
-                      ActivityType.HIKING ->
-                          _activitiesCache.value =
-                              repository.getUserHikingActivities(_user.value.userId).sortedBy { it.timeStarted }
-                      ActivityType.BIKING ->
-                          _activitiesCache.value =
-                              repository.getUserBikingActivities(_user.value.userId).sortedBy { it.timeStarted }
-                  }
-              } catch (e: Exception) {
-                  errorToast.showToast(ErrorType.ERROR_DATABASE)
-              }
-          }else{
-              when (activityType) {
-                  ActivityType.CLIMBING ->
-                      _activitiesCache.value = offlineActivityDB.getClimbingActivities()
-
-                  ActivityType.HIKING ->
-                      _activitiesCache.value = offlineActivityDB.getHikingActivities()
-
-                  ActivityType.BIKING ->
-                      _activitiesCache.value = offlineActivityDB.getBikingActivities()
-
-              }
+      _isConnected.collect { cs ->
+        if (cs == ConnectionState.CONNECTED) {
+          try {
+            when (activityType) {
+              ActivityType.CLIMBING ->
+                  _activitiesCache.value =
+                      repository.getUserClimbingActivities(_user.value.userId).sortedBy {
+                        it.timeStarted
+                      }
+              ActivityType.HIKING ->
+                  _activitiesCache.value =
+                      repository.getUserHikingActivities(_user.value.userId).sortedBy {
+                        it.timeStarted
+                      }
+              ActivityType.BIKING ->
+                  _activitiesCache.value =
+                      repository.getUserBikingActivities(_user.value.userId).sortedBy {
+                        it.timeStarted
+                      }
+            }
+          } catch (e: Exception) {
+            errorToast.showToast(ErrorType.ERROR_DATABASE)
           }
-          applyFilters()
-
+        } else {
+          when (activityType) {
+            ActivityType.CLIMBING ->
+                _activitiesCache.value = offlineActivityDB.getClimbingActivities()
+            ActivityType.HIKING -> _activitiesCache.value = offlineActivityDB.getHikingActivities()
+            ActivityType.BIKING -> _activitiesCache.value = offlineActivityDB.getBikingActivities()
+          }
+        }
+        applyFilters()
       }
       // Call surrounded by try-catch block to make handle exceptions caused by database
 
