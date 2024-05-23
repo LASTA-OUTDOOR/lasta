@@ -329,4 +329,12 @@ constructor(
                 "timestamp" to FieldValue.serverTimestamp()))
         .await()
   }
+
+  override suspend fun deleteAllConversations(userId: String) {
+    val conversationsQuery =
+        conversationCollection.whereArrayContains("members", userId).get().await()
+    for (conversation in conversationsQuery.documents) {
+      conversation.reference.delete().await()
+    }
+  }
 }
