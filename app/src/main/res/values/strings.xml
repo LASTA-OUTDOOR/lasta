@@ -61,6 +61,9 @@ Sign in to join our fantastic sports addict community!</string>
     <!--More Info-->
     <string name = "start">Start</string>
     <string name = "on_map">View on Map</string>
+    <string name = "share_options">Share</string>
+    <string name = "share_in_app">Share in app</string>
+    <string name = "share_outside">Share outside the app</string>
     <!--Profile-->
     <string name = "climbing">Climbing</string>
     <string name = "hiking">Hiking</string>
@@ -187,7 +190,7 @@ Sign in to join our fantastic sports addict community!</string>
     <string name="step_count">Step Count</string>
     <string name="step_count_unavailable">Step Counter Not Available</string>
     <string name="step_count_unsupported">This device does not support step counting.</string>
-    <string name="share_base_url" translatable="false">https://lasta.jerem.ch/activity/</string>
+    <string name="share_base_url" translatable="false">https://github.com/LASTA-OUTDOOR/lasta/releases/tag/v0.3.1</string>
     <string name="new_friend_request_notif">New Friend Request</string>
     <string name="friend_request_notif">wants to be your friend!</string>
     <string name="friend_request_accepted_notif">accepted your friend request!</string>

@@ -91,7 +91,7 @@ private fun FriendLazyColumn(
 
 // Displays the friend information in a row (profile picture + name)
 @Composable
-private fun FriendRow(friend: UserModel) {
+fun FriendRow(friend: UserModel) {
   Row(
       modifier = Modifier.fillMaxWidth().padding(8.dp),
       verticalAlignment = Alignment.CenterVertically,

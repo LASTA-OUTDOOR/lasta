@@ -143,6 +143,9 @@
     <string name = "biking_newcomer">Novice du cyclisme</string>
     <string name ="biking_amateur">Amateur de cyclisme</string>
     <string name ="biking_expert">Expert en cyclisme</string>
+    <string name = "share_options">Partager</string>
+    <string name = "share_in_app">Partager dans l\'application</string>
+    <string name = "share_outside">Partager en dehors de l\'application</string>
     <string name="login_swipe_text">Glisse pour plus d\'infos…</string>
     <string name="login_activities_text">Lasta vous permet de trouver des activités de plein air à proximité et de suivre vos performances.</string>
     <string name="login_friends_text">Vous êtes plutôt un sportif social ? Nous avons ce qu\'il vous faut ! Invitez et ajoutez vos amis dans l\'application et regardez leurs dernières activités.</string>
