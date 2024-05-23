@@ -230,14 +230,19 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
         arguments = listOf(navArgument("userId") { type = NavType.StringType })) { entry ->
           val conversationViewModel: ConversationViewModel = hiltViewModel(entry)
           conversationViewModel.updateFriendUserId(entry.arguments?.getString("userId") ?: "")
+          val moreInfoScreenViewModel: MoreInfoScreenViewModel =
+              entry.sharedViewModel(navController)
           val conversation = conversationViewModel.conversation
           ConversationScreen(
               conversation,
               conversationViewModel::updateConversation,
+              moreInfoScreenViewModel::changeActivityToDisplayByID,
               conversationViewModel.user.value,
               conversationViewModel.friend.value,
               conversationViewModel::send,
-              navController::navigateUp)
+              navController::navigateUp) {
+                navController.navigate(DestinationRoute.MoreInfo.route)
+              }
         }
 
     // Notifications Screen

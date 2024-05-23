@@ -45,10 +45,12 @@ import com.lastaoutdoor.lasta.ui.screen.social.components.ProfilePicture
 fun ConversationScreen(
     conversationModel: ConversationModel?,
     refresh: () -> Unit,
+    changeActivityToDisplay: (String) -> Unit,
     user: UserModel,
     friend: UserModel,
     send: (String) -> Unit,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    navigateToMoreInfo: () -> Unit
 ) {
   Column {
     if (conversationModel == null || conversationModel.members.isEmpty()) {
