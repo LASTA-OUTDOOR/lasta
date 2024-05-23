@@ -12,13 +12,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.lastaoutdoor.lasta.ui.theme.Grey
 import com.lastaoutdoor.lasta.utils.createColorString
 import com.lastaoutdoor.lasta.viewmodel.TrackingState
 
 @Composable
 fun TrackingInfo(modifier: Modifier = Modifier, trackingState: TrackingState) {
-
-  val greyColor = Color(0xFFB6B6B6)
 
   Column(
       modifier = modifier.fillMaxSize().padding(16.dp),
@@ -28,7 +27,7 @@ fun TrackingInfo(modifier: Modifier = Modifier, trackingState: TrackingState) {
             verticalArrangement = Arrangement.SpaceBetween) {
               Text(
                   createColorString(
-                      "Duration ", "/ time", MaterialTheme.colorScheme.primary, greyColor),
+                      "Duration ", "/ time", MaterialTheme.colorScheme.primary, Grey),
                   style = MaterialTheme.typography.bodySmall,
                   modifier = Modifier.weight(0.2f))
               Row(
@@ -46,13 +45,13 @@ fun TrackingInfo(modifier: Modifier = Modifier, trackingState: TrackingState) {
                   first = "Distance ",
                   second = "/ done",
                   info = "3.40 Km",
-                  greyColor = greyColor)
+                  greyColor = Grey)
               InfoColumn(
                   modifier = Modifier.weight(0.5f),
                   first = "Distance ",
                   second = "/ remaining",
                   info = "2.60 Km",
-                  greyColor = greyColor)
+                  greyColor = Grey)
             }
         Row(
             modifier = Modifier.weight(0.25f).fillMaxSize(),
@@ -61,14 +60,14 @@ fun TrackingInfo(modifier: Modifier = Modifier, trackingState: TrackingState) {
                   modifier = Modifier.weight(0.5f),
                   first = "Avg. pace",
                   second = " min/km",
-                  info = "5:49",
-                  greyColor = greyColor)
+                  info = "05:49",
+                  greyColor = Grey)
               InfoColumn(
                   modifier = Modifier.weight(0.5f),
                   first = "Avg. speed",
                   second = " km/h",
                   info = "10.3",
-                  greyColor = greyColor)
+                  greyColor = Grey)
             }
         Row(
             modifier = Modifier.weight(0.25f).fillMaxSize(),
@@ -78,13 +77,13 @@ fun TrackingInfo(modifier: Modifier = Modifier, trackingState: TrackingState) {
                   first = "Steps ",
                   second = "/ total",
                   info = trackingState.stepCount.toString(),
-                  greyColor = greyColor)
+                  greyColor = Grey)
               InfoColumn(
                   modifier = Modifier.weight(0.5f),
                   first = "Elevation",
                   second = " gain",
                   info = "23 m",
-                  greyColor = greyColor)
+                  greyColor = Grey)
             }
       }
 }
@@ -102,10 +101,9 @@ fun InfoColumn(
         createColorString(first, second, MaterialTheme.colorScheme.primary, greyColor),
         style = MaterialTheme.typography.bodySmall,
         modifier = Modifier.weight(0.2f))
-    Row(
-        modifier = Modifier.weight(0.8f).fillMaxSize().padding(top = 12.dp),
-        horizontalArrangement = Arrangement.Center) {
-          Text(info, style = MaterialTheme.typography.displayMedium)
-        }
+    Text(
+        info,
+        modifier = Modifier.weight(0.8f).fillMaxSize().padding(vertical = 12.dp, horizontal = 20.dp),
+        style = MaterialTheme.typography.displayMedium)
   }
 }
