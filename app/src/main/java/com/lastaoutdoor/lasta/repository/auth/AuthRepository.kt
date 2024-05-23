@@ -15,4 +15,6 @@ interface AuthRepository {
   suspend fun finishGoogleSignIn(googleCredential: AuthCredential): Flow<Response<UserModel>>
 
   suspend fun signOut(): Flow<Response<Boolean>>
+
+  suspend fun deleteAccount(): Flow<Response<Boolean>>
 }

@@ -244,4 +244,11 @@ class UserActivitiesDBRepositoryImplTest {
     exp.add(bikingUserActivity)
     assertUserActivitiesEqualWithoutDates(exp, result)
   }
+
+  @Test
+  fun `deleteUserActivities works as intended`() = runTest {
+    every { documentReference.delete() } returns setTask
+    coEvery { setTask.await() } returns mockk()
+    userActivitiesDB.deleteUserActivities("randomid")
+  }
 }

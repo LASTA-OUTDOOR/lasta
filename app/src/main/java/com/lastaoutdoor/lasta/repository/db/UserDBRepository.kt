@@ -52,4 +52,11 @@ interface UserDBRepository {
    * @param activityId the activity ID to remove from the favorite
    */
   suspend fun removeFavorite(userId: String, activityId: String)
+
+  /**
+   * Delete the user data from the database.
+   *
+   * @param userId the user ID to delete the data
+   */
+  suspend fun deleteUser(userId: String)
 }
