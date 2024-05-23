@@ -18,4 +18,10 @@ class FakeTokenDBRepo : TokenDBRepository {
     }
     return "fakeToken"
   }
+
+  override fun deleteUserToken(userId: String) {
+    if (shouldThrowException) {
+      throw Exception("FakeTokenDBRepo: deleteUserToken failed")
+    }
+  }
 }

@@ -251,4 +251,24 @@ class AuthRepositoryImplTest {
       }
     }
   }
+
+  @Test
+  fun `deleteAccount works emits loading then success`() = runTest {
+    var counter = 0
+    every { oneTapClient.signOut() } returns signOutTask
+    every { auth.signOut() } returns Unit
+    every { auth.currentUser } returns mockk()
+    every { auth.currentUser?.delete() } returns signOutTask
+    coEvery { userDBRepo.deleteUser(any()) } returns Unit
+    authRepo.deleteAccount().collect {
+      if (counter == 0) {
+        assert(it is Response.Loading)
+        counter++
+      } else {
+        assert(it is Response.Success)
+        val result = it as Response.Success
+        assert(result.data == true)
+      }
+    }
+  }
 }

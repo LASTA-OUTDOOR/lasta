@@ -89,4 +89,11 @@ interface SocialDBRepository {
    * @param message the message to send
    */
   suspend fun sendMessage(userId: String, friendUserId: String, message: String)
+
+  /**
+   * Deletes all the conversations of the user with the given ID.
+   *
+   * @param userId the ID of the user
+   */
+  suspend fun deleteAllConversations(userId: String)
 }
