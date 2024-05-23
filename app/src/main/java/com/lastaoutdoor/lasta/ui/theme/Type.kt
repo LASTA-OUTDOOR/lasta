@@ -68,17 +68,17 @@ val Typography =
         displayLarge =
             TextStyle(
                 fontFamily = customFontFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 32.sp,
+                fontWeight = FontWeight.Bold,
+                fontSize = 40.sp,
                 lineHeight = 40.sp,
-                letterSpacing = 0.sp),
+                letterSpacing = 2.sp),
         displayMedium =
             TextStyle(
                 fontFamily = customFontFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                fontSize = 32.sp,
                 lineHeight = 32.sp,
-                letterSpacing = 0.sp),
+                letterSpacing = 1.sp),
         displaySmall =
             TextStyle(
                 fontFamily = customFontFamily,
