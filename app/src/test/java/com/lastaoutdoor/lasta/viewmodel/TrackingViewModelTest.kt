@@ -3,8 +3,6 @@ package com.lastaoutdoor.lasta.viewmodel
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import com.google.android.gms.location.LocationResult
-import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.SphericalUtil
 import com.lastaoutdoor.lasta.models.api.Position
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -75,7 +73,6 @@ class TrackingViewModelTest {
     assertEquals(2, viewModel.state.value.positions.size)
     assertEquals(Position(10.0, 20.1), viewModel.state.value.positions.last())
     assertEquals(1, viewModel.state.value.distances.size)
-    val distance = SphericalUtil.computeDistanceBetween(LatLng(10.0, 20.0), LatLng(10.0, 20.1))
     assert(viewModel.state.value.distances.isNotEmpty())
   }
 }
