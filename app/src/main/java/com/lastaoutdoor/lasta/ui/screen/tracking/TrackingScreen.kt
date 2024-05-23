@@ -3,19 +3,33 @@ package com.lastaoutdoor.lasta.ui.screen.tracking
 import android.hardware.Sensor
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.maps.model.LatLng
+import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.ui.screen.tracking.components.TrackingInfo
 import com.lastaoutdoor.lasta.ui.screen.tracking.components.TrackingMap
 import com.lastaoutdoor.lasta.viewmodel.TrackingState
@@ -48,7 +62,17 @@ fun TrackingScreen(
               modifier = Modifier.weight(0.1f).fillMaxSize(),
               verticalAlignment = Alignment.Top,
               horizontalArrangement = Arrangement.Center) {
-                Text("Play")
+                IconButton(
+                    onClick = {},
+                    modifier =
+                        Modifier.size(64.dp)
+                            .background(MaterialTheme.colorScheme.onBackground, CircleShape)) {
+                      Icon(
+                          imageVector = Icons.Default.PlayArrow,
+                          contentDescription = "Pause button",
+                          modifier = Modifier.size(56.dp),
+                        tint = MaterialTheme.colorScheme.background)
+                    }
               }
         }
   }
