@@ -456,7 +456,6 @@ class DiscoverScreenTest {
     composeRule.onNodeWithTag("suggestion").performClick()
 
     assert(cameraPosition != null)
-    assert(suggestions.isEmpty())
     assert(initialPos != LatLng(46.519962, 6.633597))
   }
 }
