@@ -40,6 +40,7 @@ constructor(
   val weather: LiveData<WeatherResponse> = _weather
 
   private val _weatherForecast = MutableLiveData<WeatherForecastResponse>()
+  val weatherForecast: LiveData<WeatherForecastResponse> = _weatherForecast
 
   init {
     fetchWeatherWithUserLoc()

@@ -31,8 +31,6 @@ import com.lastaoutdoor.lasta.data.api.weather.getWeatherIconFromId
 import com.lastaoutdoor.lasta.data.api.weather.kelvinToCelsius
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
 
-private const val KELVIN_CONST = 273.15
-
 /**
  * Complete weather report for more info screen. The boolean is used to toggle the wind speed
  * display

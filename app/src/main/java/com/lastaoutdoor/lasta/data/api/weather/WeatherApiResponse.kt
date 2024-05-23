@@ -3,6 +3,8 @@ package com.lastaoutdoor.lasta.data.api.weather
 import com.google.gson.annotations.SerializedName
 import java.math.RoundingMode
 
+private const val KELVIN_CONST = 273.15
+
 data class WeatherResponse(
     @SerializedName("name") val name: String,
     @SerializedName("main") val main: Main,
@@ -39,5 +41,5 @@ data class MainForecast(
 
 // helper function to convert kelvin to celsius, rounded to two decimals
 fun kelvinToCelsius(kelvin: Double): Double {
-  return (kelvin - 273.15).toBigDecimal().setScale(1, RoundingMode.UP).toDouble()
+  return (kelvin - KELVIN_CONST).toBigDecimal().setScale(1, RoundingMode.UP).toDouble()
 }
