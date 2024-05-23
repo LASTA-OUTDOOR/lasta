@@ -3,8 +3,11 @@ package com.lastaoutdoor.lasta.viewmodel
 import com.lastaoutdoor.lasta.models.user.ClimbingUserActivity
 import com.lastaoutdoor.lasta.models.user.UserActivity
 import com.lastaoutdoor.lasta.models.user.UserModel
+import com.lastaoutdoor.lasta.repository.offline.ActivityDao
 import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.utils.ErrorType
+import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivityDatabaseImpl
+import com.lastaoutdoor.lasta.viewmodel.repo.FakeConnectivityviewRepo
 import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserActivityRepo
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserDB
@@ -33,7 +36,9 @@ class ProfileScreenViewModelTest {
   private val userDb = FakeUserDB()
   private val prefDB = FakePreferencesRepository()
   private val userActDb = FakeUserActivityRepo()
-
+  private val connec = FakeConnectivityviewRepo()
+  private val dao : ActivityDao = mockk()
+  private val off = FakeActivityDatabaseImpl(dao)
   @Before
   fun setUp() {
     viewModel =
@@ -42,7 +47,8 @@ class ProfileScreenViewModelTest {
             timeProvider = tm,
             userDBRepo = userDb,
             preferences = prefDB,
-            errorToast = errorToast)
+            errorToast = errorToast,
+         offlineActivityDB = off, connectivityRepositoryImpl =  connec)
 
     every { errorToast.showToast(ErrorType.ERROR_DATABASE) } returns Unit
   }

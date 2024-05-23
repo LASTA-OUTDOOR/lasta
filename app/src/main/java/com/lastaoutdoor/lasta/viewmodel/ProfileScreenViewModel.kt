@@ -2,6 +2,7 @@ package com.lastaoutdoor.lasta.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lastaoutdoor.lasta.data.offline.ActivityDatabaseImpl
 import com.lastaoutdoor.lasta.data.time.TimeProvider
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.ClimbingUserActivity
@@ -45,6 +46,8 @@ constructor(
     private val userDBRepo: UserDBRepository,
     private val errorToast: ErrorToast,
     private val connectivityRepositoryImpl: ConnectivityRepository,
+    private val offlineActivityDB: ActivityDatabaseImpl,
+
 
     ) : ViewModel() {
 
@@ -162,21 +165,21 @@ constructor(
           }else{
               when (activityType) {
                   ActivityType.CLIMBING ->
-                      _activitiesCache.value =
-                          //TODO
+                      _activitiesCache.value = offlineActivityDB.getClimbingActivities()
+
                   ActivityType.HIKING ->
-                      _activitiesCache.value =
-                              //TODO
+                      _activitiesCache.value = offlineActivityDB.getHikingActivities()
+
                   ActivityType.BIKING ->
-                      _activitiesCache.value =
-              //TODO
+                      _activitiesCache.value = offlineActivityDB.getBikingActivities()
+
               }
           }
+          applyFilters()
 
       }
       // Call surrounded by try-catch block to make handle exceptions caused by database
 
-      applyFilters()
     }
   }
 

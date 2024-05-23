@@ -20,7 +20,7 @@ interface ActivityDao {
   @Upsert suspend fun insertHikingActivity(a: HikingUserActivity)
   @Upsert suspend fun insertBikingActivity(a: BikingUserActivity)
   @Upsert suspend fun insertUserPreferences(u : UserPreferences)
-  @Query("SELECT * from USERPREFERENCES") suspend fun
+  @Query("SELECT * from USERPREFERENCES") suspend fun getUserPreferences() : List<UserPreferences>
   @Query("SELECT * FROM activity") suspend fun getAllActivities(): List<Activity>
   @Query("SELECT * FROM ClimbingUserActivity") suspend fun getClimbingActivities():List<ClimbingUserActivity>
   @Query("SELECT * FROM HikingUserActivity") suspend fun getHikingActivities():List<HikingUserActivity>
