@@ -129,7 +129,7 @@ fun SettingsHeader(setUpOrSetting: SettingsType) {
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(horizontal = 16.dp).testTag("settingsHeader"),
+            modifier = Modifier.padding(horizontal = 16.dp).testTag("settingsHeaderGeneral"),
             textAlign = TextAlign.Justify)
       } else if (setUpOrSetting == SettingsType.ACTIVITY) {
         Text(
@@ -137,7 +137,7 @@ fun SettingsHeader(setUpOrSetting: SettingsType) {
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(horizontal = 16.dp).testTag("settingsHeader"),
+            modifier = Modifier.padding(horizontal = 16.dp).testTag("settingsHeaderActivity"),
             textAlign = TextAlign.Justify)
       } else if (setUpOrSetting == SettingsType.ACCOUNT) {
         Text(
@@ -145,7 +145,7 @@ fun SettingsHeader(setUpOrSetting: SettingsType) {
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(horizontal = 16.dp).testTag("settingsHeader"),
+            modifier = Modifier.padding(horizontal = 16.dp).testTag("settingsHeaderAccount"),
             textAlign = TextAlign.Justify)
       }
     }

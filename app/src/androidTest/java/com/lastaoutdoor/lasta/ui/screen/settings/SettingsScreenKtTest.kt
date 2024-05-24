@@ -8,6 +8,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.Language
+import com.lastaoutdoor.lasta.models.user.SettingsType
 import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.ui.MainActivity
@@ -63,6 +64,19 @@ class SettingsScreenKtTest {
    *   composeRule.onNodeWithTag("settingsDeleteDialog").assertIsDisplayed()
    *   composeRule.onNodeWithTag("settingsDeleteButton").performClick() }
    */
+
+  // Test the text
+  @Test
+  fun settingsHeaderTest() {
+    composeRule.activity.setContent { SettingsHeader(SettingsType.GENERAL) }
+    composeRule.onNodeWithTag("settingsHeaderGeneral").assertIsDisplayed()
+
+    composeRule.activity.setContent { SettingsHeader(SettingsType.ACTIVITY) }
+    composeRule.onNodeWithTag("settingsHeaderActivity").assertIsDisplayed()
+
+    composeRule.activity.setContent { SettingsHeader(SettingsType.ACCOUNT) }
+    composeRule.onNodeWithTag("settingsHeaderAccount").assertIsDisplayed()
+  }
 
   // Test that top app bar is displayed
   @Test
