@@ -9,10 +9,8 @@ import androidx.compose.ui.unit.sp
 import com.lastaoutdoor.lasta.R
 
 // import montserrat font
-val customFontFamily =
-    FontFamily(
-        Font(R.font.montserratreg) // Replace "your_custom_font" with the name of your font file
-        )
+val customFontFamily = FontFamily(Font(R.font.montserratreg))
+val customFontFamilyItalic = FontFamily(Font(R.font.montserratitalic))
 // Set of Material typography styles to start with
 val Typography =
     Typography(

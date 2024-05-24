@@ -104,8 +104,12 @@ fun MessageCard(
                     modifier = Modifier.align(alignment = Alignment.CenterVertically),
                     fontWeight = FontWeight.Bold)
               }
-
-          Text(text = message.lastMessage?.content ?: "", overflow = TextOverflow.Ellipsis)
+          // if last message is an activity, display the activity name
+          val isActivityShared = message.lastMessage?.content?.startsWith("|$@!|") ?: false
+          val messageParts = message.lastMessage?.content?.split("|") ?: emptyList()
+          val messageToDisplay =
+              if (isActivityShared) messageParts[3] else message.lastMessage?.content
+          Text(text = messageToDisplay ?: "", overflow = TextOverflow.Ellipsis)
         }
       }
 }
