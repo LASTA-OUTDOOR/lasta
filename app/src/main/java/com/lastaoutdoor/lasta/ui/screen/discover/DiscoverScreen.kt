@@ -31,6 +31,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -217,13 +218,13 @@ fun HeaderComposable(
   MapsInitializer.initialize(LocalContext.current)
 
   // Dropdown menu boolean
-  val iconSize = 48.dp // Adjust icon size as needed
   val displayWeather = remember { mutableStateOf(false) }
   if (displayWeather.value) {
     Dialog(onDismissRequest = { displayWeather.value = false }) {
       Surface { WeatherReportBig(weather = weather, displayWind = false) }
     }
   }
+
   Surface(
       modifier = Modifier
           .fillMaxWidth()
@@ -236,7 +237,7 @@ fun HeaderComposable(
                   .fillMaxWidth()
                   .padding(horizontal = 16.dp, vertical = 8.dp),
               verticalAlignment = Alignment.CenterVertically) {
-                Column {
+                Column(modifier = Modifier.clickable(onClick = { updatePopup })) {
                   Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = selectedLocality.first,
@@ -244,7 +245,7 @@ fun HeaderComposable(
                         modifier = Modifier.testTag("locationText"))
 
                     IconButton(
-                        onClick = updatePopup,
+                        onClick = { updatePopup },
                         modifier = Modifier
                             .size(24.dp)
                             .testTag("locationButton")) {
@@ -285,17 +286,18 @@ fun HeaderComposable(
                         onSearch = { fetchSuggestion(it) })
 
                 Spacer(modifier = Modifier.width(8.dp))
+
                 IconButton(
                     onClick = { navigateToFilter() },
                     modifier = Modifier
                         .size(56.dp)
-                        .border(1.dp, TextFieldDefaults.colors().unfocusedLabelColor, RoundedCornerShape(10.dp))
+                        .border(1.dp,  MaterialTheme.colorScheme.outline, RoundedCornerShape(12.dp))
                         .testTag("filterButton")) {
                       Icon(
                           painter = painterResource(id = R.drawable.filter_icon),
                           contentDescription = "Filter button",
                           modifier = Modifier
-                              .size(32.dp)
+                              .size(24.dp)
                               .testTag("filterIcon"))
                     }
               }
