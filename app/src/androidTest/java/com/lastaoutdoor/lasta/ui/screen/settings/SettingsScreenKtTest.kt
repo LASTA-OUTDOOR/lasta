@@ -47,7 +47,6 @@ class SettingsScreenKtTest {
           signOutAndNavigate = {})
     }
     composeRule.onNodeWithTag("settingsScreen").assertIsDisplayed()
-
   }
 
   // Test that the delete account dialog is displayed
