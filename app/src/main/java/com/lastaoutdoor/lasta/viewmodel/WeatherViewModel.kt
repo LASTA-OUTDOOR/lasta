@@ -3,6 +3,7 @@ package com.lastaoutdoor.lasta.viewmodel
 import android.Manifest
 import android.app.Application
 import android.content.pm.PackageManager
+import androidx.compose.runtime.Composable
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -10,6 +11,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.lastaoutdoor.lasta.data.api.weather.WeatherForecast
+import com.lastaoutdoor.lasta.data.api.weather.WeatherForecastResponse
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.repository.api.WeatherRepository
@@ -35,6 +38,9 @@ constructor(
 
   private val _weather = MutableLiveData<WeatherResponse>()
   val weather: LiveData<WeatherResponse> = _weather
+
+  private val _weatherForecast = MutableLiveData<WeatherForecastResponse>()
+  val weatherForecast: LiveData<WeatherForecastResponse> = _weatherForecast
 
   init {
     fetchWeatherWithUserLoc()
@@ -63,11 +69,33 @@ constructor(
 
       // Call surrounded by try-catch block to make handle exceptions caused by Weather API
       try {
+        // current weather for activity location
         val weather = weatherRepository.getWeatherWithLoc(a.startPosition.lat, a.startPosition.lon)
         _weather.postValue(weather)
+        // forecast for activity location
+        val weatherForecast =
+            weatherRepository.getForecastWeather(a.startPosition.lat, a.startPosition.lon)
+        _weatherForecast.postValue(weatherForecast)
       } catch (e: Exception) {
         errorToast.showToast(ErrorType.ERROR_WEATHER)
       }
     }
+  }
+
+  fun getForecast(): WeatherForecast? {
+    if (_weatherForecast.value == null) return null
+    // get the weather forecast for 24h from now
+    // since there is a forecast every 3 hours and counting the previous forecasts not yet removed,
+    // we need to take 9th forecast in the list
+    // to get approximately 24h from now
+    return _weatherForecast.value!!.list[8]
+  }
+
+  // helper function to convert unix date format to a smoother string
+  @Composable
+  fun getForecastDate(): String {
+    if (_weatherForecast.value == null) return ""
+    val resp = _weatherForecast.value!!.list[8]
+    return "${resp.dt.substring(11, 16)}h"
   }
 }

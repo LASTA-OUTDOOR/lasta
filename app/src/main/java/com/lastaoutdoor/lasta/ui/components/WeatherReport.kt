@@ -1,6 +1,7 @@
 package com.lastaoutdoor.lasta.ui.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Card
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -23,26 +25,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.data.api.weather.WeatherForecast
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.data.api.weather.getWeatherIconFromId
+import com.lastaoutdoor.lasta.data.api.weather.kelvinToCelsius
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
-import java.math.RoundingMode
-
-private const val KELVIN_CONST = 273.15
 
 /**
  * Complete weather report for more info screen. The boolean is used to toggle the wind speed
  * display
  */
 @Composable
-fun WeatherReportBig(weather: WeatherResponse?, displayWind: Boolean) {
+fun WeatherReportBig(weather: WeatherResponse?, displayWind: Boolean, onClick: () -> Unit) {
 
   if (weather != null) {
     // the query is answered with a temperature in Kelvin, which we convert to Celsius
-    val finalTemp =
-        (weather.main.temp - KELVIN_CONST).toBigDecimal().setScale(1, RoundingMode.UP).toDouble()
+    val finalTemp = kelvinToCelsius((weather.main.temp))
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().clickable { onClick() }.testTag("WeatherReportBig"),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly) {
           Row(verticalAlignment = Alignment.CenterVertically) {
@@ -121,11 +121,7 @@ fun WeatherReportSmall(weather: WeatherResponse?, onIconClick: () -> Unit) {
           verticalAlignment = Alignment.CenterVertically,
           horizontalArrangement = Arrangement.Center) {
             weather.let {
-              val finalTemp =
-                  (weather.main.temp - KELVIN_CONST)
-                      .toBigDecimal()
-                      .setScale(1, RoundingMode.UP)
-                      .toDouble()
+              val finalTemp = kelvinToCelsius(weather.main.temp)
               Text(text = "${finalTemp}°C", modifier = Modifier.testTag("temp"))
               IconButton(modifier = Modifier.size(45.dp, 45.dp), onClick = onIconClick) {
                 Image(
@@ -136,6 +132,44 @@ fun WeatherReportSmall(weather: WeatherResponse?, onIconClick: () -> Unit) {
                     contentDescription = "Current Weather Logo")
               }
             }
+          }
+    }
+  }
+}
+
+@Composable
+fun WeatherForecastDisplay(weatherForecast: WeatherForecast?, date: String) {
+  if (weatherForecast != null) {
+    val finalTemp = kelvinToCelsius(weatherForecast.main.temp)
+
+    // display the forecast
+    Card {
+      Column(
+          modifier = Modifier.padding(8.dp).fillMaxWidth().testTag("forecast"),
+          verticalArrangement = Arrangement.Center,
+          horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text =
+                    "${LocalContext.current.getString(R.string.forecasted_weather)} ${LocalContext.current.getString(R.string.at_hour)} $date",
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically) {
+                  Text(text = "$finalTemp°C")
+                  Image(
+                      painter =
+                          painterResource(
+                              id =
+                                  getWeatherIconFromId(
+                                      weatherForecast.weather.firstOrNull()?.icon ?: "01d")),
+                      contentDescription = "Weather Icon",
+                      modifier = Modifier.size(50.dp).testTag("forecastIcon"))
+                  Text(
+                      text =
+                          "${LocalContext.current.getString(R.string.humidity)} ${weatherForecast.main.hum}%")
+                }
           }
     }
   }

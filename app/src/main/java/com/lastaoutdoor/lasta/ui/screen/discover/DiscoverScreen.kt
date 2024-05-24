@@ -37,7 +37,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,8 +64,6 @@ import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
 import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
 import com.lastaoutdoor.lasta.ui.components.WeatherReportSmall
 import com.lastaoutdoor.lasta.ui.components.searchBarComponent
-import com.lastaoutdoor.lasta.ui.screen.discover.components.ModalUpperSheet
-import com.lastaoutdoor.lasta.ui.screen.discover.components.RangeSearchComposable
 import com.lastaoutdoor.lasta.ui.screen.map.mapScreen
 import com.lastaoutdoor.lasta.utils.OrderingBy
 import com.lastaoutdoor.lasta.viewmodel.DiscoverDisplayType
@@ -83,22 +80,11 @@ fun DiscoverScreen(
     flipFavorite: (String) -> Unit,
     navigateToFilter: () -> Unit,
     navigateToMoreInfo: () -> Unit,
+    navigateToRangeSearch: () -> Unit,
     changeActivityToDisplay: (Activity) -> Unit,
     changeWeatherTarget: (Activity) -> Unit,
     weather: WeatherResponse?,
 ) {
-  var isRangePopup by rememberSaveable { mutableStateOf(false) }
-
-  RangeSearchComposable(
-      discoverScreenState.screen,
-      discoverScreenState.range,
-      discoverScreenState.localities,
-      discoverScreenState.selectedLocality,
-      discoverScreenCallBacks.setRange,
-      discoverScreenCallBacks.setSelectedLocality,
-      isRangePopup,
-      discoverScreenCallBacks = discoverScreenCallBacks,
-      onDismissRequest = { isRangePopup = false })
 
   var moveCamera: (CameraUpdate) -> Unit by remember { mutableStateOf({ _ -> }) }
 
@@ -112,7 +98,7 @@ fun DiscoverScreen(
               discoverScreenState.selectedLocality,
               discoverScreenCallBacks.fetchActivities,
               discoverScreenCallBacks.setScreen,
-              { isRangePopup = true },
+              { navigateToRangeSearch() },
               navigateToFilter,
               discoverScreenState.orderingBy,
               discoverScreenCallBacks.updateOrderingBy,
@@ -152,7 +138,7 @@ fun DiscoverScreen(
           discoverScreenState.selectedLocality,
           discoverScreenCallBacks.fetchActivities,
           discoverScreenCallBacks.setScreen,
-          { isRangePopup = true },
+          navigateToRangeSearch,
           navigateToFilter,
           discoverScreenState.orderingBy,
           discoverScreenCallBacks.updateOrderingBy,
@@ -180,9 +166,6 @@ fun DiscoverScreen(
       }
     }
   }
-
-  // Add the modal upper sheet
-  ModalUpperSheet(isRangePopup = isRangePopup)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -193,7 +176,7 @@ fun HeaderComposable(
     selectedLocality: Pair<String, LatLng>,
     fetchActivities: () -> Unit,
     setScreen: (DiscoverDisplayType) -> Unit,
-    updatePopup: () -> Unit,
+    navigateToRangeSearch: () -> Unit,
     navigateToFilter: () -> Unit,
     orderingBy: OrderingBy,
     updateOrderingBy: (OrderingBy) -> Unit,
@@ -214,7 +197,7 @@ fun HeaderComposable(
   val displayWeather = remember { mutableStateOf(false) }
   if (displayWeather.value) {
     Dialog(onDismissRequest = { displayWeather.value = false }) {
-      Surface { WeatherReportBig(weather = weather, displayWind = false) }
+      Surface { WeatherReportBig(weather = weather, displayWind = false) {} }
     }
   }
   Surface(
@@ -233,7 +216,7 @@ fun HeaderComposable(
                         modifier = Modifier.testTag("locationText"))
 
                     IconButton(
-                        onClick = updatePopup,
+                        onClick = navigateToRangeSearch,
                         modifier = Modifier.size(24.dp).testTag("locationButton")) {
                           Icon(
                               Icons.Outlined.KeyboardArrowDown,
