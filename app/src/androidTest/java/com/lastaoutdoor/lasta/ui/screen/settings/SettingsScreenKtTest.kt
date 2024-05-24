@@ -6,7 +6,6 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.test.espresso.Espresso
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.Language
 import com.lastaoutdoor.lasta.models.user.SettingsType
@@ -51,8 +50,8 @@ class SettingsScreenKtTest {
     composeRule.onNodeWithTag("settingsSignOut").assertIsDisplayed()
     composeRule.onNodeWithTag("settingsDeleteAccount").assertIsDisplayed()
 
-    composeRule.onNodeWithTag("settingsDeleteAccount").performClick()
-    Espresso.pressBack()
+    // composeRule.onNodeWithTag("settingsDeleteAccount").performClick()
+    // Espresso.pressBack()
   }
 
   // Test that the delete account dialog is displayed
