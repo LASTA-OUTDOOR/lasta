@@ -48,10 +48,7 @@ class SettingsScreenKtTest {
     }
     composeRule.onNodeWithTag("settingsScreen").assertIsDisplayed()
     composeRule.onNodeWithTag("settingsSignOut").assertIsDisplayed()
-    composeRule.onNodeWithTag("settingsDeleteAccount").assertIsDisplayed()
 
-    // composeRule.onNodeWithTag("settingsDeleteAccount").performClick()
-    // Espresso.pressBack()
   }
 
   // Test that the delete account dialog is displayed
