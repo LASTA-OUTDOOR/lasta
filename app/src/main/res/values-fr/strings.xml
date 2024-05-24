@@ -152,6 +152,8 @@
     <string name="login_free_text">Le plus beau ? C\'est totalement gratuit ! Inscrivez-vous pour rejoindre notre fantastique communauté d\'accros au sport !</string>
     <string name ="no_friends_in_common">Pas d\'amis en commun</string>
     <string name ="one_friends_in_common">1 ami en commun</string>
-    <string name ="friends_in_common">amis en commun</string>
+  <string name ="friends_in_common">amis en commun</string>
     <string name ="shared_with_you">a partagé une activité avec vous</string>
+    <string name = "at_hour">à</string>
+    <string name = "forecasted_weather">Demain</string>
 </resources>

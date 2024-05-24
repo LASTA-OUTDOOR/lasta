@@ -184,6 +184,9 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           discoverScreenViewModel.state.collectAsState().value
       val discoverScreenCallBacks: DiscoverScreenCallBacks = discoverScreenViewModel.callbacks
 
+      val weatherForecast = weatherViewModel.getForecast()
+      val dateWeatherForecast = weatherViewModel.getForecastDate()
+
       MoreInfoScreen(
           activityToDisplay,
           discoverScreenState,
@@ -197,6 +200,8 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           socialViewModel.friends,
           weather,
           favorites,
+          weatherForecast,
+          dateWeatherForecast,
           preferencesViewModel::flipFavorite,
           { navController.navigateUp() },
           { navController.navigate(DestinationRoute.Tracking.route) },
