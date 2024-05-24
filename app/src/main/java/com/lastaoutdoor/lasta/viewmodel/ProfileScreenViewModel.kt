@@ -141,9 +141,11 @@ constructor(
 
   private fun fetchUserSingeSportActivities(activityType: ActivityType) {
     viewModelScope.launch {
+      // Check whether user is connected
       _isConnected.collect { cs ->
         if (cs == ConnectionState.CONNECTED) {
           try {
+            // get activities from firebase db if connected
             when (activityType) {
               ActivityType.CLIMBING ->
                   _activitiesCache.value =
@@ -165,6 +167,7 @@ constructor(
             errorToast.showToast(ErrorType.ERROR_DATABASE)
           }
         } else {
+          // get activities from room database if offline
           when (activityType) {
             ActivityType.CLIMBING ->
                 _activitiesCache.value = offlineActivityDB.getClimbingActivities()
