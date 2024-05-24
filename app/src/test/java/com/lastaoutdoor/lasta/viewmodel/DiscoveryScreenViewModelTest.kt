@@ -209,12 +209,9 @@ class DiscoveryScreenViewModelTest() {
     assertEquals(viewModel.state.value.range, 10000.0)
     assertEquals(viewModel.state.value.suggestions, emptyMap<String, LatLng>())
     assertEquals(
-        viewModel.state.value.localities,
-        listOf(
-            "Ecublens" to LatLng(46.519962, 6.633597),
-            "Geneva" to LatLng(46.2043907, 6.1431577),
-            "Payerne" to LatLng(46.834190, 6.928969),
-            "Matterhorn" to LatLng(45.980537, 7.641618)))
+        viewModel.state.value.startingLocality,
+        "Ecublens" to LatLng(46.519962, 6.633597),
+    )
   }
 
   @Test
@@ -225,15 +222,6 @@ class DiscoveryScreenViewModelTest() {
     viewModel.updatePermission(false)
     assertEquals(viewModel.state.value.mapState.properties.isMyLocationEnabled, false)
     assertEquals(viewModel.state.value.mapState.uiSettings.myLocationButtonEnabled, false)
-  }
-
-  @ExperimentalCoroutinesApi
-  @Test
-  fun setRange() {
-    runBlocking {
-      viewModel.setRange(0.0)
-      assertEquals(viewModel.state.value.range, 0.0)
-    }
   }
 
   @Test

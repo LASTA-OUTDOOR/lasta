@@ -92,4 +92,19 @@ constructor(
       emit(Response.Failure(e))
     }
   }
+
+  override suspend fun deleteAccount(): Flow<Response<Boolean>> = flow {
+    try {
+      emit(Response.Loading)
+      val user = auth.currentUser
+      if (user != null) {
+        user.delete().await()
+        emit(Response.Success(true))
+      } else {
+        emit(Response.Failure(NoSuchElementException("User is null")))
+      }
+    } catch (e: Exception) {
+      emit(Response.Failure(e))
+    }
+  }
 }

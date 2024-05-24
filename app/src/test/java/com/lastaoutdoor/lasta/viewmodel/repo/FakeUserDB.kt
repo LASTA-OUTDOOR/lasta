@@ -45,4 +45,10 @@ class FakeUserDB : UserDBRepository {
       throw Exception("FakeUserDB: removeFavorite failed")
     }
   }
+
+  override suspend fun deleteUser(userId: String) {
+    if (shouldThrowException) {
+      throw Exception("FakeUserDB: deleteUser failed")
+    }
+  }
 }
