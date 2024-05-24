@@ -13,8 +13,6 @@ import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.ui.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -51,11 +49,7 @@ class SettingsScreenKtTest {
     composeRule.onNodeWithTag("settingsSignOut").assertIsDisplayed()
     composeRule.onNodeWithTag("settingsDeleteAccount").assertIsDisplayed()
 
-    runTest {
-      composeRule.onNodeWithTag("settingsDeleteAccount").performClick()
-      delay(5000)
-      composeRule.onNodeWithTag("settingsDeleteDialog").assertIsDisplayed()
-    }
+    composeRule.onNodeWithTag("settingsDeleteAccount").performClick()
   }
 
   // Test that the delete account dialog is displayed
