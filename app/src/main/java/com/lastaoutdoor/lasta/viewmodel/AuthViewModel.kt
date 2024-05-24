@@ -81,7 +81,6 @@ constructor(
           }
         }
       } catch (e: Exception) {
-        e.printStackTrace()
         errorToast.showToast(ErrorType.ERROR_SIGN_IN)
       }
     }
