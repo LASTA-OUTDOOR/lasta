@@ -10,6 +10,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.ui.MainActivity
+import com.lastaoutdoor.lasta.utils.ConnectionState
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -29,7 +30,7 @@ class LoginContentTest {
   @Before
   fun setUp() {
     hiltRule.inject()
-    composeRule.activity.setContent { LoginContent {} }
+    composeRule.activity.setContent { LoginContent({}, ConnectionState.CONNECTED) }
   }
 
   // Test if discovery screen is displayed

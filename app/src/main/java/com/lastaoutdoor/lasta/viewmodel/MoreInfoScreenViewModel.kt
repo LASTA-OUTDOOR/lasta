@@ -84,6 +84,19 @@ constructor(
     }
   }
 
+  /*Change activity to display from the activity ID */
+  fun changeActivityToDisplayByID(activityId: String) {
+    viewModelScope.launch {
+      // Call surrounded by try-catch block to make handle exceptions caused by database
+      try {
+        val activityToDisplay = activityDB.getActivityById(activityId) ?: dummyActivity
+        changeActivityToDisplay(activityToDisplay)
+      } catch (e: Exception) {
+        errorToast.showToast(ErrorType.ERROR_DATABASE)
+      }
+    }
+  }
+
   fun goToMarker(activity: Activity): Marker {
     val icon =
         when (activity.activityType) {

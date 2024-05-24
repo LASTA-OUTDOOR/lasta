@@ -84,12 +84,17 @@
     <string name="type_message">Schreibe deine Nachricht hier</string>
     <string name="your_message">"Deine Nachricht "</string>
     <string name="send_message">Senden</string>
-    <string name="Account_settings">Einstellungen</string>
+    <string name="Account_settings">Konto Einstellungen</string>
     <string name="delete_account">Konto löschen</string>
     <string name="delete_account_prompt">Möchten Sie Ihr Konto wirklich löschen?</string>
     <string name="tab_favorites">Favoriten</string>
     <string name="tab_socials">Freunde</string>
+
     <string name="sport_level">Niveau</string>
+    <string name="sport_level_hiking">Wanderniveau</string>
+    <string name="sport_level_climbing">Kletterniveau</string>
+    <string name="sport_level_biking">Radfahrniveau</string>
+
     <string name="no_account">Die E-Mail-Adresse ist nicht mit dem Wettbewerb verbunden</string>
     <string name="no_fr">" Sie sind bereits mit diesem Benutzer befreundet"</string>
     <string name="fr_req_sent">"Freundschaftsanfrage gesendet "</string>
@@ -153,4 +158,9 @@
     <string name ="no_friends_in_common">Keine gemeinsamen Freunde</string>
     <string name ="one_friends_in_common">1 gemeinsamer Freund</string>
     <string name ="friends_in_common">gemeinsame Freunde</string>
+    <string name="settings">Einstellungen</string>
+    <string name ="shared_with_you">hat mit dir eine Aktivität geteilt</string>
+    <string name = "at_hour">um</string>
+    <string name = "forecasted_weather">Morgen</string>
+    <string name="offline_text">"Sie sind zur Zeit Offline, bitte verbinden Sie sich mit dem Internet um sich in Lasta einzuloggen! "</string>
 </resources>
