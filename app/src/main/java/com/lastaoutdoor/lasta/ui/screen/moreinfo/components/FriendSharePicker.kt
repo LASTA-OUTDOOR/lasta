@@ -72,7 +72,16 @@ private fun FriendLazyColumn(
               Modifier.fillMaxWidth().padding(8.dp).testTag("shareTo" + friend.userId).clickable {
                 hideFriendPicker()
                 // Share the activity with the selected friend by sending its id
-                shareToFriend("|activity : |" + activityShared.activityId, friend.userId)
+                shareToFriend(
+                    "|$@!|" +
+                        activityShared.activityId +
+                        "|" +
+                        activityShared.name +
+                        "|" +
+                        activityShared.activityType.name +
+                        "|" +
+                        activityShared.difficulty.name,
+                    friend.userId)
               },
           colors =
               CardColors(

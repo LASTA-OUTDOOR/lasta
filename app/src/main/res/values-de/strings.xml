@@ -159,4 +159,7 @@
     <string name ="one_friends_in_common">1 gemeinsamer Freund</string>
     <string name ="friends_in_common">gemeinsame Freunde</string>
     <string name="settings">Einstellungen</string>
+    <string name ="shared_with_you">hat mit dir eine Aktivität geteilt</string>
+    <string name = "at_hour">um</string>
+    <string name = "forecasted_weather">Morgen</string>
 </resources>

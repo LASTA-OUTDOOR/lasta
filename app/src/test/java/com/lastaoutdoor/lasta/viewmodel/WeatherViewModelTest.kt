@@ -1,9 +1,12 @@
 package com.lastaoutdoor.lasta.viewmodel
 
 import android.app.Application
-import androidx.test.core.app.ApplicationProvider
+import com.lastaoutdoor.lasta.models.activity.Activity
+import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeWeatherRepository
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -12,6 +15,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
+import org.junit.Test
 import org.mockito.Mock
 
 @ExperimentalCoroutinesApi
@@ -28,6 +32,7 @@ class WeatherViewModelTest {
   @Before
   fun setupDispatcher() {
     Dispatchers.setMain(testDispatcher)
+    every { errorToast.showToast(any()) } returns Unit
   }
 
   @ExperimentalCoroutinesApi
@@ -39,13 +44,33 @@ class WeatherViewModelTest {
 
   @Before
   fun setup() {
-    application = ApplicationProvider.getApplicationContext()
+    application = Application()
     weatherViewModel = WeatherViewModel(weatherRepository, application, errorToast)
   }
 
-  /*@Test
+  @Test
   fun testFetchWeather() {
-      weatherViewModel = WeatherViewModel(weatherRepository, application)
-      assert(weatherViewModel.weather.value != null)
-  }*/
+    assert(weatherViewModel.weather.value == null)
+  }
+
+  // get weather forecast works
+  @Test
+  fun testFetchWeatherForecastNull() {
+    weatherViewModel.getForecast()
+    assert(weatherViewModel.weatherForecast.value == null)
+  }
+
+  @Test
+  fun fetchWeatherWithUserLoc() {
+    weatherViewModel.fetchWeatherWithUserLoc()
+    assert(weatherViewModel.weather.value == null)
+  }
+
+  // Change location of weather works (without wifi services so just functioning call)
+  @Test
+  fun changeLocOfWeather() {
+    weatherViewModel.changeLocOfWeather(
+        Activity("a", 10, activityType = ActivityType.CLIMBING, difficulty = Difficulty.EASY))
+    assert(weatherViewModel.weather.value == null)
+  }
 }

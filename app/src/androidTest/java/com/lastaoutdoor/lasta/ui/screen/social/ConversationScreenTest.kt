@@ -41,10 +41,12 @@ class ConversationScreenTest {
       ConversationScreen(
           conversationModel = null,
           refresh = {},
+          changeActivityToDisplay = {},
           user = UserModel("1"),
           friend = UserModel("2"),
           send = {},
-          navigateBack = {})
+          navigateBack = {},
+          navigateToMoreInfo = {})
     }
     composeRule.onNodeWithTag("ConversationScreen").assertIsNotDisplayed()
   }
@@ -60,16 +62,59 @@ class ConversationScreenTest {
                   messages = listOf(MessageModel(UserModel("1"), "2", Timestamp(0, 0))),
                   lastMessage = MessageModel(UserModel("2"), "1", Timestamp(0, 0))),
           refresh = {},
+          changeActivityToDisplay = {},
           user = UserModel("1"),
           friend = UserModel("2"),
           send = {},
-          navigateBack = {})
+          navigateBack = {},
+          navigateToMoreInfo = {})
     }
     composeRule.onNodeWithTag("ConversationScreen").assertIsDisplayed()
     composeRule.onNodeWithTag("ConversationScreenHeader").assertIsDisplayed()
     composeRule.onNodeWithTag("ConversationScreenHeader").assertIsDisplayed()
     composeRule.onNodeWithTag("SendMessageButton").assertIsDisplayed()
     composeRule.onNodeWithTag("MessageTextField").assertIsDisplayed()
+  }
+
+  // Test that the activities shared are properly displayed
+  @Test
+  fun activitiesSharedAreDisplayed() {
+    composeRule.activity.setContent {
+      ConversationScreen(
+          conversationModel =
+              ConversationModel(
+                  members = listOf(UserModel("1"), UserModel("2")),
+                  messages =
+                      listOf(
+                          MessageModel(
+                              UserModel("1"),
+                              "|$@!|QMY0WMqi54uSvnRuzR5u|Terasses de Lavaux|CLIMBING|HARD",
+                              Timestamp(0, 0)),
+                          MessageModel(
+                              UserModel("2"),
+                              "|$@!|QMY0WMqi54uSvnRuzR5v|Terasses de Lavaux|BIKING|NORMAL",
+                              Timestamp(0, 0)),
+                          MessageModel(
+                              UserModel("2"),
+                              "|$@!|QMY0WMqi54uSvnRuzR5x|Terasses de Lavaux|HIKING|EASY",
+                              Timestamp(0, 0))),
+                  lastMessage =
+                      MessageModel(
+                          UserModel("2"),
+                          "|$@!|QMY0WMqi54uSvnRuzR5x|Terasses de Lavaux|HIKING|EASY",
+                          Timestamp(0, 0))),
+          refresh = {},
+          changeActivityToDisplay = {},
+          user = UserModel("1"),
+          friend = UserModel("2"),
+          send = {},
+          navigateBack = {},
+          navigateToMoreInfo = {})
+    }
+    composeRule.onNodeWithTag("ActivitySharedQMY0WMqi54uSvnRuzR5u").assertIsDisplayed()
+    composeRule.onNodeWithTag("ActivitySharedQMY0WMqi54uSvnRuzR5v").assertIsDisplayed()
+    composeRule.onNodeWithTag("ActivitySharedQMY0WMqi54uSvnRuzR5x").assertIsDisplayed()
+    composeRule.onNodeWithTag("ActivitySharedQMY0WMqi54uSvnRuzR5u").performClick()
   }
 
   @Test
@@ -84,11 +129,13 @@ class ConversationScreenTest {
                   members = listOf(UserModel("1"), UserModel("2")),
                   messages = listOf(MessageModel(UserModel("1"), "2", Timestamp(0, 0))),
                   lastMessage = MessageModel(UserModel("2"), "1", Timestamp(0, 0))),
+          changeActivityToDisplay = {},
           refresh = {},
           user = UserModel("1"),
           friend = UserModel("2"),
           send = { clicked = true },
-          navigateBack = {})
+          navigateBack = {},
+          navigateToMoreInfo = {})
     }
     composeRule.onNodeWithTag("SendMessageButton").assertIsDisplayed()
     composeRule.onNodeWithTag("SendMessageButton").performClick()
