@@ -307,6 +307,14 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
             authViewModel.signOut()
             navController.popBackStack()
             navController.navigate(BaseRoute.Login.route)
+          },
+          {
+            preferencesViewModel.clearPreferences()
+            preferencesViewModel.updateIsLoggedIn(false)
+            authViewModel.signOut()
+            authViewModel.deleteAccount()
+            navController.popBackStack()
+            navController.navigate(BaseRoute.Login.route)
           })
     }
   }

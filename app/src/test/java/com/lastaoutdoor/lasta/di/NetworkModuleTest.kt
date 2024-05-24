@@ -88,7 +88,8 @@ class NetworkModuleTest {
   @Test
   fun `Auth repository is provided`() {
     val authRepository =
-        NetworkModule.provideAuthRepository(mockk(), mockk(), mockk(), mockk(), mockk())
+        NetworkModule.provideAuthRepository(
+            mockk(), mockk(), mockk(), mockk(), mockk(), mockk(), mockk(), mockk(), mockk())
     assertNotNull(authRepository)
   }
 

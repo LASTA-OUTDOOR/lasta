@@ -62,15 +62,6 @@ interface ActivitiesDBRepository {
   fun addRating(activityId: String, rating: Rating, newMeanRating: String)
 
   /**
-   * Deletes a rating from an activity.
-   *
-   * @param activity The activity to delete the rating from.
-   * @param userId The ID of the user who rated the activity.
-   * @return The activity with the rating deleted.
-   */
-  suspend fun deleteRating(activity: Activity, userId: String): Activity
-
-  /**
    * Deletes all ratings of a user.
    *
    * @param userId The ID of the user.

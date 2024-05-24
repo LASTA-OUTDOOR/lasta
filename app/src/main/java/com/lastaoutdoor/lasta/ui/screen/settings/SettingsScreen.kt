@@ -47,7 +47,8 @@ fun SettingsScreen(
     updateHikingLevel: (UserLevel) -> Unit,
     updateBikingLevel: (UserLevel) -> Unit,
     navigateBack: () -> Unit,
-    signOutAndNavigate: () -> Unit
+    signOutAndNavigate: () -> Unit,
+    deleteAccountAndNavigate: () -> Unit
 ) {
 
   val showDeleteDialog = remember { mutableStateOf(false) }
@@ -62,7 +63,7 @@ fun SettingsScreen(
           Button(
               onClick = {
                 showDeleteDialog.value = false
-                signOutAndNavigate()
+                deleteAccountAndNavigate()
               },
               colors =
                   ButtonDefaults.buttonColors(

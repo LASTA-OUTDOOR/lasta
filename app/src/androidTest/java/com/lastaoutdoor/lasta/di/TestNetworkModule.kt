@@ -132,9 +132,22 @@ object TestNetworkModule {
       oneTapClient: SignInClient,
       @Named("signInRequest") signInRequest: BeginSignInRequest,
       @Named("signUpRequest") signUpRequest: BeginSignInRequest,
-      userDBRepository: UserDBRepository
+      userDBRepository: UserDBRepository,
+      activitiesDBRepository: ActivitiesDBRepository,
+      socialDBRepository: SocialDBRepository,
+      tokenDBRepository: TokenDBRepository,
+      userActivitiesDBRepository: UserActivitiesDBRepository
   ): AuthRepository =
-      AuthRepositoryImpl(auth, oneTapClient, signInRequest, signUpRequest, userDBRepository)
+      AuthRepositoryImpl(
+          auth,
+          oneTapClient,
+          signInRequest,
+          signUpRequest,
+          userDBRepository,
+          activitiesDBRepository,
+          socialDBRepository,
+          tokenDBRepository,
+          userActivitiesDBRepository)
 
   @Singleton
   @Provides
