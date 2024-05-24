@@ -226,4 +226,11 @@ class UserDBRepositoryImplTest {
     userDB.removeFavorite("userId", "favorite")
     coVerify(exactly = 1) { documentReference.update(any() as String, any()) }
   }
+
+  @Test
+  fun `deleteUser works fine`() = runTest {
+    coEvery { documentReference.delete() } returns updateTask
+    userDB.deleteUser("userId")
+    coVerify(exactly = 1) { documentReference.delete() }
+  }
 }

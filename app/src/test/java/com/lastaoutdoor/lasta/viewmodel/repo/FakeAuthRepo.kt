@@ -34,4 +34,11 @@ class FakeAuthRepo(override val isSignUp: Flow<Boolean>) : AuthRepository {
     }
     return flowOf((Response.Success(true)))
   }
+
+  override suspend fun deleteAccount(): Flow<Response<Boolean>> {
+    if (shouldThrowException) {
+      throw Exception("FakeAuthRepo: deleteAccount failed")
+    }
+    return flowOf((Response.Success(true)))
+  }
 }
