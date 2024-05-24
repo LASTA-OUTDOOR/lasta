@@ -40,10 +40,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.utils.ConnectionState
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun LoginContent(onLoginClick: () -> Unit) {
+fun LoginContent(onLoginClick: () -> Unit, isConnected: ConnectionState) {
   Column(
       modifier = Modifier.fillMaxSize().padding(15.dp).testTag("loginScreen"),
       verticalArrangement = Arrangement.SpaceAround,
@@ -63,23 +64,11 @@ fun LoginContent(onLoginClick: () -> Unit) {
 
         LoginPager()
 
-        Button(
-            onClick = { onLoginClick() },
-            shape = RoundedCornerShape(30.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-            border = BorderStroke(1.dp, Color.Gray),
-            modifier = Modifier.testTag("loginButton"),
-            content = {
-              Image(
-                  painter = painterResource(id = R.drawable.google_logo),
-                  contentDescription = "Google Logo",
-                  modifier = Modifier.size(24.dp))
-              Text(
-                  text = LocalContext.current.getString(R.string.sign_in_google),
-                  modifier = Modifier.padding(6.dp),
-                  color = Color.Black,
-                  fontSize = 14.sp)
-            })
+        if (isConnected == ConnectionState.CONNECTED) {
+          OnlineButton(onLoginClick)
+        } else {
+          OfflineText()
+        }
       }
 }
 
@@ -220,4 +209,30 @@ fun FourthPage() {
       text = LocalContext.current.getString(R.string.login_free_text),
       Modifier.padding(10.dp).testTag("JoinText"),
       textAlign = TextAlign.Center)
+}
+
+@Composable
+fun OnlineButton(onLoginClick: () -> Unit) {
+  Button(
+      onClick = { onLoginClick() },
+      shape = RoundedCornerShape(30.dp),
+      colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+      border = BorderStroke(1.dp, Color.Gray),
+      modifier = Modifier.testTag("loginButton"),
+      content = {
+        Image(
+            painter = painterResource(id = R.drawable.google_logo),
+            contentDescription = "Google Logo",
+            modifier = Modifier.size(24.dp))
+        Text(
+            text = LocalContext.current.getString(R.string.sign_in_google),
+            modifier = Modifier.padding(6.dp),
+            color = Color.Black,
+            fontSize = 14.sp)
+      })
+}
+
+@Composable
+fun OfflineText() {
+  Text(LocalContext.current.getString(R.string.offline_text), textAlign = TextAlign.Center)
 }

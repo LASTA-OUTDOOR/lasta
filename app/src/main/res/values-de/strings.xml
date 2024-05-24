@@ -162,4 +162,5 @@
     <string name ="shared_with_you">hat mit dir eine Aktivität geteilt</string>
     <string name = "at_hour">um</string>
     <string name = "forecasted_weather">Morgen</string>
+    <string name="offline_text">"Sie sind zur Zeit Offline, bitte verbinden Sie sich mit dem Internet um sich in Lasta einzuloggen! "</string>
 </resources>
