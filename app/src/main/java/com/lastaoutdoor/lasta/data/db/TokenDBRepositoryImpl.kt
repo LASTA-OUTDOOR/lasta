@@ -29,4 +29,10 @@ class TokenDBRepositoryImpl(context: Context, database: FirebaseFirestore) : Tok
   }
 
   // override suspend fun getTokensByIds(userIds: List<String>): List<String> {}
+
+  override fun deleteUserToken(userId: String) {
+    if (userId.isEmpty()) return
+    // Delete user token from database
+    tokenCollection.document(userId).delete()
+  }
 }

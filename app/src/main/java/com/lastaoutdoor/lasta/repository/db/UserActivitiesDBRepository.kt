@@ -52,4 +52,11 @@ interface UserActivitiesDBRepository {
    * @return a list of biking user activities
    */
   suspend fun getUserBikingActivities(userId: String): List<UserActivity>
+
+  /**
+   * Deletes all activities of the user with the given ID.
+   *
+   * @param userId the ID of the user
+   */
+  suspend fun deleteUserActivities(userId: String)
 }

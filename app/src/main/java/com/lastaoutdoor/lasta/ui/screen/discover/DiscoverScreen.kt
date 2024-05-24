@@ -36,7 +36,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -64,13 +64,13 @@ import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
 import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
 import com.lastaoutdoor.lasta.ui.components.WeatherReportSmall
 import com.lastaoutdoor.lasta.ui.components.searchBarComponent
-import com.lastaoutdoor.lasta.ui.screen.discover.components.ModalUpperSheet
-import com.lastaoutdoor.lasta.ui.screen.discover.components.RangeSearchComposable
 import com.lastaoutdoor.lasta.ui.screen.map.mapScreen
 import com.lastaoutdoor.lasta.utils.OrderingBy
 import com.lastaoutdoor.lasta.viewmodel.DiscoverDisplayType
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenCallBacks
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun DiscoverScreen(
@@ -80,22 +80,11 @@ fun DiscoverScreen(
     flipFavorite: (String) -> Unit,
     navigateToFilter: () -> Unit,
     navigateToMoreInfo: () -> Unit,
+    navigateToRangeSearch: () -> Unit,
     changeActivityToDisplay: (Activity) -> Unit,
     changeWeatherTarget: (Activity) -> Unit,
     weather: WeatherResponse?,
 ) {
-  var isRangePopup by rememberSaveable { mutableStateOf(false) }
-
-  RangeSearchComposable(
-      discoverScreenState.screen,
-      discoverScreenState.range,
-      discoverScreenState.localities,
-      discoverScreenState.selectedLocality,
-      discoverScreenCallBacks.setRange,
-      discoverScreenCallBacks.setSelectedLocality,
-      isRangePopup,
-      discoverScreenCallBacks = discoverScreenCallBacks,
-      onDismissRequest = { isRangePopup = false })
 
   var moveCamera: (CameraUpdate) -> Unit by remember { mutableStateOf({ _ -> }) }
 
@@ -109,7 +98,7 @@ fun DiscoverScreen(
               discoverScreenState.selectedLocality,
               discoverScreenCallBacks.fetchActivities,
               discoverScreenCallBacks.setScreen,
-              { isRangePopup = true },
+              { navigateToRangeSearch() },
               navigateToFilter,
               discoverScreenState.orderingBy,
               discoverScreenCallBacks.updateOrderingBy,
@@ -149,7 +138,7 @@ fun DiscoverScreen(
           discoverScreenState.selectedLocality,
           discoverScreenCallBacks.fetchActivities,
           discoverScreenCallBacks.setScreen,
-          { isRangePopup = true },
+          navigateToRangeSearch,
           navigateToFilter,
           discoverScreenState.orderingBy,
           discoverScreenCallBacks.updateOrderingBy,
@@ -177,9 +166,6 @@ fun DiscoverScreen(
       }
     }
   }
-
-  // Add the modal upper sheet
-  ModalUpperSheet(isRangePopup = isRangePopup)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -190,7 +176,7 @@ fun HeaderComposable(
     selectedLocality: Pair<String, LatLng>,
     fetchActivities: () -> Unit,
     setScreen: (DiscoverDisplayType) -> Unit,
-    updatePopup: () -> Unit,
+    navigateToRangeSearch: () -> Unit,
     navigateToFilter: () -> Unit,
     orderingBy: OrderingBy,
     updateOrderingBy: (OrderingBy) -> Unit,
@@ -230,7 +216,7 @@ fun HeaderComposable(
                         modifier = Modifier.testTag("locationText"))
 
                     IconButton(
-                        onClick = updatePopup,
+                        onClick = navigateToRangeSearch,
                         modifier = Modifier.size(24.dp).testTag("locationButton")) {
                           Icon(
                               Icons.Outlined.KeyboardArrowDown,
@@ -284,16 +270,23 @@ fun HeaderComposable(
                       .heightIn(0.dp, 130.dp)) {
                 items(suggestions.count()) { i ->
                   val suggestion = suggestions.entries.elementAt(i)
+                  val scope = rememberCoroutineScope()
                   Card(
                       modifier =
                           Modifier.fillMaxWidth().padding(4.dp).testTag("suggestion").clickable {
-                            fManager.clearFocus()
-                            setSelectedLocality(Pair(suggestion.key, suggestion.value))
-                            changeText(suggestion.key)
-                            updateInitialPosition(suggestion.value)
-                            moveCamera(CameraUpdateFactory.newLatLng(suggestion.value))
-                            fetchActivities()
-                            clearSuggestions()
+                            scope.launch {
+                              fManager.clearFocus()
+                              setSelectedLocality(Pair(suggestion.key, suggestion.value))
+                              updateInitialPosition(suggestion.value)
+                              moveCamera(CameraUpdateFactory.newLatLng(suggestion.value))
+                              fetchActivities()
+                              // add a delay because otherwise the focus suggestion are redisplayed
+                              // if you were on the keyboard (probably due to changeText and
+                              // clearFocus)
+                              delay(300)
+                              changeText(suggestion.key)
+                              clearSuggestions()
+                            }
                           }) {
                         Text(modifier = Modifier.padding(8.dp).height(20.dp), text = suggestion.key)
                       }

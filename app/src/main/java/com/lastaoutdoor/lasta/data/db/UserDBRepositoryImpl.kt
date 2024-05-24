@@ -128,4 +128,8 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
     val userDocumentRef = userCollection.document(userId)
     userDocumentRef.update("favorites", FieldValue.arrayRemove(activityId)).await()
   }
+
+  override suspend fun deleteUser(userId: String) {
+    userCollection.document(userId).delete().await()
+  }
 }

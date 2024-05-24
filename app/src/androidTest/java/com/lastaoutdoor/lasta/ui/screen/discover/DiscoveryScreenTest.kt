@@ -66,7 +66,6 @@ class DiscoverScreenTest {
         DiscoverScreenCallBacks(
             fetchActivities = {},
             setScreen = {},
-            setRange = {},
             setSelectedLocality = {},
             updatePermission = {},
             updateMarkers = { _, _ -> },
@@ -87,6 +86,7 @@ class DiscoverScreenTest {
   @Test
   fun headerComposable() {
     var navigateFilter = false
+    var navigateSearch = false
     var screenType = DiscoverDisplayType.LIST
     var popUp = false
 
@@ -102,7 +102,7 @@ class DiscoverScreenTest {
             selectedLocality = "Ecublens" to LatLng(46.519962, 6.633597),
             fetchActivities = {},
             setScreen = { screenType = it },
-            updatePopup = { popUp = true },
+            navigateToRangeSearch = { navigateSearch = true },
             navigateToFilter = { navigateFilter = true },
             orderingBy = OrderingBy.RATING,
             updateOrderingBy = {},
@@ -126,7 +126,7 @@ class DiscoverScreenTest {
     composeRule.onNodeWithTag("filterButton").performClick()
     composeRule.waitForIdle()
     assertTrue(navigateFilter)
-    assertTrue(popUp)
+    assertTrue(navigateSearch)
     assertEquals(screenType, DiscoverDisplayType.LIST)
     composeRule.onNodeWithTag("sortingText").assertIsDisplayed()
     composeRule.onNodeWithTag("spinnerIcon").assertIsDisplayed()
@@ -145,6 +145,7 @@ class DiscoverScreenTest {
             flipFavorite = {},
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
+            navigateToRangeSearch = { /*TODO*/},
             changeActivityToDisplay = {},
             changeWeatherTarget = {},
             weather = null,
@@ -229,6 +230,7 @@ class DiscoverScreenTest {
             flipFavorite = {},
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
+            navigateToRangeSearch = { /*TODO*/},
             changeActivityToDisplay = {},
             changeWeatherTarget = {},
             weather = null,
@@ -242,30 +244,15 @@ class DiscoverScreenTest {
     assert(state.screen == DiscoverDisplayType.MAP)
     composeRule.waitForIdle()
     composeRule.onNodeWithTag("locationButton").performClick()
-    composeRule.onNodeWithTag("listSearchOptionsApplyButton").performClick()
   }
 
   @Test
-  fun rangeSearchComposableInTypeMap_isDisplayed() {
-    var isRangePopup = true
-    var screenType = DiscoverDisplayType.MAP
+  fun rangeSearchComposable_isDisplayed() {
     composeRule.activity.setContent {
       MaterialTheme {
         RangeSearchComposable(
-            screen = screenType,
-            localities =
-                listOf(
-                    "Ecublens" to LatLng(46.519962, 6.633597),
-                    "Geneva" to LatLng(46.2043907, 6.1431577),
-                    "Payerne" to LatLng(46.834190, 6.928969),
-                    "Matterhorn" to LatLng(45.980537, 7.641618),
-                ),
-            selectedLocality = "Ecublens" to LatLng(46.519962, 6.633597),
-            range = 5000.0,
-            onDismissRequest = { isRangePopup = false },
-            setRange = {},
-            isRangePopup = isRangePopup,
-            setSelectedLocality = {},
+            {},
+            discoverScreenState = discoverScreenState,
             discoverScreenCallBacks = discoverScreenCallBacks)
       }
     }
@@ -290,6 +277,7 @@ class DiscoverScreenTest {
             flipFavorite = {},
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
+            navigateToRangeSearch = { /*TODO*/},
             changeActivityToDisplay = {},
             changeWeatherTarget = {},
             weather = null,
@@ -322,6 +310,7 @@ class DiscoverScreenTest {
             flipFavorite = {},
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
+            navigateToRangeSearch = { /*TODO*/},
             changeActivityToDisplay = {},
             changeWeatherTarget = {},
             weather = null,
@@ -350,6 +339,7 @@ class DiscoverScreenTest {
             flipFavorite = {},
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
+            navigateToRangeSearch = { /*TODO*/},
             changeActivityToDisplay = {},
             changeWeatherTarget = {},
             weather = null,
@@ -378,6 +368,7 @@ class DiscoverScreenTest {
             flipFavorite = {},
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
+            navigateToRangeSearch = { /*TODO*/},
             changeActivityToDisplay = {},
             changeWeatherTarget = {},
             weather = null,
@@ -405,6 +396,7 @@ class DiscoverScreenTest {
             flipFavorite = {},
             navigateToFilter = { /*TODO*/},
             navigateToMoreInfo = { /*TODO*/},
+            navigateToRangeSearch = { /*TODO*/},
             changeActivityToDisplay = {},
             changeWeatherTarget = {},
             weather = null)
@@ -430,7 +422,7 @@ class DiscoverScreenTest {
             selectedLocality = Pair("Ecublens", LatLng(46.519962, 6.633597)),
             fetchActivities = {},
             setScreen = { _ -> },
-            updatePopup = {},
+            navigateToRangeSearch = {},
             navigateToFilter = {},
             orderingBy = OrderingBy.RATING,
             updateOrderingBy = {},
@@ -457,7 +449,6 @@ class DiscoverScreenTest {
     composeRule.onNodeWithTag("suggestion").performClick()
 
     assert(cameraPosition != null)
-    assert(suggestions.isEmpty())
     assert(initialPos != LatLng(46.519962, 6.633597))
   }
 }

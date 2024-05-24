@@ -220,6 +220,17 @@ class HelperFunctionsTest {
     // Verify
     assertNotNull(result)
   }
+
+  @Test
+  fun testCalculateZoomLevel() {
+    val radius = 5000.0
+    val screenWidthPx = 1000f
+    val latitude = 0.0
+
+    val result = calculateZoomLevel(radius, screenWidthPx, latitude)
+
+    assertNotNull(result)
+  }
 }
 /*
   @Test
