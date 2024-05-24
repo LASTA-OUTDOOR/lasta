@@ -82,4 +82,10 @@ class FakeSocialDB : SocialDBRepository {
       throw Exception("FakeSocialDB: sendMessage failed")
     }
   }
+
+  override suspend fun deleteAllConversations(userId: String) {
+    if (shouldThrowException) {
+      throw Exception("FakeSocialDB: deleteAllConversations failed")
+    }
+  }
 }

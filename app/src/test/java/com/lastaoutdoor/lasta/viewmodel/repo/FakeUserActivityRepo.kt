@@ -28,4 +28,6 @@ class FakeUserActivityRepo() : UserActivitiesDBRepository {
   override suspend fun getUserBikingActivities(userId: String): List<UserActivity> {
     return emptyList()
   }
+
+  override suspend fun deleteUserActivities(userId: String) {}
 }
