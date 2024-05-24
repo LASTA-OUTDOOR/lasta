@@ -84,12 +84,15 @@
     <string name="type_message">Ecris ton message ici</string>
     <string name="your_message">Ton message</string>
     <string name="send_message">Envoyer</string>
-    <string name="Account_settings">Paramètres</string>
+    <string name="Account_settings">Paramètres du compte</string>
     <string name="delete_account">Supprimer le compte</string>
     <string name="delete_account_prompt">Voulez-vous vraiment supprimer votre compte ?</string>
     <string name="tab_favorites">Favoris</string>
     <string name="tab_socials">Amis</string>
     <string name="sport_level">Niveau</string>
+    <string name="sport_level_hiking">Niveau de Randonnée</string>
+    <string name="sport_level_climbing">Niveau d\'Escalade</string>
+    <string name="sport_level_biking">Niveau de Cyclisme</string>
     <string name="no_account">" L'adresse e-mail n'est associée à aucun compte"</string>
     <string name="no_fr">" Vous êtes déjà amis avec cet utilisateur"</string>
     <string name="fr_req_sent">Demande d\'ami envoyée</string>
@@ -154,6 +157,8 @@
     <string name ="one_friends_in_common">1 ami en commun</string>
     <string name ="friends_in_common">amis en commun</string>
     <string name="offline_text">Vous êtes Hors-ligne, connectez vous à Internet pour vous connecter à Lasta !</string>
+    <string name="settings">Paramètres</string>
+    <string name ="shared_with_you">a partagé une activité avec vous</string>
     <string name = "at_hour">à</string>
     <string name = "forecasted_weather">Demain</string>
 </resources>

@@ -6,4 +6,5 @@ package com.lastaoutdoor.lasta.models.user;
 public enum SettingsType {
     GENERAL,
     ACTIVITY,
+    ACCOUNT
 }
