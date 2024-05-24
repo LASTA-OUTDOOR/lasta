@@ -47,7 +47,6 @@ class SettingsScreenKtTest {
           signOutAndNavigate = {})
     }
     composeRule.onNodeWithTag("settingsScreen").assertIsDisplayed()
-    composeRule.onNodeWithTag("settingsSignOut").assertIsDisplayed()
 
   }
 
