@@ -153,4 +153,6 @@
     <string name ="no_friends_in_common">Pas d\'amis en commun</string>
     <string name ="one_friends_in_common">1 ami en commun</string>
     <string name ="friends_in_common">amis en commun</string>
+    <string name = "at_hour">à</string>
+    <string name = "forecasted_weather">Demain</string>
 </resources>

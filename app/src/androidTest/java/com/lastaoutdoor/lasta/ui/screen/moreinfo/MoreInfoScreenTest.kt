@@ -10,6 +10,11 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.data.api.weather.Main
+import com.lastaoutdoor.lasta.data.api.weather.MainForecast
+import com.lastaoutdoor.lasta.data.api.weather.WeatherForecast
+import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
+import com.lastaoutdoor.lasta.data.api.weather.Wind
 import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
@@ -80,10 +85,16 @@ class MoreInfoScreenTest {
           getUserModels = { _ -> },
           writeNewRating = { _, _, _ -> },
           currentUser = currentUser,
+          weather =
+              WeatherResponse(
+                  "Paris", main = Main(0.0, 0.0), weather = emptyList(), wind = Wind(0.0)),
           shareToFriend = { _, _ -> },
           friends = emptyList(),
-          weather = null,
           favorites = emptyList(),
+          weatherForecast =
+              WeatherForecast(
+                  main = MainForecast(0.0, 0.0, 0.0, 0.0), weather = emptyList(), dt = ""),
+          dateWeatherForecast = "",
           flipFavorite = { _ -> },
           navigateBack = { /*TODO*/},
           navigateToTracking = {},
@@ -91,6 +102,12 @@ class MoreInfoScreenTest {
           setWeatherBackToUserLoc = {},
           clearSelectedMarker = {})
     }
+  }
+
+  @Test
+  fun clickOnWeather() {
+    composeRule.onNodeWithTag("WeatherReportBig").performClick()
+    composeRule.onNodeWithTag("forecast").assertIsDisplayed()
   }
 
   // Test that the top bar is displayed

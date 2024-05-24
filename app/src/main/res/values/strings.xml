@@ -151,6 +151,8 @@ Sign in to join our fantastic sports addict community!</string>
     <string name = "wind_speed">Wind speed</string>
     <string name = "humidity">Humidity</string>
     <string name = "no_loc">"Weather report not available ! Allow us to use your location and try again if you want this service "</string>
+    <string name = "at_hour">at</string>
+    <string name = "forecasted_weather">Tomorrow </string>
 
     <string name="add_friend_title">Add a friend</string>
     <string name="select_friend">Select a friend</string>
