@@ -51,8 +51,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.data.api.weather.WeatherForecast
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
@@ -61,6 +63,7 @@ import com.lastaoutdoor.lasta.models.activity.Rating
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
+import com.lastaoutdoor.lasta.ui.components.WeatherForecastDisplay
 import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
 import com.lastaoutdoor.lasta.ui.screen.map.mapScreen
 import com.lastaoutdoor.lasta.ui.screen.moreinfo.components.ShareOptionsDialog
@@ -88,6 +91,8 @@ fun MoreInfoScreen(
     friends: List<UserModel>,
     weather: WeatherResponse?,
     favorites: List<String>,
+    weatherForecast: WeatherForecast?,
+    dateWeatherForecast: String,
     flipFavorite: (String) -> Unit,
     navigateBack: () -> Unit,
     navigateToTracking: () -> Unit,
@@ -98,7 +103,13 @@ fun MoreInfoScreen(
   val isMapDisplayed = remember { mutableStateOf(false) }
   val isReviewing = remember { mutableStateOf(false) }
   val text = remember { mutableStateOf("") }
+  val weatherDialog = remember { mutableStateOf(false) }
   if (!isMapDisplayed.value) {
+    if (weatherDialog.value) {
+      Dialog(onDismissRequest = { weatherDialog.value = false }) {
+        WeatherForecastDisplay(weatherForecast = weatherForecast, date = dateWeatherForecast)
+      }
+    }
     Column(
         modifier = Modifier.fillMaxSize(1f).testTag("MoreInfoComposable"),
         verticalArrangement = Arrangement.SpaceBetween) {
@@ -120,7 +131,7 @@ fun MoreInfoScreen(
             }
             // displays activity title and duration
             ActivityTitleZone(activityToDisplay)
-            WeatherReportBig(weather, true)
+            WeatherReportBig(weather, true) { weatherDialog.value = true }
             // displays activity difficulty, ration and view on map button
             MiddleZone(
                 activityToDisplay,
@@ -132,7 +143,6 @@ fun MoreInfoScreen(
                 discoverScreenState.activities,
                 discoverScreenCallBacks.updateActivities,
                 discoverScreenCallBacks.fetchActivities)
-            // filled with a spacer for the moment but will contain address + community
           }
           Column(
               modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {

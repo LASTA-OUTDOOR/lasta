@@ -51,7 +51,6 @@ class FilterScreenTest {
       DiscoverScreenCallBacks(
           fetchActivities = {},
           setScreen = {},
-          setRange = {},
           setSelectedLocality = {},
           updatePermission = {},
           updateSelectedMarker = {},

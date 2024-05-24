@@ -23,6 +23,7 @@ import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.screen.discover.DiscoverScreen
 import com.lastaoutdoor.lasta.ui.screen.discover.FilterScreen
+import com.lastaoutdoor.lasta.ui.screen.discover.components.RangeSearchComposable
 import com.lastaoutdoor.lasta.ui.screen.favorites.FavoritesScreen
 import com.lastaoutdoor.lasta.ui.screen.moreinfo.MoreInfoScreen
 import com.lastaoutdoor.lasta.ui.screen.profile.ProfileScreen
@@ -73,6 +74,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           preferencesViewModel::flipFavorite,
           { navController.navigate(DestinationRoute.Filter.route) },
           { navController.navigate(DestinationRoute.MoreInfo.route) },
+          { navController.navigate(DestinationRoute.RangeSearch.route) },
           moreInfoScreenViewModel::changeActivityToDisplay,
           weatherViewModel::changeLocOfWeather,
           weather,
@@ -187,6 +189,9 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val discoverScreenCallBacks: DiscoverScreenCallBacks = discoverScreenViewModel.callbacks
       val context = LocalContext.current
 
+      val weatherForecast = weatherViewModel.getForecast()
+      val dateWeatherForecast = weatherViewModel.getForecastDate()
+
       MoreInfoScreen(
           activityToDisplay,
           discoverScreenState,
@@ -196,10 +201,12 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           moreInfoScreenViewModel::getUserModels,
           moreInfoScreenViewModel::writeNewRating,
           currentUser,
-          conversationViewModel::sendMessageToFriend,
+          conversationViewModel::shareActivityToFriend,
           socialViewModel.friends,
           weather,
           favorites,
+          weatherForecast,
+          dateWeatherForecast,
           preferencesViewModel::flipFavorite,
           { navController.navigateUp() },
           { context.startActivity(Intent(context, TrackingActivity::class.java)) },
@@ -226,14 +233,19 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
         arguments = listOf(navArgument("userId") { type = NavType.StringType })) { entry ->
           val conversationViewModel: ConversationViewModel = hiltViewModel(entry)
           conversationViewModel.updateFriendUserId(entry.arguments?.getString("userId") ?: "")
+          val moreInfoScreenViewModel: MoreInfoScreenViewModel =
+              entry.sharedViewModel(navController)
           val conversation = conversationViewModel.conversation
           ConversationScreen(
               conversation,
               conversationViewModel::updateConversation,
+              moreInfoScreenViewModel::changeActivityToDisplayByID,
               conversationViewModel.user.value,
               conversationViewModel.friend.value,
               conversationViewModel::send,
-              navController::navigateUp)
+              navController::navigateUp) {
+                navController.navigate(DestinationRoute.MoreInfo.route)
+              }
         }
 
     // Notifications Screen
@@ -304,6 +316,16 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
             navController.popBackStack()
             navController.navigate(BaseRoute.Login.route)
           })
+    }
+
+    // Range Search Screen
+    composable(DestinationRoute.RangeSearch.route) { entry ->
+      val discoverScreenViewModel: DiscoverScreenViewModel = entry.sharedViewModel(navController)
+      val discoverScreenState: DiscoverScreenState =
+          discoverScreenViewModel.state.collectAsState().value
+      val discoverScreenCallBacks: DiscoverScreenCallBacks = discoverScreenViewModel.callbacks
+      RangeSearchComposable(
+          { navController.navigateUp() }, discoverScreenState, discoverScreenCallBacks)
     }
   }
 }

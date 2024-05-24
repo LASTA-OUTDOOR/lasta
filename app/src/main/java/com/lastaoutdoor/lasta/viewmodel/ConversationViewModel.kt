@@ -1,10 +1,12 @@
 package com.lastaoutdoor.lasta.viewmodel
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.notifications.FCMApi
 import com.lastaoutdoor.lasta.models.notifications.NotificationBody
 import com.lastaoutdoor.lasta.models.notifications.SendMessageDto
@@ -17,6 +19,7 @@ import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.utils.ErrorType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -27,6 +30,7 @@ import kotlinx.coroutines.runBlocking
 class ConversationViewModel
 @Inject
 constructor(
+    @ApplicationContext private val context: Context,
     private val userRepository: UserDBRepository,
     private val tokenDBRepo: TokenDBRepository,
     private val fcmAPI: FCMApi,
@@ -106,15 +110,19 @@ constructor(
     }
   }
 
-  // send a message to a friend of the user
-  fun sendMessageToFriend(message: String, friendId: String) {
+  // send a message to a friend of the user for sharing activities
+  fun shareActivityToFriend(message: String, friendId: String) {
     viewModelScope.launch {
       if (message.isNotEmpty()) {
         // Call surrounded by try-catch block to handle exceptions caused by database
         try {
           repository.sendMessage(userId, friendId, message)
           tokenDBRepo.getUserTokenById(friendId)?.let {
-            fcmAPI.sendMessage(SendMessageDto(it, NotificationBody(user.value.userName, message)))
+            fcmAPI.sendMessage(
+                SendMessageDto(
+                    it,
+                    NotificationBody(
+                        user.value.userName, context.getString(R.string.shared_with_you))))
           }
         } catch (e: Exception) {
           errorToast.showToast(ErrorType.ERROR_DATABASE)

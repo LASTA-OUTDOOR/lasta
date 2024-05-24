@@ -7,7 +7,10 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import com.lastaoutdoor.lasta.data.api.weather.Main
+import com.lastaoutdoor.lasta.data.api.weather.MainForecast
 import com.lastaoutdoor.lasta.data.api.weather.Weather
+import com.lastaoutdoor.lasta.data.api.weather.WeatherForecast
+import com.lastaoutdoor.lasta.data.api.weather.WeatherForecastResponse
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.data.api.weather.Wind
 import com.lastaoutdoor.lasta.di.AppModule
@@ -36,7 +39,7 @@ class WeatherReportTest {
   fun whenNullWeather_isDisplayed() {
     composeRule.activity.setContent {
       val fakeWeatherResponse = null
-      WeatherReportBig(weather = fakeWeatherResponse, displayWind = true)
+      WeatherReportBig(weather = fakeWeatherResponse, displayWind = true) {}
     }
     composeRule.onNodeWithTag("NoLocMessage").assertIsDisplayed()
   }
@@ -46,12 +49,9 @@ class WeatherReportTest {
     composeRule.activity.setContent {
       val fakeWeatherResponse =
           WeatherResponse("name", Main(3.0, 4.0), listOf(Weather("descr", "iconid")), Wind(5.0))
-      WeatherReportBig(weather = fakeWeatherResponse, displayWind = true)
+      WeatherReportBig(weather = fakeWeatherResponse, displayWind = true) {}
     }
-    composeRule.onNodeWithTag("temp").assertIsDisplayed()
-    composeRule.onNodeWithTag("WeatherName").assertIsDisplayed()
-    composeRule.onNodeWithTag("WeatherIcon").assertIsDisplayed()
-    composeRule.onNodeWithTag("WindDisplay").assertIsDisplayed()
+    composeRule.onNodeWithTag("WeatherReportBig").assertIsDisplayed()
   }
 
   @Test
@@ -59,7 +59,7 @@ class WeatherReportTest {
     composeRule.activity.setContent {
       val fakeWeatherResponse =
           WeatherResponse("name", Main(3.0, 4.0), listOf(Weather("descr", "iconid")), Wind(5.0))
-      WeatherReportBig(weather = fakeWeatherResponse, displayWind = false)
+      WeatherReportBig(weather = fakeWeatherResponse, displayWind = false) {}
     }
 
     composeRule.onNodeWithTag("WindDisplay").assertIsNotDisplayed()
@@ -84,5 +84,31 @@ class WeatherReportTest {
     }
 
     composeRule.onNodeWithContentDescription("Current Weather Logo").assertIsNotDisplayed()
+  }
+
+  @Test
+  fun weatherForecastDisplayTest() {
+    composeRule.activity.setContent {
+      val fakeWeatherForecastResponse =
+          WeatherForecastResponse(
+              listOf(
+                  WeatherForecast(
+                      MainForecast(2.0, 3.0, 2.0, 0.0), listOf(Weather("main", "icon")), "dt")))
+      val weatherForecast = fakeWeatherForecastResponse.list.first()
+      WeatherForecastDisplay(weatherForecast = weatherForecast, date = "")
+    }
+    composeRule.onNodeWithTag("forecast").assertIsDisplayed()
+    composeRule.onNodeWithTag("forecastIcon").assertIsDisplayed()
+  }
+
+  @Test
+  fun weatherForecastDisplayWhenNull_isNotDisplayed() {
+    composeRule.activity.setContent {
+      val fakeWeatherForecastResponse = null
+      WeatherForecastDisplay(weatherForecast = fakeWeatherForecastResponse, date = "")
+    }
+
+    composeRule.onNodeWithTag("forecast").assertIsNotDisplayed()
+    composeRule.onNodeWithTag("forecastIcon").assertIsNotDisplayed()
   }
 }

@@ -91,7 +91,8 @@ fun mapScreen(
     selectedMarker: Marker?,
     selectedItinerary: MapItinerary?,
     markerList: List<Marker>,
-    clearSelectedMarker: () -> Unit
+    clearSelectedMarker: () -> Unit,
+    isRangeSearch: Boolean = false
 ): (CameraUpdate) -> Unit {
 
   // camera that goes to the initial position and can be moved by the user
@@ -120,7 +121,8 @@ fun mapScreen(
       markerList,
       selectedMarker,
       clearSelectedItinerary,
-      clearSelectedMarker)
+      clearSelectedMarker,
+      isRangeSearch)
 
   // return a function that can move the camera to a specific position
   return cameraPositionState::move
@@ -141,7 +143,8 @@ private fun GoogleMapComposable(
     markerList: List<Marker>,
     selectedMarker: Marker?,
     clearSelectedItinerary: () -> Unit,
-    clearSelectedMarker: () -> Unit
+    clearSelectedMarker: () -> Unit,
+    isRangeSearch: Boolean
 ) {
 
   GoogleMap(
@@ -184,7 +187,7 @@ private fun GoogleMapComposable(
           icon = getScaledBitmapDescriptor(LocalContext.current, marker.icon, 150, 150),
           snippet = marker.description,
           onClick = {
-            if (selectedMarker == null || selectedMarker.id != marker.id) {
+            if (!isRangeSearch && (selectedMarker == null || selectedMarker.id != marker.id)) {
               updateSelectedMarker(marker)
               updateSheet()
               // camera moves to the marker when clicked
