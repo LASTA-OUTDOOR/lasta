@@ -195,6 +195,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           usersList,
           moreInfoScreenViewModel::getUserModels,
           moreInfoScreenViewModel::writeNewRating,
+          moreInfoScreenViewModel::updateDifficulty,
           currentUser,
           conversationViewModel::shareActivityToFriend,
           socialViewModel.friends,

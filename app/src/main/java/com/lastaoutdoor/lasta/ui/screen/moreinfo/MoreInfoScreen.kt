@@ -86,6 +86,7 @@ fun MoreInfoScreen(
     usersList: List<UserModel?>,
     getUserModels: (List<String>) -> Unit,
     writeNewRating: (String, Rating, String) -> Unit,
+    updateDifficulty: (String) -> Unit,
     currentUser: UserModel?,
     shareToFriend: (String, String) -> Unit,
     friends: List<UserModel>,
@@ -130,7 +131,7 @@ fun MoreInfoScreen(
                   }
             }
             // displays activity title and duration
-            ActivityTitleZone(activityToDisplay)
+            ActivityTitleZone(activityToDisplay, updateDifficulty)
             WeatherReportBig(weather, true) { weatherDialog.value = true }
             // displays activity difficulty, ration and view on map button
             MiddleZone(
@@ -340,7 +341,7 @@ fun Star(iconId: Int) {
 
 // Displays the difficulty of the activity
 @Composable
-fun ElevatedDifficultyDisplay(activityToDisplay: Activity) {
+fun ElevatedDifficultyDisplay(activityToDisplay: Activity, updateDifficulty: (String) -> Unit) {
   val difficultyColor =
       when (activityToDisplay.difficulty) {
         Difficulty.EASY -> GreenDifficulty
@@ -348,7 +349,7 @@ fun ElevatedDifficultyDisplay(activityToDisplay: Activity) {
         Difficulty.HARD -> RedDifficulty
       }
   ElevatedButton(
-      onClick = { /*TODO let user change activity difficulty */},
+      onClick = { updateDifficulty(activityToDisplay.activityId) },
       contentPadding = PaddingValues(all = 3.dp),
       modifier = Modifier.width(80.dp).height(24.dp).testTag("elevatedTestTag"),
       colors = ButtonDefaults.buttonColors(containerColor = difficultyColor)) {
@@ -420,7 +421,7 @@ fun TopBarLogo(logoPainterId: ImageVector, f: () -> Unit) {
 
 // Displays the title of the activity, its type and its duration
 @Composable
-fun ActivityTitleZone(activityToDisplay: Activity) {
+fun ActivityTitleZone(activityToDisplay: Activity, updateDifficulty: (String) -> Unit) {
   Row(
       modifier = Modifier.fillMaxWidth(),
       verticalAlignment = Alignment.CenterVertically,
@@ -431,7 +432,7 @@ fun ActivityTitleZone(activityToDisplay: Activity) {
               ActivityPicture(activityToDisplay)
               ActivityTitleText(activityToDisplay)
             }
-        ElevatedDifficultyDisplay(activityToDisplay)
+        ElevatedDifficultyDisplay(activityToDisplay, updateDifficulty = updateDifficulty)
       }
 }
 
