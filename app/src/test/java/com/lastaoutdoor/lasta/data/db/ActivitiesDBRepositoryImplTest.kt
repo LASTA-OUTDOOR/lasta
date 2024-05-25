@@ -21,7 +21,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
@@ -223,6 +222,23 @@ class ActivitiesDBRepositoryImplTest {
     every { querySnapshot.isEmpty } returns true
     val result = activitiesDB.getActivitiesByOSMIds(listOf(0, 1, 2), false)
     assert(result.isEmpty())
+  }
+
+  @Test
+  fun `update difficulty works fine`() = runTest {
+    every { documentSnapshot1.getString("difficulty") } returns "EASY"
+    coEvery { documentReference.update(any() as String, any()) } returns updateTask
+    activitiesDB.updateDifficulty("activityId")
+    coVerify(exactly = 1) { documentReference.update(any() as String, any()) }
+    every { documentSnapshot1.getString("difficulty") } returns "NORMAL"
+    activitiesDB.updateDifficulty("activityId")
+    coVerify(exactly = 2) { documentReference.update(any() as String, any()) }
+    every { documentSnapshot1.getString("difficulty") } returns "HARD"
+    activitiesDB.updateDifficulty("activityId")
+    coVerify(exactly = 3) { documentReference.update(any() as String, any()) }
+    every { documentSnapshot1.getString("difficulty") } returns "UNKNOWN"
+    activitiesDB.updateDifficulty("activityId")
+    coVerify(exactly = 4) { documentReference.update(any() as String, any()) }
   }
 
   @Test

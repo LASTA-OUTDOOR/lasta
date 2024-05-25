@@ -193,11 +193,13 @@ class MoreInfoScreenViewModelTest {
     val moreInfoScreenViewModel =
         MoreInfoScreenViewModel(fakeDb, fk, fakeActivityDaoImpl, fakeUserDB, errorToast)
     fakeActivityDaoImpl.shouldThrowException = true
+    fk.shouldThrowException = true
     try {
       moreInfoScreenViewModel.updateDifficulty("a")
     } catch (e: Exception) {
       coVerify { errorToast.showToast(ErrorType.ERROR_DAO) }
     }
+    fk.shouldThrowException = false
     fakeActivityDaoImpl.shouldThrowException = false
   }
 
