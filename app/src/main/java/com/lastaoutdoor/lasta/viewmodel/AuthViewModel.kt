@@ -109,6 +109,30 @@ constructor(
     }
   }
 
+  fun deleteAccount() {
+    viewModelScope.launch {
+
+      // Call surrounded by try-catch block to make handle exceptions for account deletion
+      try {
+        authRepo.deleteAccount().collect { response ->
+          when (response) {
+            is Response.Loading -> {}
+            is Response.Success -> {
+              user = null
+              beginSignInResult = null
+              signedOut = true
+            }
+            is Response.Failure -> {
+              errorToast.showToast(ErrorType.ERROR_SIGN_OUT)
+            }
+          }
+        }
+      } catch (e: Exception) {
+        errorToast.showToast(ErrorType.ERROR_SIGN_OUT)
+      }
+    }
+  }
+
   fun updateFieldInUser(userId: String, field: String, value: Any) {
     viewModelScope.launch {
       // Call surrounded by try-catch block to make handle exceptions caused by database

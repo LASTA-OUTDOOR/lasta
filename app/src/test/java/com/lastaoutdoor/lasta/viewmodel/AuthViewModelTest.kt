@@ -60,6 +60,7 @@ class AuthViewModelTest {
     vm.finishGoogleSignIn(mockk())
     vm.signOut()
     vm.startGoogleSignIn()
+    vm.deleteAccount()
   }
 
   @Test
@@ -100,6 +101,17 @@ class AuthViewModelTest {
     db.shouldThrowException = true
     try {
       vm.updateFieldInUser("", ",", "")
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(any()) }
+    }
+    db.shouldThrowException = false
+  }
+
+  @Test
+  fun `deleteAccount with exception`() {
+    db.shouldThrowException = true
+    try {
+      vm.deleteAccount()
     } catch (e: Exception) {
       coVerify { errorToast.showToast(any()) }
     }

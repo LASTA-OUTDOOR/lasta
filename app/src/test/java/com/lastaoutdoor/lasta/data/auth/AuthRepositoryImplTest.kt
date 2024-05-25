@@ -9,6 +9,10 @@ import com.google.firebase.auth.FirebaseUser
 import com.lastaoutdoor.lasta.data.MockTask
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.auth.AuthRepository
+import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
+import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
+import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
+import com.lastaoutdoor.lasta.repository.db.UserActivitiesDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import com.lastaoutdoor.lasta.utils.Response
 import io.mockk.clearAllMocks
@@ -29,6 +33,11 @@ class AuthRepositoryImplTest {
   private val signInRequest = mockk<BeginSignInRequest>(relaxed = true)
   private val signUpRequest = mockk<BeginSignInRequest>(relaxed = true)
   private val userDBRepo = mockk<UserDBRepository>(relaxed = true)
+  private val activityDBRepository = mockk<ActivitiesDBRepository>(relaxed = true)
+  private val tokenDBRepository = mockk<TokenDBRepository>(relaxed = true)
+  private val socialDBRepository = mockk<SocialDBRepository>(relaxed = true)
+  private val userActivitiesDBRepository = mockk<UserActivitiesDBRepository>(relaxed = true)
+
   private val startLoginTask: MockTask<BeginSignInResult> = mockk()
   private val signInWithCredentialTask: MockTask<AuthResult> = mockk()
   private val signOutTask: MockTask<Void> = mockk()
@@ -38,7 +47,17 @@ class AuthRepositoryImplTest {
 
   @Before
   fun setup() {
-    authRepo = AuthRepositoryImpl(auth, oneTapClient, signInRequest, signUpRequest, userDBRepo)
+    authRepo =
+        AuthRepositoryImpl(
+            auth,
+            oneTapClient,
+            signInRequest,
+            signUpRequest,
+            userDBRepo,
+            activityDBRepository,
+            socialDBRepository,
+            tokenDBRepository,
+            userActivitiesDBRepository)
     every { startLoginTask.isComplete } returns true
     every { startLoginTask.isCanceled } returns false
     every { startLoginTask.isSuccessful } returns true

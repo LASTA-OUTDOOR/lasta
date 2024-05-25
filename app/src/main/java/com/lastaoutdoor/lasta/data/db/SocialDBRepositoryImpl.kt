@@ -331,6 +331,7 @@ constructor(
   }
 
   override suspend fun deleteAllConversations(userId: String) {
+    // Get all documents that contains the userId
     val conversationsQuery =
         conversationCollection.whereArrayContains("members", userId).get().await()
     for (conversation in conversationsQuery.documents) {
