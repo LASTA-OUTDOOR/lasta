@@ -88,7 +88,6 @@ class DiscoverScreenTest {
     var navigateFilter = false
     var navigateSearch = false
     var screenType = DiscoverDisplayType.LIST
-    var popUp = false
 
     val fetchSuggestion: (String) -> Unit = { /*TODO*/}
     var suggestion: Map<String, LatLng> = emptyMap()
@@ -98,7 +97,7 @@ class DiscoverScreenTest {
         // Assuming you have a minimal setup or mock data needed for DiscoverScreen
         HeaderComposable(
             screen = screenType,
-            range = 5000.0,
+            range = 10000.0,
             selectedLocality = "Ecublens" to LatLng(46.519962, 6.633597),
             fetchActivities = {},
             setScreen = { screenType = it },
@@ -118,9 +117,8 @@ class DiscoverScreenTest {
     }
 
     composeRule.onNodeWithTag("header").assertIsDisplayed()
-    composeRule.onNodeWithTag("locationText").assertIsDisplayed()
-    composeRule.onNodeWithTag("locationButton").assertIsDisplayed()
-    composeRule.onNodeWithTag("rangeText").assertIsDisplayed()
+    composeRule.onNodeWithTag("locationBar").assertIsDisplayed()
+    composeRule.onNodeWithTag("locationRow").assertIsDisplayed()
     composeRule.onNodeWithTag("searchBarComponent").assertIsDisplayed()
     composeRule.onNodeWithTag("locationButton").performClick()
     composeRule.onNodeWithTag("filterButton").performClick()

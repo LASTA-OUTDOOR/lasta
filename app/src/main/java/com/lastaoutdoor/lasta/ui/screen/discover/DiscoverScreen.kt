@@ -212,11 +212,16 @@ fun HeaderComposable(
         Column {
           // Location bar
           Row(
-              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+              modifier =
+                  Modifier.fillMaxWidth()
+                      .padding(horizontal = 16.dp, vertical = 8.dp)
+                      .testTag("locationBar"),
               verticalAlignment = Alignment.CenterVertically) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.clickable(onClick = { navigateToRangeSearch() })) {
+                    modifier =
+                        Modifier.clickable(onClick = { navigateToRangeSearch() })
+                            .testTag("locationRow")) {
                       Column {
                         Icon(
                             Icons.Filled.LocationOn,
