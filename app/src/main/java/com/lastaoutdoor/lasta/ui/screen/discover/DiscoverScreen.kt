@@ -292,7 +292,6 @@ fun HeaderComposable(
               }
 
           val fManager = LocalFocusManager.current
-          // Suggestions for the places
 
           LazyColumn(
               modifier =
