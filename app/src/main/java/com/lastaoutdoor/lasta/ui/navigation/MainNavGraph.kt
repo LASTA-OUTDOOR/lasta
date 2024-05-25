@@ -93,6 +93,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       FavoritesScreen(
           isLoading,
           favorites,
+          favoritesScreenViewModel::fetchFavorites,
           centerPoint,
           favoriteIds,
           moreInfoScreenViewModel::changeActivityToDisplay,
