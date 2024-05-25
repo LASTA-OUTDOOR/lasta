@@ -16,6 +16,7 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.GoogleAuthProvider
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.screen.login.components.LoginContent
+import com.lastaoutdoor.lasta.utils.ConnectionState
 
 @Composable
 fun LoginScreen(
@@ -27,8 +28,10 @@ fun LoginScreen(
     oneTapClient: SignInClient,
     updatePreferencesOnLogin: (UserModel) -> Unit,
     navigateToSetup: () -> Unit,
-    navigateToMain: () -> Unit
+    navigateToMain: () -> Unit,
+    isConnected: ConnectionState
 ) {
+
   val launcher =
       rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
           result ->
@@ -63,5 +66,5 @@ fun LoginScreen(
   }
   Spacer(modifier = Modifier.testTag("loginScreenMain"))
 
-  LoginContent(onLoginClick = { startGoogleSignIn() })
+  LoginContent(onLoginClick = { startGoogleSignIn() }, isConnected)
 }
