@@ -22,6 +22,7 @@ fun NavGraphBuilder.addLoginNavGraph(navController: NavHostController) {
       val authViewModel: AuthViewModel = hiltViewModel(entry)
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
       val isSignUp = authViewModel.isSignUp.collectAsState(initial = false).value
+      val isConnected = authViewModel.isConnected.collectAsState().value
       LoginScreen(
           authViewModel.beginSignInResult,
           authViewModel.user,
@@ -41,7 +42,8 @@ fun NavGraphBuilder.addLoginNavGraph(navController: NavHostController) {
           {
             navController.popBackStack()
             navController.navigate(BaseRoute.Main.route)
-          })
+          },
+          isConnected)
     }
     composable(DestinationRoute.Setup.route) { entry ->
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)

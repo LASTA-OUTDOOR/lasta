@@ -1,18 +1,27 @@
 package com.lastaoutdoor.lasta.viewmodel
 
+import com.lastaoutdoor.lasta.models.activity.ActivityType
+import com.lastaoutdoor.lasta.models.user.BikingUserActivity
 import com.lastaoutdoor.lasta.models.user.ClimbingUserActivity
+import com.lastaoutdoor.lasta.models.user.HikingUserActivity
 import com.lastaoutdoor.lasta.models.user.UserActivity
 import com.lastaoutdoor.lasta.models.user.UserModel
+import com.lastaoutdoor.lasta.repository.offline.ActivityDao
+import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.utils.ErrorType
+import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivityDatabaseImpl
+import com.lastaoutdoor.lasta.viewmodel.repo.FakeConnectivityviewRepo
 import com.lastaoutdoor.lasta.viewmodel.repo.FakePreferencesRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserActivityRepo
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserDB
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
@@ -33,6 +42,9 @@ class ProfileScreenViewModelTest {
   private val userDb = FakeUserDB()
   private val prefDB = FakePreferencesRepository()
   private val userActDb = FakeUserActivityRepo()
+  private val connec = FakeConnectivityviewRepo()
+  private val dao: ActivityDao = mockk()
+  private val off = FakeActivityDatabaseImpl(dao)
 
   @Before
   fun setUp() {
@@ -42,9 +54,14 @@ class ProfileScreenViewModelTest {
             timeProvider = tm,
             userDBRepo = userDb,
             preferences = prefDB,
-            errorToast = errorToast)
+            errorToast = errorToast,
+            offlineActivityDB = off,
+            connectivityRepositoryImpl = connec)
 
     every { errorToast.showToast(ErrorType.ERROR_DATABASE) } returns Unit
+    coEvery { dao.getClimbingActivities() } returns listOf(ClimbingUserActivity())
+    coEvery { dao.getHikingActivities() } returns listOf(HikingUserActivity())
+    coEvery { dao.getBikingActivities() } returns listOf(BikingUserActivity())
   }
 
   @ExperimentalCoroutinesApi val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
@@ -89,5 +106,23 @@ class ProfileScreenViewModelTest {
       coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
     }
     userDb.shouldThrowException = false
+  }
+
+  @Test
+  fun offlineTest() {
+    connec.connectionState = flowOf(ConnectionState.OFFLINE)
+    val vm2 =
+        ProfileScreenViewModel(
+            userActDb,
+            timeProvider = tm,
+            userDBRepo = userDb,
+            preferences = prefDB,
+            errorToast = errorToast,
+            offlineActivityDB = off,
+            connectivityRepositoryImpl = connec)
+
+    assertEquals(vm2.activities.value[0].activityId, ClimbingUserActivity().activityId)
+    vm2.setSport(ActivityType.HIKING)
+    vm2.setSport(ActivityType.BIKING)
   }
 }

@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.Activity
@@ -80,7 +81,8 @@ fun ShareOptionsDialog(
                     shape = RoundedCornerShape(20)) {
                       Text(
                           LocalContext.current.getString(R.string.share_in_app),
-                          style = MaterialTheme.typography.bodySmall)
+                          style = MaterialTheme.typography.bodySmall,
+                          textAlign = TextAlign.Center)
                     }
                 Spacer(modifier = Modifier.weight(1f))
 
@@ -96,7 +98,8 @@ fun ShareOptionsDialog(
                     shape = RoundedCornerShape(20)) {
                       Text(
                           LocalContext.current.getString(R.string.share_outside),
-                          style = MaterialTheme.typography.bodySmall)
+                          style = MaterialTheme.typography.bodySmall,
+                          textAlign = TextAlign.Center)
                     }
               }
         },
