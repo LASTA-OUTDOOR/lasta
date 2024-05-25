@@ -7,6 +7,10 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.auth.AuthRepository
+import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
+import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
+import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
+import com.lastaoutdoor.lasta.repository.db.UserActivitiesDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import com.lastaoutdoor.lasta.utils.Response
 import javax.inject.Inject
@@ -25,7 +29,11 @@ constructor(
     private var oneTapClient: SignInClient,
     @Named("signInRequest") private var signInRequest: BeginSignInRequest,
     @Named("signUpRequest") private var signUpRequest: BeginSignInRequest,
-    private val userDBRepo: UserDBRepository
+    private val userDBRepo: UserDBRepository,
+    private val activitiesDBRepo: ActivitiesDBRepository,
+    private val socialDBRepo: SocialDBRepository,
+    private val tokenDBRepo: TokenDBRepository,
+    private val userActivitiesDBRepo: UserActivitiesDBRepository
 ) : AuthRepository {
 
   private val _isSignUp: MutableStateFlow<Boolean> = MutableStateFlow(false)
@@ -98,6 +106,11 @@ constructor(
       emit(Response.Loading)
       val user = auth.currentUser
       if (user != null) {
+        userDBRepo.deleteUser(user.uid)
+        activitiesDBRepo.deleteAllUserRatings(user.uid)
+        socialDBRepo.deleteAllConversations(user.uid)
+        tokenDBRepo.deleteUserToken(user.uid)
+        userActivitiesDBRepo.deleteUserActivities(user.uid)
         user.delete().await()
         emit(Response.Success(true))
       } else {

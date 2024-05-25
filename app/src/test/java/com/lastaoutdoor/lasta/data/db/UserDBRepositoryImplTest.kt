@@ -229,8 +229,24 @@ class UserDBRepositoryImplTest {
 
   @Test
   fun `deleteUser works fine`() = runTest {
+    every { documentSnapshot.id } returns "userId"
+    every { documentSnapshot.getString(any()) } returns null
+    every { documentSnapshot.get(any() as String) } returns null
+    every { userCollection.document("userId") } returns documentReference
+    every { documentSnapshot.get("friends") } returns listOf("friend")
+    every { userCollection.whereArrayContains("friends", "userId") } returns query
+    every { query.get() } returns queryTask
+    every { queryTask.await() } returns querySnapshot
+    every { querySnapshot.documents } returns listOf(documentSnapshot)
+    every { documentSnapshot.id } returns "friend"
+    val documentReference2: DocumentReference = mockk()
+    every { userCollection.document("friend") } returns documentReference2
+    every { documentReference2.update("friends", any()) } returns updateTask
+
     coEvery { documentReference.delete() } returns updateTask
+
     userDB.deleteUser("userId")
     coVerify(exactly = 1) { documentReference.delete() }
+    coVerify(exactly = 1) { documentReference2.update("friends", any()) }
   }
 }

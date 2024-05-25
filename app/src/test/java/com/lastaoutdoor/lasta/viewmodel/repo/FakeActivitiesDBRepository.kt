@@ -85,10 +85,6 @@ class FakeActivitiesDBRepository() : ActivitiesDBRepository {
     }
   }
 
-  override suspend fun deleteRating(activity: Activity, userId: String): Activity {
-    return activity
-  }
-
   override suspend fun deleteAllUserRatings(userId: String): List<Activity> {
     return emptyList()
   }

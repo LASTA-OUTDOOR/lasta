@@ -44,7 +44,8 @@ class SettingsScreenKtTest {
           updateHikingLevel = {},
           updateBikingLevel = {},
           navigateBack = {},
-          signOutAndNavigate = {})
+          signOutAndNavigate = {},
+          deleteAccountAndNavigate = {})
     }
     composeRule.onNodeWithTag("settingsScreen").assertIsDisplayed()
   }
@@ -88,7 +89,8 @@ class SettingsScreenKtTest {
           updateHikingLevel = {},
           updateBikingLevel = {},
           navigateBack = {},
-          signOutAndNavigate = {})
+          signOutAndNavigate = {},
+          deleteAccountAndNavigate = {})
     }
     composeRule.onNodeWithTag("settingsAppBar").assertIsDisplayed()
   }
@@ -108,7 +110,8 @@ class SettingsScreenKtTest {
           updateHikingLevel = {},
           updateBikingLevel = {},
           navigateBack = {},
-          signOutAndNavigate = {})
+          signOutAndNavigate = {},
+          deleteAccountAndNavigate = {})
     }
     composeRule.onNodeWithTag("languageDropDownButton").performClick()
     composeRule.onNodeWithTag("settingsLanguage").performClick()
@@ -130,7 +133,8 @@ class SettingsScreenKtTest {
           updateHikingLevel = {},
           updateBikingLevel = {},
           navigateBack = {},
-          signOutAndNavigate = {})
+          signOutAndNavigate = {},
+          deleteAccountAndNavigate = {})
     }
     composeRule.onNodeWithTag("settingsFavActivity").assertIsDisplayed()
     composeRule.onNodeWithTag("settingsHIKING").performClick()
