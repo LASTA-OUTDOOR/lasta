@@ -59,7 +59,6 @@ import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
-import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.ui.components.DisplaySelection
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
 import com.lastaoutdoor.lasta.ui.components.LoadingAnim
@@ -68,9 +67,6 @@ import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
 import com.lastaoutdoor.lasta.ui.components.WeatherReportSmall
 import com.lastaoutdoor.lasta.ui.components.searchBarComponent
 import com.lastaoutdoor.lasta.ui.screen.map.mapScreen
-import com.lastaoutdoor.lasta.ui.theme.GreenDifficulty
-import com.lastaoutdoor.lasta.ui.theme.OrangeDifficulty
-import com.lastaoutdoor.lasta.ui.theme.RedDifficulty
 import com.lastaoutdoor.lasta.utils.OrderingBy
 import com.lastaoutdoor.lasta.viewmodel.DiscoverDisplayType
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenCallBacks
@@ -388,11 +384,7 @@ fun ActivitiesDisplay(
                       modifier =
                           Modifier.shadow(4.dp, RoundedCornerShape(30))
                               .background(
-                                  when (a.difficulty) {
-                                    Difficulty.EASY -> GreenDifficulty
-                                    Difficulty.NORMAL -> OrangeDifficulty
-                                    Difficulty.HARD -> RedDifficulty
-                                  },
+                                  color = a.difficulty.getColorByDifficulty(),
                                   RoundedCornerShape(10.dp))
                               .padding(PaddingValues(8.dp))) {
                         Text(
