@@ -157,63 +157,56 @@ constructor(context: Context, database: FirebaseFirestore) : ActivitiesDBReposit
     document.update("rating", newMeanRating)
   }
 
-  override suspend fun deleteRating(activity: Activity, userId: String): Activity {
-    val document = activitiesCollection.document(activity.activityId)
-
-    // Fetch the current ratings from the activity document
-    val activitySnapshot = document.get().await()
-    val currentRatings = activitySnapshot.get("ratings") as? List<Map<String, Any>> ?: emptyList()
-
-    // Find the rating to be removed
-    val ratingToRemove = currentRatings.find { it["userId"] == userId }
-
-    if (ratingToRemove != null) {
-      // Update the document to remove the rating
-      document.update("ratings", FieldValue.arrayRemove(ratingToRemove)).await()
-
-      // Recalculate the number of ratings
-      val newNumRatings = activity.numRatings - 1
-
-      // Recalculate the new average rating
-      val newRatings = currentRatings.filter { it["userId"] != userId }
-      val newMeanRating =
-          if (newNumRatings > 0) {
-            newRatings.map { it["rating"].toString().toFloat() }.average()
-          } else {
-            1.0
-          }
-
-      // Update the numRatings and meanRating in the document
-      document.update("numRatings", newNumRatings).await()
-      document.update("meanRating", newMeanRating).await()
-
-      // Create a new copy of the activity with the updated values
-      val updatedActivity =
-          activity.copy(
-              numRatings = newNumRatings,
-              ratings =
-                  newRatings.map {
-                    Rating(
-                        userId = it["userId"].toString(),
-                        comment = it["comment"].toString(),
-                        rating = it["rating"].toString())
-                  },
-              rating = newMeanRating.toFloat())
-      return updatedActivity
-    }
-    return activity
-  }
-
   override suspend fun deleteAllUserRatings(userId: String): List<Activity> {
-    val query = activitiesCollection.whereArrayContains("ratings.userId", userId).get().await()
-    val newActivityList = mutableListOf<Activity>()
+    // Get all activities with a numRatings > 0
+    val query = activitiesCollection.whereGreaterThan("numRatings", 0).get().await()
+    val activities = ArrayList<Activity>()
+
     if (!query.isEmpty) {
       val documents = query.documents
       for (document in documents) {
-        val activity = convertDocumentToActivity(document)
-        newActivityList.add(deleteRating(activity, userId))
+        // Check if the user has rated the activity
+        val ratingsMap: List<Map<String, Any>> =
+            (document.get("ratings") ?: emptyList<Map<String, Any>>()) as List<Map<String, Any>>
+
+        // Find every rating in ratingsMap that has the userId
+        val ratingsToRemove = ratingsMap.filter { it["userId"] == userId }
+
+        if (ratingsToRemove.isNotEmpty()) {
+          val activity = convertDocumentToActivity(document)
+          // Update the document to remove each rating
+          val newRatings = ratingsMap.filter { it["userId"] != userId }
+          document.reference.update("ratings", newRatings)
+
+          // Recalculate the number of ratings
+          val newNumRatings = activity.numRatings - ratingsToRemove.size
+          val newMeanRating =
+              if (newNumRatings > 0) {
+                newRatings.map { it["rating"].toString().toFloat() }.average().toString()
+              } else {
+                "1.0"
+              }
+
+          // Update the numRatings and meanRating in the document
+          document.reference.update("numRatings", newNumRatings)
+          document.reference.update("rating", newMeanRating)
+          // Create a new copy of the activity with the updated values
+          val updatedActivity =
+              activity.copy(
+                  numRatings = newNumRatings,
+                  ratings =
+                      newRatings.map {
+                        Rating(
+                            userId = it["userId"].toString(),
+                            comment = it["comment"].toString(),
+                            rating = it["rating"].toString())
+                      },
+                  rating = newMeanRating.toFloat())
+
+          activities.add(updatedActivity)
+        }
       }
     }
-    return newActivityList
+    return activities
   }
 }

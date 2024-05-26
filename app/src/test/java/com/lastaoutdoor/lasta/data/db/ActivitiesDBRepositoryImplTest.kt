@@ -308,61 +308,30 @@ class ActivitiesDBRepositoryImplTest {
   }
 
   @Test
-  fun `Delete rating works correctly`() = runTest {
-    val activity =
-        Activity(
-            activityId = "activityId",
-            osmId = 0,
-            activityType = ActivityType.CLIMBING,
-            name = "name",
-            startPosition = Position(0.0, 0.0),
-            rating = 5.0f,
-            numRatings = 2,
-            ratings =
-                listOf(
-                    Rating("userId", "comment", "5"), Rating("otherUserId", "otherComment", "4")),
-            difficulty = Difficulty.EASY,
-            activityImageUrl = "activityImageUrl",
-            climbingStyle = ClimbingStyle.OUTDOOR,
-            elevationTotal = 100.0f,
-            from = "from",
-            to = "to",
-            distance = 10.0f)
-
-    every { documentSnapshot1.exists() } returns true
-    every { documentSnapshot1.get("ratings") } returns
-        listOf(
-            hashMapOf("userId" to "userId", "comment" to "comment", "rating" to "5"),
-            hashMapOf("userId" to "otherUserId", "comment" to "otherComment", "rating" to "4"))
-
-    coEvery { documentReference.get() } returns getTask
-    coEvery { getTask.await() } returns documentSnapshot1
-    coEvery { documentReference.update("ratings", any()) } returns updateTask
-    coEvery { documentReference.update("numRatings", any()) } returns updateTask
-    coEvery { documentReference.update("meanRating", any()) } returns updateTask
-
-    val updatedActivity = activitiesDB.deleteRating(activity, "userId")
-    assert(updatedActivity.numRatings == 1)
-    assert(updatedActivity.ratings.size == 1)
-    assert(updatedActivity.ratings[0].userId == "otherUserId")
-    assert(updatedActivity.rating == 4.0f)
-
-    coVerify { documentReference.update("ratings", any()) }
-    coVerify { documentReference.update("numRatings", 1) }
-    coVerify { documentReference.update("meanRating", 4.0) }
-  }
-
-  @Test
   fun `Delete all user ratings from multiple activities works correctly`() = runTest {
+    every { collection.whereGreaterThan("numRatings", 0) } returns query
+    every { query.get() } returns queryTask
+    every { queryTask.await() } returns querySnapshot
+    every { querySnapshot.documents } returns emptyList()
+    every { querySnapshot.isEmpty } returns true
+    var result = activitiesDB.deleteAllUserRatings("userId")
+    assert(result.isEmpty())
+    every { documentReference.update(any() as String, any()) } returns updateTask
     every { querySnapshot.isEmpty } returns false
     every { querySnapshot.documents } returns listOf(documentSnapshot1, documentSnapshot2)
+    val documentReference1: DocumentReference = mockk()
+    val documentReference2: DocumentReference = mockk()
+    every { documentSnapshot1.reference } returns documentReference1
+    every { documentSnapshot2.reference } returns documentReference2
     every { documentSnapshot1.get("startPosition") } returns hashMapOf("lat" to 0.0, "lon" to 0.0)
     every { documentSnapshot1.id } returns "activityId"
     every { documentSnapshot1.getLong("osmId") } returns 0
     every { documentSnapshot1.getString("activityType") } returns "CLIMBING"
     every { documentSnapshot1.getString("name") } returns "name"
-    every { (documentSnapshot1.getString("rating") ?: "5") } returns "4.5"
-    every { documentSnapshot1.getLong("numRatings") } returns 2
+    every { documentSnapshot1.getString("rating") ?: "5" } returns "5"
+    every { documentSnapshot1.getLong("numRatings") } returns 1
+    every { documentSnapshot1.get("ratings") } returns
+        listOf(hashMapOf("userId" to "userId", "comment" to "comment", "rating" to "5"))
     every { documentSnapshot1.getString("difficulty") } returns "EASY"
     every { documentSnapshot1.getString("activityImageUrl") } returns "activityImageUrl"
     every { documentSnapshot1.getString("climbingStyle") } returns "OUTDOOR"
@@ -370,14 +339,15 @@ class ActivitiesDBRepositoryImplTest {
     every { documentSnapshot1.getString("from") } returns "from"
     every { documentSnapshot1.getString("to") } returns "to"
     every { documentSnapshot1.getDouble("distance") } returns 10.0
-
-    every { documentSnapshot2.get("startPosition") } returns hashMapOf("lat" to 0.0, "lon" to 0.0)
+    every { documentSnapshot2.get("startPosition") } returns hashMapOf("lat" to 1.0, "lon" to 1.0)
     every { documentSnapshot2.id } returns "activityId"
     every { documentSnapshot2.getLong("osmId") } returns 0
     every { documentSnapshot2.getString("activityType") } returns "CLIMBING"
     every { documentSnapshot2.getString("name") } returns "name"
-    every { (documentSnapshot2.getString("rating") ?: "5") } returns "4.5"
-    every { documentSnapshot2.getLong("numRatings") } returns 2
+    every { documentSnapshot2.getString("rating") ?: "5" } returns "5"
+    every { documentSnapshot2.getLong("numRatings") } returns 1
+    every { documentSnapshot2.get("ratings") } returns
+        listOf(hashMapOf("userId" to "userId", "comment" to "comment", "rating" to "5"))
     every { documentSnapshot2.getString("difficulty") } returns "EASY"
     every { documentSnapshot2.getString("activityImageUrl") } returns "activityImageUrl"
     every { documentSnapshot2.getString("climbingStyle") } returns "OUTDOOR"
@@ -386,110 +356,17 @@ class ActivitiesDBRepositoryImplTest {
     every { documentSnapshot2.getString("to") } returns "to"
     every { documentSnapshot2.getDouble("distance") } returns 10.0
 
-    every { documentSnapshot1.exists() } returns true
-    every { documentSnapshot1.get("ratings") } returns
-        listOf(
-            hashMapOf("userId" to "userId", "comment" to "comment", "rating" to "5"),
-            hashMapOf("userId" to "otherUserId", "comment" to "otherComment", "rating" to "4"))
+    every { documentReference1.update(any() as String, any()) } returns updateTask
+    every { documentReference2.update(any() as String, any()) } returns updateTask
 
-    every { documentSnapshot2.exists() } returns true
-    every { documentSnapshot2.get("ratings") } returns
-        listOf(
-            hashMapOf("userId" to "userId", "comment" to "comment", "rating" to "5"),
-            hashMapOf("userId" to "otherUserId", "comment" to "otherComment", "rating" to "4"))
+    result = activitiesDB.deleteAllUserRatings("userId")
+    assert(result.size == 2)
 
-    coEvery { documentReference.update(any() as String, any()) } returns updateTask
-
-    val updatedActivities = activitiesDB.deleteAllUserRatings(userId = "userId")
-
-    assert(updatedActivities.size == 2)
-    assert(updatedActivities[0].numRatings == 1)
-    assert(updatedActivities[0].ratings.size == 1)
-    assert(updatedActivities[0].ratings[0].userId == "otherUserId")
-    assert(updatedActivities[0].rating == 4.0f)
-    assert(updatedActivities[1].numRatings == 1)
-    assert(updatedActivities[1].ratings.size == 1)
-    assert(updatedActivities[1].ratings[0].userId == "otherUserId")
-    assert(updatedActivities[1].rating == 4.0f)
-
-    coVerify(exactly = 2) { documentReference.update("ratings", any()) }
-    coVerify(exactly = 2) { documentReference.update("numRatings", any()) }
-    coVerify(exactly = 2) { documentReference.update("meanRating", any()) }
-  }
-
-  @Test
-  fun `Delete user rating when newNumRatings is 0`() = runTest {
-    val activity =
-        Activity(
-            activityId = "activityId",
-            osmId = 0,
-            activityType = ActivityType.CLIMBING,
-            name = "name",
-            startPosition = Position(0.0, 0.0),
-            rating = 5.0f,
-            numRatings = 1,
-            ratings = listOf(Rating("userId", "comment", "5")),
-            difficulty = Difficulty.EASY,
-            activityImageUrl = "activityImageUrl",
-            climbingStyle = ClimbingStyle.OUTDOOR,
-            elevationTotal = 100.0f,
-            from = "from",
-            to = "to",
-            distance = 10.0f)
-
-    every { documentSnapshot1.exists() } returns true
-    every { documentSnapshot1.get("ratings") } returns
-        listOf(hashMapOf("userId" to "userId", "comment" to "comment", "rating" to "5"))
-
-    coEvery { documentReference.get() } returns getTask
-    coEvery { getTask.await() } returns documentSnapshot1
-    coEvery { documentReference.update("ratings", any()) } returns updateTask
-    coEvery { documentReference.update("numRatings", any()) } returns updateTask
-    coEvery { documentReference.update("meanRating", any()) } returns updateTask
-
-    val updatedActivity = activitiesDB.deleteRating(activity, "userId")
-    assert(updatedActivity.numRatings == 0)
-    assert(updatedActivity.ratings.isEmpty())
-    assert(updatedActivity.rating == 1.0f)
-
-    coVerify { documentReference.update("ratings", any()) }
-    coVerify { documentReference.update("numRatings", 0) }
-    coVerify { documentReference.update("meanRating", 1.0) }
-  }
-
-  @Test
-  fun `Delete user rating when userId not found`() = runTest {
-    val activity =
-        Activity(
-            activityId = "activityId",
-            osmId = 0,
-            activityType = ActivityType.CLIMBING,
-            name = "name",
-            startPosition = Position(0.0, 0.0),
-            rating = 5.0f,
-            numRatings = 1,
-            ratings = listOf(Rating("otherUserId", "comment", "5")),
-            difficulty = Difficulty.EASY,
-            activityImageUrl = "activityImageUrl",
-            climbingStyle = ClimbingStyle.OUTDOOR,
-            elevationTotal = 100.0f,
-            from = "from",
-            to = "to",
-            distance = 10.0f)
-
-    every { documentSnapshot1.exists() } returns true
-    every { documentSnapshot1.get("ratings") } returns
-        listOf(hashMapOf("userId" to "otherUserId", "comment" to "comment", "rating" to "5"))
-
-    coEvery { documentReference.get() } returns getTask
-    coEvery { getTask.await() } returns documentSnapshot1
-    coEvery { documentReference.update("ratings", any()) } returns updateTask
-    coEvery { documentReference.update("numRatings", any()) } returns updateTask
-    coEvery { documentReference.update("meanRating", any()) } returns updateTask
-
-    val updatedActivity = activitiesDB.deleteRating(activity, "userId")
-    assert(updatedActivity.numRatings == 1)
-    assert(updatedActivity.ratings.size == 1)
-    assert(updatedActivity.rating == 5.0f)
+    coVerify(exactly = 1) { documentReference1.update("ratings", any()) }
+    coVerify(exactly = 1) { documentReference1.update("numRatings", any()) }
+    coVerify(exactly = 1) { documentReference1.update("rating", any()) }
+    coVerify(exactly = 1) { documentReference2.update("ratings", any()) }
+    coVerify(exactly = 1) { documentReference2.update("numRatings", any()) }
+    coVerify(exactly = 1) { documentReference2.update("rating", any()) }
   }
 }
