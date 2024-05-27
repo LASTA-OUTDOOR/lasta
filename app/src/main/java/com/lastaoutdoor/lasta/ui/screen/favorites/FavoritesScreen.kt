@@ -74,7 +74,7 @@ fun FavoritesScreen(
 @Composable
 fun EmptyFavoritesList() {
   Column(
-      modifier = Modifier.fillMaxSize().testTag("FriendMissing"),
+      modifier = Modifier.fillMaxSize().testTag("EmptyFavoritesList"),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
