@@ -97,5 +97,6 @@ class FavoritesScreenTest {
       }
     }
     composeRule.onNodeWithTag("EmptyFavoritesList").assertIsDisplayed()
+    composeRule.onNodeWithTag("NoFavLogo").assertIsDisplayed()
   }
 }
