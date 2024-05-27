@@ -51,7 +51,8 @@ fun FavoritesScreen(
     HorizontalDivider()
     if (isLoading) {
       LoadingAnim(width = 35, tag = "LoadingBarFavorites")
-    } else if (favorites.isEmpty()) {
+    } else if (favorites.isEmpty() || favorites[0].isEmpty()) {
+      // the second condition is to avoid being baited by a potential empty favorite activity
       EmptyFavoritesList()
     } else {
       LazyColumn {
