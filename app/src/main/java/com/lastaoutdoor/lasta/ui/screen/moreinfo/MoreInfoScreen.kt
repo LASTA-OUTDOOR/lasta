@@ -158,9 +158,11 @@ fun MoreInfoScreen(
   } else {
     Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoMap")) {
       val marker = goToMarker(activityToDisplay)
+      discoverScreenCallBacks.updateSelectedMarker(marker)
       if (currentUser != null) {
         TopBar(
             activityToDisplay, downloadActivity, favorites, flipFavorite, friends, shareToFriend) {
+              clearSelectedMarker()
               discoverScreenCallBacks.fetchActivities()
               navigateBack()
               setWeatherBackToUserLoc()
@@ -174,7 +176,7 @@ fun MoreInfoScreen(
           discoverScreenCallBacks.updateSelectedMarker,
           discoverScreenCallBacks.clearSelectedItinerary,
           discoverScreenState.selectedZoom,
-          marker,
+          discoverScreenState.selectedMarker,
           discoverScreenState.selectedItinerary,
           discoverScreenState.markerList,
           discoverScreenCallBacks.clearSelectedMarker)
@@ -467,16 +469,6 @@ fun ActivityTitleText(activityToDisplay: Activity) {
       Text(
           text = activityToDisplay.name,
           style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight(600)))
-      Text(
-          text = LocalContext.current.getString(R.string.no_duration),
-          style =
-              TextStyle(
-                  fontSize = 14.sp,
-                  lineHeight = 20.sp,
-                  fontWeight = FontWeight(500),
-                  color = Color.Gray,
-                  letterSpacing = 0.1.sp,
-              ))
     }
   }
 }
