@@ -73,7 +73,7 @@ class FakeActivitiesDBRepository() : ActivitiesDBRepository {
     }
   }
 
-  override fun addRating(activityId: String, rating: Rating, newMeanRating: String) {
+  override suspend fun addRating(activityId: String, rating: Rating, newMeanRating: String) {
     if (shouldThrowException) {
       throw Exception("FakeActivitiesDBRepository: addRating failed")
     }

@@ -1,6 +1,7 @@
 package com.lastaoutdoor.lasta.data.db
 
 import android.content.Context
+import android.util.Log
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
@@ -16,6 +17,7 @@ import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.tasks.await
+import java.io.Console
 
 @Suppress("UNCHECKED_CAST")
 @Singleton
@@ -145,16 +147,47 @@ constructor(context: Context, database: FirebaseFirestore) : ActivitiesDBReposit
         distance)
   }
 
-  override fun addRating(activityId: String, rating: Rating, newMeanRating: String) {
-    val document = activitiesCollection.document(activityId)
-    document.update(
-        "ratings",
-        FieldValue.arrayUnion(
-            hashMapOf(
-                "userId" to rating.userId, "comment" to rating.comment, "rating" to rating.rating)))
+  override suspend fun addRating(activityId: String, rating: Rating, newMeanRating: String) {
 
-    document.update("numRatings", FieldValue.increment(1))
-    document.update("rating", newMeanRating)
+    val document = activitiesCollection.document(activityId)
+    val sn = document.get().await()
+    var userHasRating : HashMap<String, Any>? = null
+    var oldRating = 0L
+    if(sn.exists()) {
+        (sn.get("ratings") as? List<HashMap<String, Any>>)?.forEach {
+            if (it["userId"] == rating.userId) {
+                userHasRating = it
+                oldRating = it["rating"].toString().toLong()
+
+            }
+        }
+    }
+    if(userHasRating != null){
+        document.update("ratings", FieldValue.arrayRemove(userHasRating))
+       val numRating = sn.getLong("numRatings") ?: 1
+       val newNewMeanRating = (numRating * newMeanRating.toFloat() - oldRating -1 + rating.rating.toLong())/numRating
+        Log.d("print", newNewMeanRating.toString())
+
+        document.update("rating", newNewMeanRating.toString())
+        document.update(
+            "ratings",
+            FieldValue.arrayUnion(
+                hashMapOf(
+                    "userId" to rating.userId, "comment" to rating.comment, "rating" to rating.rating)))
+    }else{
+        document.update("numRatings", FieldValue.increment(1))
+        document.update("rating", newMeanRating)
+        document.update(
+            "ratings",
+            FieldValue.arrayUnion(
+                hashMapOf(
+                    "userId" to rating.userId, "comment" to rating.comment, "rating" to rating.rating)))
+    }
+
+
+
+
+
   }
 
   override suspend fun deleteAllUserRatings(userId: String): List<Activity> {
