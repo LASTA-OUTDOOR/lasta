@@ -445,6 +445,12 @@ fun ActivityPicture(activityToDisplay: Activity) {
         ActivityType.CLIMBING -> R.drawable.climbing_roundicon
         ActivityType.BIKING -> R.drawable.biking_roundicon
       }
+  val testTag =
+      when (activityToDisplay.activityType) {
+        ActivityType.HIKING -> "HikingPicture"
+        ActivityType.CLIMBING -> "ClimbingPicture"
+        ActivityType.BIKING -> "BikingPicture"
+      }
   Column {
     if (activityToDisplay.activityImageUrl != "") {
       AsyncImage(
@@ -456,7 +462,7 @@ fun ActivityPicture(activityToDisplay: Activity) {
       Image(
           painter = painterResource(id = defaultId),
           contentDescription = "Default Activity Picture",
-          modifier = Modifier.padding(5.dp).size(90.dp))
+          modifier = Modifier.padding(5.dp).size(90.dp).testTag(testTag))
     }
   }
 }
