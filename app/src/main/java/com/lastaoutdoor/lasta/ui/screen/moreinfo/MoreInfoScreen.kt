@@ -34,6 +34,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -97,8 +98,7 @@ fun MoreInfoScreen(
     navigateBack: () -> Unit,
     navigateToTracking: () -> Unit,
     downloadActivity: (Activity) -> Unit,
-    setWeatherBackToUserLoc: () -> Unit,
-    clearSelectedMarker: () -> Unit
+    setWeatherBackToUserLoc: () -> Unit
 ) {
   val isMapDisplayed = remember { mutableStateOf(false) }
   val isReviewing = remember { mutableStateOf(false) }
@@ -157,12 +157,16 @@ fun MoreInfoScreen(
         }
   } else {
     Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoMap")) {
-      val marker = goToMarker(activityToDisplay)
-      discoverScreenCallBacks.updateSelectedMarker(marker)
+      LaunchedEffect(Unit) {
+        val marker = goToMarker(activityToDisplay)
+        discoverScreenCallBacks.updateSelectedMarker(marker)
+      }
+
       if (currentUser != null) {
         TopBar(
             activityToDisplay, downloadActivity, favorites, flipFavorite, friends, shareToFriend) {
-              clearSelectedMarker()
+              discoverScreenCallBacks.clearSelectedMarker()
+              discoverScreenCallBacks.clearSelectedItinerary()
               discoverScreenCallBacks.fetchActivities()
               navigateBack()
               setWeatherBackToUserLoc()
