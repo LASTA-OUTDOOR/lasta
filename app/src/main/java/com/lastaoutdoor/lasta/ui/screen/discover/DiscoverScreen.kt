@@ -1,6 +1,7 @@
 package com.lastaoutdoor.lasta.ui.screen.discover
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material3.Card
@@ -192,44 +194,64 @@ fun HeaderComposable(
   MapsInitializer.initialize(LocalContext.current)
 
   // Dropdown menu boolean
-  val iconSize = 48.dp // Adjust icon size as needed
   val displayWeather = remember { mutableStateOf(false) }
   if (displayWeather.value) {
     Dialog(onDismissRequest = { displayWeather.value = false }) {
       Surface { WeatherReportBig(weather = weather, displayWind = false) {} }
     }
   }
+
   Surface(
       modifier = Modifier.fillMaxWidth().testTag("header"),
       color = MaterialTheme.colorScheme.background) {
         Column {
           // Location bar
           Row(
-              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+              modifier =
+                  Modifier.fillMaxWidth()
+                      .padding(horizontal = 16.dp, vertical = 8.dp)
+                      .testTag("locationBar"),
               verticalAlignment = Alignment.CenterVertically) {
-                Column {
-                  Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = selectedLocality.first,
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.testTag("locationText"))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier =
+                        Modifier.clickable(onClick = { navigateToRangeSearch() })
+                            .testTag("locationRow")) {
+                      Column {
+                        Icon(
+                            Icons.Filled.LocationOn,
+                            contentDescription = "Location icon",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(24.dp).testTag("localityIcon"))
+                      }
 
-                    IconButton(
-                        onClick = navigateToRangeSearch,
-                        modifier = Modifier.size(24.dp).testTag("locationButton")) {
-                          Icon(
-                              Icons.Outlined.KeyboardArrowDown,
-                              contentDescription = "Location button",
-                              modifier = Modifier.size(24.dp).testTag("locationIcon"))
+                      Spacer(modifier = Modifier.fillMaxWidth(0.02f))
+
+                      Column {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                          Text(
+                              text = selectedLocality.first,
+                              style = MaterialTheme.typography.bodyMedium,
+                              modifier = Modifier.testTag("locationText"))
+
+                          IconButton(
+                              onClick = navigateToRangeSearch,
+                              modifier = Modifier.size(24.dp).testTag("locationButton")) {
+                                Icon(
+                                    Icons.Outlined.KeyboardArrowDown,
+                                    contentDescription = "Location button",
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(24.dp).testTag("locationIcon"))
+                              }
                         }
-                  }
 
-                  Text(
-                      text =
-                          "${LocalContext.current.getString(R.string.less_than)} ${(range / 1000).toInt()} km ${LocalContext.current.getString(R.string.around_you)}",
-                      style = MaterialTheme.typography.bodySmall,
-                      modifier = Modifier.testTag("rangeText"))
-                }
+                        Text(
+                            text =
+                                "${LocalContext.current.getString(R.string.less_than)} ${(range / 1000).toInt()} km ${LocalContext.current.getString(R.string.around_you)}",
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.testTag("rangeText"))
+                      }
+                    }
                 Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
                   WeatherReportSmall(weather) { displayWeather.value = true }
                 }
@@ -240,7 +262,7 @@ fun HeaderComposable(
           Row(
               modifier =
                   Modifier.fillMaxWidth()
-                      .padding(horizontal = 16.dp, vertical = 8.dp)
+                      .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 0.dp)
                       .testTag("searchBar"),
               verticalAlignment = Alignment.CenterVertically) {
                 changeText =
@@ -249,9 +271,14 @@ fun HeaderComposable(
                         onSearch = { fetchSuggestion(it) })
 
                 Spacer(modifier = Modifier.width(8.dp))
+
                 IconButton(
                     onClick = { navigateToFilter() },
-                    modifier = Modifier.size(iconSize).testTag("filterButton")) {
+                    modifier =
+                        Modifier.size(56.dp)
+                            .border(
+                                1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(12.dp))
+                            .testTag("filterButton")) {
                       Icon(
                           painter = painterResource(id = R.drawable.filter_icon),
                           contentDescription = "Filter button",
@@ -260,7 +287,6 @@ fun HeaderComposable(
               }
 
           val fManager = LocalFocusManager.current
-          // Suggestions for the places
 
           LazyColumn(
               modifier =
@@ -292,7 +318,9 @@ fun HeaderComposable(
                 }
               }
           Row(
-              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+              modifier =
+                  Modifier.fillMaxWidth()
+                      .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 8.dp),
               verticalAlignment = Alignment.CenterVertically,
               horizontalArrangement = Arrangement.Center) {
                 val context = LocalContext.current
@@ -355,7 +383,8 @@ fun ActivitiesDisplay(
                       modifier =
                           Modifier.shadow(4.dp, RoundedCornerShape(30))
                               .background(
-                                  MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
+                                  color = a.difficulty.getColorByDifficulty(),
+                                  RoundedCornerShape(10.dp))
                               .padding(PaddingValues(8.dp))) {
                         Text(
                             text =

@@ -8,6 +8,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.Language
+import com.lastaoutdoor.lasta.models.user.SettingsType
 import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.ui.MainActivity
@@ -43,7 +44,8 @@ class SettingsScreenKtTest {
           updateHikingLevel = {},
           updateBikingLevel = {},
           navigateBack = {},
-          signOutAndNavigate = {})
+          signOutAndNavigate = {},
+          deleteAccountAndNavigate = {})
     }
     composeRule.onNodeWithTag("settingsScreen").assertIsDisplayed()
   }
@@ -60,6 +62,19 @@ class SettingsScreenKtTest {
    *   composeRule.onNodeWithTag("settingsDeleteButton").performClick() }
    */
 
+  // Test the text
+  @Test
+  fun settingsHeaderTest() {
+    composeRule.activity.setContent { SettingsHeader(SettingsType.GENERAL) }
+    composeRule.onNodeWithTag("settingsHeaderGeneral").assertIsDisplayed()
+
+    composeRule.activity.setContent { SettingsHeader(SettingsType.ACTIVITY) }
+    composeRule.onNodeWithTag("settingsHeaderActivity").assertIsDisplayed()
+
+    composeRule.activity.setContent { SettingsHeader(SettingsType.ACCOUNT) }
+    composeRule.onNodeWithTag("settingsHeaderAccount").assertIsDisplayed()
+  }
+
   // Test that top app bar is displayed
   @Test
   fun topAppBarIsDisplayed() {
@@ -74,7 +89,8 @@ class SettingsScreenKtTest {
           updateHikingLevel = {},
           updateBikingLevel = {},
           navigateBack = {},
-          signOutAndNavigate = {})
+          signOutAndNavigate = {},
+          deleteAccountAndNavigate = {})
     }
     composeRule.onNodeWithTag("settingsAppBar").assertIsDisplayed()
   }
@@ -94,7 +110,8 @@ class SettingsScreenKtTest {
           updateHikingLevel = {},
           updateBikingLevel = {},
           navigateBack = {},
-          signOutAndNavigate = {})
+          signOutAndNavigate = {},
+          deleteAccountAndNavigate = {})
     }
     composeRule.onNodeWithTag("languageDropDownButton").performClick()
     composeRule.onNodeWithTag("settingsLanguage").performClick()
@@ -116,7 +133,8 @@ class SettingsScreenKtTest {
           updateHikingLevel = {},
           updateBikingLevel = {},
           navigateBack = {},
-          signOutAndNavigate = {})
+          signOutAndNavigate = {},
+          deleteAccountAndNavigate = {})
     }
     composeRule.onNodeWithTag("settingsFavActivity").assertIsDisplayed()
     composeRule.onNodeWithTag("settingsHIKING").performClick()

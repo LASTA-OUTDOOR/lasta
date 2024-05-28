@@ -2,10 +2,13 @@ package com.lastaoutdoor.lasta.ui.screen.settings
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -27,15 +30,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.Language
+import com.lastaoutdoor.lasta.models.user.SettingsType
 import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun SettingsScreen(
     language: Language,
@@ -47,7 +52,8 @@ fun SettingsScreen(
     updateHikingLevel: (UserLevel) -> Unit,
     updateBikingLevel: (UserLevel) -> Unit,
     navigateBack: () -> Unit,
-    signOutAndNavigate: () -> Unit
+    signOutAndNavigate: () -> Unit,
+    deleteAccountAndNavigate: () -> Unit
 ) {
 
   val showDeleteDialog = remember { mutableStateOf(false) }
@@ -62,7 +68,7 @@ fun SettingsScreen(
           Button(
               onClick = {
                 showDeleteDialog.value = false
-                signOutAndNavigate()
+                deleteAccountAndNavigate()
               },
               colors =
                   ButtonDefaults.buttonColors(
@@ -117,35 +123,37 @@ fun SettingsScreen(
         }
 
         item {
-          Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
-            Button(
-                onClick = { signOutAndNavigate() },
-                modifier = Modifier.testTag("settingsSignOut")) {
-                  Text(
-                      text = LocalContext.current.getString(R.string.sign_out),
-                      style = MaterialTheme.typography.headlineMedium)
-                }
+          SettingsHeader(setUpOrSetting = SettingsType.ACCOUNT)
 
-            Spacer(modifier = Modifier.weight(1f))
-            OutlinedButton(
-                modifier = Modifier.testTag("settingsDeleteAccount"),
-                onClick = { showDeleteDialog.value = true },
-                colors =
-                    ButtonDefaults.outlinedButtonColors(
-                        contentColor = MaterialTheme.colorScheme.error,
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.error)) {
-                  Text(
-                      text = LocalContext.current.getString(R.string.delete_account),
-                      style =
-                          when (language) {
-                            Language.ENGLISH -> MaterialTheme.typography.headlineMedium
-                            Language.FRENCH -> MaterialTheme.typography.bodySmall
-                            Language.GERMAN -> MaterialTheme.typography.headlineMedium
-                          },
-                      maxLines = 1)
-                }
-          }
+          Spacer(modifier = Modifier.height(24.dp))
+
+          FlowRow(
+              modifier = Modifier.fillMaxWidth(),
+              horizontalArrangement = Arrangement.SpaceBetween) {
+                Button(
+                    onClick = { signOutAndNavigate() },
+                    modifier = Modifier.testTag("settingsSignOut")) {
+                      Text(
+                          text = LocalContext.current.getString(R.string.sign_out),
+                          textAlign = TextAlign.Center)
+                    }
+
+                OutlinedButton(
+                    modifier = Modifier.testTag("settingsDeleteAccount"),
+                    onClick = { showDeleteDialog.value = true },
+                    colors =
+                        ButtonDefaults.outlinedButtonColors(
+                            contentColor = MaterialTheme.colorScheme.error,
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.error)) {
+                      Text(
+                          text = LocalContext.current.getString(R.string.delete_account),
+                          maxLines = 1,
+                          textAlign = TextAlign.Center)
+                    }
+
+                Spacer(modifier = Modifier.height(24.dp))
+              }
         }
       }
 }

@@ -69,9 +69,9 @@ import com.lastaoutdoor.lasta.ui.screen.map.mapScreen
 import com.lastaoutdoor.lasta.ui.screen.moreinfo.components.ShareOptionsDialog
 import com.lastaoutdoor.lasta.ui.theme.Black
 import com.lastaoutdoor.lasta.ui.theme.GreenDifficulty
+import com.lastaoutdoor.lasta.ui.theme.OrangeDifficulty
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
 import com.lastaoutdoor.lasta.ui.theme.RedDifficulty
-import com.lastaoutdoor.lasta.ui.theme.YellowDifficulty
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenCallBacks
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenState
 import java.util.Locale
@@ -343,7 +343,7 @@ fun ElevatedDifficultyDisplay(activityToDisplay: Activity) {
   val difficultyColor =
       when (activityToDisplay.difficulty) {
         Difficulty.EASY -> GreenDifficulty
-        Difficulty.NORMAL -> YellowDifficulty
+        Difficulty.NORMAL -> OrangeDifficulty
         Difficulty.HARD -> RedDifficulty
       }
   ElevatedButton(

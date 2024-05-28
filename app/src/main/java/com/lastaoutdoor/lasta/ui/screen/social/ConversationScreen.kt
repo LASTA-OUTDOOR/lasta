@@ -55,8 +55,8 @@ import com.lastaoutdoor.lasta.ui.components.SeparatorComponent
 import com.lastaoutdoor.lasta.ui.screen.moreinfo.TopBarLogo
 import com.lastaoutdoor.lasta.ui.screen.social.components.ProfilePicture
 import com.lastaoutdoor.lasta.ui.theme.GreenDifficulty
+import com.lastaoutdoor.lasta.ui.theme.OrangeDifficulty
 import com.lastaoutdoor.lasta.ui.theme.RedDifficulty
-import com.lastaoutdoor.lasta.ui.theme.YellowDifficulty
 
 @Composable
 fun ConversationScreen(
@@ -232,7 +232,7 @@ fun ActivityCard(
   val difficultyColor =
       when (activityDifficulty) {
         Difficulty.EASY -> GreenDifficulty
-        Difficulty.NORMAL -> YellowDifficulty
+        Difficulty.NORMAL -> OrangeDifficulty
         Difficulty.HARD -> RedDifficulty
       }
   Card(
