@@ -27,12 +27,12 @@ import com.lastaoutdoor.lasta.ui.screen.discover.ActivitiesDisplay
 fun FavoritesScreen(
     isLoading: Boolean,
     activities: List<Activity>,
-    updateFavorites: () -> Unit,
     centerPoint: LatLng,
     favorites: List<String>,
     changeActivityToDisplay: (Activity) -> Unit,
     changeWeatherTarget: (Activity) -> Unit,
     flipFavorite: (String) -> Unit,
+    updateFavorites: () -> Unit,
     navigateToMoreInfo: () -> Unit,
 ) {
   LaunchedEffect(Unit) {

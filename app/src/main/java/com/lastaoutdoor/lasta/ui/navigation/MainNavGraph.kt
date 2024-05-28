@@ -93,12 +93,12 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       FavoritesScreen(
           isLoading,
           favorites,
-          favoritesScreenViewModel::fetchFavorites,
           centerPoint,
           favoriteIds,
           moreInfoScreenViewModel::changeActivityToDisplay,
           weatherViewModel::changeLocOfWeather,
-          preferencesViewModel::flipFavorite) {
+          preferencesViewModel::flipFavorite,
+          favoritesScreenViewModel::fetchFavorites) {
             navController.navigate(DestinationRoute.MoreInfo.route)
           }
     }
