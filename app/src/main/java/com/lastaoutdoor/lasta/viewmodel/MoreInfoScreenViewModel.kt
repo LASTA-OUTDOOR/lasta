@@ -10,6 +10,9 @@ import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.models.activity.Rating
+import com.lastaoutdoor.lasta.models.api.NodeWay
+import com.lastaoutdoor.lasta.models.api.Position
+import com.lastaoutdoor.lasta.models.api.Relation
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
@@ -66,11 +69,26 @@ constructor(
         is Response.Loading -> {}
         is Response.Success -> {
           val osmData = response.data!!
-          val updatedActivity = activity.copy(startPosition = osmData.getPosition())
+          var newPos = osmData.getPosition()
 
+          if (newPos == Position(0.0, 0.0)) {
+            newPos =
+                when (activity.activityType) {
+                  ActivityType.HIKING,
+                  ActivityType.BIKING -> {
+                    (osmData as Relation)
+                        .ways
+                        ?.flatMap { it.nodes ?: emptyList() }
+                        ?.firstOrNull { it.lat != 0.0 && it.lon != 0.0 } ?: Position(0.0, 0.0)
+                  }
+                  ActivityType.CLIMBING -> (osmData as NodeWay).center!!
+                }
+          }
+
+          val updatedActivity = activity.copy(startPosition = newPos)
           // Call surrounded by try-catch block to make handle exceptions caused by database
           try {
-            activityDB.updateStartPosition(activity.activityId, osmData.getPosition())
+            activityDB.updateStartPosition(activity.activityId, newPos)
             activityToDisplay.value = updatedActivity
           } catch (e: Exception) {
             errorToast.showToast(ErrorType.ERROR_DATABASE)
