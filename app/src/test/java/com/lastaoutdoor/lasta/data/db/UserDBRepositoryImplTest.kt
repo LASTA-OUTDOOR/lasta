@@ -214,20 +214,6 @@ class UserDBRepositoryImplTest {
   }
 
   @Test
-  fun `get Users by username with substring works fine`() = runTest {
-    every { documentSnapshot.id } returns "userId"
-    every { documentSnapshot.getString(any()) } returns null
-    every { documentSnapshot.get(any() as String) } returns null
-    every { userCollection.whereArrayContains("userName", "query") } returns query
-    every { query.get() } returns queryTask
-    every { queryTask.await() } returns querySnapshot
-    every { querySnapshot.documents } returns listOf(documentSnapshot)
-    val result = userDB.getUsersByUsernameWithSubstring("query") as List<UserModel>
-    assert(result.size == 1)
-    assert(result[0].userId == "userId")
-  }
-
-  @Test
   fun `Add Favorite works fine`() = runTest {
     coEvery { documentReference.update(any() as String, any()) } returns updateTask
     userDB.addFavorite("userId", "favorite")

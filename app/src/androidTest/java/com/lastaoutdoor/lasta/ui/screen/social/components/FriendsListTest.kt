@@ -99,6 +99,27 @@ class FriendsListTest {
     composeRule.onNodeWithTag("AddFriendDialog").assertIsDisplayed()
   }
 
+  // Test that the suggestion list is displayed
+  @Test
+  fun friendsListWithSuggestionsIsDisplayed() {
+    composeRule.activity.setContent {
+      FriendsList(
+          isConnected = ConnectionState.CONNECTED,
+          friends = emptyList(),
+          displayAddFriendDialog = true,
+          friendRequestFeedback = "",
+          friendSuggestions = listOf(UserModel("1")),
+          clearFriendRequestFeedback = {},
+          hideAddFriendDialog = {},
+          requestFriend = {},
+          refreshFriends = {},
+          fetchFriendsSuggestions = {},
+          navigateToFriendProfile = {})
+    }
+    composeRule.onNodeWithTag("AddFriendDialog").assertIsDisplayed()
+    composeRule.onNodeWithTag("suggestion").assertIsDisplayed()
+  }
+
   // Test that instancing a friend list offline works correctly
   @Test
   fun friendsListOfflineIsDisplayed() {
