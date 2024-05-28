@@ -11,9 +11,9 @@ import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.tasks.await
 
 @Suppress("UNCHECKED_CAST")
 @Singleton
@@ -129,7 +129,7 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
       return emptyList()
     }
     val allUsersUsernames = userCollection.get().await()
-      val usersToList = mutableListOf<UserModel>()
+    val usersToList = mutableListOf<UserModel>()
     allUsersUsernames.documents.forEach { doc ->
       // get the username of the user
       val userName = doc.getString("userName") ?: ""
@@ -144,15 +144,19 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
                 description = doc.getString("description") ?: "",
                 language = Language.valueOf(doc.getString("language") ?: Language.ENGLISH.name),
                 prefActivity =
-                    ActivityType.valueOf(doc.getString("prefActivity") ?: ActivityType.CLIMBING.name),
+                    ActivityType.valueOf(
+                        doc.getString("prefActivity") ?: ActivityType.CLIMBING.name),
                 levels =
                     UserActivitiesLevel(
                         climbingLevel =
-                            UserLevel.valueOf(doc.getString("levels.climbingLevel") ?: UserLevel.BEGINNER.name),
+                            UserLevel.valueOf(
+                                doc.getString("levels.climbingLevel") ?: UserLevel.BEGINNER.name),
                         hikingLevel =
-                            UserLevel.valueOf(doc.getString("levels.hikingLevel") ?: UserLevel.BEGINNER.name),
+                            UserLevel.valueOf(
+                                doc.getString("levels.hikingLevel") ?: UserLevel.BEGINNER.name),
                         bikingLevel =
-                            UserLevel.valueOf(doc.getString("levels.bikingLevel") ?: UserLevel.BEGINNER.name)),
+                            UserLevel.valueOf(
+                                doc.getString("levels.bikingLevel") ?: UserLevel.BEGINNER.name)),
                 friends = (doc.get("friends") ?: emptyList<String>()) as List<String>,
                 friendRequests = (doc.get("friendRequests") ?: emptyList<String>()) as List<String>,
                 favorites = (doc.get("favorites") ?: emptyList<String>()) as List<String>))
