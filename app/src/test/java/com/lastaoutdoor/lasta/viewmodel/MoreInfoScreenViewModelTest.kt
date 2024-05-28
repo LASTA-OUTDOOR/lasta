@@ -158,6 +158,51 @@ class MoreInfoScreenViewModelTest {
     assertEquals(moreInfoScreenViewModel.ratings.value[0].rating, "5")
   }
 
+  /* Test update difficulty */
+  @Test
+  fun testUpdateDifficulty() {
+    val fakeDb = FakeActivityRepository()
+    val fk = FakeActivitiesDBRepository()
+    val fakeUserDB = FakeUserDB()
+    val dao = mockk<ActivityDao>()
+    val fakeActivityDaoImpl = FakeActivityDatabaseImpl(dao)
+    val moreInfoScreenViewModel =
+        MoreInfoScreenViewModel(fakeDb, fk, fakeActivityDaoImpl, fakeUserDB, errorToast)
+    val fakeActivity =
+        Activity("a", 10, activityType = ActivityType.CLIMBING, difficulty = Difficulty.EASY)
+    moreInfoScreenViewModel.updateDifficulty(fakeActivity.activityId)
+    assertEquals(fakeActivity.difficulty, Difficulty.EASY)
+    val fakeActivity2 =
+        Activity("a", 10, activityType = ActivityType.CLIMBING, difficulty = Difficulty.NORMAL)
+    moreInfoScreenViewModel.updateDifficulty(fakeActivity2.activityId)
+    assertEquals(fakeActivity2.difficulty, Difficulty.NORMAL)
+    val fakeActivity3 =
+        Activity("a", 10, activityType = ActivityType.CLIMBING, difficulty = Difficulty.HARD)
+    moreInfoScreenViewModel.updateDifficulty(fakeActivity3.activityId)
+    assertEquals(fakeActivity3.difficulty, Difficulty.HARD)
+  }
+
+  // Update difficulty with exception throws correctly
+  @Test
+  fun testUpdateDifficulty_with_exception() {
+    val fakeDb = FakeActivityRepository()
+    val fk = FakeActivitiesDBRepository()
+    val fakeUserDB = FakeUserDB()
+    val dao = mockk<ActivityDao>()
+    val fakeActivityDaoImpl = FakeActivityDatabaseImpl(dao)
+    val moreInfoScreenViewModel =
+        MoreInfoScreenViewModel(fakeDb, fk, fakeActivityDaoImpl, fakeUserDB, errorToast)
+    fakeActivityDaoImpl.shouldThrowException = true
+    fk.shouldThrowException = true
+    try {
+      moreInfoScreenViewModel.updateDifficulty("a")
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(ErrorType.ERROR_DAO) }
+    }
+    fk.shouldThrowException = false
+    fakeActivityDaoImpl.shouldThrowException = false
+  }
+
   @Test
   fun `changeActivityToDisplay with exception`() {
     val fakeDb = FakeActivityRepository()

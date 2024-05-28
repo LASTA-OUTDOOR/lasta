@@ -45,7 +45,7 @@ constructor(
     fetchFavorites()
   }
 
-  private fun fetchFavorites() {
+  fun fetchFavorites() {
     _isLoading.value = true
 
     viewModelScope.launch {
