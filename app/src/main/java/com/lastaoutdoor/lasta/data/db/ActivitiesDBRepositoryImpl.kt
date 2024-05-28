@@ -13,9 +13,9 @@ import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.models.activity.Rating
 import com.lastaoutdoor.lasta.models.api.Position
 import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.tasks.await
 
 @Suppress("UNCHECKED_CAST")
 @Singleton
