@@ -82,9 +82,10 @@ class FakeActivitiesDBRepository() : ActivitiesDBRepository {
   override suspend fun deleteAllUserRatings(userId: String): List<Activity> {
     return emptyList()
   }
+
   override suspend fun updateDifficulty(activityId: String) {
-       if (shouldThrowException) {
-           throw Exception("FakeActivitiesDBRepository: updateDifficulty failed")
-       }
-   }
+    if (shouldThrowException) {
+      throw Exception("FakeActivitiesDBRepository: updateDifficulty failed")
+    }
+  }
 }
