@@ -54,7 +54,7 @@ class FriendsRequestListTest {
           friendRequests = emptyList(),
           acceptFriend = {}) {}
     }
-    composeRule.onNodeWithTag("NoFriendRequest").assertIsDisplayed()
+    composeRule.onNodeWithTag("EmptyFriendsList").assertIsDisplayed()
   }
 
   // Test that a friend request list instanced with no connection is displayed
