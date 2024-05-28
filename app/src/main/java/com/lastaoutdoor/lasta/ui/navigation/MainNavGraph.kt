@@ -97,7 +97,8 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           favoriteIds,
           moreInfoScreenViewModel::changeActivityToDisplay,
           weatherViewModel::changeLocOfWeather,
-          preferencesViewModel::flipFavorite) {
+          preferencesViewModel::flipFavorite,
+          favoritesScreenViewModel::fetchFavorites) {
             navController.navigate(DestinationRoute.MoreInfo.route)
           }
     }
@@ -197,6 +198,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           usersList,
           moreInfoScreenViewModel::getUserModels,
           moreInfoScreenViewModel::writeNewRating,
+          moreInfoScreenViewModel::updateDifficulty,
           currentUser,
           conversationViewModel::shareActivityToFriend,
           socialViewModel.friends,

@@ -101,6 +101,14 @@ constructor(context: Context, database: FirebaseFirestore) : ActivitiesDBReposit
         .await()
   }
 
+  override suspend fun updateDifficulty(activityId: String) {
+    val document = activitiesCollection.document(activityId)
+    val activity = document.get().await()
+    val difficulty = activity.getString("difficulty") ?: "EASY"
+    val newDifficulty = ActivityConverter().difficultyCycle(difficulty)
+    document.update("difficulty", newDifficulty).await()
+  }
+
   private fun convertDocumentToActivity(document: DocumentSnapshot): Activity {
     val startPositionMap = (document.get("startPosition") ?: HashMap<String, Double>()) as Map<*, *>
     val startPosition =
@@ -118,6 +126,9 @@ constructor(context: Context, database: FirebaseFirestore) : ActivitiesDBReposit
         (document.get("ratings") ?: emptyList<Map<String, Any>>()) as List<Map<String, Any>>
     val ratings =
         ratingsMap.map {
+          if (it["userId"] == null || it["comment"] == null || it["rating"] == null) {
+            return@map Rating("", "", "")
+          }
           Rating(it["userId"] as String, it["comment"] as String, it["rating"] as String)
         }
     val difficulty = Difficulty.valueOf(document.getString("difficulty") ?: "EASY")
