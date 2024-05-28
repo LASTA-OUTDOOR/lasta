@@ -42,6 +42,7 @@ class FavoritesScreenTest {
         FavoritesScreen(
             isLoading = true,
             activities = emptyList(),
+            updateFavorites = {},
             centerPoint = LatLng(46.519962, 6.633597),
             favorites = emptyList(),
             changeActivityToDisplay = {},
@@ -71,6 +72,7 @@ class FavoritesScreenTest {
                         emptyList(),
                         difficulty = Difficulty.EASY,
                         activityImageUrl = "")),
+            updateFavorites = {},
             centerPoint = LatLng(46.519962, 6.633597),
             favorites = listOf("1"),
             changeActivityToDisplay = {},
