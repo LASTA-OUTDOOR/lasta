@@ -42,6 +42,7 @@ fun FriendsList(
     friendRequestFeedback: String,
     clearFriendRequestFeedback: () -> Unit,
     hideAddFriendDialog: () -> Unit,
+    fetchFriendsSuggestions: (String) -> List<UserModel>,
     requestFriend: (String) -> Unit,
     refreshFriends: () -> Unit,
     navigateToFriendProfile: (String) -> Unit
@@ -56,14 +57,22 @@ fun FriendsList(
       // add friend dialog when you click on the add friend button
       if (displayAddFriendDialog)
           AddFriendDialog(
-              friendRequestFeedback, clearFriendRequestFeedback, hideAddFriendDialog, requestFriend)
+              friendRequestFeedback,
+              clearFriendRequestFeedback,
+              hideAddFriendDialog,
+              requestFriend,
+              fetchFriendsSuggestions)
       FriendsMissing()
     }
     else -> {
       // add friend dialog when you click on the add friend button
       if (displayAddFriendDialog)
           AddFriendDialog(
-              friendRequestFeedback, clearFriendRequestFeedback, hideAddFriendDialog, requestFriend)
+              friendRequestFeedback,
+              clearFriendRequestFeedback,
+              hideAddFriendDialog,
+              requestFriend,
+              fetchFriendsSuggestions)
       LazyColumn {
         items(friends.size) {
           FriendsCard(friends[it], friends) { navigateToFriendProfile(friends[it].userId) }

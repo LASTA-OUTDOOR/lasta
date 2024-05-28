@@ -46,6 +46,14 @@ interface UserDBRepository {
   suspend fun addFavorite(userId: String, activityId: String)
 
   /**
+   * Gets Users corresponding having in their username the given string keyword.
+   *
+   * @param query the string to search for in the username
+   * @return the list of users that have the keyword in their username
+   */
+  suspend fun getUsersByUsernameWithSubstring(query: String): List<UserModel>
+
+  /**
    * Removes an activity from the user's favorites.
    *
    * @param userId the user ID to remove the favorite

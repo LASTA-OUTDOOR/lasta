@@ -37,6 +37,7 @@ fun TabMenu(
     refreshMessages: () -> Unit,
     clearFriendRequestFeedback: () -> Unit,
     hideAddFriendDialog: () -> Unit,
+    fetchFriendsSuggestions: (String) -> List<UserModel>,
     requestFriend: (String) -> Unit,
     refreshFriends: () -> Unit,
     showTopButton: (ImageVector, () -> Unit) -> Unit,
@@ -85,6 +86,7 @@ fun TabMenu(
           friendRequestFeedback,
           clearFriendRequestFeedback,
           hideAddFriendDialog,
+          fetchFriendsSuggestions,
           requestFriend,
           refreshFriends,
           navigateToFriendProfile)

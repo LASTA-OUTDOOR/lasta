@@ -160,6 +160,23 @@ constructor(
     }
   }
 
+  /*
+   * Fetch the list of friends suggestions given a string
+   */
+  fun fetchFriendsSuggestions(query: String): List<UserModel> {
+    var users: List<UserModel> = emptyList()
+    viewModelScope.launch {
+      // Call surrounded by try-catch block to make handle exceptions caused by database
+      try {
+        // get the list of users by query
+        users = userDBRepo.getUsersByUsernameWithSubstring(query)
+      } catch (e: Exception) {
+        errorToast.showToast(ErrorType.ERROR_DATABASE)
+      }
+    }
+    return users
+  }
+
   fun acceptFriend(friend: UserModel) {
     viewModelScope.launch {
 

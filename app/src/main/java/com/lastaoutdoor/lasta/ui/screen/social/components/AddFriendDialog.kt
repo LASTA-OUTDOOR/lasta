@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.lastaoutdoor.lasta.R
+import com.lastaoutdoor.lasta.models.user.UserModel
 
 // Dialog to select a friend to send a message to
 @Composable
@@ -36,7 +37,8 @@ fun AddFriendDialog(
     friendRequestFeedback: String,
     clearFriendRequestFeedback: () -> Unit,
     hideAddFriendDialog: () -> Unit,
-    requestFriend: (String) -> Unit
+    requestFriend: (String) -> Unit,
+    fetchFriendSuggestions: (String) -> List<UserModel> = { _ -> emptyList() }
 ) {
 
   // Reset the feedback message on launched effect
@@ -62,23 +64,29 @@ fun AddFriendDialog(
                     LocalContext.current.getString(R.string.fr_email_add),
                     modifier = Modifier.testTag("SubHeader"),
                     textAlign = TextAlign.Center)
-                AddFriendForm(friendRequestFeedback, requestFriend)
+                AddFriendForm(friendRequestFeedback, requestFriend, fetchFriendSuggestions)
               }
         }
       }
 }
 
 @Composable
-private fun AddFriendForm(friendRequestFeedback: String, requestFriend: (String) -> Unit) {
+private fun AddFriendForm(
+    friendRequestFeedback: String,
+    requestFriend: (String) -> Unit,
+    fetchFriendSuggestions: (String) -> List<UserModel>
+) {
 
   // to hide the keyboard
   val focusManager = LocalFocusManager.current
   // text inside the textfield
   var text by remember { mutableStateOf("") }
+  // friend suggestions
+  var friendSuggestions by remember { mutableStateOf(listOf<UserModel>()) }
 
   TextField(
       value = text,
-      onValueChange = { text = it },
+      onValueChange = { newValue -> text = newValue },
       label = { Text(LocalContext.current.getString(R.string.email)) },
       modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("EmailTextField"),
       keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -89,6 +97,10 @@ private fun AddFriendForm(friendRequestFeedback: String, requestFriend: (String)
                 requestFriend(text)
               }))
 
+  // Fetch friend suggestions when text changes
+  LaunchedEffect(text) { friendSuggestions = fetchFriendSuggestions(text) }
+  // Display friend suggestions
+  friendSuggestions.forEach { suggestion -> Text(text = suggestion.userName) }
   // Error message / Feedback
   Text(friendRequestFeedback, style = MaterialTheme.typography.bodyLarge)
 

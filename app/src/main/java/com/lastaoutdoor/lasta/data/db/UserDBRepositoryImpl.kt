@@ -124,6 +124,43 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
     userDocumentRef.update("favorites", FieldValue.arrayUnion(activityId)).await()
   }
 
+  override suspend fun getUsersByUsernameWithSubstring(query: String): List<UserModel> {
+    val allUsersUsernames = userCollection.get().await()
+    allUsersUsernames.documents.forEach { doc ->
+      // get the username of the user
+      val userName = doc.getString("userName") ?: ""
+      // if the username contains the query, return the user
+      if (userName.contains(query)) {
+        return listOf(
+            UserModel(
+                userId = doc.id,
+                userName = userName,
+                email = doc.getString("email") ?: "",
+                profilePictureUrl = doc.getString("profilePictureUrl") ?: "",
+                description = doc.getString("description") ?: "",
+                language = Language.valueOf(doc.getString("language") ?: Language.ENGLISH.name),
+                prefActivity =
+                    ActivityType.valueOf(
+                        doc.getString("prefActivity") ?: ActivityType.CLIMBING.name),
+                levels =
+                    UserActivitiesLevel(
+                        climbingLevel =
+                            UserLevel.valueOf(
+                                doc.getString("climbingLevel") ?: UserLevel.BEGINNER.name),
+                        hikingLevel =
+                            UserLevel.valueOf(
+                                doc.getString("hikingLevel") ?: UserLevel.BEGINNER.name),
+                        bikingLevel =
+                            UserLevel.valueOf(
+                                doc.getString("bikingLevel") ?: UserLevel.BEGINNER.name)),
+                friends = (doc.get("friends") ?: emptyList<String>()) as List<String>,
+                friendRequests = (doc.get("friendRequests") ?: emptyList<String>()) as List<String>,
+                favorites = (doc.get("favorites") ?: emptyList<String>()) as List<String>))
+      }
+    }
+    return emptyList()
+  }
+
   override suspend fun removeFavorite(userId: String, activityId: String) {
     val userDocumentRef = userCollection.document(userId)
     userDocumentRef.update("favorites", FieldValue.arrayRemove(activityId)).await()
