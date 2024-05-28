@@ -12,6 +12,7 @@
     <string name="Climbing">Klettern</string>
     <string name="popularity">Popularität</string>
     <string name="more_info">Mehr Infos</string>
+    <string name = "no_fav">Du hast noch keine Lieblingsaktivitäten... Fügen Sie welche hinzu!</string>
     <string name="sign_in_google">Mit Google anmelden</string>
     <string name="offline">Sie sind Offline</string>
     <string name="start">Beginnen</string>
