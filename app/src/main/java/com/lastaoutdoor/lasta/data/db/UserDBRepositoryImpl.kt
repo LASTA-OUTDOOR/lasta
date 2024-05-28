@@ -129,49 +129,36 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
       return emptyList()
     }
     val allUsersUsernames = userCollection.get().await()
+      val usersToList = mutableListOf<UserModel>()
     allUsersUsernames.documents.forEach { doc ->
       // get the username of the user
       val userName = doc.getString("userName") ?: ""
       // if the username contains the query, return the user
-      if (!userName.contains(query)) {
-        allUsersUsernames.documents.remove(doc)
+      if (userName.contains(query)) {
+        usersToList.add(
+            UserModel(
+                userId = doc.id,
+                userName = userName,
+                email = doc.getString("email") ?: "",
+                profilePictureUrl = doc.getString("profilePictureUrl") ?: "",
+                description = doc.getString("description") ?: "",
+                language = Language.valueOf(doc.getString("language") ?: Language.ENGLISH.name),
+                prefActivity =
+                    ActivityType.valueOf(doc.getString("prefActivity") ?: ActivityType.CLIMBING.name),
+                levels =
+                    UserActivitiesLevel(
+                        climbingLevel =
+                            UserLevel.valueOf(doc.getString("levels.climbingLevel") ?: UserLevel.BEGINNER.name),
+                        hikingLevel =
+                            UserLevel.valueOf(doc.getString("levels.hikingLevel") ?: UserLevel.BEGINNER.name),
+                        bikingLevel =
+                            UserLevel.valueOf(doc.getString("levels.bikingLevel") ?: UserLevel.BEGINNER.name)),
+                friends = (doc.get("friends") ?: emptyList<String>()) as List<String>,
+                friendRequests = (doc.get("friendRequests") ?: emptyList<String>()) as List<String>,
+                favorites = (doc.get("favorites") ?: emptyList<String>()) as List<String>))
       }
     }
-    if (allUsersUsernames.documents.isEmpty()) {
-      return emptyList()
-    }
-    return allUsersUsernames.documents.map { doc ->
-      val userId = doc.id
-      val userName = doc.getString("userName") ?: ""
-      val email = doc.getString("email") ?: ""
-      val profilePictureUrl = doc.getString("profilePictureUrl") ?: ""
-      val description = doc.getString("description") ?: ""
-      val language = Language.valueOf(doc.getString("language") ?: Language.ENGLISH.name)
-      val prefActivity =
-          ActivityType.valueOf(doc.getString("prefActivity") ?: ActivityType.CLIMBING.name)
-      val levelsMap = (doc.get("levels") ?: HashMap<String, String>()) as Map<String, String>
-      val levels =
-          UserActivitiesLevel(
-              climbingLevel =
-                  UserLevel.valueOf(levelsMap["climbingLevel"] ?: UserLevel.BEGINNER.name),
-              hikingLevel = UserLevel.valueOf(levelsMap["hikingLevel"] ?: UserLevel.BEGINNER.name),
-              bikingLevel = UserLevel.valueOf(levelsMap["bikingLevel"] ?: UserLevel.BEGINNER.name))
-      val friends = (doc.get("friends") ?: emptyList<String>()) as List<String>
-      val friendRequests = (doc.get("friendRequests") ?: emptyList<String>()) as List<String>
-      val favorites = (doc.get("favorites") ?: emptyList<String>()) as List<String>
-      UserModel(
-          userId,
-          userName,
-          email,
-          profilePictureUrl,
-          description,
-          language,
-          prefActivity,
-          levels,
-          friends,
-          friendRequests,
-          favorites)
-    }
+    return usersToList ?: emptyList()
   }
 
   override suspend fun removeFavorite(userId: String, activityId: String) {

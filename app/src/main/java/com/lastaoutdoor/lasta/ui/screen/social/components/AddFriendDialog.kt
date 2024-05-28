@@ -1,5 +1,6 @@
 package com.lastaoutdoor.lasta.ui.screen.social.components
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -106,7 +107,8 @@ private fun AddFriendForm(
         modifier =
             Modifier.fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp)
-                .heightIn(0.dp, 130.dp)
+                .heightIn(0.dp, 160.dp)
+                .border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
                 .testTag("UsersSuggestionsList")) {
           items(friendSuggestions.count()) { i ->
             val suggestion = friendSuggestions[i]
