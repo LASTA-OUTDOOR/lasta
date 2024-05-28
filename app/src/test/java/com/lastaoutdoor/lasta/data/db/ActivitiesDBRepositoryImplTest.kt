@@ -301,6 +301,9 @@ class ActivitiesDBRepositoryImplTest {
   @Test
   fun `Add rating works fine`() = runTest {
     coEvery { documentReference.update(any() as String, any()) } returns updateTask
+    every { documentSnapshot1.exists() } returns true
+    every { documentSnapshot1.get("ratings") } returns documentReference
+
     activitiesDB.addRating("activityId", Rating("userId", "comment", "5"), "5")
     coVerify(exactly = 1) { documentReference.update("ratings", any()) }
     coVerify(exactly = 1) { documentReference.update("numRatings", any()) }
