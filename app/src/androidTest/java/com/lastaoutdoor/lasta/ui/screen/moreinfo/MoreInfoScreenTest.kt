@@ -99,8 +99,7 @@ class MoreInfoScreenTest {
           navigateBack = { /*TODO*/},
           navigateToTracking = {},
           downloadActivity = {},
-          setWeatherBackToUserLoc = {},
-          clearSelectedMarker = {})
+          setWeatherBackToUserLoc = {})
     }
   }
 

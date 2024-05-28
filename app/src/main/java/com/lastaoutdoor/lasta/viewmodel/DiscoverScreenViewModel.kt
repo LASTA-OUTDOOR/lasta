@@ -200,7 +200,7 @@ constructor(
     _state.value = _state.value.copy(suggestions = emptyMap())
   }
 
-  private fun fetchActivities() {
+  fun fetchActivities() {
     viewModelScope.launch {
       _state.value = _state.value.copy(isLoading = true)
 
