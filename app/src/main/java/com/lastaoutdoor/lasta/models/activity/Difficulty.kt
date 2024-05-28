@@ -16,10 +16,10 @@ enum class Difficulty {
 
   fun cycle(): String {
     return when (this.name) {
-        EASY.name -> NORMAL.name
-        NORMAL.name -> HARD.name
-        HARD.name -> EASY.name
-        else -> EASY.name
+      EASY.name -> NORMAL.name
+      NORMAL.name -> HARD.name
+      HARD.name -> EASY.name
+      else -> EASY.name
     }
   }
 
