@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -47,8 +48,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -115,7 +119,7 @@ fun DiscoverScreen(
           if (discoverScreenState.isLoading) {
             LoadingAnim(width = 35, tag = "LoadingBarDiscover")
           } else if (discoverScreenState.activities.isEmpty()) {
-            /* TODO */
+            EmptyActivityList()
           } else {
             LazyColumn {
               item {
@@ -444,4 +448,23 @@ fun ActivitiesDisplay(
           }
         }
   }
+}
+
+@Composable
+fun EmptyActivityList() {
+    Column(
+        modifier = Modifier.fillMaxSize().testTag("EmptyActivityList"),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally) {
+        Icon(
+            painterResource(id = R.drawable.not_found),
+            contentDescription = "No Activities",
+            modifier = Modifier.size(75.dp).testTag("NoActivitiesLogo"))
+        Text(
+            text = LocalContext.current.getString(R.string.no_activities),
+            style =
+            TextStyle(
+                fontWeight = FontWeight.Normal, fontSize = 20.sp, textAlign = TextAlign.Center),
+            modifier = Modifier.padding(18.dp))
+    }
 }

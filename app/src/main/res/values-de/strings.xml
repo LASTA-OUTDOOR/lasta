@@ -163,4 +163,5 @@
     <string name = "at_hour">um</string>
     <string name = "forecasted_weather">Morgen</string>
     <string name="offline_text">"Sie sind zur Zeit Offline, bitte verbinden Sie sich mit dem Internet um sich in Lasta einzuloggen! "</string>
+    <string name="no_activities">Keine Aktivitäten gefunden, die Ihren Kriterien entsprechen… Versuchen Sie, Ihre Filter oder Suchbegriffe anzupassen!</string>
 </resources>

@@ -440,9 +440,9 @@ fun ActivityTitleZone(activityToDisplay: Activity) {
 fun ActivityPicture(activityToDisplay: Activity) {
   val defaultId =
       when (activityToDisplay.activityType) {
-        ActivityType.HIKING -> R.drawable.hiking_icon
-        ActivityType.CLIMBING -> R.drawable.climbing_icon
-        ActivityType.BIKING -> R.drawable.biking_icon
+        ActivityType.HIKING -> R.drawable.hiking_roundicon
+        ActivityType.CLIMBING -> R.drawable.climbing_roundicon
+        ActivityType.BIKING -> R.drawable.biking_roundicon
       }
   Column {
     if (activityToDisplay.activityImageUrl != "") {

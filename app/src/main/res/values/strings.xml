@@ -204,14 +204,15 @@ Sign in to join our fantastic sports addict community!</string>
     <string name="friend_request_declined_notif">declined your friend request!</string>
 
     <!--Errors-->
-    <string name="error_unexpected" translatable="false">An unexpected error has occured.</string>
-    <string name="error_sign_in" translatable="false">A SignIn error has occured.</string>
-    <string name="error_sign_out" translatable="false">A Sign Out error has occured.</string>
-    <string name="error_database" translatable="false">"A database error has occured. "</string>
-    <string name="error_dao" translatable="false">A DAO error has occured.</string>
-    <string name="error_messaging" translatable="false">A messaging error has occured.</string>
-    <string name="error_radar_api" translatable="false">A Radar API error has occured.</string>
-    <string name="error_osm_api" translatable="false">A OSM API error has occured.</string>
-    <string name="error_weather" translatable="false">A Weather error has occured.</string>
+    <string name="error_unexpected" translatable="false">An unexpected error has occurred.</string>
+    <string name="error_sign_in" translatable="false">A SignIn error has occurred.</string>
+    <string name="error_sign_out" translatable="false">A Sign Out error has occurred.</string>
+    <string name="error_database" translatable="false">"A database error has occurred. "</string>
+    <string name="error_dao" translatable="false">A DAO error has occurred.</string>
+    <string name="error_messaging" translatable="false">A messaging error has occurred.</string>
+    <string name="error_radar_api" translatable="false">A Radar API error has occurred.</string>
+    <string name="error_osm_api" translatable="false">A OSM API error has occurred.</string>
+    <string name="error_weather" translatable="false">A Weather error has occurred.</string>
+    <string name="no_activities">No activities found matching your criteria… Try adjusting your filters or search terms!</string>
 
 </resources>
