@@ -1,8 +1,10 @@
 package com.lastaoutdoor.lasta.ui.screen.social.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -26,7 +28,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
@@ -41,18 +47,44 @@ fun FriendsRequestList(
     acceptFriend: (UserModel) -> Unit,
     declineFriend: (UserModel) -> Unit
 ) {
-  Text(
-      LocalContext.current.getString(R.string.friend_req),
-      style = MaterialTheme.typography.titleLarge,
-      modifier = Modifier.padding(8.dp).testTag("FriendRequestTitle"))
+  Row(modifier = Modifier.fillMaxWidth(),
+      horizontalArrangement = Arrangement.Center,
+      verticalAlignment = Alignment.CenterVertically) {
+      Text(
+          LocalContext.current.getString(R.string.friend_req),
+          style = MaterialTheme.typography.titleLarge,
+          modifier = Modifier.padding(8.dp).testTag("FriendRequestTitle"),
+      )
+  }
   when {
     isConnected == ConnectionState.OFFLINE -> {
       ConnectionMissing()
     }
     friendRequests.isEmpty() -> {
-      Text(
-          LocalContext.current.getString(R.string.no_friend),
-          Modifier.padding(8.dp).testTag("NoFriendRequest"))
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .testTag("EmptyFriendsList"),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally) {
+            Icon(
+                painterResource(id = R.drawable.no_friends),
+                contentDescription = "No Activities",
+                modifier = Modifier
+                    .size(85.dp)
+                    .testTag("NoFriendsLogo")
+            )
+            Text(
+                text = LocalContext.current.getString(R.string.no_friends_yet),
+                style =
+                TextStyle(
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 20.sp,
+                    textAlign = TextAlign.Center
+                ),
+                modifier = Modifier.padding(18.dp)
+            )
+        }
     }
     else -> {
       LazyColumn {
@@ -79,9 +111,16 @@ fun FriendsRequestCard(
               containerColor = MaterialTheme.colorScheme.surfaceVariant,
           ),
       modifier =
-          Modifier.height(height = 100.dp).fillMaxWidth().padding(8.dp).testTag("FriendRequest")) {
+      Modifier
+          .height(height = 100.dp)
+          .fillMaxWidth()
+          .padding(8.dp)
+          .testTag("FriendRequest")) {
         Row(
-            modifier = Modifier.padding(8.dp).fillMaxHeight().fillMaxWidth(),
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxHeight()
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically) {
               AsyncImage(
                   model =
@@ -94,7 +133,10 @@ fun FriendsRequestCard(
                   contentDescription = "Profile Picture",
                   contentScale = ContentScale.Crop,
                   error = painterResource(R.drawable.default_profile_icon),
-                  modifier = Modifier.clip(RoundedCornerShape(100.dp)).size(60.dp).fillMaxHeight())
+                  modifier = Modifier
+                      .clip(RoundedCornerShape(100.dp))
+                      .size(60.dp)
+                      .fillMaxHeight())
 
               Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
                 Text(friend.userName ?: "Unknown user")

@@ -459,7 +459,7 @@ fun EmptyActivityList() {
         Icon(
             painterResource(id = R.drawable.not_found),
             contentDescription = "No Activities",
-            modifier = Modifier.size(75.dp).testTag("NoActivitiesLogo"))
+            modifier = Modifier.size(85.dp).testTag("NoActivitiesLogo"))
         Text(
             text = LocalContext.current.getString(R.string.no_activities),
             style =
