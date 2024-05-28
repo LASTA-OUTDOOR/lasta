@@ -53,23 +53,16 @@ fun AddFriendDialog(
       onDismissRequest = { hideAddFriendDialog() },
       properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)) {
         Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .testTag("AddFriendDialog"),
+            modifier = Modifier.fillMaxWidth().padding(16.dp).testTag("AddFriendDialog"),
             shape = RoundedCornerShape(16.dp),
         ) {
           Text(
               text = LocalContext.current.getString(R.string.add_fr),
               style = MaterialTheme.typography.titleLarge,
               textAlign = TextAlign.Center,
-              modifier = Modifier
-                  .fillMaxWidth()
-                  .padding(16.dp))
+              modifier = Modifier.fillMaxWidth().padding(16.dp))
           Column(
-              modifier = Modifier
-                  .padding(16.dp)
-                  .fillMaxWidth(),
+              modifier = Modifier.padding(16.dp).fillMaxWidth(),
               horizontalAlignment = Alignment.CenterHorizontally,
               verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
@@ -101,10 +94,7 @@ private fun AddFriendForm(
         value = text,
         onValueChange = { newValue -> text = newValue },
         label = { Text(LocalContext.current.getString(R.string.email)) },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .testTag("EmailTextField"),
+        modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("EmailTextField"),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
         keyboardActions =
             KeyboardActions(
@@ -114,31 +104,23 @@ private fun AddFriendForm(
                 }))
 
     // Fetch friend suggestions when text changes
-    LaunchedEffect(text) {
-        friendSuggestions = fetchFriendSuggestions(text)
-
-    }
+    LaunchedEffect(text) { friendSuggestions = fetchFriendSuggestions(text) }
 
     // Display friend suggestions
     LazyColumn(
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .heightIn(0.dp, 160.dp)
-            .border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
-            .testTag("UsersSuggestionsList")) {
+            Modifier.fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .heightIn(0.dp, 160.dp)
+                .border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
+                .testTag("UsersSuggestionsList")) {
           items(friendSuggestions.count()) { i ->
             val suggestion = friendSuggestions[i]
             Card(
                 modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(4.dp)
-                    .testTag("suggestion")
-                    .clickable {
-                        // set text field value to the selected friend suggested email
-                        text = suggestion.email
+                    Modifier.fillMaxWidth().padding(4.dp).testTag("suggestion").clickable {
+                      // set text field value to the selected friend suggested email
+                      text = suggestion.email
                     }) {
                   FriendRow(friend = suggestion)
                 }
