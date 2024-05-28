@@ -316,7 +316,9 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
             preferencesViewModel.clearPreferences()
             preferencesViewModel.updateIsLoggedIn(false)
             authViewModel.signOut()
-            navController.popBackStack()
+            // Pop backstack up to and including the main route, so that the user cannot press back
+            // button to get back in the app as a "phantom user"
+            navController.popBackStack(BaseRoute.Main.route, true)
             navController.navigate(BaseRoute.Login.route)
           },
           {
@@ -325,6 +327,9 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
             authViewModel.signOut()
             authViewModel.deleteAccount()
             navController.popBackStack()
+            // Pop backstack up to and including the main route, so that the user cannot press back
+            // button to get back in the app as a "phantom user"
+            navController.popBackStack(BaseRoute.Main.route, true)
             navController.navigate(BaseRoute.Login.route)
           })
     }
