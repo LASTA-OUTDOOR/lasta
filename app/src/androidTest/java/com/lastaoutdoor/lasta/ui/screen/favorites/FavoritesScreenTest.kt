@@ -95,6 +95,7 @@ class FavoritesScreenTest {
             favorites = emptyList(),
             changeActivityToDisplay = {},
             flipFavorite = {},
+            updateFavorites = {},
             changeWeatherTarget = {}) {}
       }
     }
