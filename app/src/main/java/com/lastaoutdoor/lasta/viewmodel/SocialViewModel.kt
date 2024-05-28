@@ -27,12 +27,12 @@ import com.lastaoutdoor.lasta.utils.ErrorType
 import com.lastaoutdoor.lasta.utils.TimeFrame
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class SocialViewModel
@@ -171,7 +171,7 @@ constructor(
       // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
         // get the list of users by query
-        friendSuggestions = userDBRepo.getUsersByUsernameWithSubstring(query)
+        friendSuggestions = userDBRepo.getUsersByUsernameWithSubstring(query) ?: emptyList()
       } catch (e: Exception) {
         errorToast.showToast(ErrorType.ERROR_DATABASE)
       }
