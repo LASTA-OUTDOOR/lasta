@@ -452,10 +452,10 @@ fun ActivitiesDisplay(
 
 @Composable
 fun EmptyActivityList() {
-    Column(
-        modifier = Modifier.fillMaxSize().testTag("EmptyActivityList"),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally) {
+  Column(
+      modifier = Modifier.fillMaxSize().testTag("EmptyActivityList"),
+      verticalArrangement = Arrangement.Center,
+      horizontalAlignment = Alignment.CenterHorizontally) {
         Icon(
             painterResource(id = R.drawable.not_found),
             contentDescription = "No Activities",
@@ -463,8 +463,8 @@ fun EmptyActivityList() {
         Text(
             text = LocalContext.current.getString(R.string.no_activities),
             style =
-            TextStyle(
-                fontWeight = FontWeight.Normal, fontSize = 20.sp, textAlign = TextAlign.Center),
+                TextStyle(
+                    fontWeight = FontWeight.Normal, fontSize = 20.sp, textAlign = TextAlign.Center),
             modifier = Modifier.padding(18.dp))
-    }
+      }
 }

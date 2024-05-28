@@ -47,44 +47,38 @@ fun FriendsRequestList(
     acceptFriend: (UserModel) -> Unit,
     declineFriend: (UserModel) -> Unit
 ) {
-  Row(modifier = Modifier.fillMaxWidth(),
+  Row(
+      modifier = Modifier.fillMaxWidth(),
       horizontalArrangement = Arrangement.Center,
       verticalAlignment = Alignment.CenterVertically) {
-      Text(
-          LocalContext.current.getString(R.string.friend_req),
-          style = MaterialTheme.typography.titleLarge,
-          modifier = Modifier.padding(8.dp).testTag("FriendRequestTitle"),
-      )
-  }
+        Text(
+            LocalContext.current.getString(R.string.friend_req),
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.padding(8.dp).testTag("FriendRequestTitle"),
+        )
+      }
   when {
     isConnected == ConnectionState.OFFLINE -> {
       ConnectionMissing()
     }
     friendRequests.isEmpty() -> {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .testTag("EmptyFriendsList"),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally) {
+      Column(
+          modifier = Modifier.fillMaxSize().testTag("EmptyFriendsList"),
+          verticalArrangement = Arrangement.Center,
+          horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(
                 painterResource(id = R.drawable.no_friends),
                 contentDescription = "No Activities",
-                modifier = Modifier
-                    .size(85.dp)
-                    .testTag("NoFriendsLogo")
-            )
+                modifier = Modifier.size(85.dp).testTag("NoFriendsLogo"))
             Text(
                 text = LocalContext.current.getString(R.string.no_friends_yet),
                 style =
-                TextStyle(
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 20.sp,
-                    textAlign = TextAlign.Center
-                ),
-                modifier = Modifier.padding(18.dp)
-            )
-        }
+                    TextStyle(
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 20.sp,
+                        textAlign = TextAlign.Center),
+                modifier = Modifier.padding(18.dp))
+          }
     }
     else -> {
       LazyColumn {
@@ -111,16 +105,9 @@ fun FriendsRequestCard(
               containerColor = MaterialTheme.colorScheme.surfaceVariant,
           ),
       modifier =
-      Modifier
-          .height(height = 100.dp)
-          .fillMaxWidth()
-          .padding(8.dp)
-          .testTag("FriendRequest")) {
+          Modifier.height(height = 100.dp).fillMaxWidth().padding(8.dp).testTag("FriendRequest")) {
         Row(
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxHeight()
-                .fillMaxWidth(),
+            modifier = Modifier.padding(8.dp).fillMaxHeight().fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically) {
               AsyncImage(
                   model =
@@ -133,10 +120,7 @@ fun FriendsRequestCard(
                   contentDescription = "Profile Picture",
                   contentScale = ContentScale.Crop,
                   error = painterResource(R.drawable.default_profile_icon),
-                  modifier = Modifier
-                      .clip(RoundedCornerShape(100.dp))
-                      .size(60.dp)
-                      .fillMaxHeight())
+                  modifier = Modifier.clip(RoundedCornerShape(100.dp)).size(60.dp).fillMaxHeight())
 
               Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
                 Text(friend.userName ?: "Unknown user")
