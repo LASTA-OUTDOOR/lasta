@@ -131,13 +131,16 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
     }
     // get all users
     val allUsersUsernames = userCollection.get().await()
+    if (allUsersUsernames.isEmpty) {
+      return emptyList()
+    }
     val usersToList = mutableListOf<UserModel>()
     // for each user, check if the username contains the query
     allUsersUsernames.documents.forEach { doc ->
       // get the username of the user
-      val userName = doc.getString("userName")?.lowercase() ?: ""
+      val userName = doc.getString("userName") ?: ""
       // if the username contains the query, return the user
-      if (userName.contains(query)) {
+      if (userName.lowercase().contains(query)) {
         usersToList.add(
             UserModel(
                 userId = doc.id,

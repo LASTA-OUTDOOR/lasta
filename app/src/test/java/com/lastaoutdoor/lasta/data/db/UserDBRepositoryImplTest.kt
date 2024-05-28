@@ -44,6 +44,7 @@ class UserDBRepositoryImplTest {
 
     every { userCollection.document(any()) } returns documentReference
     every { documentReference.get() } returns getTask
+    every { userCollection.get() } returns queryTask
 
     every { userCollection.whereEqualTo(any() as String, any()) } returns query
     every { query.get() } returns queryTask
@@ -90,6 +91,52 @@ class UserDBRepositoryImplTest {
     every { documentSnapshot.exists() } returns false
     val result = userDB.getUserById("userId")
     assert(result == null)
+  }
+
+  @Test
+  fun `getUsersByUsernameWithSubstring returns null if query is null`() = runTest {
+    every { querySnapshot.isEmpty } returns true
+    var result = userDB.getUsersByUsernameWithSubstring("query")
+    assert(result == emptyList<UserModel>())
+    result = userDB.getUsersByUsernameWithSubstring("")
+    assert(result == emptyList<UserModel>())
+  }
+
+  @Test
+  fun `getUsersByUsernameWithSubstring returns list of users if query is not null`() = runTest {
+    every { querySnapshot.isEmpty } returns false
+    every { querySnapshot.documents } returns listOf(documentSnapshot)
+    every { documentSnapshot.exists() } returns true
+    every { documentSnapshot.id } returns "userId"
+    every { documentSnapshot.getString("userName") } returns "userName"
+    every { documentSnapshot.getString("email") } returns "email"
+    every { documentSnapshot.getString("profilePictureUrl") } returns "profilePictureUrl"
+    every { documentSnapshot.getString("description") } returns "description"
+    every { documentSnapshot.getString("language") } returns "ENGLISH"
+    every { documentSnapshot.getString("prefActivity") } returns "CLIMBING"
+    every { documentSnapshot.getString("levels.climbingLevel") } returns "BEGINNER"
+    every { documentSnapshot.getString("levels.hikingLevel") } returns "BEGINNER"
+    every { documentSnapshot.getString("levels.bikingLevel") } returns "BEGINNER"
+    every { documentSnapshot.get("friends") } returns emptyList<String>()
+    every { documentSnapshot.get("friendRequests") } returns emptyList<String>()
+    every { documentSnapshot.get("favorites") } returns emptyList<String>()
+    var result = userDB.getUsersByUsernameWithSubstring("blurtgblur")
+    assert(result.isEmpty())
+    result = userDB.getUsersByUsernameWithSubstring("us")
+    assert(result.size == 1)
+    assert(result[0].userId == "userId")
+    assert(result[0].userName == "userName")
+    assert(result[0].email == "email")
+    assert(result[0].profilePictureUrl == "profilePictureUrl")
+    assert(result[0].description == "description")
+    assert(result[0].language == Language.ENGLISH)
+    assert(result[0].prefActivity == ActivityType.CLIMBING)
+    assert(result[0].levels.climbingLevel == UserLevel.BEGINNER)
+    assert(result[0].levels.hikingLevel == UserLevel.BEGINNER)
+    assert(result[0].levels.bikingLevel == UserLevel.BEGINNER)
+    assert(result[0].friends.isEmpty())
+    assert(result[0].friendRequests.isEmpty())
+    assert(result[0].favorites.isEmpty())
   }
 
   @Test
