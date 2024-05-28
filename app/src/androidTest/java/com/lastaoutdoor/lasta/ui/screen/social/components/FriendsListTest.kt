@@ -45,10 +45,12 @@ class FriendsListTest {
               ),
           displayAddFriendDialog = false,
           friendRequestFeedback = "",
+          friendSuggestions = emptyList(),
           clearFriendRequestFeedback = {},
           hideAddFriendDialog = {},
           requestFriend = {},
           refreshFriends = {},
+          fetchFriendsSuggestions = {},
           navigateToFriendProfile = {})
     }
     composeRule.onNodeWithTag("FriendCard").assertIsDisplayed()
@@ -66,10 +68,12 @@ class FriendsListTest {
               ),
           displayAddFriendDialog = false,
           friendRequestFeedback = "",
+          friendSuggestions = emptyList(),
           clearFriendRequestFeedback = {},
           hideAddFriendDialog = {},
           requestFriend = {},
           refreshFriends = {},
+          fetchFriendsSuggestions = {},
           navigateToFriendProfile = {})
     }
     composeRule.onNodeWithTag("FriendCard").assertIsDisplayed()
@@ -84,10 +88,12 @@ class FriendsListTest {
           friends = emptyList(),
           displayAddFriendDialog = true,
           friendRequestFeedback = "",
+          friendSuggestions = emptyList(),
           clearFriendRequestFeedback = {},
           hideAddFriendDialog = {},
           requestFriend = {},
           refreshFriends = {},
+          fetchFriendsSuggestions = {},
           navigateToFriendProfile = {})
     }
     composeRule.onNodeWithTag("AddFriendDialog").assertIsDisplayed()
@@ -102,10 +108,12 @@ class FriendsListTest {
           friends = emptyList(),
           displayAddFriendDialog = false,
           friendRequestFeedback = "",
+          friendSuggestions = emptyList(),
           clearFriendRequestFeedback = {},
           hideAddFriendDialog = {},
           requestFriend = {},
           refreshFriends = {},
+          fetchFriendsSuggestions = {},
           navigateToFriendProfile = {})
     }
     composeRule.onNodeWithTag("ConnectionMissing").assertIsDisplayed()
@@ -128,6 +136,8 @@ class FriendsListTest {
           hideAddFriendDialog = {},
           requestFriend = {},
           refreshFriends = {},
+          friendSuggestions = emptyList(),
+          fetchFriendsSuggestions = {},
           navigateToFriendProfile = {})
     }
     composeRule.onNodeWithTag("AddFriendDialog").assertIsDisplayed()
