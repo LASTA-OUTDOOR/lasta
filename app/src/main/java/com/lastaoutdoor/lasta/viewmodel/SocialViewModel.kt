@@ -27,12 +27,12 @@ import com.lastaoutdoor.lasta.utils.ErrorType
 import com.lastaoutdoor.lasta.utils.TimeFrame
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class SocialViewModel
@@ -53,6 +53,10 @@ constructor(
 
   // Get all the friends request
   var friendRequests: List<UserModel> by mutableStateOf(emptyList())
+
+    // Get all the friends suggestions
+    private var friendSuggestions: List<UserModel> by mutableStateOf(emptyList())
+
 
   // feedback message for the friend request
   var friendRequestFeedback: String by mutableStateOf("")
@@ -164,17 +168,16 @@ constructor(
    * Fetch the list of friends suggestions given a string
    */
   fun fetchFriendsSuggestions(query: String): List<UserModel> {
-    var users: List<UserModel> = emptyList()
     viewModelScope.launch {
       // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
         // get the list of users by query
-        users = userDBRepo.getUsersByUsernameWithSubstring(query)
+        friendSuggestions = userDBRepo.getUsersByUsernameWithSubstring(query)
       } catch (e: Exception) {
         errorToast.showToast(ErrorType.ERROR_DATABASE)
       }
     }
-    return users
+    return friendSuggestions
   }
 
   fun acceptFriend(friend: UserModel) {

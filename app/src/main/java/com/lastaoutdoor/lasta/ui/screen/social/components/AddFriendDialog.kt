@@ -1,9 +1,12 @@
 package com.lastaoutdoor.lasta.ui.screen.social.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -48,16 +51,23 @@ fun AddFriendDialog(
       onDismissRequest = { hideAddFriendDialog() },
       properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)) {
         Card(
-            modifier = Modifier.fillMaxWidth().padding(16.dp).testTag("AddFriendDialog"),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .testTag("AddFriendDialog"),
             shape = RoundedCornerShape(16.dp),
         ) {
           Text(
               text = LocalContext.current.getString(R.string.add_fr),
               style = MaterialTheme.typography.titleLarge,
               textAlign = TextAlign.Center,
-              modifier = Modifier.fillMaxWidth().padding(16.dp))
+              modifier = Modifier
+                  .fillMaxWidth()
+                  .padding(16.dp))
           Column(
-              modifier = Modifier.padding(16.dp).fillMaxWidth(),
+              modifier = Modifier
+                  .padding(16.dp)
+                  .fillMaxWidth(),
               horizontalAlignment = Alignment.CenterHorizontally,
               verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
@@ -84,33 +94,64 @@ private fun AddFriendForm(
   // friend suggestions
   var friendSuggestions by remember { mutableStateOf(listOf<UserModel>()) }
 
-  TextField(
-      value = text,
-      onValueChange = { newValue -> text = newValue },
-      label = { Text(LocalContext.current.getString(R.string.email)) },
-      modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("EmailTextField"),
-      keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-      keyboardActions =
-          KeyboardActions(
-              onDone = {
+    Column {
+        TextField(
+            value = text,
+            onValueChange = { newValue -> text = newValue },
+            label = { Text(LocalContext.current.getString(R.string.email)) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+                .testTag("EmailTextField"),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions =
+            KeyboardActions(
+                onDone = {
+                    focusManager.clearFocus()
+                    requestFriend(text)
+                })
+        )
+
+        // Display friend suggestions
+        LazyColumn(
+            modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .heightIn(0.dp, 130.dp)
+                .testTag("UsersSuggestionsList")) {
+            items(friendSuggestions.count()) { i ->
+                val suggestion = friendSuggestions[i]
+                Card(
+                    modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp)
+                        .testTag("suggestion")
+                        .clickable {
+                            //set text field value to the selected friend suggested email
+                            text = suggestion.email
+                        }) {
+                        FriendRow(friend = suggestion)
+                }
+            }
+        }
+
+        // Fetch friend suggestions when text changes
+        LaunchedEffect(text) { friendSuggestions = fetchFriendSuggestions(text) }
+
+        // Error message / Feedback
+        Text(friendRequestFeedback, style = MaterialTheme.typography.bodyLarge)
+
+        // Submit Button
+        Button(
+            onClick = {
                 focusManager.clearFocus()
                 requestFriend(text)
-              }))
-
-  // Fetch friend suggestions when text changes
-  LaunchedEffect(text) { friendSuggestions = fetchFriendSuggestions(text) }
-  // Display friend suggestions
-  friendSuggestions.forEach { suggestion -> Text(text = suggestion.userName) }
-  // Error message / Feedback
-  Text(friendRequestFeedback, style = MaterialTheme.typography.bodyLarge)
-
-  // Submit Button
-  Button(
-      onClick = {
-        focusManager.clearFocus()
-        requestFriend(text)
-      },
-      modifier = Modifier.testTag("SubmitButton")) {
-        Text(LocalContext.current.getString(R.string.send_fr))
-      }
+            },
+            modifier = Modifier.testTag("SubmitButton")
+        ) {
+            Text(LocalContext.current.getString(R.string.send_fr))
+        }
+    }
 }
