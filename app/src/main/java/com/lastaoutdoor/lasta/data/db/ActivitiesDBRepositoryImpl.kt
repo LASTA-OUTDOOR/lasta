@@ -13,9 +13,9 @@ import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.models.activity.Rating
 import com.lastaoutdoor.lasta.models.api.Position
 import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.tasks.await
 
 @Suppress("UNCHECKED_CAST")
 @Singleton
@@ -84,9 +84,6 @@ constructor(context: Context, database: FirebaseFirestore) : ActivitiesDBReposit
     if (!query.isEmpty) {
       val documents = query.documents
       for (document in documents) {
-        if (document.get("startPosition") == null) {
-          continue
-        }
         val startPositionMap = document.get("startPosition") as Map<*, *>
         if (onlyKnown && startPositionMap["lat"] == 0.0 && startPositionMap["lon"] == 0.0) {
           continue
