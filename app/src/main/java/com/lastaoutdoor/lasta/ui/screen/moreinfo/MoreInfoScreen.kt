@@ -54,6 +54,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.SphericalUtil
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.weather.WeatherForecast
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
@@ -130,7 +132,7 @@ fun MoreInfoScreen(
                   }
             }
             // displays activity title and duration
-            ActivityTitleZone(activityToDisplay)
+            ActivityTitleZone(activityToDisplay, discoverScreenState.centerPoint)
             WeatherReportBig(weather, true) { weatherDialog.value = true }
             // displays activity difficulty, ration and view on map button
             MiddleZone(
@@ -426,7 +428,7 @@ fun TopBarLogo(logoPainterId: ImageVector, f: () -> Unit) {
 
 // Displays the title of the activity, its type and its duration
 @Composable
-fun ActivityTitleZone(activityToDisplay: Activity) {
+fun ActivityTitleZone(activityToDisplay: Activity, centerPoint: LatLng) {
   Row(
       modifier = Modifier.fillMaxWidth(),
       verticalAlignment = Alignment.CenterVertically,
@@ -435,7 +437,7 @@ fun ActivityTitleZone(activityToDisplay: Activity) {
             modifier = Modifier.padding(vertical = 5.dp, horizontal = 5.dp).weight(0.65f),
             verticalAlignment = Alignment.CenterVertically) {
               ActivityPicture(activityToDisplay)
-              ActivityTitleText(activityToDisplay)
+              ActivityTitleText(activityToDisplay, centerPoint)
             }
         ElevatedDifficultyDisplay(activityToDisplay)
       }
@@ -467,12 +469,24 @@ fun ActivityPicture(activityToDisplay: Activity) {
 }
 
 @Composable
-fun ActivityTitleText(activityToDisplay: Activity) {
+fun ActivityTitleText(activityToDisplay: Activity, centerPoint: LatLng) {
   Row(modifier = Modifier.padding(vertical = 25.dp, horizontal = 5.dp)) {
     Column {
       Text(
           text = activityToDisplay.name,
           style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight(600)))
+
+      Text(
+          text =
+              "${String.format("%.1f", SphericalUtil.computeDistanceBetween(centerPoint, LatLng(activityToDisplay.startPosition.lat, activityToDisplay.startPosition.lon)) / 1000)} km away",
+          style =
+              TextStyle(
+                  fontSize = 14.sp,
+                  lineHeight = 20.sp,
+                  fontWeight = FontWeight(500),
+                  color = Color.Gray,
+                  letterSpacing = 0.1.sp,
+              ))
     }
   }
 }
