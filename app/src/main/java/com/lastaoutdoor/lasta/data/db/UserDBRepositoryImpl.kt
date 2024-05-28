@@ -125,14 +125,17 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
   }
 
   override suspend fun getUsersByUsernameWithSubstring(query: String): List<UserModel> {
+    // if the query is empty, return an empty list
     if (query.isEmpty() || query.isBlank()) {
       return emptyList()
     }
+    // get all users
     val allUsersUsernames = userCollection.get().await()
     val usersToList = mutableListOf<UserModel>()
+    // for each user, check if the username contains the query
     allUsersUsernames.documents.forEach { doc ->
       // get the username of the user
-      val userName = doc.getString("userName") ?: ""
+      val userName = doc.getString("userName")?.lowercase() ?: ""
       // if the username contains the query, return the user
       if (userName.contains(query)) {
         usersToList.add(
@@ -162,7 +165,7 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
                 favorites = (doc.get("favorites") ?: emptyList<String>()) as List<String>))
       }
     }
-    return usersToList ?: emptyList()
+    return usersToList
   }
 
   override suspend fun removeFavorite(userId: String, activityId: String) {

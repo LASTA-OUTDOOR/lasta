@@ -40,10 +40,11 @@ import com.lastaoutdoor.lasta.models.user.UserModel
 @Composable
 fun AddFriendDialog(
     friendRequestFeedback: String,
+    friendSuggestions: List<UserModel>,
     clearFriendRequestFeedback: () -> Unit,
     hideAddFriendDialog: () -> Unit,
     requestFriend: (String) -> Unit,
-    fetchFriendSuggestions: (String) -> List<UserModel> = { _ -> emptyList() }
+    fetchFriendSuggestions: (String) -> Unit
 ) {
 
   // Reset the feedback message on launched effect
@@ -69,7 +70,8 @@ fun AddFriendDialog(
                     LocalContext.current.getString(R.string.fr_email_add),
                     modifier = Modifier.testTag("SubHeader"),
                     textAlign = TextAlign.Center)
-                AddFriendForm(friendRequestFeedback, requestFriend, fetchFriendSuggestions)
+                AddFriendForm(
+                    friendRequestFeedback, friendSuggestions, requestFriend, fetchFriendSuggestions)
               }
         }
       }
@@ -78,16 +80,15 @@ fun AddFriendDialog(
 @Composable
 private fun AddFriendForm(
     friendRequestFeedback: String,
+    friendSuggestions: List<UserModel>,
     requestFriend: (String) -> Unit,
-    fetchFriendSuggestions: (String) -> List<UserModel>
+    fetchFriendSuggestions: (String) -> Unit
 ) {
 
   // to hide the keyboard
   val focusManager = LocalFocusManager.current
   // text inside the textfield
   var text by remember { mutableStateOf("") }
-  // friend suggestions
-  var friendSuggestions by remember { mutableStateOf(listOf<UserModel>()) }
 
   Column {
     TextField(
@@ -104,8 +105,10 @@ private fun AddFriendForm(
                 }))
 
     // Fetch friend suggestions when text changes
-    LaunchedEffect(text) { friendSuggestions = fetchFriendSuggestions(text) }
-
+    LaunchedEffect(text) {
+      // put text in small letters
+      fetchFriendSuggestions(text.lowercase())
+    }
     // Display friend suggestions
     LazyColumn(
         modifier =

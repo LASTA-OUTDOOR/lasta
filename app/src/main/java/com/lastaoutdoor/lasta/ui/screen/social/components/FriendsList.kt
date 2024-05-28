@@ -40,9 +40,10 @@ fun FriendsList(
     friends: List<UserModel>,
     displayAddFriendDialog: Boolean,
     friendRequestFeedback: String,
+    friendSuggestions: List<UserModel>,
     clearFriendRequestFeedback: () -> Unit,
     hideAddFriendDialog: () -> Unit,
-    fetchFriendsSuggestions: (String) -> List<UserModel>,
+    fetchFriendsSuggestions: (String) -> Unit,
     requestFriend: (String) -> Unit,
     refreshFriends: () -> Unit,
     navigateToFriendProfile: (String) -> Unit
@@ -58,6 +59,7 @@ fun FriendsList(
       if (displayAddFriendDialog)
           AddFriendDialog(
               friendRequestFeedback,
+              friendSuggestions,
               clearFriendRequestFeedback,
               hideAddFriendDialog,
               requestFriend,
@@ -69,6 +71,7 @@ fun FriendsList(
       if (displayAddFriendDialog)
           AddFriendDialog(
               friendRequestFeedback,
+              friendSuggestions,
               clearFriendRequestFeedback,
               hideAddFriendDialog,
               requestFriend,

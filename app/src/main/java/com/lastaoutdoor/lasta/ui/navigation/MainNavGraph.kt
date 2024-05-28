@@ -120,6 +120,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           socialViewModel.latestFriendActivities,
           socialViewModel.displayAddFriendDialog,
           socialViewModel.friendRequestFeedback,
+          socialViewModel.friendSuggestions,
           socialViewModel.displayFriendPicker,
           socialViewModel::refreshMessages,
           socialViewModel::clearFriendRequestFeedback,

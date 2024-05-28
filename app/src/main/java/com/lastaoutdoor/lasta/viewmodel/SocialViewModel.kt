@@ -55,7 +55,7 @@ constructor(
   var friendRequests: List<UserModel> by mutableStateOf(emptyList())
 
   // Get all the friends suggestions
-  private var friendSuggestions: List<UserModel> by mutableStateOf(emptyList())
+  var friendSuggestions: List<UserModel> by mutableStateOf(emptyList())
 
   // feedback message for the friend request
   var friendRequestFeedback: String by mutableStateOf("")
@@ -166,7 +166,7 @@ constructor(
   /*
    * Fetch the list of friends suggestions given a string
    */
-  fun fetchFriendsSuggestions(query: String): List<UserModel> {
+  fun fetchFriendsSuggestions(query: String) {
     viewModelScope.launch {
       // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
@@ -176,7 +176,6 @@ constructor(
         errorToast.showToast(ErrorType.ERROR_DATABASE)
       }
     }
-    return friendSuggestions
   }
 
   fun acceptFriend(friend: UserModel) {
