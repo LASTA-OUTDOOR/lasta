@@ -250,9 +250,9 @@ fun Int.pad(): String {
  * @return The zoom level for the given radius.
  */
 fun calculateZoomLevel(
-  radiusInMeters: Double,
-  screenWidthInPixels: Float,
-  latitude: Double
+    radiusInMeters: Double,
+    screenWidthInPixels: Float,
+    latitude: Double
 ): Float {
   val diameter = 2 * radiusInMeters
   val groundResolution = Math.E * diameter / screenWidthInPixels
