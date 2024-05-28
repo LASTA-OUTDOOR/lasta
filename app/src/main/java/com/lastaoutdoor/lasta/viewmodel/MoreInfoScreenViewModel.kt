@@ -97,6 +97,20 @@ constructor(
     }
   }
 
+  // Update the activity's difficulty
+  fun updateDifficulty(activityId: String) {
+    viewModelScope.launch {
+      // Call surrounded by try-catch block to make handle exceptions caused by database
+      try {
+        // update the difficulty in a cyclic way
+        activityDB.updateDifficulty(activityId)
+        activityToDisplay.value = activityDB.getActivityById(activityId) ?: dummyActivity
+      } catch (e: Exception) {
+        errorToast.showToast(ErrorType.ERROR_DATABASE)
+      }
+    }
+  }
+
   fun goToMarker(activity: Activity): Marker {
     val icon =
         when (activity.activityType) {

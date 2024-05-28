@@ -11,6 +11,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -31,8 +32,15 @@ fun FavoritesScreen(
     changeActivityToDisplay: (Activity) -> Unit,
     changeWeatherTarget: (Activity) -> Unit,
     flipFavorite: (String) -> Unit,
+    updateFavorites: () -> Unit,
     navigateToMoreInfo: () -> Unit,
 ) {
+  LaunchedEffect(Unit) {
+    // update so that when going back from more info screen with having modified activity, the
+    // screen is updated
+    updateFavorites()
+  }
+
   Column(modifier = Modifier.testTag("FavoritesScreen")) {
     Box(
         modifier = Modifier.fillMaxWidth().height(70.dp),

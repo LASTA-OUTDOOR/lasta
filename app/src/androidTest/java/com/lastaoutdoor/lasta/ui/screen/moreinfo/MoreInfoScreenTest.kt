@@ -83,6 +83,7 @@ class MoreInfoScreenTest {
           usersList = fakeUsersList,
           getUserModels = { _ -> },
           writeNewRating = { _, _, _ -> },
+          updateDifficulty = {},
           currentUser = currentUser,
           weather =
               WeatherResponse(
@@ -174,12 +175,14 @@ class MoreInfoScreenTest {
   fun elevateDiff_isDisplayed() {
     composeRule.activity.setContent {
       ElevatedDifficultyDisplay(
+          updateDifficulty = {},
           activityToDisplay = Activity("", 0L, difficulty = Difficulty.NORMAL))
     }
     composeRule.onNodeWithTag("elevatedTestTag").assertIsDisplayed()
     composeRule.onNodeWithTag("elevatedTestTag").performClick()
     composeRule.activity.setContent {
-      ElevatedDifficultyDisplay(activityToDisplay = Activity("", 0L, difficulty = Difficulty.HARD))
+      ElevatedDifficultyDisplay(
+          updateDifficulty = {}, activityToDisplay = Activity("", 0L, difficulty = Difficulty.HARD))
     }
     composeRule.onNodeWithTag("elevatedTestTag").assertIsDisplayed()
     composeRule.onNodeWithTag("elevatedTestTag").performClick()
