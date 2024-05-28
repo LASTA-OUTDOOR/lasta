@@ -90,7 +90,7 @@ private fun AddFriendForm(
   // text inside the textfield
   var text by remember { mutableStateOf("") }
 
-  Column {
+  Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
     TextField(
         value = text,
         onValueChange = { newValue -> text = newValue },
@@ -122,8 +122,9 @@ private fun AddFriendForm(
             Card(
                 modifier =
                     Modifier.fillMaxWidth().padding(4.dp).testTag("suggestion").clickable {
-                      // set text field value to the selected friend suggested email
-                      text = suggestion.email
+                      focusManager.clearFocus()
+                      requestFriend(suggestion.email)
+                      text = ""
                     }) {
                   FriendRow(friend = suggestion)
                 }
@@ -139,6 +140,7 @@ private fun AddFriendForm(
         onClick = {
           focusManager.clearFocus()
           requestFriend(text)
+          text = ""
         },
         modifier = Modifier.testTag("SubmitButton")) {
           Text(LocalContext.current.getString(R.string.send_fr))
