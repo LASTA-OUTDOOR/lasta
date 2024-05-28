@@ -49,6 +49,15 @@ class ActivityConverter {
         totalElevation = (data["totalElevation"] as Double).toFloat())
   }
 
+    fun difficultyCycle(difficulty: String): String {
+    return when (difficulty) {
+      "EASY" -> "NORMAL"
+      "NORMAL" -> "HARD"
+      "HARD" -> "EASY"
+      else -> "EASY"
+    }
+    }
+
   fun databaseToActivity(
       data: List<HashMap<String, Any>>,
       activityType: ActivityType
