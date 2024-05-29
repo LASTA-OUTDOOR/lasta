@@ -45,10 +45,12 @@ class FriendsListTest {
               ),
           displayAddFriendDialog = false,
           friendRequestFeedback = "",
+          friendSuggestions = emptyList(),
           clearFriendRequestFeedback = {},
           hideAddFriendDialog = {},
           requestFriend = {},
           refreshFriends = {},
+          fetchFriendsSuggestions = {},
           navigateToFriendProfile = {})
     }
     composeRule.onNodeWithTag("FriendCard").assertIsDisplayed()
@@ -66,10 +68,12 @@ class FriendsListTest {
               ),
           displayAddFriendDialog = false,
           friendRequestFeedback = "",
+          friendSuggestions = emptyList(),
           clearFriendRequestFeedback = {},
           hideAddFriendDialog = {},
           requestFriend = {},
           refreshFriends = {},
+          fetchFriendsSuggestions = {},
           navigateToFriendProfile = {})
     }
     composeRule.onNodeWithTag("FriendCard").assertIsDisplayed()
@@ -84,13 +88,38 @@ class FriendsListTest {
           friends = emptyList(),
           displayAddFriendDialog = true,
           friendRequestFeedback = "",
+          friendSuggestions = emptyList(),
           clearFriendRequestFeedback = {},
           hideAddFriendDialog = {},
           requestFriend = {},
           refreshFriends = {},
+          fetchFriendsSuggestions = {},
           navigateToFriendProfile = {})
     }
     composeRule.onNodeWithTag("AddFriendDialog").assertIsDisplayed()
+  }
+
+  // Test that the suggestion list is displayed
+  @Test
+  fun friendsListWithSuggestionsIsDisplayed() {
+    composeRule.activity.setContent {
+      FriendsList(
+          isConnected = ConnectionState.CONNECTED,
+          friends = emptyList(),
+          displayAddFriendDialog = true,
+          friendRequestFeedback = "",
+          friendSuggestions = listOf(UserModel("1")),
+          clearFriendRequestFeedback = {},
+          hideAddFriendDialog = {},
+          requestFriend = {},
+          refreshFriends = {},
+          fetchFriendsSuggestions = {},
+          navigateToFriendProfile = {})
+    }
+    composeRule.onNodeWithTag("AddFriendDialog").assertIsDisplayed()
+    composeRule.onNodeWithTag("suggestion").assertIsDisplayed()
+    composeRule.onNodeWithTag("suggestion").performClick()
+    composeRule.onNodeWithTag("suggestion").assertIsDisplayed()
   }
 
   // Test that instancing a friend list offline works correctly
@@ -102,10 +131,12 @@ class FriendsListTest {
           friends = emptyList(),
           displayAddFriendDialog = false,
           friendRequestFeedback = "",
+          friendSuggestions = emptyList(),
           clearFriendRequestFeedback = {},
           hideAddFriendDialog = {},
           requestFriend = {},
           refreshFriends = {},
+          fetchFriendsSuggestions = {},
           navigateToFriendProfile = {})
     }
     composeRule.onNodeWithTag("ConnectionMissing").assertIsDisplayed()
@@ -128,11 +159,11 @@ class FriendsListTest {
           hideAddFriendDialog = {},
           requestFriend = {},
           refreshFriends = {},
+          friendSuggestions = emptyList(),
+          fetchFriendsSuggestions = {},
           navigateToFriendProfile = {})
     }
     composeRule.onNodeWithTag("AddFriendDialog").assertIsDisplayed()
-    // click on submit button
-    composeRule.onNodeWithTag("SubmitButton").performClick()
   }
 
   // Test climbing intermediate friend has correct text
