@@ -67,7 +67,7 @@ interface ActivitiesDBRepository {
    * @param rating The rating to add.
    * @param newMeanRating The new mean rating of the activity.
    */
-  fun addRating(activityId: String, rating: Rating, newMeanRating: String)
+  suspend fun addRating(activityId: String, rating: Rating, newMeanRating: String)
 
   /**
    * Deletes all ratings of a user.
