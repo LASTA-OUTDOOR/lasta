@@ -2,8 +2,6 @@ package com.lastaoutdoor.lasta.viewmodel
 
 import android.hardware.Sensor
 import android.hardware.SensorManager
-import com.google.android.gms.location.LocationResult
-import com.lastaoutdoor.lasta.models.api.Position
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -15,7 +13,6 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
