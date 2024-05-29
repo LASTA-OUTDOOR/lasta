@@ -12,9 +12,9 @@ import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.tasks.await
 
 @Suppress("UNCHECKED_CAST")
 @Singleton
@@ -88,8 +88,6 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
     val query = userCollection.whereEqualTo("email", email).get().await()
     return if (!query.isEmpty) {
       val user = query.documents[0]
-      println("User: $user")
-      println("User email: ${user.getString("email")}")
       documentToUserModel(user)
     } else null
   }
@@ -126,7 +124,7 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
       // get the username of the user
       val userName = doc.getString("userName") ?: ""
       // if the username contains the query, return the user
-      if (userName.lowercase().contains(query)) {
+      if (userName.lowercase().contains(query.lowercase())) {
         usersToList.add(documentToUserModel(doc))
       }
     }
