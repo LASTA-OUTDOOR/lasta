@@ -49,8 +49,10 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.graphicsLayer
@@ -501,10 +503,10 @@ fun ActivitiesDisplay(
                       verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = a.name,
-                            style = MaterialTheme.typography.headlineMedium,
                             color = Color.White,
                             fontWeight = FontWeight.ExtraBold,
-                            //modifier = Modifier.shadow(2.dp)
+                            style = MaterialTheme.typography.headlineMedium.copy(shadow =
+                            Shadow(color = Color.Black, offset = Offset(x = 1f, y = 2f)))
                         )
                       }
 
