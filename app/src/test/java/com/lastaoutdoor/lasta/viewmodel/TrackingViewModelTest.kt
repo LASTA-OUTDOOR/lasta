@@ -17,6 +17,8 @@ class TrackingViewModelTest {
   private val sensor: Sensor = mockk(relaxed = true)
   private lateinit var viewModel: TrackingViewModel
 
+  private var stepCount = 0
+
   @Before
   fun setUp() {
     every { sensorManager.getDefaultSensor(any()) } returns sensor
@@ -32,7 +34,7 @@ class TrackingViewModelTest {
   fun `state is correct`() {
     assert(viewModel.state.value.sensorManager == sensorManager)
     assert(viewModel.state.value.sensor == sensor)
-    assert(viewModel.state.value.stepCount == 0)
+    assert(viewModel.state.value.stepCount == stepCount)
     assert(viewModel.state.value.positions.isEmpty())
     assert(viewModel.state.value.distances.isEmpty())
   }
@@ -40,10 +42,11 @@ class TrackingViewModelTest {
   @Test
   fun `updateStepCount updates step count correctly`() = runTest {
     viewModel.updateStepCount(100)
-    assertEquals(0, viewModel.state.value.stepCount)
+    assertEquals(stepCount, viewModel.state.value.stepCount)
 
+    stepCount = 10
     viewModel.updateStepCount(110)
-    assertEquals(10, viewModel.state.value.stepCount)
+    assertEquals(stepCount, viewModel.state.value.stepCount)
   }
 
   /*@Test
