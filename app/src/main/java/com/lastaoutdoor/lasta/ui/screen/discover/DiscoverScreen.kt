@@ -1,6 +1,7 @@
 package com.lastaoutdoor.lasta.ui.screen.discover
 
 import android.graphics.Rect
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -44,12 +45,15 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.Painter
@@ -63,6 +67,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import com.google.android.gms.maps.CameraUpdate
@@ -108,7 +113,9 @@ fun DiscoverScreen(
   if (discoverScreenState.screen == DiscoverDisplayType.LIST) {
     Column(
         modifier =
-            Modifier.testTag("discoveryScreen").background(MaterialTheme.colorScheme.background)) {
+        Modifier
+            .testTag("discoveryScreen")
+            .background(MaterialTheme.colorScheme.background)) {
           HeaderComposable(
               discoverScreenState.screen,
               discoverScreenState.range,
@@ -166,7 +173,9 @@ fun DiscoverScreen(
           discoverScreenCallBacks.clearSuggestions,
           discoverScreenCallBacks.updateInitialPosition,
           moveCamera)
-      Box(modifier = Modifier.fillMaxHeight().testTag("mapScreenDiscover")) {
+      Box(modifier = Modifier
+          .fillMaxHeight()
+          .testTag("mapScreenDiscover")) {
         moveCamera =
             mapScreen(
                 discoverScreenState.mapState,
@@ -218,27 +227,33 @@ fun HeaderComposable(
   }
 
   Surface(
-      modifier = Modifier.fillMaxWidth().testTag("header"),
+      modifier = Modifier
+          .fillMaxWidth()
+          .testTag("header"),
       color = MaterialTheme.colorScheme.background) {
         Column {
           // Location bar
           Row(
               modifier =
-                  Modifier.fillMaxWidth()
-                      .padding(horizontal = 16.dp, vertical = 8.dp)
-                      .testTag("locationBar"),
+              Modifier
+                  .fillMaxWidth()
+                  .padding(horizontal = 16.dp, vertical = 8.dp)
+                  .testTag("locationBar"),
               verticalAlignment = Alignment.CenterVertically) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier =
-                        Modifier.clickable(onClick = { navigateToRangeSearch() })
-                            .testTag("locationRow")) {
+                    Modifier
+                        .clickable(onClick = { navigateToRangeSearch() })
+                        .testTag("locationRow")) {
                       Column {
                         Icon(
                             Icons.Filled.LocationOn,
                             contentDescription = "Location icon",
                             tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(24.dp).testTag("localityIcon"))
+                            modifier = Modifier
+                                .size(24.dp)
+                                .testTag("localityIcon"))
                       }
 
                       Spacer(modifier = Modifier.fillMaxWidth(0.02f))
@@ -252,12 +267,16 @@ fun HeaderComposable(
 
                           IconButton(
                               onClick = navigateToRangeSearch,
-                              modifier = Modifier.size(24.dp).testTag("locationButton")) {
+                              modifier = Modifier
+                                  .size(24.dp)
+                                  .testTag("locationButton")) {
                                 Icon(
                                     Icons.Outlined.KeyboardArrowDown,
                                     contentDescription = "Location button",
                                     tint = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.size(24.dp).testTag("locationIcon"))
+                                    modifier = Modifier
+                                        .size(24.dp)
+                                        .testTag("locationIcon"))
                               }
                         }
 
@@ -277,13 +296,16 @@ fun HeaderComposable(
           var changeText = { _: String -> }
           Row(
               modifier =
-                  Modifier.fillMaxWidth()
-                      .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 0.dp)
-                      .testTag("searchBar"),
+              Modifier
+                  .fillMaxWidth()
+                  .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 0.dp)
+                  .testTag("searchBar"),
               verticalAlignment = Alignment.CenterVertically) {
                 changeText =
                     searchBarComponent(
-                        Modifier.weight(1f).testTag("searchBarComponent"),
+                        Modifier
+                            .weight(1f)
+                            .testTag("searchBarComponent"),
                         onSearch = { fetchSuggestion(it) })
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -291,14 +313,18 @@ fun HeaderComposable(
                 IconButton(
                     onClick = { navigateToFilter() },
                     modifier =
-                        Modifier.size(56.dp)
-                            .border(
-                                1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(12.dp))
-                            .testTag("filterButton")) {
+                    Modifier
+                        .size(56.dp)
+                        .border(
+                            1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(12.dp)
+                        )
+                        .testTag("filterButton")) {
                       Icon(
                           painter = painterResource(id = R.drawable.filter_icon),
                           contentDescription = "Filter button",
-                          modifier = Modifier.size(24.dp).testTag("filterIcon"))
+                          modifier = Modifier
+                              .size(24.dp)
+                              .testTag("filterIcon"))
                     }
               }
 
@@ -306,37 +332,45 @@ fun HeaderComposable(
 
           LazyColumn(
               modifier =
-                  Modifier.fillMaxWidth()
-                      .padding(horizontal = 16.dp, vertical = 8.dp)
-                      .heightIn(0.dp, 130.dp)) {
+              Modifier
+                  .fillMaxWidth()
+                  .padding(horizontal = 16.dp, vertical = 8.dp)
+                  .heightIn(0.dp, 130.dp)) {
                 items(suggestions.count()) { i ->
                   val suggestion = suggestions.entries.elementAt(i)
                   val scope = rememberCoroutineScope()
                   Card(
                       modifier =
-                          Modifier.fillMaxWidth().padding(4.dp).testTag("suggestion").clickable {
-                            scope.launch {
-                              fManager.clearFocus()
-                              setSelectedLocality(Pair(suggestion.key, suggestion.value))
-                              updateInitialPosition(suggestion.value)
-                              moveCamera(CameraUpdateFactory.newLatLng(suggestion.value))
-                              fetchActivities()
-                              // add a delay because otherwise the focus suggestion are redisplayed
-                              // if you were on the keyboard (probably due to changeText and
-                              // clearFocus)
-                              delay(300)
-                              changeText(suggestion.key)
-                              clearSuggestions()
-                            }
+                      Modifier
+                          .fillMaxWidth()
+                          .padding(4.dp)
+                          .testTag("suggestion")
+                          .clickable {
+                              scope.launch {
+                                  fManager.clearFocus()
+                                  setSelectedLocality(Pair(suggestion.key, suggestion.value))
+                                  updateInitialPosition(suggestion.value)
+                                  moveCamera(CameraUpdateFactory.newLatLng(suggestion.value))
+                                  fetchActivities()
+                                  // add a delay because otherwise the focus suggestion are redisplayed
+                                  // if you were on the keyboard (probably due to changeText and
+                                  // clearFocus)
+                                  delay(300)
+                                  changeText(suggestion.key)
+                                  clearSuggestions()
+                              }
                           }) {
-                        Text(modifier = Modifier.padding(8.dp).height(20.dp), text = suggestion.key)
+                        Text(modifier = Modifier
+                            .padding(8.dp)
+                            .height(20.dp), text = suggestion.key)
                       }
                 }
               }
           Row(
               modifier =
-                  Modifier.fillMaxWidth()
-                      .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 8.dp),
+              Modifier
+                  .fillMaxWidth()
+                  .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 8.dp),
               verticalAlignment = Alignment.CenterVertically,
               horizontalArrangement = Arrangement.Center) {
                 val context = LocalContext.current
@@ -348,9 +382,10 @@ fun HeaderComposable(
           if (screen == DiscoverDisplayType.LIST) {
             Row(
                 modifier =
-                    Modifier.fillMaxWidth()
-                        .padding(16.dp, 8.dp, 16.dp, 8.dp)
-                        .testTag("sortingText"),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp, 8.dp, 16.dp, 8.dp)
+                    .testTag("sortingText"),
                 verticalAlignment = Alignment.CenterVertically) {
                   DropDownMenuComponent(
                       items = OrderingBy.values().toList(),
@@ -378,65 +413,58 @@ fun ActivitiesDisplay(
   for (a in activities) {
     Card(
         modifier =
-            Modifier.fillMaxWidth()
-                .wrapContentHeight()
-                .padding(vertical = 8.dp, horizontal = 16.dp)
-                .clickable(
-                    onClick = {
-                      changeActivityToDisplay(a)
-                      changeWeatherTarget(a)
-                      navigateToMoreInfo()
-                    })
-                .testTag("${a.activityId}activityCard"),
+        Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .clickable(
+                onClick = {
+                    changeActivityToDisplay(a)
+                    changeWeatherTarget(a)
+                    navigateToMoreInfo()
+                })
+            .testTag("${a.activityId}activityCard"),
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
-          // Set default image to the background of the activity
-          val image: ImageBitmap =
-              ImageBitmap.imageResource(
-                  id = R.drawable.default_activity_bg) // replace with your image resource
-          val painter: Painter = BitmapPainter(image)
           Box(
               modifier =
-                  Modifier.wrapContentHeight().fillMaxWidth().drawBehind {
-                    val scale = size.width / painter.intrinsicSize.width
-                    val targetSize = painter.intrinsicSize * scale
-                    val topOffset = (size.height - targetSize.height).toInt() / 2
+              Modifier
+                  .wrapContentHeight()
+                  .fillMaxWidth()) {
 
-                    drawIntoCanvas { canvas ->
-                      val paint = android.graphics.Paint().apply { alpha = (0.3 * 255).toInt() }
-                      canvas.nativeCanvas.drawBitmap(
-                          image.asAndroidBitmap(),
-                          null,
-                          Rect(
-                              0,
-                              topOffset,
-                              size.width.toInt(),
-                              2 * topOffset + targetSize.height.toInt()),
-                          paint)
-                    }
-                  }) {
-                SubcomposeAsyncImage(
-                    model = a.activityImageUrl,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier =
-                        Modifier.matchParentSize()// Adjust clipping as needed
-                    ) {
-                      SubcomposeAsyncImageContent()
-                    }
+                if(a.activityImageUrl != "") {
+                    AsyncImage(
+                        model = a.activityImageUrl,
+                        contentDescription = "activity image",
+                        contentScale = ContentScale.Crop,
+                        modifier =
+                        Modifier.matchParentSize()
+                    )
+                } else {
+                    Image(
+                        painter = painterResource(id = R.drawable.default_activity_bg),
+                        contentDescription = "activity image not found",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.matchParentSize().alpha(0.3f)
+                    )
+                }
 
                 Column {
                   Row(
-                      modifier = Modifier.fillMaxWidth().padding(8.dp),
+                      modifier = Modifier
+                          .fillMaxWidth()
+                          .padding(8.dp),
                       verticalAlignment = Alignment.CenterVertically,
                       horizontalArrangement = Arrangement.SpaceBetween) {
                         Box(
                             modifier =
-                                Modifier.shadow(4.dp, RoundedCornerShape(30))
-                                    .background(
-                                        color = a.difficulty.getColorByDifficulty(),
-                                        RoundedCornerShape(10.dp))
-                                    .padding(PaddingValues(8.dp))) {
+                            Modifier
+                                .shadow(4.dp, RoundedCornerShape(30))
+                                .background(
+                                    color = a.difficulty.getColorByDifficulty(),
+                                    RoundedCornerShape(10.dp)
+                                )
+                                .padding(PaddingValues(8.dp))) {
                               Text(
                                   text =
                                       LocalContext.current.getString(
@@ -452,28 +480,32 @@ fun ActivitiesDisplay(
                         IconButton(
                             onClick = { flipFavorite(a.activityId) },
                             modifier =
-                                Modifier.size(24.dp).testTag("${a.activityId}favoriteButton")) {
+                            Modifier
+                                .size(24.dp)
+                                .testTag("${a.activityId}favoriteButton")) {
                               Icon(
                                   imageVector =
                                       if (favorites.contains(a.activityId)) Icons.Filled.Favorite
                                       else Icons.Filled.FavoriteBorder,
                                   contentDescription = "Favorite Button",
-                                  tint =
-                                      if (favorites.contains(a.activityId))
-                                          MaterialTheme.colorScheme.primary
-                                      else MaterialTheme.colorScheme.onBackground,
+                                  tint = MaterialTheme.colorScheme.primary,
                                   modifier = Modifier.size(24.dp))
                             }
                       }
 
                   Spacer(modifier = Modifier.height(8.dp))
                   Row(
-                      modifier = Modifier.fillMaxWidth().padding(8.dp),
+                      modifier = Modifier
+                          .fillMaxWidth()
+                          .padding(8.dp),
                       verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = a.name,
                             style = MaterialTheme.typography.headlineMedium,
-                            fontWeight = FontWeight.Bold)
+                            color = Color.White,
+                            fontWeight = FontWeight.ExtraBold,
+                            //modifier = Modifier.shadow(2.dp)
+                        )
                       }
 
                   Spacer(modifier = Modifier.height(16.dp))
@@ -483,7 +515,9 @@ fun ActivitiesDisplay(
           Column {
             SeparatorComponent()
             Row(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween) {
                   Row {
@@ -508,13 +542,18 @@ fun ActivitiesDisplay(
 @Composable
 fun EmptyActivityList() {
   Column(
-      modifier = Modifier.fillMaxSize().testTag("EmptyActivityList").padding(18.dp, 25.dp),
+      modifier = Modifier
+          .fillMaxSize()
+          .testTag("EmptyActivityList")
+          .padding(18.dp, 25.dp),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally) {
         Icon(
             painterResource(id = R.drawable.not_found),
             contentDescription = "No Activities",
-            modifier = Modifier.size(85.dp).testTag("NoActivitiesLogo"))
+            modifier = Modifier
+                .size(85.dp)
+                .testTag("NoActivitiesLogo"))
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
           Text(
               text = LocalContext.current.getString(R.string.no_activities),
