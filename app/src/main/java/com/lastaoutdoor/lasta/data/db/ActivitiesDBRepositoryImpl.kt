@@ -1,7 +1,6 @@
 package com.lastaoutdoor.lasta.data.db
 
 import android.content.Context
-import android.util.Log
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
@@ -178,7 +177,6 @@ constructor(context: Context, database: FirebaseFirestore) : ActivitiesDBReposit
       val numRating = sn.getLong("numRatings") ?: 1
       val newNewMeanRating =
           (numRating * oldRating - oldUserRating + rating.rating.toLong()) / numRating
-      Log.d("print", newNewMeanRating.toString())
 
       document.update("rating", newNewMeanRating.toString())
       document.update(
