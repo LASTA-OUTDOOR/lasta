@@ -34,6 +34,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -53,6 +54,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.SphericalUtil
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.weather.WeatherForecast
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
@@ -98,8 +101,7 @@ fun MoreInfoScreen(
     navigateBack: () -> Unit,
     navigateToTracking: () -> Unit,
     downloadActivity: (Activity) -> Unit,
-    setWeatherBackToUserLoc: () -> Unit,
-    clearSelectedMarker: () -> Unit
+    setWeatherBackToUserLoc: () -> Unit
 ) {
   val isMapDisplayed = remember { mutableStateOf(false) }
   val isReviewing = remember { mutableStateOf(false) }
@@ -131,7 +133,7 @@ fun MoreInfoScreen(
                   }
             }
             // displays activity title and duration
-            ActivityTitleZone(activityToDisplay, updateDifficulty)
+            ActivityTitleZone(activityToDisplay, updateDifficulty, discoverScreenState.centerPoint)
             WeatherReportBig(weather, true) { weatherDialog.value = true }
             // displays activity difficulty, ration and view on map button
             MiddleZone(
@@ -158,10 +160,16 @@ fun MoreInfoScreen(
         }
   } else {
     Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoMap")) {
-      val marker = goToMarker(activityToDisplay)
+      LaunchedEffect(Unit) {
+        val marker = goToMarker(activityToDisplay)
+        discoverScreenCallBacks.updateSelectedMarker(marker)
+      }
+
       if (currentUser != null) {
         TopBar(
             activityToDisplay, downloadActivity, favorites, flipFavorite, friends, shareToFriend) {
+              discoverScreenCallBacks.clearSelectedMarker()
+              discoverScreenCallBacks.clearSelectedItinerary()
               discoverScreenCallBacks.fetchActivities()
               navigateBack()
               setWeatherBackToUserLoc()
@@ -175,7 +183,7 @@ fun MoreInfoScreen(
           discoverScreenCallBacks.updateSelectedMarker,
           discoverScreenCallBacks.clearSelectedItinerary,
           discoverScreenState.selectedZoom,
-          marker,
+          discoverScreenState.selectedMarker,
           discoverScreenState.selectedItinerary,
           discoverScreenState.markerList,
           discoverScreenCallBacks.clearSelectedMarker)
@@ -421,7 +429,11 @@ fun TopBarLogo(logoPainterId: ImageVector, f: () -> Unit) {
 
 // Displays the title of the activity, its type and its duration
 @Composable
-fun ActivityTitleZone(activityToDisplay: Activity, updateDifficulty: (String) -> Unit) {
+fun ActivityTitleZone(
+    activityToDisplay: Activity,
+    updateDifficulty: (String) -> Unit,
+    centerPoint: LatLng
+) {
   Row(
       modifier = Modifier.fillMaxWidth(),
       verticalAlignment = Alignment.CenterVertically,
@@ -430,7 +442,7 @@ fun ActivityTitleZone(activityToDisplay: Activity, updateDifficulty: (String) ->
             modifier = Modifier.padding(vertical = 5.dp, horizontal = 5.dp).weight(0.65f),
             verticalAlignment = Alignment.CenterVertically) {
               ActivityPicture(activityToDisplay)
-              ActivityTitleText(activityToDisplay)
+              ActivityTitleText(activityToDisplay, centerPoint)
             }
         ElevatedDifficultyDisplay(activityToDisplay, updateDifficulty = updateDifficulty)
       }
@@ -441,35 +453,43 @@ fun ActivityTitleZone(activityToDisplay: Activity, updateDifficulty: (String) ->
 fun ActivityPicture(activityToDisplay: Activity) {
   val defaultId =
       when (activityToDisplay.activityType) {
-        ActivityType.HIKING -> R.drawable.hiking_icon
-        ActivityType.CLIMBING -> R.drawable.climbing_icon
-        ActivityType.BIKING -> R.drawable.biking_icon
+        ActivityType.HIKING -> R.drawable.hiking_roundicon
+        ActivityType.CLIMBING -> R.drawable.climbing_roundicon
+        ActivityType.BIKING -> R.drawable.biking_roundicon
+      }
+  val testTag =
+      when (activityToDisplay.activityType) {
+        ActivityType.HIKING -> "HikingPicture"
+        ActivityType.CLIMBING -> "ClimbingPicture"
+        ActivityType.BIKING -> "BikingPicture"
       }
   Column {
     if (activityToDisplay.activityImageUrl != "") {
       AsyncImage(
           model = activityToDisplay.activityImageUrl,
           contentDescription = "Activity Picture",
-          modifier = Modifier.size(90.dp).clip(RoundedCornerShape(8.dp)),
+          modifier = Modifier.size(65.dp).clip(RoundedCornerShape(8.dp)),
           error = painterResource(id = defaultId))
     } else {
       Image(
           painter = painterResource(id = defaultId),
           contentDescription = "Default Activity Picture",
-          modifier = Modifier.padding(5.dp).size(90.dp))
+          modifier = Modifier.padding(5.dp).size(65.dp).testTag(testTag))
     }
   }
 }
 
 @Composable
-fun ActivityTitleText(activityToDisplay: Activity) {
+fun ActivityTitleText(activityToDisplay: Activity, centerPoint: LatLng) {
   Row(modifier = Modifier.padding(vertical = 25.dp, horizontal = 5.dp)) {
     Column {
       Text(
           text = activityToDisplay.name,
           style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight(600)))
+
       Text(
-          text = LocalContext.current.getString(R.string.no_duration),
+          text =
+              "${String.format("%.1f", SphericalUtil.computeDistanceBetween(centerPoint, LatLng(activityToDisplay.startPosition.lat, activityToDisplay.startPosition.lon)) / 1000)} km away",
           style =
               TextStyle(
                   fontSize = 14.sp,
