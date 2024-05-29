@@ -49,13 +49,13 @@ fun TrackingInfo(
                   modifier = Modifier.weight(0.5f),
                   first = "Distance ",
                   second = "/ done",
-                  info = "3.40 Km",
+                  info = "0.0 Km",
                   greyColor = Grey)
               InfoColumn(
                   modifier = Modifier.weight(0.5f),
                   first = "Distance ",
                   second = "/ remaining",
-                  info = "2.60 Km",
+                  info = "11.3 Km",
                   greyColor = Grey)
             }
         Row(
@@ -65,13 +65,13 @@ fun TrackingInfo(
                   modifier = Modifier.weight(0.5f),
                   first = "Avg. pace",
                   second = " min/km",
-                  info = "05:49",
+                  info = "00:00",
                   greyColor = Grey)
               InfoColumn(
                   modifier = Modifier.weight(0.5f),
-                  first = "Avg. speed",
-                  second = " km/h",
-                  info = "10.3",
+                  first = "Steps",
+                  second = " / total",
+                  info = trackingState.stepCount.toString(),
                   greyColor = Grey)
             }
         Row(
@@ -79,15 +79,15 @@ fun TrackingInfo(
             horizontalArrangement = Arrangement.SpaceBetween) {
               InfoColumn(
                   modifier = Modifier.weight(0.5f),
-                  first = "Steps ",
-                  second = "/ total",
-                  info = trackingState.stepCount.toString(),
+                  first = "Elevation",
+                  second = " gain",
+                  info = "0 m",
                   greyColor = Grey)
               InfoColumn(
                   modifier = Modifier.weight(0.5f),
                   first = "Elevation",
-                  second = " gain",
-                  info = "23 m",
+                  second = " / total",
+                  info = "1738 m",
                   greyColor = Grey)
             }
       }
