@@ -16,9 +16,13 @@ import com.lastaoutdoor.lasta.data.api.weather.WeatherForecastResponse
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.repository.api.WeatherRepository
+import com.lastaoutdoor.lasta.repository.app.ConnectivityRepository
+import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.utils.ErrorType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -27,11 +31,17 @@ import kotlinx.coroutines.tasks.await
 class WeatherViewModel
 @Inject
 constructor(
-    private val weatherRepository: WeatherRepository,
-    application: Application,
-    private val errorToast: ErrorToast
-) : AndroidViewModel(application) {
+  private val weatherRepository: WeatherRepository,
+  application: Application,
+  private val errorToast: ErrorToast,
+  private val connectivityRepositoryImpl: ConnectivityRepository,
 
+  ) : AndroidViewModel(application) {
+  val isConnected =
+    connectivityRepositoryImpl.connectionState.stateIn(
+      initialValue = ConnectionState.OFFLINE,
+      scope = viewModelScope,
+      started = SharingStarted.WhileSubscribed(5000))
   private val fusedLocationClient: FusedLocationProviderClient by lazy {
     LocationServices.getFusedLocationProviderClient(application)
   }
@@ -54,9 +64,14 @@ constructor(
 
         // Call surrounded by try-catch block to make handle exceptions caused by Weather API
         try {
-          val location = fusedLocationClient.lastLocation.await()
-          val weather = weatherRepository.getWeatherWithLoc(location.latitude, location.longitude)
-          _weather.postValue(weather)
+          isConnected.collect{
+            if(it == ConnectionState.CONNECTED){
+              val location = fusedLocationClient.lastLocation.await()
+              val weather = weatherRepository.getWeatherWithLoc(location.latitude, location.longitude)
+              _weather.postValue(weather)
+            }
+          }
+
         } catch (e: Exception) {
           errorToast.showToast(ErrorType.ERROR_WEATHER)
         }
@@ -70,12 +85,17 @@ constructor(
       // Call surrounded by try-catch block to make handle exceptions caused by Weather API
       try {
         // current weather for activity location
-        val weather = weatherRepository.getWeatherWithLoc(a.startPosition.lat, a.startPosition.lon)
-        _weather.postValue(weather)
-        // forecast for activity location
-        val weatherForecast =
-            weatherRepository.getForecastWeather(a.startPosition.lat, a.startPosition.lon)
-        _weatherForecast.postValue(weatherForecast)
+        isConnected.collect{
+          if(it == ConnectionState.CONNECTED){
+            val weather = weatherRepository.getWeatherWithLoc(a.startPosition.lat, a.startPosition.lon)
+            _weather.postValue(weather)
+            // forecast for activity location
+            val weatherForecast =
+              weatherRepository.getForecastWeather(a.startPosition.lat, a.startPosition.lon)
+            _weatherForecast.postValue(weatherForecast)
+          }
+        }
+
       } catch (e: Exception) {
         errorToast.showToast(ErrorType.ERROR_WEATHER)
       }
