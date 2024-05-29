@@ -99,8 +99,7 @@ class MoreInfoScreenTest {
           navigateBack = { /*TODO*/},
           navigateToTracking = {},
           downloadActivity = {},
-          setWeatherBackToUserLoc = {},
-          clearSelectedMarker = {})
+          setWeatherBackToUserLoc = {})
     }
   }
 
@@ -156,8 +155,13 @@ class MoreInfoScreenTest {
   }
 
   @Test
-  fun moreInfoMapIsDisplayed() {
+  fun moreInfoMap_isDisplayed() {
     composeRule.onNodeWithTag("viewOnMapButton").performClick()
+    composeRule.onNodeWithTag("MoreInfoMap").assertIsDisplayed()
+    composeRule.onNodeWithTag("googleMap").assertIsDisplayed()
+    composeRule.onNodeWithTag("Top Bar").assertIsDisplayed()
+    composeRule.onNodeWithContentDescription("Top Bar logo fav").assertIsDisplayed()
+    composeRule.onNodeWithContentDescription("Top Bar logo fav").performClick()
   }
 
   @Test
@@ -267,8 +271,7 @@ class MoreInfoScreenTest {
           navigateBack = { /*TODO*/},
           navigateToTracking = {},
           downloadActivity = {},
-          setWeatherBackToUserLoc = {},
-          clearSelectedMarker = {})
+          setWeatherBackToUserLoc = {})
     }
     composeRule.onNodeWithTag("MoreInfoComposable").assertIsDisplayed()
     composeRule.onNodeWithTag("HikingPicture").assertIsDisplayed()
@@ -311,8 +314,7 @@ class MoreInfoScreenTest {
           navigateBack = { /*TODO*/},
           navigateToTracking = {},
           downloadActivity = {},
-          setWeatherBackToUserLoc = {},
-          clearSelectedMarker = {})
+          setWeatherBackToUserLoc = {})
     }
     composeRule.onNodeWithTag("MoreInfoComposable").assertIsDisplayed()
     composeRule.onNodeWithTag("BikingPicture").assertIsDisplayed()

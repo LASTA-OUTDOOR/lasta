@@ -215,8 +215,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           { navController.navigateUp() },
           { context.startActivity(Intent(context, TrackingActivity::class.java)) },
           moreInfoScreenViewModel::downloadActivity,
-          weatherViewModel::fetchWeatherWithUserLoc,
-          discoverScreenViewModel::clearSelectedMarker)
+          weatherViewModel::fetchWeatherWithUserLoc)
     }
 
     // Filter Screen
