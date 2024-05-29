@@ -11,9 +11,9 @@ import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.tasks.await
 
 @Suppress("UNCHECKED_CAST")
 @Singleton
