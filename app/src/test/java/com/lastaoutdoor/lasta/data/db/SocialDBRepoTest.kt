@@ -321,6 +321,8 @@ class SocialDBRepoTest {
       every { documentSnapshot.exists() } returns false
       every { documentReference.update("messages", any()) } returns task2
       every { documentReference.update("lastMessage", any()) } returns task4
+      every { documentReference.set(any(), any()) } returns mockk()
+
 
       activitiesRepository.sendMessage("userId", "friend", "coucou")
     }
