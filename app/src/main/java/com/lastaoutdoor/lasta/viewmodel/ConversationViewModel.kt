@@ -85,6 +85,7 @@ constructor(
         }
       } catch (e: Exception) {
         errorToast.showToast(ErrorType.ERROR_DATABASE)
+        e.printStackTrace()
       }
     }
   }
@@ -147,6 +148,7 @@ constructor(
             }
           }
         } catch (e: Exception) {
+          e.printStackTrace()
           errorToast.showToast(ErrorType.ERROR_DATABASE)
         }
       }

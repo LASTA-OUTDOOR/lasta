@@ -201,7 +201,10 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           moreInfoScreenViewModel::writeNewRating,
           moreInfoScreenViewModel::updateDifficulty,
           currentUser,
-          conversationViewModel::shareActivityToFriend,
+          { message: String, friendId: String -> // send the message + navigate to the conversation
+            conversationViewModel.shareActivityToFriend(message, friendId)
+            navController.navigate(DestinationRoute.Conversation.route + "/$friendId")
+          },
           socialViewModel.friends,
           weather,
           favorites,
