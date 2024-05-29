@@ -43,10 +43,14 @@ constructor(
 
   override suspend fun getFriends(friendIds: List<String>): List<UserModel> {
     val friends: ArrayList<UserModel> = ArrayList()
-    // Because when the friends list is super empty, the first element is an empty string
+
+    // Checks on input list
     if (friendIds.isEmpty()) return friends
+    // Because when the friends list is super empty, the first element is an empty string
     if (friendIds.first().isEmpty()) return friends
+
     val friendsQuery = userCollection.whereIn(FieldPath.documentId(), friendIds).get().await()
+
     if (!friendsQuery.isEmpty) {
       for (friend in friendsQuery.documents) {
         val senderId = friend.id
@@ -300,6 +304,7 @@ constructor(
   }
 
   override suspend fun sendMessage(userId: String, friendUserId: String, message: String) {
+
     if (message.isEmpty() || userId.isEmpty() || friendUserId.isEmpty()) return
 
     // Create a reference to the conversation document in the Firestore database
@@ -309,7 +314,17 @@ constructor(
 
     // check if the conversation exists
     val document = conversationDocumentRef.get().await()
-    if (!document.exists()) return
+    if (!document.exists()) {
+      // Create a new conversation
+      val conversation =
+          hashMapOf(
+              "members" to listOf(userId, friendUserId),
+              "messages" to emptyList<MessageModel>(),
+              "lastMessage" to null)
+
+      // Store the conversation in the Firestore database
+      conversationDocumentRef.set(conversation, SetOptions.merge())
+    }
 
     // Add the message to the conversation
     conversationDocumentRef
