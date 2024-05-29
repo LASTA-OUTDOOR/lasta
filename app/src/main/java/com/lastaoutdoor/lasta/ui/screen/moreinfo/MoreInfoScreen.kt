@@ -1,6 +1,5 @@
 package com.lastaoutdoor.lasta.ui.screen.moreinfo
 
-import android.content.res.Resources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -77,6 +76,7 @@ import com.lastaoutdoor.lasta.ui.components.WeatherForecastDisplay
 import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
 import com.lastaoutdoor.lasta.ui.screen.map.mapScreen
 import com.lastaoutdoor.lasta.ui.screen.moreinfo.components.ShareOptionsDialog
+import com.lastaoutdoor.lasta.ui.theme.AccentGreen
 import com.lastaoutdoor.lasta.ui.theme.Black
 import com.lastaoutdoor.lasta.ui.theme.GreenDifficulty
 import com.lastaoutdoor.lasta.ui.theme.OrangeDifficulty
@@ -85,7 +85,6 @@ import com.lastaoutdoor.lasta.ui.theme.RedDifficulty
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenCallBacks
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenState
 import java.util.Locale
-import com.lastaoutdoor.lasta.ui.theme.AccentGreen
 
 // MoreInfoScreen : displays all the information of an activity
 @Composable
@@ -261,7 +260,10 @@ fun MiddleZone(
     fetchActivities: () -> Unit
 ) {
   Row(
-      modifier = Modifier.fillMaxWidth().testTag("MoreInfoMiddleZone").padding(vertical = 0.dp, horizontal = 16.dp),
+      modifier =
+          Modifier.fillMaxWidth()
+              .testTag("MoreInfoMiddleZone")
+              .padding(vertical = 0.dp, horizontal = 16.dp),
       horizontalArrangement = Arrangement.SpaceBetween) {
         RatingLine(
             activityToDisplay,
@@ -468,7 +470,8 @@ fun ActivityTitleZone(
     centerPoint: LatLng
 ) {
   Row(
-      modifier = Modifier.fillMaxWidth().padding(start = 8.dp, end = 8.dp, top = 0.dp, bottom = 16.dp),
+      modifier =
+          Modifier.fillMaxWidth().padding(start = 8.dp, end = 8.dp, top = 0.dp, bottom = 16.dp),
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.SpaceBetween) {
         Row(

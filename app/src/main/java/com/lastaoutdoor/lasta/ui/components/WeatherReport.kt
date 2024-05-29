@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -42,23 +41,24 @@ fun WeatherReportBig(weather: WeatherResponse?, displayWind: Boolean, onClick: (
     // the query is answered with a temperature in Kelvin, which we convert to Celsius
     val finalTemp = kelvinToCelsius((weather.main.temp))
     Row(
-        modifier = Modifier.fillMaxWidth().padding(8.dp).clickable { onClick() }.testTag("WeatherReportBig"),
+        modifier =
+            Modifier.fillMaxWidth()
+                .padding(8.dp)
+                .clickable { onClick() }
+                .testTag("WeatherReportBig"),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween) {
           Row(verticalAlignment = Alignment.CenterVertically) {
-              Image(
-                  painter =
-                  painterResource(
-                      id = getWeatherIconFromId(weather.weather.firstOrNull()?.icon ?: "01d")),
-                  contentDescription = "Current Weather Logo",
-                  modifier = Modifier.size(63.dp).testTag("WeatherIcon"))
+            Image(
+                painter =
+                    painterResource(
+                        id = getWeatherIconFromId(weather.weather.firstOrNull()?.icon ?: "01d")),
+                contentDescription = "Current Weather Logo",
+                modifier = Modifier.size(63.dp).testTag("WeatherIcon"))
 
             Column(
                 verticalArrangement = Arrangement.Top, modifier = Modifier.testTag("WeatherName")) {
-                  Text(
-                      text = weather.name,
-                      fontWeight = FontWeight(1000),
-                      fontSize = 14.sp)
+                  Text(text = weather.name, fontWeight = FontWeight(1000), fontSize = 14.sp)
                   Text(
                       text =
                           "${LocalContext.current.getString(R.string.humidity)}: ${weather.main.hum}%",
@@ -75,10 +75,10 @@ fun WeatherReportBig(weather: WeatherResponse?, displayWind: Boolean, onClick: (
 
           if (displayWind) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Image(
-                    painter = painterResource(id = R.drawable.weather_wind),
-                    contentDescription = "Wind speed icon",
-                    Modifier.size(50.dp))
+              Image(
+                  painter = painterResource(id = R.drawable.weather_wind),
+                  contentDescription = "Wind speed icon",
+                  Modifier.size(50.dp))
 
               Column(modifier = Modifier.testTag("WindDisplay")) {
                 Text(
@@ -154,21 +154,22 @@ fun WeatherForecastDisplay(weatherForecast: WeatherForecast?, date: String) {
                 modifier = Modifier.fillMaxWidth().padding(8.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically) {
-                Image(
-                    painter =
-                    painterResource(
-                        id =
-                        getWeatherIconFromId(
-                            weatherForecast.weather.firstOrNull()?.icon ?: "01d")),
-                    contentDescription = "Weather Icon",
-                    modifier = Modifier.size(50.dp).testTag("forecastIcon"))
+                  Image(
+                      painter =
+                          painterResource(
+                              id =
+                                  getWeatherIconFromId(
+                                      weatherForecast.weather.firstOrNull()?.icon ?: "01d")),
+                      contentDescription = "Weather Icon",
+                      modifier = Modifier.size(50.dp).testTag("forecastIcon"))
 
                   Text(text = "$finalTemp°C", color = PrimaryBlue)
 
                   Spacer(modifier = Modifier.width(8.dp))
                   Text(
                       text =
-                          "${LocalContext.current.getString(R.string.humidity)} ${weatherForecast.main.hum}%", color = PrimaryBlue)
+                          "${LocalContext.current.getString(R.string.humidity)} ${weatherForecast.main.hum}%",
+                      color = PrimaryBlue)
                 }
           }
     }
