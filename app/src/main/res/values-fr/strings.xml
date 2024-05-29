@@ -162,4 +162,8 @@
     <string name ="shared_with_you">a partagé une activité avec vous</string>
     <string name = "at_hour">à</string>
     <string name = "forecasted_weather">Demain</string>
+    <string name="tracking_start_btn">Commencer</string>
+    <string name="tracking_pause_btn">Pause</string>
+    <string name="tracking_resume_btn">Continuer</string>
+    <string name="tracking_finish_btn">Finir</string>
 </resources>

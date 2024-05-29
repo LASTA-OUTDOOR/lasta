@@ -164,4 +164,8 @@
     <string name = "at_hour">um</string>
     <string name = "forecasted_weather">Morgen</string>
     <string name="offline_text">"Sie sind zur Zeit Offline, bitte verbinden Sie sich mit dem Internet um sich in Lasta einzuloggen! "</string>
+    <string name="tracking_start_btn">Beginnen</string>
+    <string name="tracking_pause_btn">Pause</string>
+    <string name="tracking_resume_btn">Fortsetzen</string>
+    <string name="tracking_finish_btn">Beenden</string>
 </resources>

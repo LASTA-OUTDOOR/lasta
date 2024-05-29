@@ -14,7 +14,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.services.StopwatchState
 import com.lastaoutdoor.lasta.ui.theme.RedDifficulty
 
@@ -41,8 +43,11 @@ fun TrackingButtons(
                     contentColor = Color.White)) {
               Text(
                   text =
-                      if (currentState == StopwatchState.Started) "Stop"
-                      else if ((currentState == StopwatchState.Stopped)) "Resume" else "Start")
+                      if (currentState == StopwatchState.Started)
+                          LocalContext.current.getString(R.string.tracking_pause_btn)
+                      else if ((currentState == StopwatchState.Stopped))
+                          LocalContext.current.getString(R.string.tracking_resume_btn)
+                      else LocalContext.current.getString(R.string.tracking_start_btn))
             }
         Spacer(modifier = Modifier.weight(0.1f))
         Button(
@@ -50,7 +55,7 @@ fun TrackingButtons(
             onClick = onClickCancel,
             enabled = cancelEnabled,
             colors = ButtonDefaults.buttonColors(Color.Gray)) {
-              Text(text = "Cancel")
+              Text(text = LocalContext.current.getString(R.string.tracking_finish_btn))
             }
       }
 }
