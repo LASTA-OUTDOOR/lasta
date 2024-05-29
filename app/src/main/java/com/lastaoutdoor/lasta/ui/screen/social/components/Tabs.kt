@@ -3,7 +3,6 @@ package com.lastaoutdoor.lasta.ui.screen.social.components
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
@@ -30,7 +29,6 @@ import com.lastaoutdoor.lasta.models.social.ConversationModel
 import com.lastaoutdoor.lasta.models.social.FriendsActivities
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.utils.ConnectionState
-
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -61,51 +59,54 @@ fun TabMenu(
 ) {
 
   val tabs =
-    listOf(
-        LocalContext.current.getString(R.string.feed),
-        LocalContext.current.getString(R.string.friends),
-        LocalContext.current.getString(R.string.message))
+      listOf(
+          LocalContext.current.getString(R.string.feed),
+          LocalContext.current.getString(R.string.friends),
+          LocalContext.current.getString(R.string.message))
 
-  //states for the tabs
+  // states for the tabs
   var selectedTab by remember { mutableIntStateOf(0) }
-  val pagerState = rememberPagerState {
-      tabs.size
-  }
+  val pagerState = rememberPagerState { tabs.size }
 
-  //Listen for tab changes (when clicking on a tab)
-  LaunchedEffect(selectedTab){
-      pagerState.scrollToPage(selectedTab)
-  }
+  // Listen for tab changes (when clicking on a tab)
+  LaunchedEffect(selectedTab) { pagerState.scrollToPage(selectedTab) }
 
-  //Listen for swipe changes (when swiping between tabs)
-  LaunchedEffect(pagerState.currentPage){
-      selectedTab = pagerState.currentPage
+  // Listen for swipe changes (when swiping between tabs)
+  LaunchedEffect(pagerState.currentPage, pagerState.isScrollInProgress) {
+    selectedTab = pagerState.currentPage
+    if (!pagerState.isScrollInProgress) { // The animation process was causing some big lags
+      when (selectedTab) {
+        0 -> hideTopButton()
+        1 -> showTopButton(Icons.Filled.Add) { displayAddFriendDialog() }
+        2 -> showTopButton(Icons.Filled.Email) { displayFriendPicker() }
+      }
+    }
   }
 
   Column {
     PrimaryTabRow(selectedTabIndex = selectedTab) {
 
-      //iterate through the tabs list and create a Tab composable for each tab
+      // iterate through the tabs list and create a Tab composable for each tab
       tabs.forEachIndexed { index, title ->
         Tab(
             selected = selectedTab == index,
-            onClick = { selectedTab = index }, //update selected tab index
+            onClick = { selectedTab = index }, // update selected tab index
             modifier = Modifier.testTag("TabNumber$index"),
             text = { Text(text = title, maxLines = 2, overflow = TextOverflow.Ellipsis) })
       }
     }
 
     // Pager to be able to swipe between the tabs
-    HorizontalPager(state = pagerState, modifier = Modifier.fillMaxHeight().weight(1f), verticalAlignment = Alignment.Top) {
-        index ->
-        when (index) {
-          0 -> {
-              hideTopButton()
+    HorizontalPager(
+        state = pagerState,
+        modifier = Modifier.fillMaxHeight().weight(1f),
+        verticalAlignment = Alignment.Top) { index ->
+          when (index) {
+            0 -> {
               refreshFriendsActivities()
               FriendsActivityList(isConnected, latestFriendActivities)
-          }
-          1 -> {
-              showTopButton(Icons.Filled.Add) { displayAddFriendDialog() }
+            }
+            1 -> {
               FriendsList(
                   isConnected,
                   friends,
@@ -118,9 +119,8 @@ fun TabMenu(
                   requestFriend,
                   refreshFriends,
                   navigateToFriendProfile)
-          }
-          2 -> {
-              showTopButton(Icons.Filled.Email) { displayFriendPicker() }
+            }
+            2 -> {
               MessageList(
                   isConnected,
                   messages,
@@ -130,10 +130,8 @@ fun TabMenu(
                   navigateToConversation,
                   isDisplayedFriendPicker,
                   changeDisplayFriendPicker)
+            }
           }
-    }
-
-  }
+        }
   }
 }
-
