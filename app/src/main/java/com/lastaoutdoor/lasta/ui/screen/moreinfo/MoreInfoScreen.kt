@@ -515,7 +515,7 @@ fun ActivityTitleText(activityToDisplay: Activity, centerPoint: LatLng) {
       } else {
         Text(
             text = activityToDisplay.name,
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.ExtraBold,
             style = MaterialTheme.typography.headlineLarge)
       }
