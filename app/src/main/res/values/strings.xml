@@ -118,11 +118,12 @@ Sign in to join our fantastic sports addict community!</string>
     <string name = "start_conv">Start a conversation!</string>
     <string name = "friends">Friends</string>
     <string name = "message">Message</string>
+    <string name = "username">Username</string>
     <string name = "feed">Feed</string>
     <string name = "email">Email address</string>
     <string name = "send_fr">Send friend request</string>
     <string name = "add_fr">Add a friend</string>
-    <string name = "fr_email_add">Enter a friend\'s email address to send a friend request</string>
+    <string name = "fr_username_add">Enter a friend\'s user name to send a friend request</string>
     <string name = "community">Community</string>
     <string name = "no_account">The email address is not associated with any account</string>
     <string name = "no_fr">You are already friends with this user</string>

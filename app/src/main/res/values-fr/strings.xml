@@ -11,6 +11,7 @@
     <string name="sign_in_google">Connexion avec Google</string>
     <string name="offline">Vous êtes hors ligne</string>
     <string name="start">Commencer</string>
+    <string name = "username">Nom d\'utilisateur</string>
     <string name="on_map">Voir sur la carte</string>
     <string name="unknown_activity_type">Type d\'activité inconnu</string>
     <string name="biking">Cyclisme</string>
@@ -57,7 +58,7 @@
     <string name="email">Adresse email</string>
     <string name="send_fr">Envoyer demande d\'ami</string>
     <string name="add_fr">Ajouter un ami</string>
-    <string name="fr_email_add">Entrez l\'adresse email d\'un ami pour envoyer une demande d\'ami</string>
+    <string name="fr_username_add">Entrez le nom d\'utilisateur d\'un ami pour envoyer une demande d\'ami</string>
     <string name="community">Communauté</string>
     <string name="list">Liste</string>
     <string name="map">Carte</string>

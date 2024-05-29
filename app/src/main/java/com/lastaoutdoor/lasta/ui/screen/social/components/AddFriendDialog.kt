@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -67,7 +66,7 @@ fun AddFriendDialog(
               horizontalAlignment = Alignment.CenterHorizontally,
               verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
-                    LocalContext.current.getString(R.string.fr_email_add),
+                    LocalContext.current.getString(R.string.fr_username_add),
                     modifier = Modifier.testTag("SubHeader"),
                     textAlign = TextAlign.Center)
                 AddFriendForm(
@@ -91,12 +90,14 @@ private fun AddFriendForm(
   var text by remember { mutableStateOf("") }
 
   Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+    // Textfield to enter the user name of the friend
     TextField(
         value = text,
         onValueChange = { newValue -> text = newValue },
-        label = { Text(LocalContext.current.getString(R.string.email)) },
-        modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("EmailTextField"),
+        label = { Text(LocalContext.current.getString(R.string.username)) },
+        modifier = Modifier.fillMaxWidth().padding(8.dp).testTag("UserNameTextField"),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        singleLine = true,
         keyboardActions =
             KeyboardActions(
                 onDone = {
@@ -134,16 +135,5 @@ private fun AddFriendForm(
 
     // Error message / Feedback
     Text(friendRequestFeedback, style = MaterialTheme.typography.bodyLarge)
-
-    // Submit Button
-    Button(
-        onClick = {
-          focusManager.clearFocus()
-          requestFriend(text)
-          text = ""
-        },
-        modifier = Modifier.testTag("SubmitButton")) {
-          Text(LocalContext.current.getString(R.string.send_fr))
-        }
   }
 }
