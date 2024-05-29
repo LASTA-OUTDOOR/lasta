@@ -40,7 +40,11 @@ class FakeUserDB : UserDBRepository {
     }
   }
 
-  override suspend fun getUsersByUsernameWithSubstring(query: String, friends: List<UserModel>, user: UserModel): List<UserModel>? {
+  override suspend fun getUsersByUsernameWithSubstring(
+      query: String,
+      friends: List<UserModel>,
+      user: UserModel
+  ): List<UserModel>? {
     if (shouldThrowException) {
       throw Exception("FakeUserDB: getUsersByUsernameWithSubstring failed")
     }
