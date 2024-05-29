@@ -34,7 +34,33 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+
             </intent-filter>
+
+            <!--Deep linking for lasta.jerem.ch -->
+            <intent-filter>
+
+                <data
+                    android:scheme="https"
+                    android:host="lasta.jerem.ch"
+                     />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <action android:name="android.intent.action.VIEW" />
+
+            </intent-filter>
+
+            <!-- http -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="http" />
+                <data android:host="lasta.jerem.ch" />
+            </intent-filter>
+
         </activity>
         <service android:name=".services.PushNotificationService"
             android:exported="false">

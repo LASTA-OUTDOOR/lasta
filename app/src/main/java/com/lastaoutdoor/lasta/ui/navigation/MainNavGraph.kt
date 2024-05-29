@@ -5,11 +5,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.asFlow
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.Language
@@ -166,7 +168,28 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
     }
 
     // More Info Screen
-    composable(DestinationRoute.MoreInfo.route) { entry ->
+    composable(route = DestinationRoute.MoreInfo.route,
+        deepLinks = listOf(
+            navDeepLink { uriPattern = "https://lasta.jerem.ch/activity/{activityId}" }
+        ),
+        arguments = listOf(navArgument("activityId") { type = NavType.StringType})
+    ) { entry ->
+
+        //check if user is logged in
+        val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
+        val loggedIn = preferencesViewModel.isLoggedIn.asFlow().collectAsState(initial = false).value
+        println("loggedIn: $loggedIn")
+        // if not, kick it to the sign in screen
+        if(!loggedIn){
+            navController.navigate(DestinationRoute.SignIn.route)
+            println("not logged in, navigating to sign in")
+        }
+
+        val currentUser = preferencesViewModel.user.collectAsState(initial = UserModel("")).value
+        val favorites = preferencesViewModel.favorites.collectAsState(initial = emptyList()).value
+
+
+      //View models
       val discoverScreenViewModel: DiscoverScreenViewModel = entry.sharedViewModel(navController)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
       val conversationViewModel: ConversationViewModel = entry.sharedViewModel(navController)
@@ -176,9 +199,15 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val usersList = moreInfoScreenViewModel.usersList.collectAsState().value
       val weatherViewModel: WeatherViewModel = entry.sharedViewModel(navController)
       val weather = weatherViewModel.weather.observeAsState().value
-      val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
-      val currentUser = preferencesViewModel.user.collectAsState(initial = UserModel("")).value
-      val favorites = preferencesViewModel.favorites.collectAsState(initial = emptyList()).value
+
+
+        //Deep links
+        val activityId = entry.arguments?.getString("activityId") ?: ""
+        println("activityId: $activityId")
+        if(activityId.isNotEmpty())
+            moreInfoScreenViewModel.changeActivityToDisplayByID(activityId)
+        else // if it wasn't a properly formatted deep link, go back to the discover screen
+            navController.navigate(DestinationRoute.Discover.route)
 
       val discoverScreenState: DiscoverScreenState =
           discoverScreenViewModel.state.collectAsState().value
