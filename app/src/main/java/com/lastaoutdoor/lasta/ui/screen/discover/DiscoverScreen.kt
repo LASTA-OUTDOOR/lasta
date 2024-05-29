@@ -1,5 +1,6 @@
 package com.lastaoutdoor.lasta.ui.screen.discover
 
+import android.graphics.Rect
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -42,15 +43,26 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
 import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.MapsInitializer
@@ -376,60 +388,96 @@ fun ActivitiesDisplay(
                 .testTag("${a.activityId}activityCard"),
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
-          Box(modifier = Modifier.background(Color.Red)) {
-            Column {
-              Row(
-                  modifier = Modifier.fillMaxWidth().padding(8.dp),
-                  verticalAlignment = Alignment.CenterVertically,
-                  horizontalArrangement = Arrangement.SpaceBetween) {
-                    Box(
-                        modifier =
-                            Modifier.shadow(4.dp, RoundedCornerShape(30))
-                                .background(
-                                    color = a.difficulty.getColorByDifficulty(),
-                                    RoundedCornerShape(10.dp))
-                                .padding(PaddingValues(8.dp))) {
-                          Text(
-                              text =
-                                  LocalContext.current.getString(
-                                      when (a.activityType) {
-                                        ActivityType.HIKING -> R.string.hiking
-                                        ActivityType.CLIMBING -> R.string.climbing
-                                        ActivityType.BIKING -> R.string.biking
-                                      }),
-                              style = MaterialTheme.typography.labelMedium,
-                              color = MaterialTheme.colorScheme.onPrimary)
-                        }
+          // Set default image to the background of the activity
+          val image: ImageBitmap =
+              ImageBitmap.imageResource(
+                  id = R.drawable.default_activity_bg) // replace with your image resource
+          val painter: Painter = BitmapPainter(image)
+          Box(
+              modifier =
+                  Modifier.wrapContentHeight().fillMaxWidth().drawBehind {
+                    val scale = size.width / painter.intrinsicSize.width
+                    val targetSize = painter.intrinsicSize * scale
+                    val topOffset = (size.height - targetSize.height).toInt() / 2
 
-                    IconButton(
-                        onClick = { flipFavorite(a.activityId) },
-                        modifier = Modifier.size(24.dp).testTag("${a.activityId}favoriteButton")) {
-                          Icon(
-                              imageVector =
-                                  if (favorites.contains(a.activityId)) Icons.Filled.Favorite
-                                  else Icons.Filled.FavoriteBorder,
-                              contentDescription = "Favorite Button",
-                              tint =
-                                  if (favorites.contains(a.activityId))
-                                      MaterialTheme.colorScheme.primary
-                                  else MaterialTheme.colorScheme.onBackground,
-                              modifier = Modifier.size(24.dp))
-                        }
-                  }
+                    drawIntoCanvas { canvas ->
+                      val paint = android.graphics.Paint().apply { alpha = (0.3 * 255).toInt() }
+                      canvas.nativeCanvas.drawBitmap(
+                          image.asAndroidBitmap(),
+                          null,
+                          Rect(
+                              0,
+                              topOffset,
+                              size.width.toInt(),
+                              2 * topOffset + targetSize.height.toInt()),
+                          paint)
+                    }
+                  }) {
+                SubcomposeAsyncImage(
+                    model = a.activityImageUrl,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier =
+                        Modifier.matchParentSize()
+                            .clip(RoundedCornerShape(8.dp)) // Adjust clipping as needed
+                    ) {
+                      SubcomposeAsyncImageContent()
+                    }
 
-              Spacer(modifier = Modifier.height(8.dp))
-              Row(
-                  modifier = Modifier.fillMaxWidth().padding(8.dp),
-                  verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = a.name,
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold)
-                  }
+                Column {
+                  Row(
+                      modifier = Modifier.fillMaxWidth().padding(8.dp),
+                      verticalAlignment = Alignment.CenterVertically,
+                      horizontalArrangement = Arrangement.SpaceBetween) {
+                        Box(
+                            modifier =
+                                Modifier.shadow(4.dp, RoundedCornerShape(30))
+                                    .background(
+                                        color = a.difficulty.getColorByDifficulty(),
+                                        RoundedCornerShape(10.dp))
+                                    .padding(PaddingValues(8.dp))) {
+                              Text(
+                                  text =
+                                      LocalContext.current.getString(
+                                          when (a.activityType) {
+                                            ActivityType.HIKING -> R.string.hiking
+                                            ActivityType.CLIMBING -> R.string.climbing
+                                            ActivityType.BIKING -> R.string.biking
+                                          }),
+                                  style = MaterialTheme.typography.labelMedium,
+                                  color = MaterialTheme.colorScheme.onPrimary)
+                            }
 
-              Spacer(modifier = Modifier.height(16.dp))
-            }
-          }
+                        IconButton(
+                            onClick = { flipFavorite(a.activityId) },
+                            modifier =
+                                Modifier.size(24.dp).testTag("${a.activityId}favoriteButton")) {
+                              Icon(
+                                  imageVector =
+                                      if (favorites.contains(a.activityId)) Icons.Filled.Favorite
+                                      else Icons.Filled.FavoriteBorder,
+                                  contentDescription = "Favorite Button",
+                                  tint =
+                                      if (favorites.contains(a.activityId))
+                                          MaterialTheme.colorScheme.primary
+                                      else MaterialTheme.colorScheme.onBackground,
+                                  modifier = Modifier.size(24.dp))
+                            }
+                      }
+
+                  Spacer(modifier = Modifier.height(8.dp))
+                  Row(
+                      modifier = Modifier.fillMaxWidth().padding(8.dp),
+                      verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = a.name,
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold)
+                      }
+
+                  Spacer(modifier = Modifier.height(16.dp))
+                }
+              }
 
           Column {
             SeparatorComponent()
