@@ -448,4 +448,31 @@ class DiscoverScreenTest {
     assert(cameraPosition != null)
     assert(initialPos != LatLng(46.519962, 6.633597))
   }
+
+  @Test
+  fun discoverScreenWithNoActivities() {
+    val state =
+        discoverScreenState.copy(
+            isLoading = false, screen = DiscoverDisplayType.LIST, activities = emptyList())
+
+    composeRule.activity.setContent {
+      MaterialTheme {
+        DiscoverScreen(
+            discoverScreenState = state,
+            discoverScreenCallBacks = discoverScreenCallBacks,
+            favorites = emptyList(),
+            flipFavorite = {},
+            navigateToFilter = { /*TODO*/},
+            navigateToMoreInfo = { /*TODO*/},
+            navigateToRangeSearch = { /*TODO*/},
+            changeActivityToDisplay = {},
+            changeWeatherTarget = {},
+            weather = null,
+        )
+      }
+    }
+
+    composeRule.onNodeWithTag("EmptyActivityList").assertIsDisplayed()
+    composeRule.onNodeWithTag("NoActivitiesLogo").assertIsDisplayed()
+  }
 }

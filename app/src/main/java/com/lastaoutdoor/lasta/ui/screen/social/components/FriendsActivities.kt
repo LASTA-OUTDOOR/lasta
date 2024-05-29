@@ -48,7 +48,7 @@ fun FriendsActivityList(
       ConnectionMissing()
     }
     latestFriendActivities.isEmpty() -> {
-      ActivitiesMissing()
+      FriendsMissing(text = LocalContext.current.getString(R.string.no_friend_activities))
     }
     else -> {
       LazyColumn {
