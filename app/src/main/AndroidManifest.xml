@@ -39,7 +39,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.lastaoutdoor.lasta.ui.screen.tracking.TrackingActivity"
-            android:exported="true"
+            android:exported="false"
             android:theme="@style/Theme.Lasta"
             android:screenOrientation="portrait">
         </activity>
