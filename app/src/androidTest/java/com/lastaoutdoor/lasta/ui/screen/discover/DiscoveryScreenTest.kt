@@ -475,4 +475,36 @@ class DiscoverScreenTest {
     composeRule.onNodeWithTag("EmptyActivityList").assertIsDisplayed()
     composeRule.onNodeWithTag("NoActivitiesLogo").assertIsDisplayed()
   }
+
+  @Test
+  fun activityImageNotNull_isDisplayed() {
+    val activity =
+        Activity(
+            "1",
+            11033919,
+            ActivityType.HIKING,
+            "Chemin panorama alpin",
+            Position(46.4718332, 6.8338907),
+            0.0f,
+            0,
+            emptyList(),
+            difficulty = Difficulty.EASY,
+            activityImageUrl =
+                "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png")
+
+    composeRule.activity.setContent {
+      MaterialTheme {
+        ActivitiesDisplay(
+            activities = listOf(activity),
+            centerPoint = LatLng(46.519962, 6.633597),
+            favorites = emptyList(),
+            changeActivityToDisplay = {},
+            changeWeatherTarget = {},
+            flipFavorite = {},
+            navigateToMoreInfo = {})
+      }
+    }
+
+    composeRule.onNodeWithTag("1activityCard").assertIsDisplayed()
+  }
 }

@@ -1,5 +1,6 @@
 package com.lastaoutdoor.lasta.ui.screen.discover
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -43,7 +44,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
@@ -52,6 +58,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import coil.compose.AsyncImage
 import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.MapsInitializer
@@ -375,69 +382,102 @@ fun ActivitiesDisplay(
                     })
                 .testTag("${a.activityId}activityCard"),
         shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)) {
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
+          val activityHasImage = a.activityImageUrl != ""
+          Box(modifier = Modifier.wrapContentHeight().fillMaxWidth()) {
+            if (activityHasImage) {
+              AsyncImage(
+                  model = a.activityImageUrl,
+                  contentDescription = "activity image",
+                  contentScale = ContentScale.Crop,
+                  modifier = Modifier.matchParentSize())
+            } else {
+              Image(
+                  painter = painterResource(id = R.drawable.default_activity_bg),
+                  contentDescription = "activity image not found",
+                  contentScale = ContentScale.Crop,
+                  modifier = Modifier.matchParentSize().alpha(0.3f))
+            }
+
+            Column {
+              Row(
+                  modifier = Modifier.fillMaxWidth().padding(8.dp),
+                  verticalAlignment = Alignment.CenterVertically,
+                  horizontalArrangement = Arrangement.SpaceBetween) {
+                    Box(
+                        modifier =
+                            Modifier.shadow(4.dp, RoundedCornerShape(30))
+                                .background(
+                                    color = a.difficulty.getColorByDifficulty(),
+                                    RoundedCornerShape(10.dp))
+                                .padding(PaddingValues(8.dp))) {
+                          Text(
+                              text =
+                                  LocalContext.current.getString(
+                                      when (a.activityType) {
+                                        ActivityType.HIKING -> R.string.hiking
+                                        ActivityType.CLIMBING -> R.string.climbing
+                                        ActivityType.BIKING -> R.string.biking
+                                      }),
+                              style = MaterialTheme.typography.labelMedium,
+                              color = MaterialTheme.colorScheme.onPrimary)
+                        }
+
+                    IconButton(
+                        onClick = { flipFavorite(a.activityId) },
+                        modifier = Modifier.size(24.dp).testTag("${a.activityId}favoriteButton")) {
+                          Icon(
+                              imageVector =
+                                  if (favorites.contains(a.activityId)) Icons.Filled.Favorite
+                                  else Icons.Filled.FavoriteBorder,
+                              contentDescription = "Favorite Button",
+                              tint = MaterialTheme.colorScheme.primary,
+                              modifier = Modifier.size(24.dp))
+                        }
+                  }
+
+              Spacer(modifier = Modifier.height(8.dp))
+              Row(
+                  modifier = Modifier.fillMaxWidth().padding(8.dp),
+                  verticalAlignment = Alignment.CenterVertically) {
+                    if (activityHasImage) {
+                      Text(
+                          text = a.name,
+                          color = Color.White,
+                          fontWeight = FontWeight.Bold,
+                          style =
+                              MaterialTheme.typography.headlineMedium.copy(
+                                  shadow =
+                                      Shadow(color = Color.Black, offset = Offset(x = 1f, y = 2f))))
+                    } else {
+                      Text(
+                          text = a.name,
+                          color = MaterialTheme.colorScheme.onBackground,
+                          fontWeight = FontWeight.Bold,
+                          style = MaterialTheme.typography.headlineMedium)
+                    }
+                  }
+
+              Spacer(modifier = Modifier.height(16.dp))
+            }
+          }
+
           Column {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween) {
-                  Box(
-                      modifier =
-                          Modifier.shadow(4.dp, RoundedCornerShape(30))
-                              .background(
-                                  color = a.difficulty.getColorByDifficulty(),
-                                  RoundedCornerShape(10.dp))
-                              .padding(PaddingValues(8.dp))) {
-                        Text(
-                            text =
-                                LocalContext.current.getString(
-                                    when (a.activityType) {
-                                      ActivityType.HIKING -> R.string.hiking
-                                      ActivityType.CLIMBING -> R.string.climbing
-                                      ActivityType.BIKING -> R.string.biking
-                                    }),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onPrimary)
-                      }
-
-                  IconButton(
-                      onClick = { flipFavorite(a.activityId) },
-                      modifier = Modifier.size(24.dp).testTag("${a.activityId}favoriteButton")) {
-                        Icon(
-                            imageVector =
-                                if (favorites.contains(a.activityId)) Icons.Filled.Favorite
-                                else Icons.Filled.FavoriteBorder,
-                            contentDescription = "Favorite Button",
-                            tint =
-                                if (favorites.contains(a.activityId))
-                                    MaterialTheme.colorScheme.primary
-                                else MaterialTheme.colorScheme.onBackground,
-                            modifier = Modifier.size(24.dp))
-                      }
-                }
-
-            Spacer(modifier = Modifier.height(16.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
-                verticalAlignment = Alignment.CenterVertically) {
-                  Text(
-                      text = a.name,
-                      style = MaterialTheme.typography.titleMedium,
-                      fontWeight = FontWeight.Bold)
-                }
             SeparatorComponent()
             Row(
                 modifier = Modifier.fillMaxWidth().padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween) {
-                  Icon(
-                      imageVector = Icons.Default.Star,
-                      contentDescription = "Rating",
-                      tint = MaterialTheme.colorScheme.primary)
-                  Text(text = "${a.rating} (${a.numRatings})")
-                  Spacer(modifier = Modifier.width(8.dp))
+                  Row {
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = "Rating",
+                        tint = MaterialTheme.colorScheme.primary)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(text = "${a.rating} (${a.numRatings})")
+                  }
+
                   Text(text = "Difficulty: ${a.difficulty}")
-                  Spacer(modifier = Modifier.width(16.dp))
                   Text(
                       text =
                           "${String.format("%.1f", SphericalUtil.computeDistanceBetween(centerPoint, LatLng(a.startPosition.lat, a.startPosition.lon)) / 1000)} km")

@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,8 +42,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -107,6 +111,7 @@ fun MoreInfoScreen(
   val isReviewing = remember { mutableStateOf(false) }
   val text = remember { mutableStateOf("") }
   val weatherDialog = remember { mutableStateOf(false) }
+
   if (!isMapDisplayed.value) {
     if (weatherDialog.value) {
       Dialog(onDismissRequest = { weatherDialog.value = false }) {
@@ -114,26 +119,43 @@ fun MoreInfoScreen(
       }
     }
     Column(
-        modifier = Modifier.fillMaxSize(1f).testTag("MoreInfoComposable"),
+        modifier = Modifier.fillMaxSize().testTag("MoreInfoComposable"),
         verticalArrangement = Arrangement.SpaceBetween) {
-          Column(modifier = Modifier.padding(5.dp)) {
-            Spacer(modifier = Modifier.height(20.dp))
-            // contains the top icon buttons
-            if (currentUser != null) {
-              TopBar(
-                  activityToDisplay,
-                  downloadActivity,
-                  favorites,
-                  flipFavorite,
-                  friends,
-                  shareToFriend) {
-                    discoverScreenCallBacks.fetchActivities()
-                    navigateBack()
-                    setWeatherBackToUserLoc()
-                  }
+          Box(modifier = Modifier.wrapContentHeight().fillMaxWidth()) {
+            if (activityToDisplay.activityImageUrl != "") {
+              AsyncImage(
+                  model = activityToDisplay.activityImageUrl,
+                  contentDescription = "activity image",
+                  contentScale = ContentScale.Crop,
+                  modifier = Modifier.matchParentSize())
+            } else {
+              Image(
+                  painter = painterResource(id = R.drawable.default_activity_bg),
+                  contentDescription = "activity image not found",
+                  contentScale = ContentScale.Crop,
+                  modifier = Modifier.matchParentSize().alpha(0.3f))
             }
-            // displays activity title and duration
-            ActivityTitleZone(activityToDisplay, updateDifficulty, discoverScreenState.centerPoint)
+            Column(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+              // contains the top icon buttons
+              if (currentUser != null) {
+                TopBar(
+                    activityToDisplay,
+                    downloadActivity,
+                    favorites,
+                    flipFavorite,
+                    friends,
+                    shareToFriend) {
+                      discoverScreenCallBacks.fetchActivities()
+                      navigateBack()
+                      setWeatherBackToUserLoc()
+                    }
+              }
+              // displays activity title and duration
+              ActivityTitleZone(
+                  activityToDisplay, updateDifficulty, discoverScreenState.centerPoint)
+            }
+          }
+          Column {
             WeatherReportBig(weather, true) { weatherDialog.value = true }
             // displays activity difficulty, ration and view on map button
             MiddleZone(
@@ -166,14 +188,21 @@ fun MoreInfoScreen(
       }
 
       if (currentUser != null) {
-        TopBar(
-            activityToDisplay, downloadActivity, favorites, flipFavorite, friends, shareToFriend) {
-              discoverScreenCallBacks.clearSelectedMarker()
-              discoverScreenCallBacks.clearSelectedItinerary()
-              discoverScreenCallBacks.fetchActivities()
-              navigateBack()
-              setWeatherBackToUserLoc()
-            }
+        Column(modifier = Modifier.padding(8.dp)) {
+          TopBar(
+              activityToDisplay,
+              downloadActivity,
+              favorites,
+              flipFavorite,
+              friends,
+              shareToFriend) {
+                discoverScreenCallBacks.clearSelectedMarker()
+                discoverScreenCallBacks.clearSelectedItinerary()
+                discoverScreenCallBacks.fetchActivities()
+                navigateBack()
+                setWeatherBackToUserLoc()
+              }
+        }
       }
       mapScreen(
           discoverScreenState.mapState,
@@ -463,18 +492,10 @@ fun ActivityPicture(activityToDisplay: Activity) {
         ActivityType.BIKING -> "BikingPicture"
       }
   Column {
-    if (activityToDisplay.activityImageUrl != "") {
-      AsyncImage(
-          model = activityToDisplay.activityImageUrl,
-          contentDescription = "Activity Picture",
-          modifier = Modifier.size(65.dp).clip(RoundedCornerShape(8.dp)),
-          error = painterResource(id = defaultId))
-    } else {
-      Image(
-          painter = painterResource(id = defaultId),
-          contentDescription = "Default Activity Picture",
-          modifier = Modifier.padding(5.dp).size(65.dp).testTag(testTag))
-    }
+    Image(
+        painter = painterResource(id = defaultId),
+        contentDescription = "Default Activity Picture",
+        modifier = Modifier.padding(5.dp).size(65.dp).testTag(testTag))
   }
 }
 
@@ -482,9 +503,21 @@ fun ActivityPicture(activityToDisplay: Activity) {
 fun ActivityTitleText(activityToDisplay: Activity, centerPoint: LatLng) {
   Row(modifier = Modifier.padding(vertical = 25.dp, horizontal = 5.dp)) {
     Column {
-      Text(
-          text = activityToDisplay.name,
-          style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight(600)))
+      if (activityToDisplay.activityImageUrl != "") {
+        Text(
+            text = activityToDisplay.name,
+            color = Color.White,
+            fontWeight = FontWeight.ExtraBold,
+            style =
+                MaterialTheme.typography.headlineLarge.copy(
+                    shadow = Shadow(color = Color.Black, offset = Offset(x = 1f, y = 2f))))
+      } else {
+        Text(
+            text = activityToDisplay.name,
+            color = MaterialTheme.colorScheme.onBackground,
+            fontWeight = FontWeight.ExtraBold,
+            style = MaterialTheme.typography.headlineLarge)
+      }
 
       Text(
           text =
