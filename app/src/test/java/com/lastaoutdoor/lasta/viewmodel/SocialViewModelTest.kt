@@ -212,6 +212,31 @@ class SocialViewModelTest {
   }
 
   @Test
+  fun `test fetch suggestions`() = runTest {
+    every { context.getString(any()) } returns "stringResource"
+    coEvery { fcmAPI.sendMessage(any()) } returns Unit
+    userDB.shouldThrowException = false
+    repoDB.shouldThrowException = false
+    viewModel.fetchFriendsSuggestions("test")
+    assertEquals(viewModel.friendSuggestions, emptyList<UserModel>())
+  }
+
+  @Test
+  fun `test fetch suggestions with exception`() = runTest {
+    every { context.getString(any()) } returns "stringResource"
+    coEvery { fcmAPI.sendMessage(any()) } throws Exception()
+    userDB.shouldThrowException = true
+    repoDB.shouldThrowException = true
+    try {
+      viewModel.fetchFriendsSuggestions("test")
+    } catch (e: Exception) {
+      coVerify { errorToast.showToast(any()) }
+    }
+    userDB.shouldThrowException = false
+    repoDB.shouldThrowException = false
+  }
+
+  @Test
   fun `test refresh friends with exception`() = runTest {
     every { context.getString(any()) } returns "stringResource"
     coEvery { fcmAPI.sendMessage(any()) } throws Exception()

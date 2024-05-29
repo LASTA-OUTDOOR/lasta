@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -59,6 +60,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import coil.compose.SubcomposeAsyncImage
@@ -128,7 +130,7 @@ fun DiscoverScreen(
           if (discoverScreenState.isLoading) {
             LoadingAnim(width = 35, tag = "LoadingBarDiscover")
           } else if (discoverScreenState.activities.isEmpty()) {
-            /* TODO */
+            EmptyActivityList()
           } else {
             LazyColumn {
               item {
@@ -501,4 +503,23 @@ fun ActivitiesDisplay(
           }
         }
   }
+}
+
+@Composable
+fun EmptyActivityList() {
+  Column(
+      modifier = Modifier.fillMaxSize().testTag("EmptyActivityList").padding(18.dp, 25.dp),
+      verticalArrangement = Arrangement.Center,
+      horizontalAlignment = Alignment.CenterHorizontally) {
+        Icon(
+            painterResource(id = R.drawable.not_found),
+            contentDescription = "No Activities",
+            modifier = Modifier.size(85.dp).testTag("NoActivitiesLogo"))
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+          Text(
+              text = LocalContext.current.getString(R.string.no_activities),
+              style = MaterialTheme.typography.bodyLarge,
+              textAlign = TextAlign.Center)
+        }
+      }
 }

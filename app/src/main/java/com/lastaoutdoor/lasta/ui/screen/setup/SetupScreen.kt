@@ -5,13 +5,16 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -86,25 +89,34 @@ fun SetupScreen(
                 TitleComponent(setUpOrSetting = true)
               }
             })
+        LazyColumn {
+          item {
+            SettingsComponent(
+                language = language,
+                prefActivity = prefActivity,
+                levels = levels,
+                updateLanguage = updateLanguage,
+                updatePrefActivity = updatePrefActivity,
+                updateClimbingLevel = updateClimbingLevel,
+                updateHikingLevel = updateHikingLevel,
+                updateBikingLevel = updateBikingLevel)
+            HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 1f))
+          }
 
-        SettingsComponent(
-            language = language,
-            prefActivity = prefActivity,
-            levels = levels,
-            updateLanguage = updateLanguage,
-            updatePrefActivity = updatePrefActivity,
-            updateClimbingLevel = updateClimbingLevel,
-            updateHikingLevel = updateHikingLevel,
-            updateBikingLevel = updateBikingLevel)
+          item { Spacer(modifier = Modifier.height(16.dp)) }
 
-        Spacer(modifier = Modifier.fillMaxHeight(0.025f))
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
-          Button(
-              modifier = Modifier.testTag("setupFinishButton"),
-              onClick = { showSubmitDialog.value = true },
-          ) {
-            Text(text = LocalContext.current.getString(R.string.finish))
+          item {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center) {
+                  Button(
+                      modifier = Modifier.testTag("setupFinishButton"),
+                      onClick = { showSubmitDialog.value = true },
+                  ) {
+                    Text(text = LocalContext.current.getString(R.string.finish))
+                  }
+                }
           }
         }
       }
