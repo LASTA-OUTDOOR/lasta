@@ -40,6 +40,17 @@ class FakeUserDB : UserDBRepository {
     }
   }
 
+  override suspend fun getUsersByUsernameWithSubstring(
+      query: String,
+      friends: List<UserModel>,
+      user: UserModel
+  ): List<UserModel>? {
+    if (shouldThrowException) {
+      throw Exception("FakeUserDB: getUsersByUsernameWithSubstring failed")
+    }
+    return listOf(fakeUserModel)
+  }
+
   override suspend fun removeFavorite(userId: String, activityId: String) {
     if (shouldThrowException) {
       throw Exception("FakeUserDB: removeFavorite failed")

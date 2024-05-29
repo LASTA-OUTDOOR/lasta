@@ -122,10 +122,12 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           socialViewModel.latestFriendActivities,
           socialViewModel.displayAddFriendDialog,
           socialViewModel.friendRequestFeedback,
+          socialViewModel.friendSuggestions,
           socialViewModel.displayFriendPicker,
           socialViewModel::refreshMessages,
           socialViewModel::clearFriendRequestFeedback,
           socialViewModel::hideAddFriendDialog,
+          socialViewModel::fetchFriendsSuggestions,
           socialViewModel::requestFriend,
           socialViewModel::refreshFriends,
           socialViewModel::showTopButton,
@@ -212,6 +214,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           weatherViewModel::fetchWeatherWithUserLoc,
           discoverScreenViewModel::clearSelectedMarker,
           isOnline)
+          weatherViewModel::fetchWeatherWithUserLoc)
     }
     composable(DestinationRoute.Tracking.route) { entry ->
       val trackingViewModel: TrackingViewModel = hiltViewModel(entry)

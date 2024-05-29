@@ -1,5 +1,6 @@
 package com.lastaoutdoor.lasta.ui.screen.social.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -41,18 +42,22 @@ fun FriendsRequestList(
     acceptFriend: (UserModel) -> Unit,
     declineFriend: (UserModel) -> Unit
 ) {
-  Text(
-      LocalContext.current.getString(R.string.friend_req),
-      style = MaterialTheme.typography.titleLarge,
-      modifier = Modifier.padding(8.dp).testTag("FriendRequestTitle"))
+  Row(
+      modifier = Modifier.fillMaxWidth(),
+      horizontalArrangement = Arrangement.Center,
+      verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            LocalContext.current.getString(R.string.friend_req),
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.padding(8.dp).testTag("FriendRequestTitle"),
+        )
+      }
   when {
     isConnected == ConnectionState.OFFLINE -> {
       ConnectionMissing()
     }
     friendRequests.isEmpty() -> {
-      Text(
-          LocalContext.current.getString(R.string.no_friend),
-          Modifier.padding(8.dp).testTag("NoFriendRequest"))
+      FriendsMissing(text = LocalContext.current.getString(R.string.no_friend_requests))
     }
     else -> {
       LazyColumn {

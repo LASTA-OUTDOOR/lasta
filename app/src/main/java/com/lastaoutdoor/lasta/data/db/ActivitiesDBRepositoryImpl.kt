@@ -156,16 +156,47 @@ constructor(context: Context, database: FirebaseFirestore) : ActivitiesDBReposit
         distance)
   }
 
-  override fun addRating(activityId: String, rating: Rating, newMeanRating: String) {
-    val document = activitiesCollection.document(activityId)
-    document.update(
-        "ratings",
-        FieldValue.arrayUnion(
-            hashMapOf(
-                "userId" to rating.userId, "comment" to rating.comment, "rating" to rating.rating)))
+  override suspend fun addRating(activityId: String, rating: Rating, newMeanRating: String) {
 
-    document.update("numRatings", FieldValue.increment(1))
-    document.update("rating", newMeanRating)
+    val document = activitiesCollection.document(activityId)
+    val sn = document.get().await()
+    var userHasRating: HashMap<String, Any>? = null
+    var oldUserRating = 0L
+    var oldRating = 0.0
+    if (sn.exists()) {
+      (sn.get("ratings") as? List<HashMap<String, Any>>)?.forEach {
+        if (it["userId"] == rating.userId) {
+          userHasRating = it
+          oldUserRating = it["rating"].toString().toLong()
+          oldRating = sn.getString("rating")!!.toDouble()
+        }
+      }
+    }
+    if (userHasRating != null) {
+      document.update("ratings", FieldValue.arrayRemove(userHasRating))
+      val numRating = sn.getLong("numRatings") ?: 1
+      val newNewMeanRating =
+          (numRating * oldRating - oldUserRating + rating.rating.toLong()) / numRating
+
+      document.update("rating", newNewMeanRating.toString())
+      document.update(
+          "ratings",
+          FieldValue.arrayUnion(
+              hashMapOf(
+                  "userId" to rating.userId,
+                  "comment" to rating.comment,
+                  "rating" to rating.rating)))
+    } else {
+      document.update("numRatings", FieldValue.increment(1))
+      document.update("rating", newMeanRating)
+      document.update(
+          "ratings",
+          FieldValue.arrayUnion(
+              hashMapOf(
+                  "userId" to rating.userId,
+                  "comment" to rating.comment,
+                  "rating" to rating.rating)))
+    }
   }
 
   override suspend fun deleteAllUserRatings(userId: String): List<Activity> {

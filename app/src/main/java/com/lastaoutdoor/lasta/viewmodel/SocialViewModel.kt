@@ -54,6 +54,9 @@ constructor(
   // Get all the friends request
   var friendRequests: List<UserModel> by mutableStateOf(emptyList())
 
+  // Get all the friends suggestions
+  var friendSuggestions: List<UserModel> by mutableStateOf(emptyList())
+
   // feedback message for the friend request
   var friendRequestFeedback: String by mutableStateOf("")
 
@@ -165,6 +168,22 @@ constructor(
           } else {
             context.getString(R.string.inv_email)
           }
+    }
+  }
+
+  /*
+   * Fetch the list of friends suggestions given a string
+   */
+  fun fetchFriendsSuggestions(query: String) {
+    viewModelScope.launch {
+      // Call surrounded by try-catch block to make handle exceptions caused by database
+      try {
+        // get the list of users by query
+        friendSuggestions =
+            userDBRepo.getUsersByUsernameWithSubstring(query, friends, user) ?: emptyList()
+      } catch (e: Exception) {
+        errorToast.showToast(ErrorType.ERROR_DATABASE)
+      }
     }
   }
 
