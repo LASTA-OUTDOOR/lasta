@@ -114,7 +114,7 @@ Sign in to join our fantastic sports addict community!</string>
     <string name = "friend_req">Friend requests</string>
     <string name = "req_internet">This content requires an internet connection.</string>
     <string name = "no_friends_yet">It appears you don\'t have any friends yet… Start by adding some!</string>
-    <string name = "no_friend_activities">There\'s not much going on right know... Add some friends to see more</string>
+    <string name = "no_friend_activities">There\'s not much going on right know… Add some friends to see more!</string>
     <string name = "no_msg">You don\'t have any messages yet....</string>
     <string name = "start_conv">Start a conversation!</string>
     <string name = "friends">Friends</string>
@@ -215,5 +215,6 @@ Sign in to join our fantastic sports addict community!</string>
     <string name="error_osm_api" translatable="false">A OSM API error has occurred.</string>
     <string name="error_weather" translatable="false">A Weather error has occurred.</string>
     <string name="no_activities">No activities found matching your criteria… Try adjusting your filters or search terms!</string>
+    <string name="no_friend_requests">It appears you have no friend requests… Add some!</string>
 
 </resources>

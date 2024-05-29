@@ -456,13 +456,13 @@ fun ActivityPicture(activityToDisplay: Activity) {
       AsyncImage(
           model = activityToDisplay.activityImageUrl,
           contentDescription = "Activity Picture",
-          modifier = Modifier.size(90.dp).clip(RoundedCornerShape(8.dp)),
+          modifier = Modifier.size(75.dp).clip(RoundedCornerShape(8.dp)),
           error = painterResource(id = defaultId))
     } else {
       Image(
           painter = painterResource(id = defaultId),
           contentDescription = "Default Activity Picture",
-          modifier = Modifier.padding(5.dp).size(90.dp).testTag(testTag))
+          modifier = Modifier.padding(5.dp).size(7.dp).testTag(testTag))
     }
   }
 }

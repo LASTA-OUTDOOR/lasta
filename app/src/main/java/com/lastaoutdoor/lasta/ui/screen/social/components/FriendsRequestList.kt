@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,11 +27,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
@@ -62,23 +57,7 @@ fun FriendsRequestList(
       ConnectionMissing()
     }
     friendRequests.isEmpty() -> {
-      Column(
-          modifier = Modifier.fillMaxSize().testTag("EmptyFriendsList"),
-          verticalArrangement = Arrangement.Center,
-          horizontalAlignment = Alignment.CenterHorizontally) {
-            Icon(
-                painterResource(id = R.drawable.no_friends),
-                contentDescription = "No Activities",
-                modifier = Modifier.size(85.dp).testTag("NoFriendsLogo"))
-            Text(
-                text = LocalContext.current.getString(R.string.no_friends_yet),
-                style =
-                    TextStyle(
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 20.sp,
-                        textAlign = TextAlign.Center),
-                modifier = Modifier.padding(18.dp))
-          }
+      FriendsMissing(text = LocalContext.current.getString(R.string.no_friend_requests))
     }
     else -> {
       LazyColumn {

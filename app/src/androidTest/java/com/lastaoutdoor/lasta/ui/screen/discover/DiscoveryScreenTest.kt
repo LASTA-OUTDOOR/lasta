@@ -473,7 +473,7 @@ class DiscoverScreenTest {
       }
     }
 
-    composeRule.onNodeWithTag("EmptyActivitiesList").assertIsDisplayed()
+    composeRule.onNodeWithTag("EmptyActivityList").assertIsDisplayed()
     composeRule.onNodeWithTag("NoActivitiesLogo").assertIsDisplayed()
   }
 }

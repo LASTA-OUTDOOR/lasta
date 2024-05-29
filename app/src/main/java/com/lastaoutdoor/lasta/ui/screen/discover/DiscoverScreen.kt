@@ -48,11 +48,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -453,18 +451,18 @@ fun ActivitiesDisplay(
 @Composable
 fun EmptyActivityList() {
   Column(
-      modifier = Modifier.fillMaxSize().testTag("EmptyActivityList"),
+      modifier = Modifier.fillMaxSize().testTag("EmptyActivityList").padding(18.dp, 25.dp),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally) {
         Icon(
             painterResource(id = R.drawable.not_found),
             contentDescription = "No Activities",
             modifier = Modifier.size(85.dp).testTag("NoActivitiesLogo"))
-        Text(
-            text = LocalContext.current.getString(R.string.no_activities),
-            style =
-                TextStyle(
-                    fontWeight = FontWeight.Normal, fontSize = 20.sp, textAlign = TextAlign.Center),
-            modifier = Modifier.padding(18.dp))
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+          Text(
+              text = LocalContext.current.getString(R.string.no_activities),
+              style = MaterialTheme.typography.bodyLarge,
+              textAlign = TextAlign.Center)
+        }
       }
 }
