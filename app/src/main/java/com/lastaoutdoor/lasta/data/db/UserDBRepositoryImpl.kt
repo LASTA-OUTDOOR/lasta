@@ -1,6 +1,7 @@
 package com.lastaoutdoor.lasta.data.db
 
 import android.content.Context
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -42,38 +43,44 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
     userCollection.document(user.userId).set(userData, SetOptions.merge())
   }
 
+  // Helper function to convert a document to a UserModel
+  private fun documentToUserModel(document: DocumentSnapshot): UserModel {
+    val userId = document.id
+    val userName = document.getString("userName") ?: ""
+    val email = document.getString("email") ?: ""
+    val profilePictureUrl = document.getString("profilePictureUrl") ?: ""
+    val description = document.getString("description") ?: ""
+    val language = Language.valueOf(document.getString("language") ?: Language.ENGLISH.name)
+    val prefActivity =
+        ActivityType.valueOf(document.getString("prefActivity") ?: ActivityType.CLIMBING.name)
+    val levelsMap = (document.get("levels") ?: HashMap<String, String>()) as Map<String, String>
+    val levels =
+        UserActivitiesLevel(
+            climbingLevel =
+                UserLevel.valueOf(levelsMap["climbingLevel"] ?: UserLevel.BEGINNER.name),
+            hikingLevel = UserLevel.valueOf(levelsMap["hikingLevel"] ?: UserLevel.BEGINNER.name),
+            bikingLevel = UserLevel.valueOf(levelsMap["bikingLevel"] ?: UserLevel.BEGINNER.name))
+    val friends = (document.get("friends") ?: emptyList<String>()) as List<String>
+    val friendRequests = (document.get("friendRequests") ?: emptyList<String>()) as List<String>
+    val favorites = (document.get("favorites") ?: emptyList<String>()) as List<String>
+    return UserModel(
+        userId,
+        userName,
+        email,
+        profilePictureUrl,
+        description,
+        language,
+        prefActivity,
+        levels,
+        friends,
+        friendRequests,
+        favorites)
+  }
+
   override suspend fun getUserById(userId: String): UserModel? {
     val user = userCollection.document(userId).get().await()
     return if (user.exists()) {
-      val userName = user.getString("userName") ?: ""
-      val email = user.getString("email") ?: ""
-      val profilePictureUrl = user.getString("profilePictureUrl") ?: ""
-      val description = user.getString("description") ?: ""
-      val language = Language.valueOf(user.getString("language") ?: Language.ENGLISH.name)
-      val prefActivity =
-          ActivityType.valueOf(user.getString("prefActivity") ?: ActivityType.CLIMBING.name)
-      val levelsMap = (user.get("levels") ?: HashMap<String, String>()) as Map<String, String>
-      val levels =
-          UserActivitiesLevel(
-              climbingLevel =
-                  UserLevel.valueOf(levelsMap["climbingLevel"] ?: UserLevel.BEGINNER.name),
-              hikingLevel = UserLevel.valueOf(levelsMap["hikingLevel"] ?: UserLevel.BEGINNER.name),
-              bikingLevel = UserLevel.valueOf(levelsMap["bikingLevel"] ?: UserLevel.BEGINNER.name))
-      val friends = (user.get("friends") ?: emptyList<String>()) as List<String>
-      val friendRequests = (user.get("friendRequests") ?: emptyList<String>()) as List<String>
-      val favorites = (user.get("favorites") ?: emptyList<String>()) as List<String>
-      UserModel(
-          userId,
-          userName,
-          email,
-          profilePictureUrl,
-          description,
-          language,
-          prefActivity,
-          levels,
-          friends,
-          friendRequests,
-          favorites)
+      documentToUserModel(user)
     } else null
   }
 
@@ -81,35 +88,9 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
     val query = userCollection.whereEqualTo("email", email).get().await()
     return if (!query.isEmpty) {
       val user = query.documents[0]
-      val userId = user.id
-      val userName = user.getString("userName") ?: ""
-      val profilePictureUrl = user.getString("profilePictureUrl") ?: ""
-      val description = user.getString("description") ?: ""
-      val language = Language.valueOf(user.getString("language") ?: Language.ENGLISH.name)
-      val prefActivity =
-          ActivityType.valueOf(user.getString("prefActivity") ?: ActivityType.CLIMBING.name)
-      val levelsMap = (user.get("levels") ?: HashMap<String, String>()) as Map<String, String>
-      val levels =
-          UserActivitiesLevel(
-              climbingLevel =
-                  UserLevel.valueOf(levelsMap["climbingLevel"] ?: UserLevel.BEGINNER.name),
-              hikingLevel = UserLevel.valueOf(levelsMap["hikingLevel"] ?: UserLevel.BEGINNER.name),
-              bikingLevel = UserLevel.valueOf(levelsMap["bikingLevel"] ?: UserLevel.BEGINNER.name))
-      val friends = (user.get("friends") ?: emptyList<String>()) as List<String>
-      val friendRequests = (user.get("friendRequests") ?: emptyList<String>()) as List<String>
-      val favorites = (user.get("favorites") ?: emptyList<String>()) as List<String>
-      UserModel(
-          userId,
-          userName,
-          email,
-          profilePictureUrl,
-          description,
-          language,
-          prefActivity,
-          levels,
-          friends,
-          friendRequests,
-          favorites)
+      println("User: $user")
+      println("User email: ${user.getString("email")}")
+      documentToUserModel(user)
     } else null
   }
 
@@ -146,31 +127,7 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
       val userName = doc.getString("userName") ?: ""
       // if the username contains the query, return the user
       if (userName.lowercase().contains(query)) {
-        usersToList.add(
-            UserModel(
-                userId = doc.id,
-                userName = userName,
-                email = doc.getString("email") ?: "",
-                profilePictureUrl = doc.getString("profilePictureUrl") ?: "",
-                description = doc.getString("description") ?: "",
-                language = Language.valueOf(doc.getString("language") ?: Language.ENGLISH.name),
-                prefActivity =
-                    ActivityType.valueOf(
-                        doc.getString("prefActivity") ?: ActivityType.CLIMBING.name),
-                levels =
-                    UserActivitiesLevel(
-                        climbingLevel =
-                            UserLevel.valueOf(
-                                doc.getString("levels.climbingLevel") ?: UserLevel.BEGINNER.name),
-                        hikingLevel =
-                            UserLevel.valueOf(
-                                doc.getString("levels.hikingLevel") ?: UserLevel.BEGINNER.name),
-                        bikingLevel =
-                            UserLevel.valueOf(
-                                doc.getString("levels.bikingLevel") ?: UserLevel.BEGINNER.name)),
-                friends = (doc.get("friends") ?: emptyList<String>()) as List<String>,
-                friendRequests = (doc.get("friendRequests") ?: emptyList<String>()) as List<String>,
-                favorites = (doc.get("favorites") ?: emptyList<String>()) as List<String>))
+        usersToList.add(documentToUserModel(doc))
       }
     }
     return usersToList

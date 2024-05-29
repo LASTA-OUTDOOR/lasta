@@ -116,9 +116,9 @@ class UserDBRepositoryImplTest {
     every { documentSnapshot.getString("description") } returns "description"
     every { documentSnapshot.getString("language") } returns "ENGLISH"
     every { documentSnapshot.getString("prefActivity") } returns "CLIMBING"
-    every { documentSnapshot.getString("levels.climbingLevel") } returns "BEGINNER"
-    every { documentSnapshot.getString("levels.hikingLevel") } returns "BEGINNER"
-    every { documentSnapshot.getString("levels.bikingLevel") } returns "BEGINNER"
+    every { documentSnapshot.get("levels") } returns
+        hashMapOf(
+            "climbingLevel" to "BEGINNER", "hikingLevel" to "BEGINNER", "bikingLevel" to "BEGINNER")
     every { documentSnapshot.get("friends") } returns emptyList<String>()
     every { documentSnapshot.get("friendRequests") } returns emptyList<String>()
     every { documentSnapshot.get("favorites") } returns emptyList<String>()
@@ -147,6 +147,7 @@ class UserDBRepositoryImplTest {
   fun `Get User By Id returns user if found`() = runTest {
     every { documentSnapshot.exists() } returns true
     every { documentSnapshot.getString("userName") } returns "userName"
+    every { documentSnapshot.id } returns "userId"
     every { documentSnapshot.getString("email") } returns "email"
     every { documentSnapshot.getString("profilePictureUrl") } returns "profilePictureUrl"
     every { documentSnapshot.getString("description") } returns "description"
@@ -177,6 +178,7 @@ class UserDBRepositoryImplTest {
   @Test
   fun `Get User By Id returns user but every field is null`() = runTest {
     every { documentSnapshot.exists() } returns true
+    every { documentSnapshot.id } returns "userId"
     every { documentSnapshot.getString(any()) } returns null
     every { documentSnapshot.get(any() as String) } returns null
     val result = userDB.getUserById("userId") as UserModel
@@ -207,6 +209,7 @@ class UserDBRepositoryImplTest {
     every { querySnapshot.isEmpty } returns false
     every { querySnapshot.documents } returns listOf(documentSnapshot)
     every { documentSnapshot.id } returns "userId"
+    every { documentSnapshot.getString("email") } returns "email"
     every { documentSnapshot.getString("userName") } returns "userName"
     every { documentSnapshot.getString("profilePictureUrl") } returns "profilePictureUrl"
     every { documentSnapshot.getString("description") } returns "description"
@@ -239,8 +242,13 @@ class UserDBRepositoryImplTest {
     every { querySnapshot.isEmpty } returns false
     every { querySnapshot.documents } returns listOf(documentSnapshot)
     every { documentSnapshot.id } returns "userId"
+    every { userCollection.whereEqualTo("email", any()) } returns query
+    every { query.get() } returns queryTask
+    every { queryTask.await() } returns querySnapshot
     every { documentSnapshot.getString(any()) } returns null
     every { documentSnapshot.get(any() as String) } returns null
+    every { documentSnapshot.getString("email") } returns "email"
+
     val result = userDB.getUserByEmail("email") as UserModel
     assert(result.userId == "userId")
     assert(result.userName == "")
