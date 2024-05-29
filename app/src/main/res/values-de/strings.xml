@@ -10,6 +10,7 @@
     <string name="less_than">Weniger als</string>
     <string name="around_you">in Ihrer Nähe</string>
     <string name="Climbing">Klettern</string>
+    <string name = "username">Benutzername</string>
     <string name="popularity">Popularität</string>
     <string name="more_info">Mehr Infos</string>
     <string name = "no_fav">Du hast noch keine Lieblingsaktivitäten... Fügen Sie welche hinzu!</string>
@@ -58,7 +59,7 @@
     <string name="email">E-Mail Adresse</string>
     <string name="send_fr">Freundschaftsanfrage senden</string>
     <string name="add_fr">Einen Freund hinzufügen</string>
-    <string name="fr_email_add">Geben Sie die E-Mail-Adresse eines Freundes ein, um eine Freundschaftsanfrage zu senden.</string>
+    <string name="fr_username_add">Geben Sie die Benutzernamen eines Freundes ein, um eine Freundschaftsanfrage zu senden.</string>
     <string name="community">Gemeinschaft</string>
     <string name="list">Liste</string>
     <string name="map">Karte</string>
