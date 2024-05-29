@@ -84,6 +84,7 @@ class MoreInfoScreenTest {
           usersList = fakeUsersList,
           getUserModels = { _ -> },
           writeNewRating = { _, _, _ -> },
+          updateDifficulty = {},
           currentUser = currentUser,
           weather =
               WeatherResponse(
@@ -155,8 +156,13 @@ class MoreInfoScreenTest {
   }
 
   @Test
-  fun moreInfoMapIsDisplayed() {
+  fun moreInfoMap_isDisplayed() {
     composeRule.onNodeWithTag("viewOnMapButton").performClick()
+    composeRule.onNodeWithTag("MoreInfoMap").assertIsDisplayed()
+    composeRule.onNodeWithTag("googleMap").assertIsDisplayed()
+    composeRule.onNodeWithTag("Top Bar").assertIsDisplayed()
+    composeRule.onNodeWithContentDescription("Top Bar logo fav").assertIsDisplayed()
+    composeRule.onNodeWithContentDescription("Top Bar logo fav").performClick()
   }
 
   @Test
@@ -174,12 +180,14 @@ class MoreInfoScreenTest {
   fun elevateDiff_isDisplayed() {
     composeRule.activity.setContent {
       ElevatedDifficultyDisplay(
+          updateDifficulty = {},
           activityToDisplay = Activity("", 0L, difficulty = Difficulty.NORMAL))
     }
     composeRule.onNodeWithTag("elevatedTestTag").assertIsDisplayed()
     composeRule.onNodeWithTag("elevatedTestTag").performClick()
     composeRule.activity.setContent {
-      ElevatedDifficultyDisplay(activityToDisplay = Activity("", 0L, difficulty = Difficulty.HARD))
+      ElevatedDifficultyDisplay(
+          updateDifficulty = {}, activityToDisplay = Activity("", 0L, difficulty = Difficulty.HARD))
     }
     composeRule.onNodeWithTag("elevatedTestTag").assertIsDisplayed()
     composeRule.onNodeWithTag("elevatedTestTag").performClick()

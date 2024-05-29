@@ -60,6 +60,7 @@ constructor(
 
   fun changeActivityToDisplay(activity: Activity) {
     viewModelScope.launch {
+      // We get the start activity position of the activity from the OSM API
       when (val response =
           when (activity.activityType) {
             ActivityType.CLIMBING -> activityRepository.getClimbingPointById(activity.osmId)
@@ -71,6 +72,8 @@ constructor(
           val osmData = response.data!!
           var newPos = osmData.getPosition()
 
+          // If there's a problem with the OSM API data for the starting position,
+          // we try to get it from its itinerary
           if (newPos == Position(0.0, 0.0)) {
             newPos =
                 when (activity.activityType) {
@@ -85,9 +88,12 @@ constructor(
                 }
           }
 
+          // Update the activity with the new start position
           val updatedActivity = activity.copy(startPosition = newPos)
+
           // Call surrounded by try-catch block to make handle exceptions caused by database
           try {
+            // Update the activity in the database
             activityDB.updateStartPosition(activity.activityId, newPos)
             activityToDisplay.value = updatedActivity
           } catch (e: Exception) {
@@ -109,6 +115,20 @@ constructor(
       try {
         val activityToDisplay = activityDB.getActivityById(activityId) ?: dummyActivity
         changeActivityToDisplay(activityToDisplay)
+      } catch (e: Exception) {
+        errorToast.showToast(ErrorType.ERROR_DATABASE)
+      }
+    }
+  }
+
+  // Update the activity's difficulty
+  fun updateDifficulty(activityId: String) {
+    viewModelScope.launch {
+      // Call surrounded by try-catch block to make handle exceptions caused by database
+      try {
+        // update the difficulty in a cyclic way
+        activityDB.updateDifficulty(activityId)
+        activityToDisplay.value = activityDB.getActivityById(activityId) ?: dummyActivity
       } catch (e: Exception) {
         errorToast.showToast(ErrorType.ERROR_DATABASE)
       }
