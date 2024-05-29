@@ -48,6 +48,7 @@
 
     <!--Favourites-->
     <string name = "more_info">More Info</string>
+    <string name = "no_fav">You do not have any favorite activities yet... Start adding some ! </string>
     <!--Login-->
     <string name = "sign_in_google">Sign in with Google</string>
     <string name="login_swipe_text">Swipe to learn more…</string>

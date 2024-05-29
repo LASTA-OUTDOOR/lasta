@@ -83,4 +83,23 @@ class FavoritesScreenTest {
     composeRule.onNodeWithTag("FavoritesScreen").assertIsDisplayed()
     composeRule.onNodeWithTag("1activityCard").assertIsDisplayed()
   }
+
+  @Test
+  fun emptyFavoritesList_isDisplayed() {
+    composeRule.activity.setContent {
+      MaterialTheme {
+        FavoritesScreen(
+            isLoading = false,
+            activities = emptyList(),
+            centerPoint = LatLng(46.519962, 6.633597),
+            favorites = emptyList(),
+            changeActivityToDisplay = {},
+            flipFavorite = {},
+            updateFavorites = {},
+            changeWeatherTarget = {}) {}
+      }
+    }
+    composeRule.onNodeWithTag("EmptyFavoritesList").assertIsDisplayed()
+    composeRule.onNodeWithTag("NoFavLogo").assertIsDisplayed()
+  }
 }

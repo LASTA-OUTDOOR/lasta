@@ -8,6 +8,7 @@
     <string name="rating">Note</string>
     <string name="difficulty">Difficulté</string>
     <string name="more_info">Plus d\'Info</string>
+    <string name = "no_fav">Vous n\'avez pas encore d\'activitées préférées... Commencez à en ajouter !</string>
     <string name="sign_in_google">Connexion avec Google</string>
     <string name="offline">Vous êtes hors ligne</string>
     <string name="start">Commencer</string>
@@ -28,7 +29,7 @@
     <string name="enter_bio">Entrez votre Bio...</string>
     <string name="select_languague">Sélectionnez votre langue</string>
     <string name="languague">Langue</string>
-    <string name="select_fav_activity">Sélectionnez votre activité preférée</string>
+    <string name="select_fav_activity">Sélectionnez votre activité préférée</string>
     <string name="finish">Terminer</string>
     <string name="activity_type">Type d\'Activité</string>
     <string name="not_specified">pas spécifié</string>
