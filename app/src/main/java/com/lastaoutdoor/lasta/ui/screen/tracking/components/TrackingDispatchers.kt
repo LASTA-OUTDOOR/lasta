@@ -22,11 +22,12 @@ import com.lastaoutdoor.lasta.viewmodel.TrackingState
 @Composable
 fun TrackingDispatchers(
     trackingState: TrackingState,
-    locationCallback: LocationCallback,
+    getLocationCallback: () -> LocationCallback,
     registerSensorListener: (SensorManager, Sensor?, (Int) -> Unit) -> SensorEventListener,
     updateStepCount: (Int) -> Unit
 ) {
   val context = LocalContext.current
+  val locationCallback = getLocationCallback()
 
   var sensorEventListener: SensorEventListener? = null
 

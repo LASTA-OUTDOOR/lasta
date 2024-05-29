@@ -5,7 +5,9 @@ import android.hardware.SensorManager
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
@@ -37,7 +39,7 @@ class TrackingViewModelTest {
     assert(viewModel.state.value.distances.isEmpty())
   }
 
-  /*@Test
+  @Test
   fun `updateStepCount updates step count correctly`() = runTest {
     viewModel.updateStepCount(100)
     assertEquals(stepCount, viewModel.state.value.stepCount)
@@ -45,7 +47,7 @@ class TrackingViewModelTest {
     stepCount = 10
     viewModel.updateStepCount(110)
     assertEquals(stepCount, viewModel.state.value.stepCount)
-  }*/
+  }
 
   /*@Test
   fun `locationCallback updates positions and distances correctly`() = runTest {

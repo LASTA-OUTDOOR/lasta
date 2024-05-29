@@ -33,7 +33,7 @@ import com.lastaoutdoor.lasta.viewmodel.TrackingState
 fun TrackingScreen(
     stopwatchService: StopwatchService,
     trackingState: TrackingState,
-    locationCallback: LocationCallback,
+    getLocationCallback: () -> LocationCallback,
     registerSensorListener: (SensorManager, Sensor?, (Int) -> Unit) -> SensorEventListener,
     updateStepCount: (Int) -> Unit
 ) {
@@ -47,7 +47,7 @@ fun TrackingScreen(
 
   TrackingDispatchers(
       trackingState = trackingState,
-      locationCallback = locationCallback,
+      getLocationCallback = getLocationCallback,
       registerSensorListener = registerSensorListener,
       updateStepCount = updateStepCount)
   Scaffold {

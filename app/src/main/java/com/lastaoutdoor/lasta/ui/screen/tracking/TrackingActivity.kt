@@ -114,7 +114,7 @@ class TrackingActivity : ComponentActivity() {
           TrackingScreen(
               stopwatchService = stopwatchService,
               trackingState = state,
-              locationCallback = trackingViewModel.locationCallback,
+              getLocationCallback = trackingViewModel::getLocationCallBack,
               registerSensorListener = trackingViewModel::registerSensorListener,
               trackingViewModel::updateStepCount)
         }
