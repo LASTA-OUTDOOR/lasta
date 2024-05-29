@@ -171,7 +171,8 @@ constructor(
       // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
         // get the list of users by query
-        friendSuggestions = userDBRepo.getUsersByUsernameWithSubstring(query) ?: emptyList()
+        friendSuggestions =
+            userDBRepo.getUsersByUsernameWithSubstring(query, friends, user) ?: emptyList()
       } catch (e: Exception) {
         errorToast.showToast(ErrorType.ERROR_DATABASE)
       }

@@ -46,6 +46,7 @@ class UserDBRepositoryImplTest {
     every { documentReference.get() } returns getTask
     every { userCollection.get() } returns queryTask
 
+    every {userCollection.whereNotIn(any() as String, any())} returns query
     every { userCollection.whereEqualTo(any() as String, any()) } returns query
     every { query.get() } returns queryTask
 
@@ -96,9 +97,9 @@ class UserDBRepositoryImplTest {
   @Test
   fun `getUsersByUsernameWithSubstring returns null if query is null`() = runTest {
     every { querySnapshot.isEmpty } returns true
-    var result = userDB.getUsersByUsernameWithSubstring("query")
+    var result = userDB.getUsersByUsernameWithSubstring("query", emptyList(), UserModel("currentUserId"))
     assert(result == emptyList<UserModel>())
-    result = userDB.getUsersByUsernameWithSubstring("")
+    result = userDB.getUsersByUsernameWithSubstring("", emptyList(), UserModel("currentUserId"))
     assert(result == emptyList<UserModel>())
   }
 
@@ -120,9 +121,9 @@ class UserDBRepositoryImplTest {
     every { documentSnapshot.get("friends") } returns emptyList<String>()
     every { documentSnapshot.get("friendRequests") } returns emptyList<String>()
     every { documentSnapshot.get("favorites") } returns emptyList<String>()
-    var result = userDB.getUsersByUsernameWithSubstring("blurtgblur")
+    var result = userDB.getUsersByUsernameWithSubstring("blurtgblur", emptyList(), UserModel("currentUserId"))
     assert(result.isEmpty())
-    result = userDB.getUsersByUsernameWithSubstring("us")
+    result = userDB.getUsersByUsernameWithSubstring("us", emptyList(), UserModel("currentUserId"))
     assert(result.size == 1)
     assert(result[0].userId == "userId")
     assert(result[0].userName == "userName")

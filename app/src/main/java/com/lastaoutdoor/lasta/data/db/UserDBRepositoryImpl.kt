@@ -124,13 +124,18 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
     userDocumentRef.update("favorites", FieldValue.arrayUnion(activityId)).await()
   }
 
-  override suspend fun getUsersByUsernameWithSubstring(query: String): List<UserModel> {
+  override suspend fun getUsersByUsernameWithSubstring(
+      query: String,
+      friends: List<UserModel>,
+      user: UserModel
+  ): List<UserModel> {
     // if the query is empty, return an empty list
     if (query.isEmpty() || query.isBlank()) {
       return emptyList()
     }
-    // get all users
-    val allUsersUsernames = userCollection.get().await()
+    // get all users that are not the current user or his/her friends
+    val allUsersUsernames =
+        userCollection.whereNotIn("email", friends.map { it.email }.plus(user.email)).get().await()
     if (allUsersUsernames.isEmpty) {
       return emptyList()
     }
