@@ -2,15 +2,24 @@ package com.lastaoutdoor.lasta.viewmodel
 
 import android.hardware.Sensor
 import android.hardware.SensorManager
+import com.google.android.gms.location.LocationResult
+import com.lastaoutdoor.lasta.models.api.Position
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class TrackingViewModelTest {
 
   private val sensorManager: SensorManager = mockk(relaxed = true)
@@ -19,15 +28,27 @@ class TrackingViewModelTest {
 
   private var stepCount = 0
 
+  private val testDispatcher = UnconfinedTestDispatcher()
+
   @Before
   fun setUp() {
-    every { sensorManager.getDefaultSensor(any()) } returns sensor
-    viewModel = TrackingViewModel(sensorManager)
+    try {
+      Dispatchers.setMain(testDispatcher)
+      every { sensorManager.getDefaultSensor(any()) } returns sensor
+      viewModel = TrackingViewModel(sensorManager)
+    } catch (exception: Exception) {
+      exception.printStackTrace()
+    }
   }
 
   @After
   fun tearDown() {
-    clearAllMocks()
+    try {
+      clearAllMocks()
+      Dispatchers.resetMain()
+    } catch (exception: Exception) {
+      exception.printStackTrace()
+    }
   }
 
   @Test
@@ -49,8 +70,9 @@ class TrackingViewModelTest {
     assertEquals(stepCount, viewModel.state.value.stepCount)
   }
 
-  /*@Test
+  @Test
   fun `locationCallback updates positions and distances correctly`() = runTest {
+    Dispatchers.resetMain()
     val mockLocationResult: LocationResult = mockk(relaxed = true)
     val mockLocation1 =
         mockk<android.location.Location>(relaxed = true) {
@@ -64,15 +86,17 @@ class TrackingViewModelTest {
         }
     every { mockLocationResult.lastLocation } returnsMany listOf(mockLocation1, mockLocation2)
 
-    viewModel.locationCallback.onLocationResult(mockLocationResult)
+    val locationCallback = viewModel.getLocationCallBack()
+
+    locationCallback.onLocationResult(mockLocationResult)
     assertEquals(1, viewModel.state.value.positions.size)
     assertEquals(Position(10.0, 20.0), viewModel.state.value.positions.first())
     assertTrue(viewModel.state.value.distances.isEmpty())
 
-    viewModel.locationCallback.onLocationResult(mockLocationResult)
+    locationCallback.onLocationResult(mockLocationResult)
     assertEquals(2, viewModel.state.value.positions.size)
     assertEquals(Position(10.0, 20.1), viewModel.state.value.positions.last())
     assertEquals(1, viewModel.state.value.distances.size)
     assert(viewModel.state.value.distances.isNotEmpty())
-  }*/
+  }
 }
