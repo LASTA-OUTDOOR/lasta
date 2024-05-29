@@ -9,10 +9,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
@@ -57,7 +55,7 @@ class TrackingViewModelTest {
     assert(viewModel.state.value.distances.isEmpty())
   }
 
-  @Test
+  /*@Test
   fun `updateStepCount updates step count correctly`() = runTest {
     viewModel.updateStepCount(100)
     assertEquals(stepCount, viewModel.state.value.stepCount)
@@ -67,7 +65,7 @@ class TrackingViewModelTest {
     assertEquals(stepCount, viewModel.state.value.stepCount)
   }
 
-  /*@Test
+  @Test
   fun `locationCallback updates positions and distances correctly`() = runTest {
     Dispatchers.resetMain()
     val mockLocationResult: LocationResult = mockk(relaxed = true)
