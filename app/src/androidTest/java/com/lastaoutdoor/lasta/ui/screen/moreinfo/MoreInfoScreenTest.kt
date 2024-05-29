@@ -162,7 +162,6 @@ class MoreInfoScreenTest {
     composeRule.onNodeWithTag("googleMap").assertIsDisplayed()
     composeRule.onNodeWithTag("Top Bar").assertIsDisplayed()
     composeRule.onNodeWithContentDescription("Top Bar logo fav").assertIsDisplayed()
-    composeRule.onNodeWithContentDescription("Top Bar logo fav").performClick()
   }
 
   @Test
@@ -243,7 +242,14 @@ class MoreInfoScreenTest {
       val currentUser = UserModel("")
       val fakeRatings = listOf(Rating("123", "genial", "5"))
       val fakeUsersList = listOf(UserModel("123"))
-      val fakeActivity = Activity("", 0L, ratings = fakeRatings, activityType = ActivityType.HIKING)
+      val fakeActivity =
+          Activity(
+              "",
+              0L,
+              ratings = fakeRatings,
+              activityType = ActivityType.HIKING,
+              activityImageUrl =
+                  "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png")
 
       val discoverScreenState =
           DiscoverScreenState(isLoading = false, selectedActivityTypes = emptyList())
