@@ -5,6 +5,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.UserActivitiesLevel
 import com.lastaoutdoor.lasta.models.user.UserLevel
@@ -116,6 +117,8 @@ class FriendsListTest {
           navigateToFriendProfile = {})
     }
     composeRule.onNodeWithTag("AddFriendDialog").assertIsDisplayed()
+    composeRule.onNodeWithTag("suggestion").assertIsDisplayed()
+    composeRule.onNodeWithTag("suggestion").performClick()
     composeRule.onNodeWithTag("suggestion").assertIsDisplayed()
   }
 
