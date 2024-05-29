@@ -426,6 +426,7 @@ fun ActivityTitleZone(activityToDisplay: Activity, updateDifficulty: (String) ->
       modifier = Modifier.fillMaxWidth(),
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.SpaceBetween) {
+
         Row(
             modifier = Modifier.padding(vertical = 5.dp, horizontal = 5.dp).weight(0.65f),
             verticalAlignment = Alignment.CenterVertically) {

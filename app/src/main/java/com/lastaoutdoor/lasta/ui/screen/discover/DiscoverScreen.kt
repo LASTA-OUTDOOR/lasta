@@ -418,8 +418,7 @@ fun ActivitiesDisplay(
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier =
-                        Modifier.matchParentSize()
-                            .clip(RoundedCornerShape(8.dp)) // Adjust clipping as needed
+                        Modifier.matchParentSize()// Adjust clipping as needed
                     ) {
                       SubcomposeAsyncImageContent()
                     }
