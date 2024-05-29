@@ -272,8 +272,7 @@ class MoreInfoScreenTest {
           navigateBack = { /*TODO*/},
           navigateToTracking = {},
           downloadActivity = {},
-          setWeatherBackToUserLoc = {},
-          clearSelectedMarker = {})
+          setWeatherBackToUserLoc = {})
     }
     composeRule.onNodeWithTag("MoreInfoComposable").assertIsDisplayed()
     composeRule.onNodeWithTag("HikingPicture").assertIsDisplayed()
@@ -316,8 +315,7 @@ class MoreInfoScreenTest {
           navigateBack = { /*TODO*/},
           navigateToTracking = {},
           downloadActivity = {},
-          setWeatherBackToUserLoc = {},
-          clearSelectedMarker = {})
+          setWeatherBackToUserLoc = {})
     }
     composeRule.onNodeWithTag("MoreInfoComposable").assertIsDisplayed()
     composeRule.onNodeWithTag("BikingPicture").assertIsDisplayed()
