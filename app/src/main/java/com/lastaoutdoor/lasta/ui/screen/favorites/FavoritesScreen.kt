@@ -31,6 +31,7 @@ import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.ui.components.LoadingAnim
 import com.lastaoutdoor.lasta.ui.screen.discover.ActivitiesDisplay
+import com.lastaoutdoor.lasta.utils.ConnectionState
 
 @Composable
 fun FavoritesScreen(
@@ -43,6 +44,7 @@ fun FavoritesScreen(
     flipFavorite: (String) -> Unit,
     updateFavorites: () -> Unit,
     navigateToMoreInfo: () -> Unit,
+    isOnline: ConnectionState
 ) {
   LaunchedEffect(Unit) {
     // update so that when going back from more info screen with having modified activity, the
@@ -76,7 +78,8 @@ fun FavoritesScreen(
               changeActivityToDisplay,
               changeWeatherTarget,
               flipFavorite,
-              navigateToMoreInfo)
+              navigateToMoreInfo,
+              isOnline)
         }
       }
     }

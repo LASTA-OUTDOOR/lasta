@@ -65,6 +65,7 @@ import com.lastaoutdoor.lasta.ui.components.DisplaySelection
 import com.lastaoutdoor.lasta.ui.components.DropDownMenuComponent
 import com.lastaoutdoor.lasta.ui.screen.profile.components.BarGraph
 import com.lastaoutdoor.lasta.ui.screen.profile.components.BarType
+import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.utils.DaysInWeek
 import com.lastaoutdoor.lasta.utils.MonthsInYear
 import com.lastaoutdoor.lasta.utils.SubTimeFrames
@@ -88,7 +89,8 @@ fun ProfileScreen(
     updateDescription: (String) -> Unit,
     setSport: (ActivityType) -> Unit,
     setTimeFrame: (TimeFrame) -> Unit,
-    navigateToSettings: () -> Unit
+    navigateToSettings: () -> Unit,
+    isOnline: ConnectionState
 ) {
   LazyColumn(modifier = Modifier.testTag("ProfileScreen")) {
     item {
@@ -99,7 +101,7 @@ fun ProfileScreen(
                   .background(MaterialTheme.colorScheme.primary)
                   .padding(16.dp)
                   .height(150.dp)) {
-            UserInfo(isCurrentUser, user, updateDescription, navigateToSettings)
+            UserInfo(isCurrentUser, user, updateDescription, navigateToSettings, isOnline)
           }
     }
     item { Box(modifier = Modifier.padding(16.dp)) { SportSelection(sport, setSport) } }
@@ -122,7 +124,8 @@ fun UserInfo(
     isCurrentUser: Boolean,
     user: UserModel,
     updateDescription: (String) -> Unit,
-    navigateToSettings: () -> Unit
+    navigateToSettings: () -> Unit,
+    isOnline: ConnectionState
 ) {
   var isEditBio by rememberSaveable { mutableStateOf(false) }
 
@@ -169,11 +172,16 @@ fun UserInfo(
               Spacer(modifier = Modifier.width(8.dp))
               if (isCurrentUser) {
                 IconButton(
-                    onClick = { navigateToSettings() }, modifier = Modifier.testTag("showDialog")) {
+                    onClick = { navigateToSettings() },
+                    modifier = Modifier.testTag("showDialog"),
+                    enabled = isOnline == ConnectionState.CONNECTED) {
                       Icon(
                           Icons.Filled.Menu,
                           contentDescription = "Edit bio",
-                          tint = MaterialTheme.colorScheme.onPrimary,
+                          tint =
+                              if (isOnline == ConnectionState.CONNECTED)
+                                  MaterialTheme.colorScheme.onPrimary
+                              else Color.Gray,
                           modifier = Modifier.size(24.dp))
                     }
               }
@@ -200,11 +208,15 @@ fun UserInfo(
                   if (isCurrentUser) {
                     IconButton(
                         onClick = { isEditBio = true },
+                        enabled = isOnline == ConnectionState.CONNECTED,
                         modifier = Modifier.size(24.dp).align(Alignment.Top)) {
                           Icon(
                               Icons.Filled.Create,
                               contentDescription = "Edit bio",
-                              tint = MaterialTheme.colorScheme.onPrimary,
+                              tint =
+                                  if (isOnline == ConnectionState.CONNECTED)
+                                      MaterialTheme.colorScheme.onPrimary
+                                  else Color.Gray,
                               modifier = Modifier.size(24.dp))
                         }
                   }

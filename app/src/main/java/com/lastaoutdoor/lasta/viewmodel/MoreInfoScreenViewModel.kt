@@ -13,14 +13,18 @@ import com.lastaoutdoor.lasta.models.activity.Rating
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
+import com.lastaoutdoor.lasta.repository.app.ConnectivityRepository
 import com.lastaoutdoor.lasta.repository.db.ActivitiesDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
+import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.utils.ErrorType
 import com.lastaoutdoor.lasta.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -31,8 +35,14 @@ constructor(
     private val activityDB: ActivitiesDBRepository,
     private val activitydaoImpl: ActivityDatabaseImpl,
     private val userDB: UserDBRepository,
-    private val errorToast: ErrorToast
+    private val errorToast: ErrorToast,
+    private val connectivityRepositoryImpl: ConnectivityRepository,
 ) : ViewModel() {
+  val isConnected =
+      connectivityRepositoryImpl.connectionState.stateIn(
+          initialValue = ConnectionState.OFFLINE,
+          scope = viewModelScope,
+          started = SharingStarted.WhileSubscribed(5000))
   /* Just a default activity to fill in the mutable state*/
   private val dummyActivity = Activity("", 0, ActivityType.CLIMBING, "Dummy")
   val activityToDisplay = mutableStateOf(dummyActivity)
@@ -57,28 +67,34 @@ constructor(
 
   fun changeActivityToDisplay(activity: Activity) {
     viewModelScope.launch {
-      when (val response =
-          when (activity.activityType) {
-            ActivityType.CLIMBING -> activityRepository.getClimbingPointById(activity.osmId)
-            ActivityType.HIKING -> activityRepository.getHikingRouteById(activity.osmId)
-            ActivityType.BIKING -> activityRepository.getBikingRouteById(activity.osmId)
-          }) {
-        is Response.Loading -> {}
-        is Response.Success -> {
-          val osmData = response.data!!
-          val updatedActivity = activity.copy(startPosition = osmData.getPosition())
+      isConnected.collect {
+        if (it == ConnectionState.CONNECTED) {
+          when (val response =
+              when (activity.activityType) {
+                ActivityType.CLIMBING -> activityRepository.getClimbingPointById(activity.osmId)
+                ActivityType.HIKING -> activityRepository.getHikingRouteById(activity.osmId)
+                ActivityType.BIKING -> activityRepository.getBikingRouteById(activity.osmId)
+              }) {
+            is Response.Loading -> {}
+            is Response.Success -> {
+              val osmData = response.data!!
+              val updatedActivity = activity.copy(startPosition = osmData.getPosition())
 
-          // Call surrounded by try-catch block to make handle exceptions caused by database
-          try {
-            activityDB.updateStartPosition(activity.activityId, osmData.getPosition())
-            activityToDisplay.value = updatedActivity
-          } catch (e: Exception) {
-            errorToast.showToast(ErrorType.ERROR_DATABASE)
+              // Call surrounded by try-catch block to make handle exceptions caused by database
+              try {
+                activityDB.updateStartPosition(activity.activityId, osmData.getPosition())
+                activityToDisplay.value = updatedActivity
+              } catch (e: Exception) {
+                errorToast.showToast(ErrorType.ERROR_DATABASE)
+              }
+            }
+            is Response.Failure -> {
+              // Handle OSM API exceptions
+              errorToast.showToast(ErrorType.ERROR_OSM_API)
+            }
           }
-        }
-        is Response.Failure -> {
-          // Handle OSM API exceptions
-          errorToast.showToast(ErrorType.ERROR_OSM_API)
+        } else {
+          activityToDisplay.value = activity
         }
       }
     }

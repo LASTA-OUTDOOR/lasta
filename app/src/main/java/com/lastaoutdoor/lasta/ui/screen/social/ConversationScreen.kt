@@ -57,6 +57,7 @@ import com.lastaoutdoor.lasta.ui.screen.social.components.ProfilePicture
 import com.lastaoutdoor.lasta.ui.theme.GreenDifficulty
 import com.lastaoutdoor.lasta.ui.theme.OrangeDifficulty
 import com.lastaoutdoor.lasta.ui.theme.RedDifficulty
+import com.lastaoutdoor.lasta.utils.ConnectionState
 
 @Composable
 fun ConversationScreen(
@@ -67,7 +68,8 @@ fun ConversationScreen(
     friend: UserModel,
     send: (String) -> Unit,
     navigateBack: () -> Unit,
-    navigateToMoreInfo: () -> Unit
+    navigateToMoreInfo: () -> Unit,
+    isOnline: ConnectionState
 ) {
   Column {
     if (conversationModel == null || conversationModel.members.isEmpty()) {
@@ -75,7 +77,7 @@ fun ConversationScreen(
       return
     }
 
-    Header(navigateBack, friend)
+    Header(navigateBack, friend, isOnline)
     SeparatorComponent()
 
     // focus manger
@@ -148,13 +150,13 @@ fun ConversationScreen(
 
 // Top bar of the conversation screen
 @Composable
-fun Header(backCallBack: () -> Unit, friend: UserModel) {
+fun Header(backCallBack: () -> Unit, friend: UserModel, isOnline: ConnectionState) {
   Row(
       modifier = Modifier.fillMaxWidth().padding(16.dp).testTag("ConversationScreenHeader"),
       horizontalArrangement = Arrangement.Start,
       verticalAlignment = Alignment.CenterVertically) {
         // back button
-        TopBarLogo(R.drawable.arrow_back) { backCallBack() }
+        TopBarLogo(R.drawable.arrow_back, false, { backCallBack() }, isOnline)
         Spacer(modifier = Modifier.padding(20.dp))
         ProfilePicture(friend.profilePictureUrl ?: "")
         Spacer(modifier = Modifier.padding(8.dp))

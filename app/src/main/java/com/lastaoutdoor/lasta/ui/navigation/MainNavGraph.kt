@@ -31,6 +31,7 @@ import com.lastaoutdoor.lasta.ui.screen.tracking.TrackingScreen
 import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.utils.PermissionManager
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
+import com.lastaoutdoor.lasta.viewmodel.ConnectivityViewModel
 import com.lastaoutdoor.lasta.viewmodel.ConversationViewModel
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenCallBacks
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenState
@@ -60,7 +61,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val discoverScreenState: DiscoverScreenState =
           discoverScreenViewModel.state.collectAsState().value
       val discoverScreenCallBacks: DiscoverScreenCallBacks = discoverScreenViewModel.callbacks
-
+      val isOnline = discoverScreenViewModel.isConnected.collectAsState().value
       PermissionManager(discoverScreenViewModel::updatePermission)
 
       DiscoverScreen(
@@ -74,7 +75,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           moreInfoScreenViewModel::changeActivityToDisplay,
           weatherViewModel::changeLocOfWeather,
           weather,
-      )
+          isOnline)
     }
 
     // Favorites Screen
@@ -89,7 +90,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val centerPoint = discoverScreenViewModel.state.collectAsState().value.selectedLocality.second
       val favoriteIds = favoritesScreenViewModel.favoritesIds.collectAsState().value
       val weatherViewModel: WeatherViewModel = entry.sharedViewModel(navController)
-
+      val isOnline = discoverScreenViewModel.isConnected.collectAsState().value
       FavoritesScreen(
           isLoading,
           favorites,
@@ -98,9 +99,9 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           moreInfoScreenViewModel::changeActivityToDisplay,
           weatherViewModel::changeLocOfWeather,
           preferencesViewModel::flipFavorite,
-          favoritesScreenViewModel::fetchFavorites) {
-            navController.navigate(DestinationRoute.MoreInfo.route)
-          }
+          favoritesScreenViewModel::fetchFavorites,
+          { navController.navigate(DestinationRoute.MoreInfo.route) },
+          isOnline)
     }
 
     // Social Screen
@@ -146,13 +147,13 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
     composable(DestinationRoute.Profile.route) { entry ->
       val profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(entry)
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
-
+      val connectivityViewModel: ConnectivityViewModel = hiltViewModel(entry)
       val activities by profileScreenViewModel.filteredActivities.collectAsState()
       val timeFrame by profileScreenViewModel.timeFrame.collectAsState()
       val sport by profileScreenViewModel.sport.collectAsState()
       val isCurrentUser by profileScreenViewModel.isCurrentUser.collectAsState()
       val user = preferencesViewModel.user.collectAsState(initial = UserModel("")).value
-
+      val isOnline = connectivityViewModel.connectionState.collectAsState().value
       ProfileScreen(
           activities,
           timeFrame,
@@ -161,9 +162,9 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           user,
           preferencesViewModel::updateDescription,
           profileScreenViewModel::setSport,
-          profileScreenViewModel::setTimeFrame) {
-            navController.navigate(DestinationRoute.Settings.route)
-          }
+          profileScreenViewModel::setTimeFrame,
+          { navController.navigate(DestinationRoute.Settings.route) },
+          isOnline = isOnline)
     }
 
     // More Info Screen
@@ -187,7 +188,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
 
       val weatherForecast = weatherViewModel.getForecast()
       val dateWeatherForecast = weatherViewModel.getForecastDate()
-
+      val isOnline = discoverScreenViewModel.isConnected.collectAsState().value
       MoreInfoScreen(
           activityToDisplay,
           discoverScreenState,
@@ -209,7 +210,8 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           { navController.navigate(DestinationRoute.Tracking.route) },
           moreInfoScreenViewModel::downloadActivity,
           weatherViewModel::fetchWeatherWithUserLoc,
-          discoverScreenViewModel::clearSelectedMarker)
+          discoverScreenViewModel::clearSelectedMarker,
+          isOnline)
     }
     composable(DestinationRoute.Tracking.route) { entry ->
       val trackingViewModel: TrackingViewModel = hiltViewModel(entry)
@@ -242,6 +244,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           val moreInfoScreenViewModel: MoreInfoScreenViewModel =
               entry.sharedViewModel(navController)
           val conversation = conversationViewModel.conversation
+          val isOnline = moreInfoScreenViewModel.isConnected.collectAsState().value
           ConversationScreen(
               conversation,
               conversationViewModel::updateConversation,
@@ -249,9 +252,9 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
               conversationViewModel.user.value,
               conversationViewModel.friend.value,
               conversationViewModel::send,
-              navController::navigateUp) {
-                navController.navigate(DestinationRoute.MoreInfo.route)
-              }
+              isOnline = isOnline,
+              navigateToMoreInfo = navController::navigateUp,
+              navigateBack = { navController.navigate(DestinationRoute.MoreInfo.route) })
         }
 
     // Notifications Screen
@@ -270,7 +273,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
     // Friend Profile Screen
     composable(DestinationRoute.FriendProfile.route + "/{friendId}") { entry ->
       val profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(entry)
-
+      val connectionViewModel: ConnectivityViewModel = hiltViewModel(entry)
       // Update the user to display
       profileScreenViewModel.updateUser(entry.arguments?.getString("friendId") ?: "")
 
@@ -279,6 +282,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val sport by profileScreenViewModel.sport.collectAsState()
       val isCurrentUser by profileScreenViewModel.isCurrentUser.collectAsState()
       val user = profileScreenViewModel.user.collectAsState().value
+      val isOnline = connectionViewModel.connectionState.collectAsState().value
 
       FriendProfileScreen(
           activities = activities,
@@ -289,7 +293,8 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           setSport = profileScreenViewModel::setSport,
           setTimeFrame = profileScreenViewModel::setTimeFrame,
           navigateToSettings = { navController.navigate(DestinationRoute.Settings.route) },
-          onBack = { navController.navigateUp() })
+          onBack = { navController.navigateUp() },
+          isOnline = isOnline)
     }
 
     // Settings Screen

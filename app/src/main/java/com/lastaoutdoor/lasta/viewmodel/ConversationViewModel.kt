@@ -34,21 +34,20 @@ import kotlinx.coroutines.runBlocking
 class ConversationViewModel
 @Inject
 constructor(
-  @ApplicationContext private val context: Context,
-  private val userRepository: UserDBRepository,
-  private val tokenDBRepo: TokenDBRepository,
-  private val fcmAPI: FCMApi,
-  val repository: SocialDBRepository,
-  val preferences: PreferencesRepository,
-  private val errorToast: ErrorToast,
-  private val connectivityRepositoryImpl: ConnectivityRepository,
-
-  ) : ViewModel() {
+    @ApplicationContext private val context: Context,
+    private val userRepository: UserDBRepository,
+    private val tokenDBRepo: TokenDBRepository,
+    private val fcmAPI: FCMApi,
+    val repository: SocialDBRepository,
+    val preferences: PreferencesRepository,
+    private val errorToast: ErrorToast,
+    private val connectivityRepositoryImpl: ConnectivityRepository,
+) : ViewModel() {
   val isConnected =
-    connectivityRepositoryImpl.connectionState.stateIn(
-      initialValue = ConnectionState.OFFLINE,
-      scope = viewModelScope,
-      started = SharingStarted.WhileSubscribed(5000))
+      connectivityRepositoryImpl.connectionState.stateIn(
+          initialValue = ConnectionState.OFFLINE,
+          scope = viewModelScope,
+          started = SharingStarted.WhileSubscribed(5000))
   private val _user = MutableStateFlow(UserModel(""))
   val user = _user
 
@@ -77,14 +76,13 @@ constructor(
 
       // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
-        isConnected.collect{
-          if(it == ConnectionState.CONNECTED){
+        isConnected.collect {
+          if (it == ConnectionState.CONNECTED) {
             _friend.value = userRepository.getUserById(friendUserId) ?: UserModel("")
             if (friendUserId.isNotEmpty())
-              conversation = repository.getConversation(_user.value, _friend.value)
+                conversation = repository.getConversation(_user.value, _friend.value)
           }
         }
-
       } catch (e: Exception) {
         errorToast.showToast(ErrorType.ERROR_DATABASE)
       }
@@ -113,17 +111,13 @@ constructor(
 
         // Call surrounded by try-catch block to make handle exceptions caused by database
         try {
-          isConnected.collect{
-            if(it == ConnectionState.CONNECTED) {
+          isConnected.collect {
+            if (it == ConnectionState.CONNECTED) {
               repository.sendMessage(userId, friendUserId, message)
               updateConversation()
               tokenDBRepo.getUserTokenById(friendUserId)?.let {
                 fcmAPI.sendMessage(
-                  SendMessageDto(
-                    it,
-                    NotificationBody(user.value.userName, message)
-                  )
-                )
+                    SendMessageDto(it, NotificationBody(user.value.userName, message)))
               }
             }
           }
@@ -140,18 +134,15 @@ constructor(
       if (message.isNotEmpty()) {
         // Call surrounded by try-catch block to handle exceptions caused by database
         try {
-          isConnected.collect{
-            if(it == ConnectionState.CONNECTED) {
+          isConnected.collect {
+            if (it == ConnectionState.CONNECTED) {
               repository.sendMessage(userId, friendId, message)
               tokenDBRepo.getUserTokenById(friendId)?.let {
                 fcmAPI.sendMessage(
-                  SendMessageDto(
-                    it,
-                    NotificationBody(
-                      user.value.userName, context.getString(R.string.shared_with_you)
-                    )
-                  )
-                )
+                    SendMessageDto(
+                        it,
+                        NotificationBody(
+                            user.value.userName, context.getString(R.string.shared_with_you))))
               }
             }
           }
