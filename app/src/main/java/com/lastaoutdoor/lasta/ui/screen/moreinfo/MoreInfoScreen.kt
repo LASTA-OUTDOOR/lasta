@@ -453,22 +453,28 @@ fun ActivityTitleZone(
 fun ActivityPicture(activityToDisplay: Activity) {
   val defaultId =
       when (activityToDisplay.activityType) {
-        ActivityType.HIKING -> R.drawable.hiking_icon
-        ActivityType.CLIMBING -> R.drawable.climbing_icon
-        ActivityType.BIKING -> R.drawable.biking_icon
+        ActivityType.HIKING -> R.drawable.hiking_roundicon
+        ActivityType.CLIMBING -> R.drawable.climbing_roundicon
+        ActivityType.BIKING -> R.drawable.biking_roundicon
+      }
+  val testTag =
+      when (activityToDisplay.activityType) {
+        ActivityType.HIKING -> "HikingPicture"
+        ActivityType.CLIMBING -> "ClimbingPicture"
+        ActivityType.BIKING -> "BikingPicture"
       }
   Column {
     if (activityToDisplay.activityImageUrl != "") {
       AsyncImage(
           model = activityToDisplay.activityImageUrl,
           contentDescription = "Activity Picture",
-          modifier = Modifier.size(90.dp).clip(RoundedCornerShape(8.dp)),
+          modifier = Modifier.size(65.dp).clip(RoundedCornerShape(8.dp)),
           error = painterResource(id = defaultId))
     } else {
       Image(
           painter = painterResource(id = defaultId),
           contentDescription = "Default Activity Picture",
-          modifier = Modifier.padding(5.dp).size(90.dp))
+          modifier = Modifier.padding(5.dp).size(65.dp).testTag(testTag))
     }
   }
 }

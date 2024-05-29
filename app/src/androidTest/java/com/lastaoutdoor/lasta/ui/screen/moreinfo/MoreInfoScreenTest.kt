@@ -234,4 +234,92 @@ class MoreInfoScreenTest {
     composeRule.onNodeWithTag("shareInAppButton").performClick()
     composeRule.onNodeWithTag("friendSharePicker").assertIsDisplayed()
   }
+
+  @Test
+  fun moreInfoScreen_withHikingActivity() {
+    composeRule.activity.setContent {
+      val fakeMapState = MapState()
+      val activities = emptyList<Activity>()
+      val currentUser = UserModel("")
+      val fakeRatings = listOf(Rating("123", "genial", "5"))
+      val fakeUsersList = listOf(UserModel("123"))
+      val fakeActivity = Activity("", 0L, ratings = fakeRatings, activityType = ActivityType.HIKING)
+
+      val discoverScreenState =
+          DiscoverScreenState(isLoading = false, selectedActivityTypes = emptyList())
+
+      MoreInfoScreen(
+          activityToDisplay = fakeActivity,
+          discoverScreenState = discoverScreenState,
+          discoverScreenCallBacks = discoverScreenCallBacks,
+          goToMarker = { _ -> Marker(2, "", LatLng(0.0, 0.0), "", 0, ActivityType.HIKING) },
+          usersList = fakeUsersList,
+          getUserModels = { _ -> },
+          writeNewRating = { _, _, _ -> },
+          updateDifficulty = {},
+          currentUser = currentUser,
+          weather =
+              WeatherResponse(
+                  "Paris", main = Main(0.0, 0.0), weather = emptyList(), wind = Wind(0.0)),
+          shareToFriend = { _, _ -> },
+          friends = emptyList(),
+          favorites = emptyList(),
+          weatherForecast =
+              WeatherForecast(
+                  main = MainForecast(0.0, 0.0, 0.0, 0.0), weather = emptyList(), dt = ""),
+          dateWeatherForecast = "",
+          flipFavorite = { _ -> },
+          navigateBack = { /*TODO*/},
+          navigateToTracking = {},
+          downloadActivity = {},
+          setWeatherBackToUserLoc = {},
+          clearSelectedMarker = {})
+    }
+    composeRule.onNodeWithTag("MoreInfoComposable").assertIsDisplayed()
+    composeRule.onNodeWithTag("HikingPicture").assertIsDisplayed()
+  }
+
+  @Test
+  fun moreInfoScreen_withBikingActivity() {
+    composeRule.activity.setContent {
+      val fakeMapState = MapState()
+      val activities = emptyList<Activity>()
+      val currentUser = UserModel("")
+      val fakeRatings = listOf(Rating("123", "genial", "5"))
+      val fakeUsersList = listOf(UserModel("123"))
+      val fakeActivity = Activity("", 0L, ratings = fakeRatings, activityType = ActivityType.BIKING)
+
+      val discoverScreenState =
+          DiscoverScreenState(isLoading = false, selectedActivityTypes = emptyList())
+
+      MoreInfoScreen(
+          activityToDisplay = fakeActivity,
+          discoverScreenState = discoverScreenState,
+          discoverScreenCallBacks = discoverScreenCallBacks,
+          goToMarker = { _ -> Marker(2, "", LatLng(0.0, 0.0), "", 0, ActivityType.HIKING) },
+          usersList = fakeUsersList,
+          getUserModels = { _ -> },
+          writeNewRating = { _, _, _ -> },
+          updateDifficulty = {},
+          currentUser = currentUser,
+          weather =
+              WeatherResponse(
+                  "Paris", main = Main(0.0, 0.0), weather = emptyList(), wind = Wind(0.0)),
+          shareToFriend = { _, _ -> },
+          friends = emptyList(),
+          favorites = emptyList(),
+          weatherForecast =
+              WeatherForecast(
+                  main = MainForecast(0.0, 0.0, 0.0, 0.0), weather = emptyList(), dt = ""),
+          dateWeatherForecast = "",
+          flipFavorite = { _ -> },
+          navigateBack = { /*TODO*/},
+          navigateToTracking = {},
+          downloadActivity = {},
+          setWeatherBackToUserLoc = {},
+          clearSelectedMarker = {})
+    }
+    composeRule.onNodeWithTag("MoreInfoComposable").assertIsDisplayed()
+    composeRule.onNodeWithTag("BikingPicture").assertIsDisplayed()
+  }
 }

@@ -57,7 +57,7 @@ fun FriendsList(
       if (displayAddFriendDialog)
           AddFriendDialog(
               friendRequestFeedback, clearFriendRequestFeedback, hideAddFriendDialog, requestFriend)
-      FriendsMissing()
+      FriendsMissing(text = LocalContext.current.getString(R.string.no_friend_activities))
     }
     else -> {
       // add friend dialog when you click on the add friend button
