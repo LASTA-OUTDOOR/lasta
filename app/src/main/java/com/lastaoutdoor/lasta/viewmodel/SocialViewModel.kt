@@ -241,6 +241,8 @@ constructor(
       // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
         messages = repository.getAllConversations(user.userId)
+        // keep only conversation were the last message is not null
+        messages = messages.filter { it.lastMessage != null }
       } catch (e: Exception) {
         errorToast.showToast(ErrorType.ERROR_DATABASE)
       }
