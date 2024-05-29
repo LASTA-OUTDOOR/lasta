@@ -70,36 +70,38 @@ constructor(
 
   fun changeActivityToDisplay(activity: Activity) {
     viewModelScope.launch {
-      // We get the start activity position of the activity from the OSM API
-      when (val response =
-          when (activity.activityType) {
-            ActivityType.CLIMBING -> activityRepository.getClimbingPointById(activity.osmId)
-            ActivityType.HIKING -> activityRepository.getHikingRouteById(activity.osmId)
-            ActivityType.BIKING -> activityRepository.getBikingRouteById(activity.osmId)
-          }) {
-        is Response.Loading -> {}
-        is Response.Success -> {
-          val osmData = response.data!!
-          var newPos = osmData.getPosition()
+      isConnected.collect {
+        if (it == ConnectionState.CONNECTED) {
+          // We get the start activity position of the activity from the OSM API
+          when (val response =
+              when (activity.activityType) {
+                ActivityType.CLIMBING -> activityRepository.getClimbingPointById(activity.osmId)
+                ActivityType.HIKING -> activityRepository.getHikingRouteById(activity.osmId)
+                ActivityType.BIKING -> activityRepository.getBikingRouteById(activity.osmId)
+              }) {
+            is Response.Loading -> {}
+            is Response.Success -> {
+              val osmData = response.data!!
+              var newPos = osmData.getPosition()
 
-          // If there's a problem with the OSM API data for the starting position,
-          // we try to get it from its itinerary
-          if (newPos == Position(0.0, 0.0)) {
-            newPos =
-                when (activity.activityType) {
-                  ActivityType.HIKING,
-                  ActivityType.BIKING -> {
-                    (osmData as Relation)
-                        .ways
-                        ?.flatMap { it.nodes ?: emptyList() }
-                        ?.firstOrNull { it.lat != 0.0 && it.lon != 0.0 } ?: Position(0.0, 0.0)
-                  }
-                  ActivityType.CLIMBING -> (osmData as NodeWay).center!!
-                }
-          }
+              // If there's a problem with the OSM API data for the starting position,
+              // we try to get it from its itinerary
+              if (newPos == Position(0.0, 0.0)) {
+                newPos =
+                    when (activity.activityType) {
+                      ActivityType.HIKING,
+                      ActivityType.BIKING -> {
+                        (osmData as Relation)
+                            .ways
+                            ?.flatMap { it.nodes ?: emptyList() }
+                            ?.firstOrNull { it.lat != 0.0 && it.lon != 0.0 } ?: Position(0.0, 0.0)
+                      }
+                      ActivityType.CLIMBING -> (osmData as NodeWay).center!!
+                    }
+              }
 
-          // Update the activity with the new start position
-          val updatedActivity = activity.copy(startPosition = newPos)
+              // Update the activity with the new start position
+              val updatedActivity = activity.copy(startPosition = newPos)
 
               // Call surrounded by try-catch block to make handle exceptions caused by database
               try {

@@ -36,6 +36,7 @@
     <string name = "popularity">"Popularity "</string>
     <string name = "list">List</string>
     <string name = "map">Map</string>
+    <string name="offline_discover_text">You are currently offline, please connect to the Internet to discover activities !</string>
 
     <!--Filter-->
     <string name = "show_completed_activities">Show known activities</string>

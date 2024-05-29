@@ -118,13 +118,23 @@ fun DiscoverScreen(
               isOnline)
 
           if (discoverScreenState.isLoading) {
-            LoadingAnim(width = 35, tag = "LoadingBarDiscover")
+            if (isOnline == ConnectionState.CONNECTED) {
+              LoadingAnim(width = 35, tag = "LoadingBarDiscover")
+            } else {
+              Column(
+                  verticalArrangement = Arrangement.Center, modifier = Modifier.fillMaxHeight()) {
+                    Text(
+                        text = LocalContext.current.getString(R.string.offline_discover_text),
+                        textAlign = TextAlign.Center)
+                  }
+            }
           } else if (discoverScreenState.activities.isEmpty()) {
             EmptyActivityList()
           } else {
             LazyColumn {
               item {
                 Spacer(modifier = Modifier.height(8.dp))
+
                 ActivitiesDisplay(
                     discoverScreenState.activities,
                     discoverScreenState.centerPoint,
@@ -371,6 +381,7 @@ fun ActivitiesDisplay(
     navigateToMoreInfo: () -> Unit,
     isOnline: ConnectionState
 ) {
+
   for (a in activities) {
     Card(
         modifier =

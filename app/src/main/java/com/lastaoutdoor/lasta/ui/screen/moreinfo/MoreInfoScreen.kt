@@ -102,10 +102,8 @@ fun MoreInfoScreen(
     navigateBack: () -> Unit,
     navigateToTracking: () -> Unit,
     downloadActivity: (Activity) -> Unit,
-    setWeatherBackToUserLoc: () -> Unit
+    isOnline: ConnectionState,
     setWeatherBackToUserLoc: () -> Unit,
-    clearSelectedMarker: () -> Unit,
-    isOnline: ConnectionState
 ) {
   val isMapDisplayed = remember { mutableStateOf(false) }
   val isReviewing = remember { mutableStateOf(false) }
@@ -139,8 +137,9 @@ fun MoreInfoScreen(
                   })
             }
             // displays activity title and duration
-            ActivityTitleZone(activityToDisplay, updateDifficulty, isOnline)
-            ActivityTitleZone(activityToDisplay, updateDifficulty, discoverScreenState.centerPoint)
+
+            ActivityTitleZone(
+                activityToDisplay, updateDifficulty, isOnline, discoverScreenState.centerPoint)
             WeatherReportBig(weather, true) { weatherDialog.value = true }
             // displays activity difficulty, ration and view on map button
             MiddleZone(
@@ -175,21 +174,20 @@ fun MoreInfoScreen(
 
       if (currentUser != null) {
         TopBar(
-            activityToDisplay, downloadActivity, favorites, flipFavorite, friends, shareToFriend) {
-              discoverScreenCallBacks.clearSelectedMarker()
-              discoverScreenCallBacks.clearSelectedItinerary()
             activityToDisplay,
             downloadActivity,
             favorites,
             flipFavorite,
             friends,
             shareToFriend,
-            isOnline = isOnline,
-            navigateBack = {
+            {
+              discoverScreenCallBacks.clearSelectedMarker()
+              discoverScreenCallBacks.clearSelectedItinerary()
               discoverScreenCallBacks.fetchActivities()
               navigateBack()
               setWeatherBackToUserLoc()
-            })
+            },
+            isOnline)
       }
       mapScreen(
           discoverScreenState.mapState,

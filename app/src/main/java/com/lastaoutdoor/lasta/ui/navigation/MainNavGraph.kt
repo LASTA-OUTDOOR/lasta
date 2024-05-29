@@ -211,10 +211,9 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
           { navController.navigateUp() },
           { navController.navigate(DestinationRoute.Tracking.route) },
           moreInfoScreenViewModel::downloadActivity,
+          isOnline,
           weatherViewModel::fetchWeatherWithUserLoc,
-          discoverScreenViewModel::clearSelectedMarker,
-          isOnline)
-          weatherViewModel::fetchWeatherWithUserLoc)
+      )
     }
     composable(DestinationRoute.Tracking.route) { entry ->
       val trackingViewModel: TrackingViewModel = hiltViewModel(entry)
