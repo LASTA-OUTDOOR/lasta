@@ -2,6 +2,10 @@ package com.lastaoutdoor.lasta.ui.screen.moreinfo
 
 import android.annotation.SuppressLint
 import androidx.activity.compose.setContent
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -123,18 +127,30 @@ class MoreInfoScreenTest {
 
     // back button
     composeRule
-        .onNodeWithContentDescription("Top Bar logo ${R.drawable.arrow_back}")
+        .onNodeWithContentDescription(
+            "Top Bar logo fav ${Icons.AutoMirrored.Outlined.ArrowBack.name}")
         .assertIsDisplayed()
-    composeRule.onNodeWithContentDescription("Top Bar logo ${R.drawable.arrow_back}").performClick()
+    composeRule
+        .onNodeWithContentDescription(
+            "Top Bar logo fav ${Icons.AutoMirrored.Outlined.ArrowBack.name}")
+        .performClick()
 
     // favorite button
-    composeRule.onNodeWithContentDescription("Top Bar logo fav").assertIsDisplayed()
-    composeRule.onNodeWithContentDescription("Top Bar logo fav").performClick()
+    composeRule
+        .onNodeWithContentDescription("Top Bar logo fav ${Icons.Filled.FavoriteBorder.name}")
+        .assertIsDisplayed()
+    composeRule
+        .onNodeWithContentDescription("Top Bar logo fav ${Icons.Filled.FavoriteBorder.name}")
+        .performClick()
 
     // share button
-    composeRule.onNodeWithContentDescription("Top Bar logo ${R.drawable.share}").assertIsDisplayed()
+    composeRule
+        .onNodeWithContentDescription("Top Bar logo fav ${Icons.Outlined.Share.name}")
+        .assertIsDisplayed()
 
-    composeRule.onNodeWithContentDescription("Top Bar logo ${R.drawable.share}").performClick()
+    composeRule
+        .onNodeWithContentDescription("Top Bar logo fav ${Icons.Outlined.Share.name}")
+        .performClick()
   }
 
   // Test that the more info screen is displayed.
@@ -160,7 +176,9 @@ class MoreInfoScreenTest {
     composeRule.onNodeWithTag("MoreInfoMap").assertIsDisplayed()
     composeRule.onNodeWithTag("googleMap").assertIsDisplayed()
     composeRule.onNodeWithTag("Top Bar").assertIsDisplayed()
-    composeRule.onNodeWithContentDescription("Top Bar logo fav").assertIsDisplayed()
+    composeRule
+        .onNodeWithContentDescription("Top Bar logo fav ${Icons.Filled.FavoriteBorder.name}")
+        .assertIsDisplayed()
   }
 
   @Test
@@ -210,7 +228,9 @@ class MoreInfoScreenTest {
   // Test ShareOptionsDialog
   @Test
   fun shareOptionsDialog_isDisplayed() {
-    composeRule.onNodeWithContentDescription("Top Bar logo ${R.drawable.share}").performClick()
+    composeRule
+        .onNodeWithContentDescription("Top Bar logo fav ${Icons.Outlined.Share.name}")
+        .performClick()
     composeRule.onNodeWithTag("shareOptionsDialog").assertIsDisplayed()
     composeRule.onNodeWithTag("closeShareOptionsButton").performClick()
     composeRule.onNodeWithTag("shareOptionsDialog").assertIsNotDisplayed()
@@ -219,7 +239,9 @@ class MoreInfoScreenTest {
   // Test ShareOptionsDialog with shareOutsideButton
   @Test
   fun shareOptionsDialog_shareOutsideButton_isDisplayed() {
-    composeRule.onNodeWithContentDescription("Top Bar logo ${R.drawable.share}").performClick()
+    composeRule
+        .onNodeWithContentDescription("Top Bar logo fav ${Icons.Outlined.Share.name}")
+        .performClick()
     composeRule.onNodeWithTag("shareOutsideButton").assertIsDisplayed()
     composeRule.onNodeWithTag("shareOutsideButton").performClick()
   }
@@ -227,7 +249,9 @@ class MoreInfoScreenTest {
   // Test ShareOptionsDialog with shareInAppButton
   @Test
   fun shareOptionsDialog_shareInAppButton_isDisplayed() {
-    composeRule.onNodeWithContentDescription("Top Bar logo ${R.drawable.share}").performClick()
+    composeRule
+        .onNodeWithContentDescription("Top Bar logo fav ${Icons.Outlined.Share.name}")
+        .performClick()
     composeRule.onNodeWithTag("shareInAppButton").assertIsDisplayed()
     composeRule.onNodeWithTag("shareInAppButton").performClick()
     composeRule.onNodeWithTag("friendSharePicker").assertIsDisplayed()
