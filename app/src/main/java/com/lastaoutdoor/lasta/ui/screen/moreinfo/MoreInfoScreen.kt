@@ -456,7 +456,7 @@ fun TopBarLogo(logoPainterId: ImageVector, f: () -> Unit) {
   IconButton(modifier = Modifier.testTag("TopBarLogo"), onClick = { f() }) {
     Icon(
         imageVector = logoPainterId,
-        contentDescription = "Top Bar logo fav",
+        contentDescription = "Top Bar logo fav ${logoPainterId.name}",
         modifier = Modifier.width(26.dp).height(26.dp),
         tint = MaterialTheme.colorScheme.onSurface)
   }

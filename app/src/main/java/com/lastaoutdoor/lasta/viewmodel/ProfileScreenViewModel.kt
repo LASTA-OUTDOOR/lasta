@@ -80,7 +80,6 @@ constructor(
 
   /** Initializes the ViewModel by fetching the current user and user activities. */
   init {
-
     fetchCurrentUser()
     fetchUserSingeSportActivities(sport.value)
     // addFakeActivity()
@@ -101,18 +100,18 @@ constructor(
       // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
         repository.addUserActivity(
-            "mqROPreWZScUdFi0AOPTUcsNRn72",
+            "JGNE42k7GXapAwhUrdNwolWl41M2",
             ClimbingUserActivity(
-                activityId = "yK9p3WUklEfPd9U1RHlM",
+                activityId = "pCrS5M9IqVbBBxug03rU",
                 timeStarted =
                     Date.from(
-                        LocalDate.of(2024, 5, 7)
+                        LocalDate.of(2024, 5, 30)
                             .atTime(16, 32, 45)
                             .atZone(ZoneId.systemDefault())
                             .toInstant()),
                 timeFinished =
                     Date.from(
-                        LocalDate.of(2024, 5, 7)
+                        LocalDate.of(2024, 5, 30)
                             .atTime(17, 21, 45)
                             .atZone(ZoneId.systemDefault())
                             .toInstant()),
