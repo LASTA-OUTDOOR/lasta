@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -42,17 +41,24 @@ fun WeatherReportBig(weather: WeatherResponse?, displayWind: Boolean, onClick: (
     // the query is answered with a temperature in Kelvin, which we convert to Celsius
     val finalTemp = kelvinToCelsius((weather.main.temp))
     Row(
-        modifier = Modifier.fillMaxWidth().clickable { onClick() }.testTag("WeatherReportBig"),
+        modifier =
+            Modifier.fillMaxWidth()
+                .padding(8.dp)
+                .clickable { onClick() }
+                .testTag("WeatherReportBig"),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly) {
+        horizontalArrangement = Arrangement.SpaceBetween) {
           Row(verticalAlignment = Alignment.CenterVertically) {
+            Image(
+                painter =
+                    painterResource(
+                        id = getWeatherIconFromId(weather.weather.firstOrNull()?.icon ?: "01d")),
+                contentDescription = "Current Weather Logo",
+                modifier = Modifier.size(63.dp).testTag("WeatherIcon"))
+
             Column(
                 verticalArrangement = Arrangement.Top, modifier = Modifier.testTag("WeatherName")) {
-                  Text(
-                      text = weather.name,
-                      fontWeight = FontWeight(1000),
-                      fontSize = 14.sp,
-                      color = PrimaryBlue)
+                  Text(text = weather.name, fontWeight = FontWeight(1000), fontSize = 14.sp)
                   Text(
                       text =
                           "${LocalContext.current.getString(R.string.humidity)}: ${weather.main.hum}%",
@@ -60,15 +66,6 @@ fun WeatherReportBig(weather: WeatherResponse?, displayWind: Boolean, onClick: (
                       fontSize = 11.sp,
                       color = PrimaryBlue)
                 }
-
-            Spacer(modifier = Modifier.width(3.dp))
-
-            Image(
-                painter =
-                    painterResource(
-                        id = getWeatherIconFromId(weather.weather.firstOrNull()?.icon ?: "01d")),
-                contentDescription = "Current Weather Logo",
-                modifier = Modifier.size(63.dp, 63.dp).testTag("WeatherIcon"))
           }
           Text(
               text = "${finalTemp}°C",
@@ -78,25 +75,25 @@ fun WeatherReportBig(weather: WeatherResponse?, displayWind: Boolean, onClick: (
 
           if (displayWind) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-              Column(modifier = Modifier.testTag("WindDisplay")) {
-                Text(
-                    text = "${weather.wind.speed}",
-                    color = PrimaryBlue,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight(1000))
-                Text(
-                    text = "km/h",
-                    color = PrimaryBlue,
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight(1000))
-              }
-
-              Spacer(modifier = Modifier.width(3.dp))
-
               Image(
                   painter = painterResource(id = R.drawable.weather_wind),
                   contentDescription = "Wind speed icon",
-                  Modifier.width(23.54386.dp).height(14.dp))
+                  Modifier.size(50.dp))
+
+              Column(modifier = Modifier.testTag("WindDisplay")) {
+                Text(
+                    text = "${weather.wind.speed}",
+                    fontSize = 14.sp,
+                    color = PrimaryBlue,
+                    fontWeight = FontWeight(1000))
+                Text(
+                    text = "km/h",
+                    fontSize = 11.sp,
+                    color = PrimaryBlue,
+                    fontWeight = FontWeight(1000))
+              }
+
+              Spacer(modifier = Modifier.width(8.dp))
             }
           }
         }
@@ -123,7 +120,7 @@ fun WeatherReportSmall(weather: WeatherResponse?, onIconClick: () -> Unit) {
             weather.let {
               val finalTemp = kelvinToCelsius(weather.main.temp)
               Text(text = "${finalTemp}°C", modifier = Modifier.testTag("temp"))
-              IconButton(modifier = Modifier.size(45.dp, 45.dp), onClick = onIconClick) {
+              IconButton(modifier = Modifier.size(45.dp), onClick = onIconClick) {
                 Image(
                     painter =
                         painterResource(
@@ -157,7 +154,6 @@ fun WeatherForecastDisplay(weatherForecast: WeatherForecast?, date: String) {
                 modifier = Modifier.fillMaxWidth().padding(8.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically) {
-                  Text(text = "$finalTemp°C")
                   Image(
                       painter =
                           painterResource(
@@ -166,9 +162,14 @@ fun WeatherForecastDisplay(weatherForecast: WeatherForecast?, date: String) {
                                       weatherForecast.weather.firstOrNull()?.icon ?: "01d")),
                       contentDescription = "Weather Icon",
                       modifier = Modifier.size(50.dp).testTag("forecastIcon"))
+
+                  Text(text = "$finalTemp°C", color = PrimaryBlue)
+
+                  Spacer(modifier = Modifier.width(8.dp))
                   Text(
                       text =
-                          "${LocalContext.current.getString(R.string.humidity)} ${weatherForecast.main.hum}%")
+                          "${LocalContext.current.getString(R.string.humidity)} ${weatherForecast.main.hum}%",
+                      color = PrimaryBlue)
                 }
           }
     }
