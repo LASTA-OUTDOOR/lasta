@@ -208,26 +208,8 @@ constructor(
       val activitiesIdsHolder: ArrayList<Long> = ArrayList()
       val markerListHolder: ArrayList<Marker> = ArrayList()
       for (activityType in _state.value.selectedActivityTypes) {
-        val response =
-            when (activityType) {
-              ActivityType.CLIMBING ->
-                  repository.getClimbingPointsInfo(
-                      _state.value.range.toInt(),
-                      _state.value.initialPosition.latitude,
-                      _state.value.initialPosition.longitude)
-              ActivityType.HIKING ->
-                  repository.getHikingRoutesInfo(
-                      _state.value.range.toInt(),
-                      _state.value.initialPosition.latitude,
-                      _state.value.initialPosition.longitude)
-              ActivityType.BIKING ->
-                  repository.getBikingRoutesInfo(
-                      _state.value.range.toInt(),
-                      _state.value.initialPosition.latitude,
-                      _state.value.initialPosition.longitude)
-            }
         val osmData =
-            when (response) {
+            when (val response = getActivityRoutesInfo(activityType)) {
               is Response.Failure -> {
                 errorToast.showToast(ErrorType.ERROR_OSM_API)
                 return@launch
@@ -286,19 +268,7 @@ constructor(
                 val distance =
                     if (point.tags.distance.isEmpty()) 0f else point.tags.distance.toFloat()
                 // Call surrounded by try-catch block to make handle exceptions caused by database
-                try {
-                  activitiesDB.addActivityIfNonExisting(
-                      Activity(
-                          "",
-                          point.id,
-                          ActivityType.BIKING,
-                          point.tags.name,
-                          from = point.tags.from,
-                          to = point.tags.to,
-                          distance = distance))
-                } catch (e: Exception) {
-                  errorToast.showToast(ErrorType.ERROR_DATABASE)
-                }
+                addNonExistingToDB(castedPoint, distance)
               }
             }
           }
@@ -314,6 +284,42 @@ constructor(
           _state.value.copy(
               isLoading = false,
           )
+    }
+  }
+
+  private suspend fun addNonExistingToDB(point: Relation, distance: Float) {
+    try {
+      activitiesDB.addActivityIfNonExisting(
+          Activity(
+              "",
+              point.id,
+              ActivityType.BIKING,
+              point.tags.name,
+              from = point.tags.from,
+              to = point.tags.to,
+              distance = distance))
+    } catch (e: Exception) {
+      errorToast.showToast(ErrorType.ERROR_DATABASE)
+    }
+  }
+
+  private suspend fun getActivityRoutesInfo(activityType: ActivityType): Response<List<OSMData>> {
+    return when (activityType) {
+      ActivityType.CLIMBING ->
+          repository.getClimbingPointsInfo(
+              _state.value.range.toInt(),
+              _state.value.initialPosition.latitude,
+              _state.value.initialPosition.longitude)
+      ActivityType.HIKING ->
+          repository.getHikingRoutesInfo(
+              _state.value.range.toInt(),
+              _state.value.initialPosition.latitude,
+              _state.value.initialPosition.longitude)
+      ActivityType.BIKING ->
+          repository.getBikingRoutesInfo(
+              _state.value.range.toInt(),
+              _state.value.initialPosition.latitude,
+              _state.value.initialPosition.longitude)
     }
   }
 
