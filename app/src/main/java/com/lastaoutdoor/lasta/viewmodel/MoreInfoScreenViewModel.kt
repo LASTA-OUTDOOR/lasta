@@ -10,6 +10,9 @@ import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.models.activity.Rating
+import com.lastaoutdoor.lasta.models.api.NodeWay
+import com.lastaoutdoor.lasta.models.api.Position
+import com.lastaoutdoor.lasta.models.api.Relation
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.repository.api.ActivityRepository
@@ -46,6 +49,10 @@ constructor(
   private val _ratings = MutableStateFlow<ArrayList<Rating>>(arrayListOf())
   val ratings = _ratings
 
+  // allows to keep track whether the activity was opened by a share link
+  private val _openByShareLink = MutableStateFlow(false)
+  val openByShareLink = _openByShareLink
+
   /*Changes the int difficulty of the activity for its String equivalent : 0 -> Easy, 1 -> Medium, etc...*/
   fun processDiffText(activity: Activity): String {
     return when (activity.difficulty) {
@@ -57,6 +64,7 @@ constructor(
 
   fun changeActivityToDisplay(activity: Activity) {
     viewModelScope.launch {
+      // We get the start activity position of the activity from the OSM API
       when (val response =
           when (activity.activityType) {
             ActivityType.CLIMBING -> activityRepository.getClimbingPointById(activity.osmId)
@@ -66,11 +74,31 @@ constructor(
         is Response.Loading -> {}
         is Response.Success -> {
           val osmData = response.data!!
-          val updatedActivity = activity.copy(startPosition = osmData.getPosition())
+          var newPos = osmData.getPosition()
+
+          // If there's a problem with the OSM API data for the starting position,
+          // we try to get it from its itinerary
+          if (newPos == Position(0.0, 0.0)) {
+            newPos =
+                when (activity.activityType) {
+                  ActivityType.HIKING,
+                  ActivityType.BIKING -> {
+                    (osmData as Relation)
+                        .ways
+                        ?.flatMap { it.nodes ?: emptyList() }
+                        ?.firstOrNull { it.lat != 0.0 && it.lon != 0.0 } ?: Position(0.0, 0.0)
+                  }
+                  ActivityType.CLIMBING -> (osmData as NodeWay).center!!
+                }
+          }
+
+          // Update the activity with the new start position
+          val updatedActivity = activity.copy(startPosition = newPos)
 
           // Call surrounded by try-catch block to make handle exceptions caused by database
           try {
-            activityDB.updateStartPosition(activity.activityId, osmData.getPosition())
+            // Update the activity in the database
+            activityDB.updateStartPosition(activity.activityId, newPos)
             activityToDisplay.value = updatedActivity
           } catch (e: Exception) {
             errorToast.showToast(ErrorType.ERROR_DATABASE)

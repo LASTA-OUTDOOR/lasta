@@ -72,6 +72,7 @@ constructor(
             conversation = repository.getConversation(_user.value, _friend.value)
       } catch (e: Exception) {
         errorToast.showToast(ErrorType.ERROR_DATABASE)
+        e.printStackTrace()
       }
     }
   }
@@ -125,6 +126,7 @@ constructor(
                         user.value.userName, context.getString(R.string.shared_with_you))))
           }
         } catch (e: Exception) {
+          e.printStackTrace()
           errorToast.showToast(ErrorType.ERROR_DATABASE)
         }
       }

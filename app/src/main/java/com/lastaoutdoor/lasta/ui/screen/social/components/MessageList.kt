@@ -1,5 +1,6 @@
 package com.lastaoutdoor.lasta.ui.screen.social.components
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -66,8 +67,17 @@ fun MessageList(
       }
       // list of messages
       LazyColumn {
-        items(messages.size) {
-          MessageCard(messages[it], friends[it].userId, navigateToConversation)
+        items(messages.size) { messageIndex ->
+          val friendId =
+              messages[messageIndex]
+                  .members
+                  .firstOrNull { friends.map { it.userId }.contains(it.userId) }
+                  ?.userId
+          if (friendId == null) {
+            Log.e("MessageList", "Friend not found in friends list")
+            return@items
+          }
+          MessageCard(messages[messageIndex], friendId, navigateToConversation)
         }
       }
     }
