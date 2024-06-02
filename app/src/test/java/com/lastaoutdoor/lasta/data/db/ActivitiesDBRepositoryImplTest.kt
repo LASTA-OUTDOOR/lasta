@@ -21,7 +21,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
@@ -226,6 +225,23 @@ class ActivitiesDBRepositoryImplTest {
   }
 
   @Test
+  fun `update difficulty works fine`() = runTest {
+    every { documentSnapshot1.getString("difficulty") } returns "EASY"
+    coEvery { documentReference.update(any() as String, any()) } returns updateTask
+    activitiesDB.updateDifficulty("activityId")
+    coVerify(exactly = 1) { documentReference.update(any() as String, any()) }
+    every { documentSnapshot1.getString("difficulty") } returns "NORMAL"
+    activitiesDB.updateDifficulty("activityId")
+    coVerify(exactly = 2) { documentReference.update(any() as String, any()) }
+    every { documentSnapshot1.getString("difficulty") } returns "HARD"
+    activitiesDB.updateDifficulty("activityId")
+    coVerify(exactly = 3) { documentReference.update(any() as String, any()) }
+    every { documentSnapshot1.getString("difficulty") } returns "UNKNOWN"
+    activitiesDB.updateDifficulty("activityId")
+    coVerify(exactly = 4) { documentReference.update(any() as String, any()) }
+  }
+
+  @Test
   fun `Get activities by OSM Ids returns activities`() = runTest {
     every { querySnapshot.isEmpty } returns false
     every { querySnapshot.documents } returns listOf(documentSnapshot1)
@@ -301,9 +317,26 @@ class ActivitiesDBRepositoryImplTest {
   @Test
   fun `Add rating works fine`() = runTest {
     coEvery { documentReference.update(any() as String, any()) } returns updateTask
+    every { documentSnapshot1.exists() } returns true
+    every { documentSnapshot1.get("ratings") } returns documentReference
+
     activitiesDB.addRating("activityId", Rating("userId", "comment", "5"), "5")
     coVerify(exactly = 1) { documentReference.update("ratings", any()) }
     coVerify(exactly = 1) { documentReference.update("numRatings", any()) }
+    coVerify(exactly = 1) { documentReference.update("rating", any()) }
+  }
+
+  @Test
+  fun `Add rating 2 works fine`() = runTest {
+    coEvery { documentReference.update(any() as String, any()) } returns updateTask
+    every { documentSnapshot1.exists() } returns true
+    every { documentSnapshot1.getString("rating") } returns "2"
+    every { documentSnapshot1.getLong("numRatings") } returns 2
+
+    every { documentSnapshot1.get("ratings") } returns
+        listOf(hashMapOf("userId" to "userId", "comment" to "", "rating" to "2"))
+    activitiesDB.addRating("activityId", Rating("userId", "comment", "5"), "5")
+    coVerify(exactly = 2) { documentReference.update("ratings", any()) }
     coVerify(exactly = 1) { documentReference.update("rating", any()) }
   }
 

@@ -8,9 +8,11 @@
     <string name="rating">Note</string>
     <string name="difficulty">Difficulté</string>
     <string name="more_info">Plus d\'Info</string>
+    <string name = "no_fav">Vous n\'avez pas encore d\'activitées préférées... Commencez à en ajouter !</string>
     <string name="sign_in_google">Connexion avec Google</string>
     <string name="offline">Vous êtes hors ligne</string>
     <string name="start">Commencer</string>
+    <string name = "username">Nom d\'utilisateur</string>
     <string name="on_map">Voir sur la carte</string>
     <string name="unknown_activity_type">Type d\'activité inconnu</string>
     <string name="biking">Cyclisme</string>
@@ -27,7 +29,7 @@
     <string name="enter_bio">Entrez votre Bio...</string>
     <string name="select_languague">Sélectionnez votre langue</string>
     <string name="languague">Langue</string>
-    <string name="select_fav_activity">Sélectionnez votre activité preférée</string>
+    <string name="select_fav_activity">Sélectionnez votre activité préférée</string>
     <string name="finish">Terminer</string>
     <string name="activity_type">Type d\'Activité</string>
     <string name="not_specified">pas spécifié</string>
@@ -57,7 +59,7 @@
     <string name="email">Adresse email</string>
     <string name="send_fr">Envoyer demande d\'ami</string>
     <string name="add_fr">Ajouter un ami</string>
-    <string name="fr_email_add">Entrez l\'adresse email d\'un ami pour envoyer une demande d\'ami</string>
+    <string name="fr_username_add">Entrez le nom d\'utilisateur d\'un ami pour envoyer une demande d\'ami</string>
     <string name="community">Communauté</string>
     <string name="list">Liste</string>
     <string name="map">Carte</string>
@@ -161,4 +163,7 @@
     <string name ="shared_with_you">a partagé une activité avec vous</string>
     <string name = "at_hour">à</string>
     <string name = "forecasted_weather">Demain</string>
+    <string name = "no_activities">Aucune activité trouvée correspondant à vos critères… Essayez d\'ajuster vos filtres ou termes de recherche !</string>
+    <string name="no_friend_requests">Il semble que vous n\'ayez aucune demande d\'ami… Ajoutez-en !</string>
+
 </resources>

@@ -15,12 +15,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -34,14 +37,18 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -53,6 +60,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.SphericalUtil
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.api.weather.WeatherForecast
 import com.lastaoutdoor.lasta.data.api.weather.WeatherResponse
@@ -67,6 +76,7 @@ import com.lastaoutdoor.lasta.ui.components.WeatherForecastDisplay
 import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
 import com.lastaoutdoor.lasta.ui.screen.map.mapScreen
 import com.lastaoutdoor.lasta.ui.screen.moreinfo.components.ShareOptionsDialog
+import com.lastaoutdoor.lasta.ui.theme.AccentGreen
 import com.lastaoutdoor.lasta.ui.theme.Black
 import com.lastaoutdoor.lasta.ui.theme.GreenDifficulty
 import com.lastaoutdoor.lasta.ui.theme.OrangeDifficulty
@@ -86,6 +96,7 @@ fun MoreInfoScreen(
     usersList: List<UserModel?>,
     getUserModels: (List<String>) -> Unit,
     writeNewRating: (String, Rating, String) -> Unit,
+    updateDifficulty: (String) -> Unit,
     currentUser: UserModel?,
     shareToFriend: (String, String) -> Unit,
     friends: List<UserModel>,
@@ -97,13 +108,13 @@ fun MoreInfoScreen(
     navigateBack: () -> Unit,
     navigateToTracking: () -> Unit,
     downloadActivity: (Activity) -> Unit,
-    setWeatherBackToUserLoc: () -> Unit,
-    clearSelectedMarker: () -> Unit
+    setWeatherBackToUserLoc: () -> Unit
 ) {
   val isMapDisplayed = remember { mutableStateOf(false) }
   val isReviewing = remember { mutableStateOf(false) }
   val text = remember { mutableStateOf("") }
   val weatherDialog = remember { mutableStateOf(false) }
+
   if (!isMapDisplayed.value) {
     if (weatherDialog.value) {
       Dialog(onDismissRequest = { weatherDialog.value = false }) {
@@ -111,26 +122,43 @@ fun MoreInfoScreen(
       }
     }
     Column(
-        modifier = Modifier.fillMaxSize(1f).testTag("MoreInfoComposable"),
+        modifier = Modifier.fillMaxSize().testTag("MoreInfoComposable"),
         verticalArrangement = Arrangement.SpaceBetween) {
-          Column(modifier = Modifier.padding(5.dp)) {
-            Spacer(modifier = Modifier.height(20.dp))
-            // contains the top icon buttons
-            if (currentUser != null) {
-              TopBar(
-                  activityToDisplay,
-                  downloadActivity,
-                  favorites,
-                  flipFavorite,
-                  friends,
-                  shareToFriend) {
-                    discoverScreenCallBacks.fetchActivities()
-                    navigateBack()
-                    setWeatherBackToUserLoc()
-                  }
+          Box(modifier = Modifier.wrapContentHeight().fillMaxWidth()) {
+            if (activityToDisplay.activityImageUrl != "") {
+              AsyncImage(
+                  model = activityToDisplay.activityImageUrl,
+                  contentDescription = "activity image",
+                  contentScale = ContentScale.Crop,
+                  modifier = Modifier.matchParentSize())
+            } else {
+              Image(
+                  painter = painterResource(id = R.drawable.default_activity_bg),
+                  contentDescription = "activity image not found",
+                  contentScale = ContentScale.Crop,
+                  modifier = Modifier.matchParentSize().alpha(0.3f))
             }
-            // displays activity title and duration
-            ActivityTitleZone(activityToDisplay)
+            Column(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+              // contains the top icon buttons
+              if (currentUser != null) {
+                TopBar(
+                    activityToDisplay,
+                    downloadActivity,
+                    favorites,
+                    flipFavorite,
+                    friends,
+                    shareToFriend) {
+                      discoverScreenCallBacks.fetchActivities()
+                      navigateBack()
+                      setWeatherBackToUserLoc()
+                    }
+              }
+              // displays activity title and duration
+              ActivityTitleZone(
+                  activityToDisplay, updateDifficulty, discoverScreenState.centerPoint)
+            }
+          }
+          Column {
             WeatherReportBig(weather, true) { weatherDialog.value = true }
             // displays activity difficulty, ration and view on map button
             MiddleZone(
@@ -157,14 +185,27 @@ fun MoreInfoScreen(
         }
   } else {
     Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoMap")) {
-      val marker = goToMarker(activityToDisplay)
+      LaunchedEffect(Unit) {
+        val marker = goToMarker(activityToDisplay)
+        discoverScreenCallBacks.updateSelectedMarker(marker)
+      }
+
       if (currentUser != null) {
-        TopBar(
-            activityToDisplay, downloadActivity, favorites, flipFavorite, friends, shareToFriend) {
-              discoverScreenCallBacks.fetchActivities()
-              navigateBack()
-              setWeatherBackToUserLoc()
-            }
+        Column(modifier = Modifier.padding(8.dp)) {
+          TopBar(
+              activityToDisplay,
+              downloadActivity,
+              favorites,
+              flipFavorite,
+              friends,
+              shareToFriend) {
+                discoverScreenCallBacks.clearSelectedMarker()
+                discoverScreenCallBacks.clearSelectedItinerary()
+                discoverScreenCallBacks.fetchActivities()
+                navigateBack()
+                setWeatherBackToUserLoc()
+              }
+        }
       }
       mapScreen(
           discoverScreenState.mapState,
@@ -174,7 +215,7 @@ fun MoreInfoScreen(
           discoverScreenCallBacks.updateSelectedMarker,
           discoverScreenCallBacks.clearSelectedItinerary,
           discoverScreenState.selectedZoom,
-          marker,
+          discoverScreenState.selectedMarker,
           discoverScreenState.selectedItinerary,
           discoverScreenState.markerList,
           discoverScreenCallBacks.clearSelectedMarker)
@@ -190,7 +231,7 @@ fun StartButton(navigateToTracking: () -> Unit) {
       horizontalArrangement = Arrangement.Center) {
         ElevatedButton(
             onClick = { navigateToTracking() },
-            modifier = Modifier.fillMaxWidth(0.8f).height(48.dp), // takes up 80% of the width
+            modifier = Modifier.fillMaxWidth(0.6f).height(48.dp), // takes up 80% of the width
             colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
               Text(
                   LocalContext.current.getString(R.string.start),
@@ -219,7 +260,10 @@ fun MiddleZone(
     fetchActivities: () -> Unit
 ) {
   Row(
-      modifier = Modifier.fillMaxWidth().testTag("MoreInfoMiddleZone").padding(5.dp),
+      modifier =
+          Modifier.fillMaxWidth()
+              .testTag("MoreInfoMiddleZone")
+              .padding(vertical = 0.dp, horizontal = 16.dp),
       horizontalArrangement = Arrangement.SpaceBetween) {
         RatingLine(
             activityToDisplay,
@@ -340,7 +384,7 @@ fun Star(iconId: Int) {
 
 // Displays the difficulty of the activity
 @Composable
-fun ElevatedDifficultyDisplay(activityToDisplay: Activity) {
+fun ElevatedDifficultyDisplay(activityToDisplay: Activity, updateDifficulty: (String) -> Unit) {
   val difficultyColor =
       when (activityToDisplay.difficulty) {
         Difficulty.EASY -> GreenDifficulty
@@ -348,7 +392,7 @@ fun ElevatedDifficultyDisplay(activityToDisplay: Activity) {
         Difficulty.HARD -> RedDifficulty
       }
   ElevatedButton(
-      onClick = { /*TODO let user change activity difficulty */},
+      onClick = { updateDifficulty(activityToDisplay.activityId) },
       contentPadding = PaddingValues(all = 3.dp),
       modifier = Modifier.width(80.dp).height(24.dp).testTag("elevatedTestTag"),
       colors = ButtonDefaults.buttonColors(containerColor = difficultyColor)) {
@@ -380,10 +424,10 @@ fun TopBar(
   ShareOptionsDialog(activityToDisplay, openDialog, friends, shareToFriend)
 
   Row(modifier = Modifier.fillMaxWidth().testTag("Top Bar")) {
-    TopBarLogo(R.drawable.arrow_back) { navigateBack() }
+    TopBarLogo(Icons.AutoMirrored.Outlined.ArrowBack) { navigateBack() }
     Spacer(modifier = Modifier.weight(1f))
     TopBarLogo(R.drawable.download_button) { downloadActivity(activityToDisplay) }
-    TopBarLogo(R.drawable.share) { openDialog.value = true }
+    TopBarLogo(Icons.Outlined.Share) { openDialog.value = true }
     // if activity is in favorites, display the filled heart, else display the empty heart
     if (favorites.contains(activityToDisplay.activityId)) {
       TopBarLogo(Icons.Filled.Favorite) { flipFavorite(activityToDisplay.activityId) }
@@ -412,7 +456,7 @@ fun TopBarLogo(logoPainterId: ImageVector, f: () -> Unit) {
   IconButton(modifier = Modifier.testTag("TopBarLogo"), onClick = { f() }) {
     Icon(
         imageVector = logoPainterId,
-        contentDescription = "Top Bar logo fav",
+        contentDescription = "Top Bar logo fav ${logoPainterId.name}",
         modifier = Modifier.width(26.dp).height(26.dp),
         tint = MaterialTheme.colorScheme.onSurface)
   }
@@ -420,18 +464,24 @@ fun TopBarLogo(logoPainterId: ImageVector, f: () -> Unit) {
 
 // Displays the title of the activity, its type and its duration
 @Composable
-fun ActivityTitleZone(activityToDisplay: Activity) {
+fun ActivityTitleZone(
+    activityToDisplay: Activity,
+    updateDifficulty: (String) -> Unit,
+    centerPoint: LatLng
+) {
   Row(
-      modifier = Modifier.fillMaxWidth(),
+      modifier =
+          Modifier.fillMaxWidth().padding(start = 8.dp, end = 8.dp, top = 0.dp, bottom = 16.dp),
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.SpaceBetween) {
         Row(
-            modifier = Modifier.padding(vertical = 5.dp, horizontal = 5.dp).weight(0.65f),
+            modifier = Modifier.padding(8.dp).weight(0.65f),
             verticalAlignment = Alignment.CenterVertically) {
               ActivityPicture(activityToDisplay)
-              ActivityTitleText(activityToDisplay)
+              Spacer(modifier = Modifier.width(8.dp))
+              ActivityTitleText(activityToDisplay, centerPoint)
             }
-        ElevatedDifficultyDisplay(activityToDisplay)
+        ElevatedDifficultyDisplay(activityToDisplay, updateDifficulty = updateDifficulty)
       }
 }
 
@@ -440,43 +490,50 @@ fun ActivityTitleZone(activityToDisplay: Activity) {
 fun ActivityPicture(activityToDisplay: Activity) {
   val defaultId =
       when (activityToDisplay.activityType) {
-        ActivityType.HIKING -> R.drawable.hiking_icon
-        ActivityType.CLIMBING -> R.drawable.climbing_icon
-        ActivityType.BIKING -> R.drawable.biking_icon
+        ActivityType.HIKING -> R.drawable.hiking_roundicon
+        ActivityType.CLIMBING -> R.drawable.climbing_roundicon
+        ActivityType.BIKING -> R.drawable.biking_roundicon
+      }
+  val testTag =
+      when (activityToDisplay.activityType) {
+        ActivityType.HIKING -> "HikingPicture"
+        ActivityType.CLIMBING -> "ClimbingPicture"
+        ActivityType.BIKING -> "BikingPicture"
       }
   Column {
-    if (activityToDisplay.activityImageUrl != "") {
-      AsyncImage(
-          model = activityToDisplay.activityImageUrl,
-          contentDescription = "Activity Picture",
-          modifier = Modifier.size(90.dp).clip(RoundedCornerShape(8.dp)),
-          error = painterResource(id = defaultId))
-    } else {
-      Image(
-          painter = painterResource(id = defaultId),
-          contentDescription = "Default Activity Picture",
-          modifier = Modifier.padding(5.dp).size(90.dp))
-    }
+    Image(
+        painter = painterResource(id = defaultId),
+        contentDescription = "Default Activity Picture",
+        modifier = Modifier.size(65.dp).testTag(testTag))
   }
 }
 
 @Composable
-fun ActivityTitleText(activityToDisplay: Activity) {
-  Row(modifier = Modifier.padding(vertical = 25.dp, horizontal = 5.dp)) {
+fun ActivityTitleText(activityToDisplay: Activity, centerPoint: LatLng) {
+  Row {
     Column {
+      if (activityToDisplay.activityImageUrl != "") {
+        Text(
+            text = activityToDisplay.name,
+            color = Color.White,
+            fontWeight = FontWeight.ExtraBold,
+            style =
+                MaterialTheme.typography.headlineLarge.copy(
+                    shadow = Shadow(color = Color.Black, offset = Offset(x = 1f, y = 2f))))
+      } else {
+        Text(
+            text = activityToDisplay.name,
+            color = MaterialTheme.colorScheme.onBackground,
+            fontWeight = FontWeight.ExtraBold,
+            style = MaterialTheme.typography.headlineLarge)
+      }
+
       Text(
-          text = activityToDisplay.name,
-          style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight(600)))
-      Text(
-          text = LocalContext.current.getString(R.string.no_duration),
-          style =
-              TextStyle(
-                  fontSize = 14.sp,
-                  lineHeight = 20.sp,
-                  fontWeight = FontWeight(500),
-                  color = Color.Gray,
-                  letterSpacing = 0.1.sp,
-              ))
+          text =
+              "${String.format("%.1f", SphericalUtil.computeDistanceBetween(centerPoint, LatLng(activityToDisplay.startPosition.lat, activityToDisplay.startPosition.lon)) / 1000)} km away",
+          color = AccentGreen,
+          style = MaterialTheme.typography.bodyMedium,
+          fontWeight = FontWeight.Bold)
     }
   }
 }

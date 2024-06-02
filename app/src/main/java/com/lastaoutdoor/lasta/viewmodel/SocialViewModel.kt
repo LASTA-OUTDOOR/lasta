@@ -54,6 +54,9 @@ constructor(
   // Get all the friends request
   var friendRequests: List<UserModel> by mutableStateOf(emptyList())
 
+  // Get all the friends suggestions
+  var friendSuggestions: List<UserModel> by mutableStateOf(emptyList())
+
   // feedback message for the friend request
   var friendRequestFeedback: String by mutableStateOf("")
 
@@ -160,6 +163,22 @@ constructor(
     }
   }
 
+  /*
+   * Fetch the list of friends suggestions given a string
+   */
+  fun fetchFriendsSuggestions(query: String) {
+    viewModelScope.launch {
+      // Call surrounded by try-catch block to make handle exceptions caused by database
+      try {
+        // get the list of users by query
+        friendSuggestions =
+            userDBRepo.getUsersByUsernameWithSubstring(query, friends, user) ?: emptyList()
+      } catch (e: Exception) {
+        errorToast.showToast(ErrorType.ERROR_DATABASE)
+      }
+    }
+  }
+
   fun acceptFriend(friend: UserModel) {
     viewModelScope.launch {
 
@@ -241,6 +260,8 @@ constructor(
       // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
         messages = repository.getAllConversations(user.userId)
+        // keep only conversation were the last message is not null
+        messages = messages.filter { it.lastMessage != null }
       } catch (e: Exception) {
         errorToast.showToast(ErrorType.ERROR_DATABASE)
       }

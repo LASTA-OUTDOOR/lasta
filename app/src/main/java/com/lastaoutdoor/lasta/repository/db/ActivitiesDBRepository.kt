@@ -53,13 +53,21 @@ interface ActivitiesDBRepository {
   suspend fun updateStartPosition(activityId: String, position: Position)
 
   /**
+   * Updates an activity's difficulty. The difficulty is augmented by one in a cycle.
+   * Difficulty.EASY -> Difficulty.NORMAL -> Difficulty.HARD -> Difficulty.EASY
+   *
+   * @param activityId The ID of the activity.
+   */
+  suspend fun updateDifficulty(activityId: String)
+
+  /**
    * Adds a rating to an activity.
    *
    * @param activityId The ID of the activity.
    * @param rating The rating to add.
    * @param newMeanRating The new mean rating of the activity.
    */
-  fun addRating(activityId: String, rating: Rating, newMeanRating: String)
+  suspend fun addRating(activityId: String, rating: Rating, newMeanRating: String)
 
   /**
    * Deletes all ratings of a user.

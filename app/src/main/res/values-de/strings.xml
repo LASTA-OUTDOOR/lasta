@@ -10,8 +10,10 @@
     <string name="less_than">Weniger als</string>
     <string name="around_you">in Ihrer Nähe</string>
     <string name="Climbing">Klettern</string>
+    <string name = "username">Benutzername</string>
     <string name="popularity">Popularität</string>
     <string name="more_info">Mehr Infos</string>
+    <string name = "no_fav">Du hast noch keine Lieblingsaktivitäten... Fügen Sie welche hinzu!</string>
     <string name="sign_in_google">Mit Google anmelden</string>
     <string name="offline">Sie sind Offline</string>
     <string name="start">Beginnen</string>
@@ -48,7 +50,7 @@
     <string name="no_friend">Sie haben noch keine Freundschaftsanfrage</string>
     <string name="friend_req">" Freundschaftsanfrage"</string>
     <string name="req_internet">Für diesen Inhalt ist eine Internetverbindung erforderlich.</string>
-    <string name="no_friends_yet">Es scheint, als hätten Sie noch keine Freunde... Fangen Sie an, einige hinzuzufügen!</string>
+    <string name="no_friends_yet">Es scheint, als hätten Sie noch keine Freunde… Fangen Sie an, einige hinzuzufügen!</string>
     <string name="start_conv">Beginnen Sie ein Gespräch!</string>
     <string name="no_msg">Sie haben noch keine Nachrichten....</string>
     <string name="friends">Freunden</string>
@@ -57,7 +59,7 @@
     <string name="email">E-Mail Adresse</string>
     <string name="send_fr">Freundschaftsanfrage senden</string>
     <string name="add_fr">Einen Freund hinzufügen</string>
-    <string name="fr_email_add">Geben Sie die E-Mail-Adresse eines Freundes ein, um eine Freundschaftsanfrage zu senden.</string>
+    <string name="fr_username_add">Geben Sie die Benutzernamen eines Freundes ein, um eine Freundschaftsanfrage zu senden.</string>
     <string name="community">Gemeinschaft</string>
     <string name="list">Liste</string>
     <string name="map">Karte</string>
@@ -116,7 +118,7 @@
     <string name="ride">Radtour</string>
     <string name="recent_activities">Neueste Aktivitäten</string>
     <string name="add_review">Review:</string>
-    <string name="ask_rating">Bitte bewerten Sie (von 5 Sternen): </string>
+    <string name="ask_rating">Bitte bewerten Sie: </string>
     <string name="ask_comment">Schreiben Sie hier Ihren Kommentar: </string>
     <string name="no_duration">Keine Dauer</string>
     <string name="publish">Veröffentlichen!</string>
@@ -163,4 +165,7 @@
     <string name = "at_hour">um</string>
     <string name = "forecasted_weather">Morgen</string>
     <string name="offline_text">"Sie sind zur Zeit Offline, bitte verbinden Sie sich mit dem Internet um sich in Lasta einzuloggen! "</string>
+    <string name="no_activities">Keine Aktivitäten gefunden, die Ihren Kriterien entsprechen… Versuchen Sie, Ihre Filter oder Suchbegriffe anzupassen!</string>
+    <string name="no_friend_requests">Es scheint, als hättest du keine Freundschaftsanfragen… Füge welche hinzu!</string>
+
 </resources>
