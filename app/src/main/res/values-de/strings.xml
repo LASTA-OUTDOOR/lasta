@@ -169,4 +169,8 @@
     <string name="no_activities">Keine Aktivitäten gefunden, die Ihren Kriterien entsprechen… Versuchen Sie, Ihre Filter oder Suchbegriffe anzupassen!</string>
     <string name="no_friend_requests">Es scheint, als hättest du keine Freundschaftsanfragen… Füge welche hinzu!</string>
 
+    <string name="tracking_start_btn">Beginnen</string>
+    <string name="tracking_pause_btn">Pause</string>
+    <string name="tracking_resume_btn">Fortsetzen</string>
+    <string name="tracking_finish_btn">Beenden</string>
 </resources>

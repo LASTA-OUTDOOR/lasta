@@ -51,7 +51,6 @@ class MoreInfoScreenTest {
           setScreen = {},
           setSelectedLocality = {},
           updatePermission = {},
-          updateMarkers = { _, _ -> },
           updateSelectedMarker = {},
           clearSelectedItinerary = {},
           updateOrderingBy = {},

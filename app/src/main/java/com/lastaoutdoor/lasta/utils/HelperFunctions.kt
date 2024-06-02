@@ -5,6 +5,11 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -210,6 +215,26 @@ fun getScaledBitmapDescriptor(
   vectorDrawable.draw(canvas)
 
   return BitmapDescriptorFactory.fromBitmap(bitmap)
+}
+
+fun createColorString(
+    first: String,
+    second: String,
+    colorFirst: Color,
+    colorSecond: Color
+): AnnotatedString {
+  return buildAnnotatedString {
+    withStyle(style = SpanStyle(color = colorFirst)) { append(first) }
+    withStyle(style = SpanStyle(color = colorSecond)) { append(second) }
+  }
+}
+
+fun formatTime(seconds: String, minutes: String, hours: String): String {
+  return "$hours:$minutes:$seconds"
+}
+
+fun Int.pad(): String {
+  return this.toString().padStart(2, '0')
 }
 
 /**

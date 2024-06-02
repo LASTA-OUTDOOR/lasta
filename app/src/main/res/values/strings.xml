@@ -218,5 +218,9 @@ Sign in to join our fantastic sports addict community!</string>
     <string name="error_weather" translatable="false">A Weather error has occurred.</string>
     <string name="no_activities">No activities found matching your criteria… Try adjusting your filters or search terms!</string>
     <string name="no_friend_requests">It appears you have no friend requests… Add some!</string>
+    <string name="tracking_start_btn">Start</string>
+    <string name="tracking_pause_btn">Pause</string>
+    <string name="tracking_resume_btn">Resume</string>
+    <string name="tracking_finish_btn">Finish</string>
 
 </resources>

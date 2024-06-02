@@ -61,27 +61,28 @@ class TrackingViewModel @Inject constructor(sensorManager: SensorManager) : View
     return sensorEventListener
   }
 
-  val locationCallback =
-      object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
-          val location = locationResult.lastLocation
-          location?.let {
-            // Add the new position to the list of positions at the end
-            _state.value =
-                _state.value.copy(
-                    positions = _state.value.positions.plus(Position(it.latitude, it.longitude)))
-            if (_state.value.positions.size > 1) {
-              val distance =
-                  SphericalUtil.computeDistanceBetween(
-                      LatLng(_state.value.positions.last().lat, _state.value.positions.last().lon),
-                      LatLng(
-                          _state.value.positions[_state.value.positions.size - 2].lat,
-                          _state.value.positions[_state.value.positions.size - 2].lon))
-              _state.value = _state.value.copy(distances = _state.value.distances.plus(distance))
-            }
+  fun getLocationCallBack(): LocationCallback {
+    return object : LocationCallback() {
+      override fun onLocationResult(locationResult: LocationResult) {
+        val location = locationResult.lastLocation
+        location?.let {
+          // Add the new position to the list of positions at the end
+          _state.value =
+              _state.value.copy(
+                  positions = _state.value.positions.plus(Position(it.latitude, it.longitude)))
+          if (_state.value.positions.size > 1) {
+            val distance =
+                SphericalUtil.computeDistanceBetween(
+                    LatLng(_state.value.positions.last().lat, _state.value.positions.last().lon),
+                    LatLng(
+                        _state.value.positions[_state.value.positions.size - 2].lat,
+                        _state.value.positions[_state.value.positions.size - 2].lon))
+            _state.value = _state.value.copy(distanceDone = _state.value.distanceDone + distance)
           }
         }
       }
+    }
+  }
 }
 
 data class TrackingState(
@@ -89,5 +90,5 @@ data class TrackingState(
     val sensor: Sensor? = null,
     val stepCount: Int = 0,
     val positions: List<Position> = emptyList(),
-    val distances: List<Double> = emptyList()
+    val distanceDone: Double = 0.0
 )
