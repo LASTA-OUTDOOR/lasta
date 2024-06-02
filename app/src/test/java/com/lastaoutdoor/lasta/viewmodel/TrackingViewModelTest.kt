@@ -52,7 +52,7 @@ class TrackingViewModelTest {
     assert(viewModel.state.value.sensor == sensor)
     assert(viewModel.state.value.stepCount == stepCount)
     assert(viewModel.state.value.positions.isEmpty())
-    assert(viewModel.state.value.distances.isEmpty())
+    assert(viewModel.state.value.distanceDone.isEmpty())
   }
 
   /*@Test

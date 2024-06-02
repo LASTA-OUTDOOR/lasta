@@ -77,7 +77,7 @@ class TrackingViewModel @Inject constructor(sensorManager: SensorManager) : View
                     LatLng(
                         _state.value.positions[_state.value.positions.size - 2].lat,
                         _state.value.positions[_state.value.positions.size - 2].lon))
-            _state.value = _state.value.copy(distances = _state.value.distances.plus(distance))
+            _state.value = _state.value.copy(distanceDone = _state.value.distanceDone + distance)
           }
         }
       }
@@ -90,5 +90,5 @@ data class TrackingState(
     val sensor: Sensor? = null,
     val stepCount: Int = 0,
     val positions: List<Position> = emptyList(),
-    val distances: List<Double> = emptyList()
+    val distanceDone: Double = 0.0
 )

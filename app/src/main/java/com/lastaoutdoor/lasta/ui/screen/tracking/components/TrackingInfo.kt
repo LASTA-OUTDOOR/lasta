@@ -11,10 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.lastaoutdoor.lasta.ui.theme.Grey
 import com.lastaoutdoor.lasta.utils.createColorString
 import com.lastaoutdoor.lasta.viewmodel.TrackingState
+import java.util.Locale
 
 @Composable
 fun TrackingInfo(
@@ -26,10 +28,10 @@ fun TrackingInfo(
 ) {
 
   Column(
-      modifier = modifier.fillMaxSize().padding(16.dp),
+      modifier = modifier.fillMaxSize().padding(16.dp).testTag("TrackingInfo"),
       verticalArrangement = Arrangement.SpaceBetween) {
         Column(
-            modifier = Modifier.weight(0.25f).fillMaxSize(),
+            modifier = Modifier.weight(0.34f).fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween) {
               Text(
                   createColorString("Duration ", "/ time", MaterialTheme.colorScheme.primary, Grey),
@@ -43,29 +45,21 @@ fun TrackingInfo(
                   }
             }
         InfoRow(
-            modifier = Modifier.weight(0.25f),
+            modifier = Modifier.weight(0.33f),
             first1 = "Distance ",
             second1 = "/ done",
-            info1 = "0.0 Km",
+            info1 = "${String.format(Locale.US, "%.1f", trackingState.distanceDone / 1000.0)} Km",
             first2 = "Distance",
-            second2 = "/ remaining",
+            second2 = "/ total",
             info2 = "11.3 Km")
         InfoRow(
-            modifier = Modifier.weight(0.25f),
+            modifier = Modifier.weight(0.33f),
             first1 = "Avg. pace",
             second1 = " min/km",
             info1 = "00:00",
             first2 = "Steps",
             second2 = " / total",
             info2 = trackingState.stepCount.toString())
-        InfoRow(
-            modifier = Modifier.weight(0.25f),
-            first1 = "Elevation",
-            second1 = " gain",
-            info1 = "0 m",
-            first2 = "Elevation",
-            second2 = " total",
-            info2 = "1738 m")
       }
 }
 
