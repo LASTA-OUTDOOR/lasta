@@ -172,26 +172,31 @@ constructor(
   // Fetch the suggestions from the radar API (called when the user types in the search bar)
   fun fetchSuggestions(query: String) {
     viewModelScope.launch {
-      val suggestions =
-          if (query.isNotEmpty()) {
-            when (val response = radarRepository.getSuggestions(query)) {
-              is Response.Failure -> {
-                errorToast.showToast(ErrorType.ERROR_RADAR_API)
-                return@launch
-              }
-              is Response.Success -> {
-                response.data ?: emptyList()
-              }
-              is Response.Loading -> {
-                emptyList<RadarSuggestion>()
-              }
-            }
-          } else {
-            emptyList()
-          }
+      val suggestions = getRadarSuggestions(query)
+      if (suggestions == 1) return@launch
+      suggestions as List<RadarSuggestion>
       _state.value =
           _state.value.copy(
               suggestions = suggestions.associate { it.getSuggestion() to it.getPosition() })
+    }
+  }
+
+  private suspend fun getRadarSuggestions(query: String): Any {
+    return if (query.isNotEmpty()) {
+      when (val response = radarRepository.getSuggestions(query)) {
+        is Response.Failure -> {
+          errorToast.showToast(ErrorType.ERROR_RADAR_API)
+          1
+        }
+        is Response.Success -> {
+          response.data ?: emptyList<RadarSuggestion>()
+        }
+        is Response.Loading -> {
+          emptyList<RadarSuggestion>()
+        }
+      }
+    } else {
+      emptyList<RadarSuggestion>()
     }
   }
 
@@ -208,104 +213,9 @@ constructor(
       val activitiesIdsHolder: ArrayList<Long> = ArrayList()
       val markerListHolder: ArrayList<Marker> = ArrayList()
       for (activityType in _state.value.selectedActivityTypes) {
-        val response =
-            when (activityType) {
-              ActivityType.CLIMBING ->
-                  repository.getClimbingPointsInfo(
-                      _state.value.range.toInt(),
-                      _state.value.initialPosition.latitude,
-                      _state.value.initialPosition.longitude)
-              ActivityType.HIKING ->
-                  repository.getHikingRoutesInfo(
-                      _state.value.range.toInt(),
-                      _state.value.initialPosition.latitude,
-                      _state.value.initialPosition.longitude)
-              ActivityType.BIKING ->
-                  repository.getBikingRoutesInfo(
-                      _state.value.range.toInt(),
-                      _state.value.initialPosition.latitude,
-                      _state.value.initialPosition.longitude)
-            }
-        val osmData =
-            when (response) {
-              is Response.Failure -> {
-                errorToast.showToast(ErrorType.ERROR_OSM_API)
-                return@launch
-              }
-              is Response.Success -> {
-                response.data ?: emptyList()
-              }
-              is Response.Loading -> {
-                emptyList<OSMData>()
-              }
-            }
-
-        // split the list of activities in chunks of 25 to avoid overloading the DB calls
-        val iterations = osmData.size / FIREBASE_COMPARISONS_LIMIT + 1
-        for (i in 0 until iterations) {
-          activitiesIdsHolder.clear()
-          val croppedList =
-              osmData.subList(
-                  i * FIREBASE_COMPARISONS_LIMIT,
-                  minOf((i + 1) * FIREBASE_COMPARISONS_LIMIT, osmData.size))
-          croppedList.map { point ->
-            when (activityType) {
-              ActivityType.CLIMBING -> {
-                val castedPoint = point as NodeWay
-                activitiesIdsHolder.add(castedPoint.id)
-                // Call surrounded by try-catch block to make handle exceptions caused by database
-                try {
-                  activitiesDB.addActivityIfNonExisting(
-                      Activity("", point.id, ActivityType.CLIMBING, point.tags.name))
-                } catch (e: Exception) {
-                  errorToast.showToast(ErrorType.ERROR_DATABASE)
-                  return@launch
-                }
-              }
-              ActivityType.HIKING -> {
-                val castedPoint = point as Relation
-                activitiesIdsHolder.add(castedPoint.id)
-                // Call surrounded by try-catch block to make handle exceptions caused by database
-                try {
-                  activitiesDB.addActivityIfNonExisting(
-                      Activity(
-                          "",
-                          point.id,
-                          ActivityType.HIKING,
-                          point.tags.name,
-                          from = point.tags.from,
-                          to = point.tags.to))
-                } catch (e: Exception) {
-                  errorToast.showToast(ErrorType.ERROR_DATABASE)
-                  return@launch
-                }
-              }
-              ActivityType.BIKING -> {
-                val castedPoint = point as Relation
-                activitiesIdsHolder.add(castedPoint.id)
-                val distance =
-                    if (point.tags.distance.isEmpty()) 0f else point.tags.distance.toFloat()
-                // Call surrounded by try-catch block to make handle exceptions caused by database
-                try {
-                  activitiesDB.addActivityIfNonExisting(
-                      Activity(
-                          "",
-                          point.id,
-                          ActivityType.BIKING,
-                          point.tags.name,
-                          from = point.tags.from,
-                          to = point.tags.to,
-                          distance = distance))
-                } catch (e: Exception) {
-                  errorToast.showToast(ErrorType.ERROR_DATABASE)
-                }
-              }
-            }
-          }
-          activitiesHolder.addAll(
-              activitiesDB.getActivitiesByOSMIds(activitiesIdsHolder, _state.value.showCompleted))
-          markerListHolder.addAll(activitiesToMarkers(activitiesHolder))
-        }
+        val out =
+            fetchActivityType(activityType, activitiesIdsHolder, activitiesHolder, markerListHolder)
+        if (out == 1) return@launch
       }
       _state.value = _state.value.copy(activities = activitiesHolder, markerList = markerListHolder)
       // order the activities by the selected ordering
@@ -314,6 +224,141 @@ constructor(
           _state.value.copy(
               isLoading = false,
           )
+    }
+  }
+
+  private suspend fun fetchActivityType(
+      activityType: ActivityType,
+      activitiesIdsHolder: ArrayList<Long>,
+      activitiesHolder: ArrayList<Activity>,
+      markerListHolder: ArrayList<Marker>
+  ): Int {
+    val osmData =
+        when (val response = getActivityRoutesInfo(activityType)) {
+          is Response.Failure -> {
+            errorToast.showToast(ErrorType.ERROR_OSM_API)
+            return 1
+          }
+          is Response.Success -> {
+            response.data ?: emptyList()
+          }
+          is Response.Loading -> {
+            emptyList()
+          }
+        }
+
+    // split the list of activities in chunks of 25 to avoid overloading the DB calls
+    val iterations = osmData.size / FIREBASE_COMPARISONS_LIMIT + 1
+    for (i in 0 until iterations) {
+      activitiesIdsHolder.clear()
+      val croppedList =
+          osmData.subList(
+              i * FIREBASE_COMPARISONS_LIMIT,
+              minOf((i + 1) * FIREBASE_COMPARISONS_LIMIT, osmData.size))
+      croppedList.map { point -> croppedListprocess(point, activityType, activitiesIdsHolder) }
+      activitiesHolder.addAll(
+          activitiesDB.getActivitiesByOSMIds(activitiesIdsHolder, _state.value.showCompleted))
+      markerListHolder.addAll(activitiesToMarkers(activitiesHolder))
+    }
+    return 0
+  }
+
+  private suspend fun croppedListprocess(
+      point: OSMData,
+      activityType: ActivityType,
+      activitiesIdsHolder: ArrayList<Long>
+  ): Int {
+    when (activityType) {
+      ActivityType.CLIMBING -> {
+        val out = climbingDbCase((point as NodeWay), activitiesIdsHolder)
+        if (out == 1) return 1
+      }
+      ActivityType.HIKING -> {
+        val out = hikingDbCase(point, activitiesIdsHolder)
+        if (out == 1) return 1
+      }
+      ActivityType.BIKING -> {
+        bikingDBCase(point, activitiesIdsHolder)
+      }
+    }
+    return 0
+  }
+
+  private suspend fun bikingDBCase(point: OSMData, activitiesIdsHolder: ArrayList<Long>) {
+    val castedPoint = point as Relation
+    activitiesIdsHolder.add(castedPoint.id)
+    val distance = if (point.tags.distance.isEmpty()) 0f else point.tags.distance.toFloat()
+    // Call surrounded by try-catch block to make handle exceptions caused by database
+    addNonExistingToDB(castedPoint, distance)
+  }
+
+  private suspend fun hikingDbCase(point: OSMData, activitiesIdsHolder: ArrayList<Long>): Any {
+    val castedPoint = point as Relation
+    activitiesIdsHolder.add(castedPoint.id)
+    // Call surrounded by try-catch block to make handle exceptions caused by database
+    try {
+      activitiesDB.addActivityIfNonExisting(
+          Activity(
+              "",
+              point.id,
+              ActivityType.HIKING,
+              point.tags.name,
+              from = point.tags.from,
+              to = point.tags.to))
+    } catch (e: Exception) {
+      errorToast.showToast(ErrorType.ERROR_DATABASE)
+      return 1
+    }
+    return 0
+  }
+
+  private suspend fun climbingDbCase(point: OSMData, activitiesIdsHolder: ArrayList<Long>): Int {
+    val castedPoint = point as NodeWay
+    activitiesIdsHolder.add(castedPoint.id)
+    // Call surrounded by try-catch block to make handle exceptions caused by database
+    try {
+      activitiesDB.addActivityIfNonExisting(
+          Activity("", point.id, ActivityType.CLIMBING, point.tags.name))
+    } catch (e: Exception) {
+      errorToast.showToast(ErrorType.ERROR_DATABASE)
+      return 1
+    }
+    return 0
+  }
+
+  private suspend fun addNonExistingToDB(point: Relation, distance: Float) {
+    try {
+      activitiesDB.addActivityIfNonExisting(
+          Activity(
+              "",
+              point.id,
+              ActivityType.BIKING,
+              point.tags.name,
+              from = point.tags.from,
+              to = point.tags.to,
+              distance = distance))
+    } catch (e: Exception) {
+      errorToast.showToast(ErrorType.ERROR_DATABASE)
+    }
+  }
+
+  private suspend fun getActivityRoutesInfo(activityType: ActivityType): Response<List<OSMData>> {
+    return when (activityType) {
+      ActivityType.CLIMBING ->
+          repository.getClimbingPointsInfo(
+              _state.value.range.toInt(),
+              _state.value.initialPosition.latitude,
+              _state.value.initialPosition.longitude)
+      ActivityType.HIKING ->
+          repository.getHikingRoutesInfo(
+              _state.value.range.toInt(),
+              _state.value.initialPosition.latitude,
+              _state.value.initialPosition.longitude)
+      ActivityType.BIKING ->
+          repository.getBikingRoutesInfo(
+              _state.value.range.toInt(),
+              _state.value.initialPosition.latitude,
+              _state.value.initialPosition.longitude)
     }
   }
 
