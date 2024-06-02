@@ -149,13 +149,21 @@ constructor(
                                 "${user.userName} ${context.getString(R.string.friend_request_notif)}")))
                   }
                 } catch (e: Exception) {
-                  errorToast.showToast(ErrorType.ERROR_UNEXPECTED)
+                  isConnected.collect {
+                    if (it == ConnectionState.CONNECTED) {
+                      errorToast.showToast(ErrorType.ERROR_UNEXPECTED)
+                    }
+                  }
                 }
                 context.getString(R.string.fr_req_sent)
               }
             } catch (e: Exception) {
-              errorToast.showToast(ErrorType.ERROR_DATABASE)
-              context.getString(R.string.inv_email)
+              isConnected.collect {
+                if (it == ConnectionState.CONNECTED) {
+                  errorToast.showToast(ErrorType.ERROR_DATABASE)
+                  context.getString(R.string.inv_email)
+                }
+              }
             }
           } else {
             context.getString(R.string.inv_email)
@@ -197,7 +205,11 @@ constructor(
         refreshFriends()
         refreshFriendsActivities()
       } catch (e: Exception) {
-        errorToast.showToast(ErrorType.ERROR_UNEXPECTED)
+        isConnected.collect {
+          if (it == ConnectionState.CONNECTED) {
+            errorToast.showToast(ErrorType.ERROR_UNEXPECTED)
+          }
+        }
       }
     }
   }
@@ -219,7 +231,11 @@ constructor(
         // update the list of friends
         refreshFriendRequests()
       } catch (e: Exception) {
-        errorToast.showToast(ErrorType.ERROR_UNEXPECTED)
+        isConnected.collect {
+          if (it == ConnectionState.CONNECTED) {
+            errorToast.showToast(ErrorType.ERROR_UNEXPECTED)
+          }
+        }
       }
     }
   }
@@ -233,7 +249,11 @@ constructor(
         friendRequests = repository.getFriendRequests(user.userId)
         hasFriendRequest = friendRequests.isNotEmpty()
       } catch (e: Exception) {
-        errorToast.showToast(ErrorType.ERROR_DATABASE)
+        isConnected.collect {
+          if (it == ConnectionState.CONNECTED) {
+            errorToast.showToast(ErrorType.ERROR_DATABASE)
+          }
+        }
       }
     }
   }
@@ -248,7 +268,11 @@ constructor(
         friends = repository.getFriends(userModel?.friends ?: emptyList())
         preferences.updateFriends(userModel?.friends ?: emptyList())
       } catch (e: Exception) {
-        errorToast.showToast(ErrorType.ERROR_DATABASE)
+        isConnected.collect {
+          if (it == ConnectionState.CONNECTED) {
+            errorToast.showToast(ErrorType.ERROR_DATABASE)
+          }
+        }
       }
     }
   }
@@ -263,7 +287,11 @@ constructor(
         // keep only conversation were the last message is not null
         messages = messages.filter { it.lastMessage != null }
       } catch (e: Exception) {
-        errorToast.showToast(ErrorType.ERROR_DATABASE)
+        isConnected.collect {
+          if (it == ConnectionState.CONNECTED) {
+            errorToast.showToast(ErrorType.ERROR_DATABASE)
+          }
+        }
       }
     }
   }
@@ -301,8 +329,12 @@ constructor(
         latestFriendActivities =
             repository.getLatestFriendActivities(user.userId, timeFrame, friends)
       } catch (e: Exception) {
-        e.printStackTrace()
-        errorToast.showToast(ErrorType.ERROR_DATABASE)
+        isConnected.collect {
+          if (it == ConnectionState.CONNECTED) {
+            e.printStackTrace()
+            errorToast.showToast(ErrorType.ERROR_DATABASE)
+          }
+        }
       }
     }
   }

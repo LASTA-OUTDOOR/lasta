@@ -12,6 +12,7 @@ import com.lastaoutdoor.lasta.models.user.BikingUserActivity
 import com.lastaoutdoor.lasta.models.user.HikingUserActivity
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.MainActivity
+import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.utils.TimeFrame
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -35,7 +36,17 @@ class ProfileScreenTest {
     userModel = UserModel("")
     hiltRule.inject()
     composeRule.activity.setContent {
-      ProfileScreen(listOf(), TimeFrame.M, ActivityType.CLIMBING, true, userModel, {}, {}, {}, {})
+      ProfileScreen(
+          listOf(),
+          TimeFrame.M,
+          ActivityType.CLIMBING,
+          true,
+          userModel,
+          {},
+          {},
+          {},
+          {},
+          ConnectionState.CONNECTED)
     }
   }
 

@@ -94,7 +94,6 @@ fun RangeSearchComposable(
               discoverScreenState.mapState,
               discoverScreenState.initialPosition,
               initialZoom,
-              discoverScreenCallBacks.updateMarkers,
               {},
               {},
               discoverScreenState.selectedZoom,

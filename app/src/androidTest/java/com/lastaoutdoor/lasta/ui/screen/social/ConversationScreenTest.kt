@@ -12,6 +12,7 @@ import com.lastaoutdoor.lasta.models.social.ConversationModel
 import com.lastaoutdoor.lasta.models.social.MessageModel
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.MainActivity
+import com.lastaoutdoor.lasta.utils.ConnectionState
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -46,7 +47,8 @@ class ConversationScreenTest {
           friend = UserModel("2"),
           send = {},
           navigateBack = {},
-          navigateToMoreInfo = {})
+          navigateToMoreInfo = {},
+          ConnectionState.CONNECTED)
     }
     composeRule.onNodeWithTag("ConversationScreen").assertIsNotDisplayed()
   }
@@ -67,7 +69,8 @@ class ConversationScreenTest {
           friend = UserModel("2"),
           send = {},
           navigateBack = {},
-          navigateToMoreInfo = {})
+          navigateToMoreInfo = {},
+          ConnectionState.CONNECTED)
     }
     composeRule.onNodeWithTag("ConversationScreen").assertIsDisplayed()
     composeRule.onNodeWithTag("ConversationScreenHeader").assertIsDisplayed()
@@ -109,7 +112,8 @@ class ConversationScreenTest {
           friend = UserModel("2"),
           send = {},
           navigateBack = {},
-          navigateToMoreInfo = {})
+          navigateToMoreInfo = {},
+          ConnectionState.CONNECTED)
     }
     composeRule.onNodeWithTag("ActivitySharedQMY0WMqi54uSvnRuzR5u").assertIsDisplayed()
     composeRule.onNodeWithTag("ActivitySharedQMY0WMqi54uSvnRuzR5v").assertIsDisplayed()
@@ -135,7 +139,8 @@ class ConversationScreenTest {
           friend = UserModel("2"),
           send = { clicked = true },
           navigateBack = {},
-          navigateToMoreInfo = {})
+          navigateToMoreInfo = {},
+          isOnline = ConnectionState.CONNECTED)
     }
     composeRule.onNodeWithTag("SendMessageButton").assertIsDisplayed()
     composeRule.onNodeWithTag("SendMessageButton").performClick()

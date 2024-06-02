@@ -18,6 +18,7 @@ import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.models.api.Position
 import com.lastaoutdoor.lasta.ui.MainActivity
 import com.lastaoutdoor.lasta.ui.screen.discover.components.RangeSearchComposable
+import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.utils.OrderingBy
 import com.lastaoutdoor.lasta.viewmodel.DiscoverDisplayType
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenCallBacks
@@ -68,7 +69,6 @@ class DiscoverScreenTest {
             setScreen = {},
             setSelectedLocality = {},
             updatePermission = {},
-            updateMarkers = { _, _ -> },
             updateSelectedMarker = {},
             clearSelectedItinerary = {},
             updateOrderingBy = {},
@@ -112,7 +112,7 @@ class DiscoverScreenTest {
             clearSuggestions = { suggestion = emptyMap() },
             updateInitialPosition = {},
             moveCamera = { _ -> },
-        )
+            ConnectionState.CONNECTED)
       }
     }
 
@@ -147,7 +147,7 @@ class DiscoverScreenTest {
             changeActivityToDisplay = {},
             changeWeatherTarget = {},
             weather = null,
-        )
+            ConnectionState.CONNECTED)
       }
     }
     composeRule.onNodeWithTag("LoadingBarDiscover").assertIsDisplayed()
@@ -199,7 +199,8 @@ class DiscoverScreenTest {
             changeActivityToDisplay = {},
             flipFavorite = {},
             navigateToMoreInfo = {},
-            changeWeatherTarget = {})
+            changeWeatherTarget = {},
+            isOnline = ConnectionState.CONNECTED)
       }
     }
 
@@ -232,7 +233,7 @@ class DiscoverScreenTest {
             changeActivityToDisplay = {},
             changeWeatherTarget = {},
             weather = null,
-        )
+            ConnectionState.CONNECTED)
       }
     }
 
@@ -279,7 +280,7 @@ class DiscoverScreenTest {
             changeActivityToDisplay = {},
             changeWeatherTarget = {},
             weather = null,
-        )
+            ConnectionState.CONNECTED)
       }
     }
 
@@ -312,7 +313,7 @@ class DiscoverScreenTest {
             changeActivityToDisplay = {},
             changeWeatherTarget = {},
             weather = null,
-        )
+            ConnectionState.CONNECTED)
       }
     }
     composeRule.onNodeWithTag("textValueRow").assertIsDisplayed()
@@ -341,7 +342,7 @@ class DiscoverScreenTest {
             changeActivityToDisplay = {},
             changeWeatherTarget = {},
             weather = null,
-        )
+            ConnectionState.CONNECTED)
       }
     }
     composeRule.onNodeWithTag("textValueRow").assertIsDisplayed()
@@ -370,7 +371,7 @@ class DiscoverScreenTest {
             changeActivityToDisplay = {},
             changeWeatherTarget = {},
             weather = null,
-        )
+            ConnectionState.CONNECTED)
       }
     }
 
@@ -397,7 +398,8 @@ class DiscoverScreenTest {
             navigateToRangeSearch = { /*TODO*/},
             changeActivityToDisplay = {},
             changeWeatherTarget = {},
-            weather = null)
+            weather = null,
+            ConnectionState.CONNECTED)
       }
     }
     composeRule.onNodeWithTag("textValueRow").assertIsDisplayed()
@@ -430,9 +432,8 @@ class DiscoverScreenTest {
             setSelectedLocality = {},
             clearSuggestions = { suggestions.clear() },
             updateInitialPosition = { initialPos = it },
-        ) {
-          cameraPosition = it
-        }
+            { cameraPosition = it },
+            ConnectionState.CONNECTED)
       }
     }
 
@@ -469,7 +470,7 @@ class DiscoverScreenTest {
             changeActivityToDisplay = {},
             changeWeatherTarget = {},
             weather = null,
-        )
+            ConnectionState.CONNECTED)
       }
     }
 
@@ -502,7 +503,8 @@ class DiscoverScreenTest {
             changeActivityToDisplay = {},
             changeWeatherTarget = {},
             flipFavorite = {},
-            navigateToMoreInfo = {})
+            navigateToMoreInfo = {},
+            ConnectionState.CONNECTED)
       }
     }
 

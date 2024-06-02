@@ -1,15 +1,18 @@
 package com.lastaoutdoor.lasta.viewmodel
 
 import android.app.Application
+import androidx.lifecycle.viewModelScope
 import com.lastaoutdoor.lasta.models.activity.Activity
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.utils.ErrorToast
+import com.lastaoutdoor.lasta.viewmodel.repo.FakeConnectivityviewRepo
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeWeatherRepository
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
@@ -39,13 +42,15 @@ class WeatherViewModelTest {
   @After
   fun tearDownDispatcher() {
     Dispatchers.resetMain()
+    weatherViewModel.viewModelScope.cancel()
     testDispatcher.cleanupTestCoroutines()
   }
 
   @Before
   fun setup() {
     application = Application()
-    weatherViewModel = WeatherViewModel(weatherRepository, application, errorToast)
+    weatherViewModel =
+        WeatherViewModel(weatherRepository, application, errorToast, FakeConnectivityviewRepo())
   }
 
   @Test
