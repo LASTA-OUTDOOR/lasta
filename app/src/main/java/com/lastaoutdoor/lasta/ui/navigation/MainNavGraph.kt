@@ -171,23 +171,12 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
     }
 
     // More Info Screen
-    composable(route = DestinationRoute.MoreInfo.route,
-        deepLinks = listOf(
-            navDeepLink { uriPattern = "https://lasta.jerem.ch/activity/{activityId}" }
-        ),
-        arguments = listOf(navArgument("activityId") { type = NavType.StringType})
+    composable(route = DestinationRoute.MoreInfo.route
+
     ) { entry ->
 
         //check if user is logged in
         val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
-        val loggedIn = preferencesViewModel.isLoggedIn.asFlow().collectAsState(initial = false).value
-        println("loggedIn: $loggedIn")
-        // if not, kick it to the sign in screen
-        if(!loggedIn){
-            navController.navigate(DestinationRoute.SignIn.route)
-            println("not logged in, navigating to sign in")
-        }
-
         val currentUser = preferencesViewModel.user.collectAsState(initial = UserModel("")).value
         val favorites = preferencesViewModel.favorites.collectAsState(initial = emptyList()).value
 
@@ -202,15 +191,6 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
       val usersList = moreInfoScreenViewModel.usersList.collectAsState().value
       val weatherViewModel: WeatherViewModel = entry.sharedViewModel(navController)
       val weather = weatherViewModel.weather.observeAsState().value
-
-
-        //Deep links
-        val activityId = entry.arguments?.getString("activityId") ?: ""
-        println("activityId: $activityId")
-        if(activityId.isNotEmpty())
-            moreInfoScreenViewModel.changeActivityToDisplayByID(activityId)
-        else // if it wasn't a properly formatted deep link, go back to the discover screen
-            navController.navigate(DestinationRoute.Discover.route)
 
       val discoverScreenState: DiscoverScreenState =
           discoverScreenViewModel.state.collectAsState().value

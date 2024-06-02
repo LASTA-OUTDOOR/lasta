@@ -38,26 +38,13 @@
             </intent-filter>
 
             <!--Deep linking for lasta.jerem.ch -->
-            <intent-filter>
-
-                <data
-                    android:scheme="https"
-                    android:host="lasta.jerem.ch"
-                     />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <action android:name="android.intent.action.VIEW" />
-
-            </intent-filter>
-
-            <!-- http -->
-            <intent-filter>
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="http" />
+                <data android:scheme="https" />
                 <data android:host="lasta.jerem.ch" />
             </intent-filter>
 
