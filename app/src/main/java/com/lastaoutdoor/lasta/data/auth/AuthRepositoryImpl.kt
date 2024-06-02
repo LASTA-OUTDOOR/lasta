@@ -13,15 +13,13 @@ import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserActivitiesDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import com.lastaoutdoor.lasta.utils.Response
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.tasks.await
 
@@ -114,9 +112,10 @@ constructor(
           val deleteRatingsJob = async { activitiesDBRepo.deleteAllUserRatings(user.uid) }
           val deleteConversationsJob = async { socialDBRepo.deleteAllConversations(user.uid) }
           val deleteUserTokenJob = async { tokenDBRepo.deleteUserToken(user.uid) }
-          val deleteUserActivitiesJob = async { userActivitiesDBRepo.deleteUserActivities(user.uid) }
+          val deleteUserActivitiesJob = async {
+            userActivitiesDBRepo.deleteUserActivities(user.uid)
+          }
           val deleteUserJob = async { userDBRepo.deleteUser(user.uid) }
-
 
           // Await all operations to complete
           try {
@@ -139,5 +138,4 @@ constructor(
       emit(Response.Failure(e))
     }
   }
-
 }

@@ -375,8 +375,8 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
               },
               {
                 authViewModel.deleteAccount()
-                  preferencesViewModel.clearPreferences()
-                  preferencesViewModel.updateIsLoggedIn(false)
+                preferencesViewModel.clearPreferences()
+                preferencesViewModel.updateIsLoggedIn(false)
                 navController.popBackStack()
                 // Pop backstack up to and including the main route, so that the user cannot press
                 // back
