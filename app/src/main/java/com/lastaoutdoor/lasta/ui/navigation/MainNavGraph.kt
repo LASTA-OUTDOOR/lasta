@@ -3,10 +3,12 @@
 package com.lastaoutdoor.lasta.ui.navigation
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -31,6 +33,7 @@ import com.lastaoutdoor.lasta.ui.screen.social.ConversationScreen
 import com.lastaoutdoor.lasta.ui.screen.social.FriendProfileScreen
 import com.lastaoutdoor.lasta.ui.screen.social.NotificationsScreen
 import com.lastaoutdoor.lasta.ui.screen.social.SocialScreen
+import com.lastaoutdoor.lasta.ui.screen.tracking.TrackingActivity
 import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.utils.PermissionManager
 import com.lastaoutdoor.lasta.viewmodel.AuthViewModel
@@ -224,6 +227,8 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
 
           val openedByShareLink = moreInfoScreenViewModel.openByShareLink.collectAsState().value
 
+          val context = LocalContext.current
+
           MoreInfoScreen(
               activityToDisplay,
               discoverScreenState,
@@ -253,7 +258,7 @@ fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
                   navController.navigateUp()
                 }
               },
-              { navController.navigate(DestinationRoute.Tracking.route) },
+              { context.startActivity(Intent(context, TrackingActivity::class.java)) },
               moreInfoScreenViewModel::downloadActivity,
               weatherViewModel::fetchWeatherWithUserLoc)
         }
