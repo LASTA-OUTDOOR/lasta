@@ -59,6 +59,10 @@ constructor(
   private val _ratings = MutableStateFlow<ArrayList<Rating>>(arrayListOf())
   val ratings = _ratings
 
+  // allows to keep track whether the activity was opened by a share link
+  private val _openByShareLink = MutableStateFlow(false)
+  val openByShareLink = _openByShareLink
+
   /*Changes the int difficulty of the activity for its String equivalent : 0 -> Easy, 1 -> Medium, etc...*/
   fun processDiffText(activity: Activity): String {
     return when (activity.difficulty) {
