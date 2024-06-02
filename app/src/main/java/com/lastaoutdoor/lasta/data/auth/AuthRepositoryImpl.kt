@@ -13,12 +13,16 @@ import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserActivitiesDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
 import com.lastaoutdoor.lasta.utils.Response
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.tasks.await
 
 @Singleton
@@ -106,11 +110,26 @@ constructor(
       emit(Response.Loading)
       val user = auth.currentUser
       if (user != null) {
-        userDBRepo.deleteUser(user.uid)
-        activitiesDBRepo.deleteAllUserRatings(user.uid)
-        socialDBRepo.deleteAllConversations(user.uid)
-        tokenDBRepo.deleteUserToken(user.uid)
-        userActivitiesDBRepo.deleteUserActivities(user.uid)
+        supervisorScope {
+          val deleteRatingsJob = async { activitiesDBRepo.deleteAllUserRatings(user.uid) }
+          val deleteConversationsJob = async { socialDBRepo.deleteAllConversations(user.uid) }
+          val deleteUserTokenJob = async { tokenDBRepo.deleteUserToken(user.uid) }
+          val deleteUserActivitiesJob = async { userActivitiesDBRepo.deleteUserActivities(user.uid) }
+          val deleteUserJob = async { userDBRepo.deleteUser(user.uid) }
+
+
+          // Await all operations to complete
+          try {
+            deleteUserJob.await()
+            deleteRatingsJob.await()
+            deleteConversationsJob.await()
+            deleteUserTokenJob.await()
+            deleteUserActivitiesJob.await()
+          } catch (e: Exception) {
+            e.printStackTrace()
+          }
+        }
+        // Delete user only if all the above operations succeeded
         user.delete().await()
         emit(Response.Success(true))
       } else {
@@ -120,4 +139,5 @@ constructor(
       emit(Response.Failure(e))
     }
   }
+
 }
