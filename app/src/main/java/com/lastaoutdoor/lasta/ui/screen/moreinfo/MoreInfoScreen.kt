@@ -20,8 +20,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -74,6 +76,7 @@ import com.lastaoutdoor.lasta.ui.components.WeatherForecastDisplay
 import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
 import com.lastaoutdoor.lasta.ui.screen.map.mapScreen
 import com.lastaoutdoor.lasta.ui.screen.moreinfo.components.ShareOptionsDialog
+import com.lastaoutdoor.lasta.ui.theme.AccentGreen
 import com.lastaoutdoor.lasta.ui.theme.Black
 import com.lastaoutdoor.lasta.ui.theme.GreenDifficulty
 import com.lastaoutdoor.lasta.ui.theme.OrangeDifficulty
@@ -227,7 +230,7 @@ fun StartButton(navigateToTracking: () -> Unit) {
       horizontalArrangement = Arrangement.Center) {
         ElevatedButton(
             onClick = { navigateToTracking() },
-            modifier = Modifier.fillMaxWidth(0.8f).height(48.dp), // takes up 80% of the width
+            modifier = Modifier.fillMaxWidth(0.6f).height(48.dp), // takes up 80% of the width
             colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
               Text(
                   LocalContext.current.getString(R.string.start),
@@ -256,7 +259,10 @@ fun MiddleZone(
     fetchActivities: () -> Unit
 ) {
   Row(
-      modifier = Modifier.fillMaxWidth().testTag("MoreInfoMiddleZone").padding(5.dp),
+      modifier =
+          Modifier.fillMaxWidth()
+              .testTag("MoreInfoMiddleZone")
+              .padding(vertical = 0.dp, horizontal = 16.dp),
       horizontalArrangement = Arrangement.SpaceBetween) {
         RatingLine(
             activityToDisplay,
@@ -417,10 +423,10 @@ fun TopBar(
   ShareOptionsDialog(activityToDisplay, openDialog, friends, shareToFriend)
 
   Row(modifier = Modifier.fillMaxWidth().testTag("Top Bar")) {
-    TopBarLogo(R.drawable.arrow_back) { navigateBack() }
+    TopBarLogo(Icons.AutoMirrored.Outlined.ArrowBack) { navigateBack() }
     Spacer(modifier = Modifier.weight(1f))
     TopBarLogo(R.drawable.download_button) { downloadActivity(activityToDisplay) }
-    TopBarLogo(R.drawable.share) { openDialog.value = true }
+    TopBarLogo(Icons.Outlined.Share) { openDialog.value = true }
     // if activity is in favorites, display the filled heart, else display the empty heart
     if (favorites.contains(activityToDisplay.activityId)) {
       TopBarLogo(Icons.Filled.Favorite) { flipFavorite(activityToDisplay.activityId) }
@@ -449,7 +455,7 @@ fun TopBarLogo(logoPainterId: ImageVector, f: () -> Unit) {
   IconButton(modifier = Modifier.testTag("TopBarLogo"), onClick = { f() }) {
     Icon(
         imageVector = logoPainterId,
-        contentDescription = "Top Bar logo fav",
+        contentDescription = "Top Bar logo fav ${logoPainterId.name}",
         modifier = Modifier.width(26.dp).height(26.dp),
         tint = MaterialTheme.colorScheme.onSurface)
   }
@@ -463,13 +469,15 @@ fun ActivityTitleZone(
     centerPoint: LatLng
 ) {
   Row(
-      modifier = Modifier.fillMaxWidth(),
+      modifier =
+          Modifier.fillMaxWidth().padding(start = 8.dp, end = 8.dp, top = 0.dp, bottom = 16.dp),
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.SpaceBetween) {
         Row(
-            modifier = Modifier.padding(vertical = 5.dp, horizontal = 5.dp).weight(0.65f),
+            modifier = Modifier.padding(8.dp).weight(0.65f),
             verticalAlignment = Alignment.CenterVertically) {
               ActivityPicture(activityToDisplay)
+              Spacer(modifier = Modifier.width(8.dp))
               ActivityTitleText(activityToDisplay, centerPoint)
             }
         ElevatedDifficultyDisplay(activityToDisplay, updateDifficulty = updateDifficulty)
@@ -495,13 +503,13 @@ fun ActivityPicture(activityToDisplay: Activity) {
     Image(
         painter = painterResource(id = defaultId),
         contentDescription = "Default Activity Picture",
-        modifier = Modifier.padding(5.dp).size(65.dp).testTag(testTag))
+        modifier = Modifier.size(65.dp).testTag(testTag))
   }
 }
 
 @Composable
 fun ActivityTitleText(activityToDisplay: Activity, centerPoint: LatLng) {
-  Row(modifier = Modifier.padding(vertical = 25.dp, horizontal = 5.dp)) {
+  Row {
     Column {
       if (activityToDisplay.activityImageUrl != "") {
         Text(
@@ -522,14 +530,9 @@ fun ActivityTitleText(activityToDisplay: Activity, centerPoint: LatLng) {
       Text(
           text =
               "${String.format("%.1f", SphericalUtil.computeDistanceBetween(centerPoint, LatLng(activityToDisplay.startPosition.lat, activityToDisplay.startPosition.lon)) / 1000)} km away",
-          style =
-              TextStyle(
-                  fontSize = 14.sp,
-                  lineHeight = 20.sp,
-                  fontWeight = FontWeight(500),
-                  color = Color.Gray,
-                  letterSpacing = 0.1.sp,
-              ))
+          color = AccentGreen,
+          style = MaterialTheme.typography.bodyMedium,
+          fontWeight = FontWeight.Bold)
     }
   }
 }
