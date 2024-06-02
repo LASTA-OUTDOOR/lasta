@@ -27,6 +27,7 @@ import com.lastaoutdoor.lasta.models.activity.Rating
 import com.lastaoutdoor.lasta.models.map.Marker
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.MainActivity
+import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenCallBacks
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenState
 import com.lastaoutdoor.lasta.viewmodel.MapState
@@ -103,7 +104,8 @@ class MoreInfoScreenTest {
           navigateBack = { /*TODO*/},
           navigateToTracking = {},
           downloadActivity = {},
-          setWeatherBackToUserLoc = {})
+          setWeatherBackToUserLoc = {},
+          isOnline = ConnectionState.CONNECTED)
     }
   }
 
@@ -197,13 +199,16 @@ class MoreInfoScreenTest {
     composeRule.activity.setContent {
       ElevatedDifficultyDisplay(
           updateDifficulty = {},
-          activityToDisplay = Activity("", 0L, difficulty = Difficulty.NORMAL))
+          activityToDisplay = Activity("", 0L, difficulty = Difficulty.NORMAL),
+          isOnline = ConnectionState.CONNECTED)
     }
     composeRule.onNodeWithTag("elevatedTestTag").assertIsDisplayed()
     composeRule.onNodeWithTag("elevatedTestTag").performClick()
     composeRule.activity.setContent {
       ElevatedDifficultyDisplay(
-          updateDifficulty = {}, activityToDisplay = Activity("", 0L, difficulty = Difficulty.HARD))
+          updateDifficulty = {},
+          activityToDisplay = Activity("", 0L, difficulty = Difficulty.HARD),
+          isOnline = ConnectionState.CONNECTED)
     }
     composeRule.onNodeWithTag("elevatedTestTag").assertIsDisplayed()
     composeRule.onNodeWithTag("elevatedTestTag").performClick()
@@ -220,7 +225,8 @@ class MoreInfoScreenTest {
           navigateBack = {},
           flipFavorite = {},
           friends = emptyList(),
-          shareToFriend = { _, _ -> })
+          shareToFriend = { _, _ -> },
+          isOnline = ConnectionState.CONNECTED)
     }
     composeRule.onNodeWithTag("Top Bar").assertIsDisplayed()
   }
@@ -301,7 +307,8 @@ class MoreInfoScreenTest {
           navigateBack = { /*TODO*/},
           navigateToTracking = {},
           downloadActivity = {},
-          setWeatherBackToUserLoc = {})
+          setWeatherBackToUserLoc = {},
+          isOnline = ConnectionState.CONNECTED)
     }
     composeRule.onNodeWithTag("MoreInfoComposable").assertIsDisplayed()
     composeRule.onNodeWithTag("HikingPicture").assertIsDisplayed()
@@ -344,7 +351,8 @@ class MoreInfoScreenTest {
           navigateBack = { /*TODO*/},
           navigateToTracking = {},
           downloadActivity = {},
-          setWeatherBackToUserLoc = {})
+          setWeatherBackToUserLoc = {},
+          isOnline = ConnectionState.CONNECTED)
     }
     composeRule.onNodeWithTag("MoreInfoComposable").assertIsDisplayed()
     composeRule.onNodeWithTag("BikingPicture").assertIsDisplayed()

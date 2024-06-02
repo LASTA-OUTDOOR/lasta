@@ -12,17 +12,21 @@ import com.lastaoutdoor.lasta.models.notifications.NotificationBody
 import com.lastaoutdoor.lasta.models.notifications.SendMessageDto
 import com.lastaoutdoor.lasta.models.social.ConversationModel
 import com.lastaoutdoor.lasta.models.user.UserModel
+import com.lastaoutdoor.lasta.repository.app.ConnectivityRepository
 import com.lastaoutdoor.lasta.repository.app.PreferencesRepository
 import com.lastaoutdoor.lasta.repository.db.SocialDBRepository
 import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
 import com.lastaoutdoor.lasta.repository.db.UserDBRepository
+import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.utils.ErrorType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -36,9 +40,14 @@ constructor(
     private val fcmAPI: FCMApi,
     val repository: SocialDBRepository,
     val preferences: PreferencesRepository,
-    private val errorToast: ErrorToast
+    private val errorToast: ErrorToast,
+    private val connectivityRepositoryImpl: ConnectivityRepository,
 ) : ViewModel() {
-
+  val isConnected =
+      connectivityRepositoryImpl.connectionState.stateIn(
+          initialValue = ConnectionState.OFFLINE,
+          scope = viewModelScope,
+          started = SharingStarted.WhileSubscribed(5000))
   private val _user = MutableStateFlow(UserModel(""))
   val user = _user
 
@@ -67,9 +76,13 @@ constructor(
 
       // Call surrounded by try-catch block to make handle exceptions caused by database
       try {
-        _friend.value = userRepository.getUserById(friendUserId) ?: UserModel("")
-        if (friendUserId.isNotEmpty())
-            conversation = repository.getConversation(_user.value, _friend.value)
+        isConnected.collect {
+          if (it == ConnectionState.CONNECTED) {
+            _friend.value = userRepository.getUserById(friendUserId) ?: UserModel("")
+            if (friendUserId.isNotEmpty())
+                conversation = repository.getConversation(_user.value, _friend.value)
+          }
+        }
       } catch (e: Exception) {
         errorToast.showToast(ErrorType.ERROR_DATABASE)
         e.printStackTrace()
@@ -99,10 +112,15 @@ constructor(
 
         // Call surrounded by try-catch block to make handle exceptions caused by database
         try {
-          repository.sendMessage(userId, friendUserId, message)
-          updateConversation()
-          tokenDBRepo.getUserTokenById(friendUserId)?.let {
-            fcmAPI.sendMessage(SendMessageDto(it, NotificationBody(user.value.userName, message)))
+          isConnected.collect {
+            if (it == ConnectionState.CONNECTED) {
+              repository.sendMessage(userId, friendUserId, message)
+              updateConversation()
+              tokenDBRepo.getUserTokenById(friendUserId)?.let {
+                fcmAPI.sendMessage(
+                    SendMessageDto(it, NotificationBody(user.value.userName, message)))
+              }
+            }
           }
         } catch (e: Exception) {
           errorToast.showToast(ErrorType.ERROR_DATABASE)
@@ -117,13 +135,17 @@ constructor(
       if (message.isNotEmpty()) {
         // Call surrounded by try-catch block to handle exceptions caused by database
         try {
-          repository.sendMessage(userId, friendId, message)
-          tokenDBRepo.getUserTokenById(friendId)?.let {
-            fcmAPI.sendMessage(
-                SendMessageDto(
-                    it,
-                    NotificationBody(
-                        user.value.userName, context.getString(R.string.shared_with_you))))
+          isConnected.collect {
+            if (it == ConnectionState.CONNECTED) {
+              repository.sendMessage(userId, friendId, message)
+              tokenDBRepo.getUserTokenById(friendId)?.let {
+                fcmAPI.sendMessage(
+                    SendMessageDto(
+                        it,
+                        NotificationBody(
+                            user.value.userName, context.getString(R.string.shared_with_you))))
+              }
+            }
           }
         } catch (e: Exception) {
           e.printStackTrace()

@@ -12,6 +12,7 @@ import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.activity.Difficulty
 import com.lastaoutdoor.lasta.models.api.Position
 import com.lastaoutdoor.lasta.ui.MainActivity
+import com.lastaoutdoor.lasta.utils.ConnectionState
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -47,7 +48,9 @@ class FavoritesScreenTest {
             favorites = emptyList(),
             changeActivityToDisplay = {},
             flipFavorite = {},
-            changeWeatherTarget = {}) {}
+            changeWeatherTarget = {},
+            navigateToMoreInfo = {},
+            isOnline = ConnectionState.CONNECTED)
       }
     }
     composeRule.onNodeWithTag("LoadingBarFavorites").assertIsDisplayed()
@@ -77,7 +80,9 @@ class FavoritesScreenTest {
             favorites = listOf("1"),
             changeActivityToDisplay = {},
             flipFavorite = {},
-            changeWeatherTarget = {}) {}
+            changeWeatherTarget = {},
+            navigateToMoreInfo = {},
+            isOnline = ConnectionState.CONNECTED)
       }
     }
     composeRule.onNodeWithTag("FavoritesScreen").assertIsDisplayed()
@@ -96,7 +101,9 @@ class FavoritesScreenTest {
             changeActivityToDisplay = {},
             flipFavorite = {},
             updateFavorites = {},
-            changeWeatherTarget = {}) {}
+            changeWeatherTarget = {},
+            navigateToMoreInfo = {},
+            isOnline = ConnectionState.CONNECTED)
       }
     }
     composeRule.onNodeWithTag("EmptyFavoritesList").assertIsDisplayed()

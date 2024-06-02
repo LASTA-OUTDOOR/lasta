@@ -76,6 +76,7 @@ import com.lastaoutdoor.lasta.ui.components.WeatherReportBig
 import com.lastaoutdoor.lasta.ui.components.WeatherReportSmall
 import com.lastaoutdoor.lasta.ui.components.searchBarComponent
 import com.lastaoutdoor.lasta.ui.screen.map.mapScreen
+import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.utils.OrderingBy
 import com.lastaoutdoor.lasta.viewmodel.DiscoverDisplayType
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenCallBacks
@@ -95,6 +96,7 @@ fun DiscoverScreen(
     changeActivityToDisplay: (Activity) -> Unit,
     changeWeatherTarget: (Activity) -> Unit,
     weather: WeatherResponse?,
+    isOnline: ConnectionState
 ) {
 
   var moveCamera: (CameraUpdate) -> Unit by remember { mutableStateOf({ _ -> }) }
@@ -119,16 +121,27 @@ fun DiscoverScreen(
               discoverScreenCallBacks.setSelectedLocality,
               discoverScreenCallBacks.clearSuggestions,
               discoverScreenCallBacks.updateInitialPosition,
-              moveCamera)
+              moveCamera,
+              isOnline)
 
           if (discoverScreenState.isLoading) {
-            LoadingAnim(width = 35, tag = "LoadingBarDiscover")
+            if (isOnline == ConnectionState.CONNECTED) {
+              LoadingAnim(width = 35, tag = "LoadingBarDiscover")
+            } else {
+              Column(
+                  verticalArrangement = Arrangement.Center, modifier = Modifier.fillMaxHeight()) {
+                    Text(
+                        text = LocalContext.current.getString(R.string.offline_discover_text),
+                        textAlign = TextAlign.Center)
+                  }
+            }
           } else if (discoverScreenState.activities.isEmpty()) {
             EmptyActivityList()
           } else {
             LazyColumn {
               item {
                 Spacer(modifier = Modifier.height(8.dp))
+
                 ActivitiesDisplay(
                     discoverScreenState.activities,
                     discoverScreenState.centerPoint,
@@ -136,7 +149,8 @@ fun DiscoverScreen(
                     changeActivityToDisplay,
                     flipFavorite = flipFavorite,
                     navigateToMoreInfo = navigateToMoreInfo,
-                    changeWeatherTarget = changeWeatherTarget)
+                    changeWeatherTarget = changeWeatherTarget,
+                    isOnline = isOnline)
               }
             }
           }
@@ -159,7 +173,8 @@ fun DiscoverScreen(
           discoverScreenCallBacks.setSelectedLocality,
           discoverScreenCallBacks.clearSuggestions,
           discoverScreenCallBacks.updateInitialPosition,
-          moveCamera)
+          moveCamera,
+          isOnline)
       Box(modifier = Modifier.fillMaxHeight().testTag("mapScreenDiscover")) {
         moveCamera =
             mapScreen(
@@ -196,7 +211,8 @@ fun HeaderComposable(
     setSelectedLocality: (Pair<String, LatLng>) -> Unit,
     clearSuggestions: () -> Unit,
     updateInitialPosition: (LatLng) -> Unit,
-    moveCamera: (CameraUpdate) -> Unit
+    moveCamera: (CameraUpdate) -> Unit,
+    isOnline: ConnectionState
 ) {
 
   // Initialise the map, otherwise the icon functionality won't work
@@ -245,7 +261,8 @@ fun HeaderComposable(
 
                           IconButton(
                               onClick = navigateToRangeSearch,
-                              modifier = Modifier.size(24.dp).testTag("locationButton")) {
+                              modifier = Modifier.size(24.dp).testTag("locationButton"),
+                              enabled = (isOnline == ConnectionState.CONNECTED)) {
                                 Icon(
                                     Icons.Outlined.KeyboardArrowDown,
                                     contentDescription = "Location button",
@@ -287,7 +304,8 @@ fun HeaderComposable(
                         Modifier.size(56.dp)
                             .border(
                                 1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(12.dp))
-                            .testTag("filterButton")) {
+                            .testTag("filterButton"),
+                    enabled = isOnline == ConnectionState.CONNECTED) {
                       Icon(
                           painter = painterResource(id = R.drawable.filter_icon),
                           contentDescription = "Filter button",
@@ -366,8 +384,10 @@ fun ActivitiesDisplay(
     changeActivityToDisplay: (Activity) -> Unit,
     changeWeatherTarget: (Activity) -> Unit,
     flipFavorite: (String) -> Unit,
-    navigateToMoreInfo: () -> Unit
+    navigateToMoreInfo: () -> Unit,
+    isOnline: ConnectionState
 ) {
+
   for (a in activities) {
     Card(
         modifier =
@@ -425,7 +445,8 @@ fun ActivitiesDisplay(
 
                     IconButton(
                         onClick = { flipFavorite(a.activityId) },
-                        modifier = Modifier.size(24.dp).testTag("${a.activityId}favoriteButton")) {
+                        modifier = Modifier.size(24.dp).testTag("${a.activityId}favoriteButton"),
+                        enabled = isOnline == ConnectionState.CONNECTED) {
                           Icon(
                               imageVector =
                                   if (favorites.contains(a.activityId)) Icons.Filled.Favorite
