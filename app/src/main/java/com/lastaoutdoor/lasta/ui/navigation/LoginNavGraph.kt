@@ -41,7 +41,7 @@ fun NavGraphBuilder.addLoginNavGraph(navController: NavHostController) {
           },
           {
             navController.popBackStack()
-            navController.navigate(BaseRoute.Main.route)
+            navController.navigate(BaseRoute.Main.route + "/DEFAULT")
           },
           isConnected)
     }
@@ -70,7 +70,7 @@ fun NavGraphBuilder.addLoginNavGraph(navController: NavHostController) {
           updateBikingLevel = preferencesViewModel::updateBikingLevel,
           navigateToMain = {
             navController.popBackStack()
-            navController.navigate(BaseRoute.Main.route)
+            navController.navigate(BaseRoute.Main.route + "/DEFAULT")
           })
     }
   }
