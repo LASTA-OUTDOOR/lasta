@@ -48,10 +48,10 @@ fun TrackingInfo(
             modifier = Modifier.weight(0.33f),
             first1 = "Distance ",
             second1 = "/ done",
-            info1 = "${String.format(Locale.US, "%.1f", trackingState.distanceDone / 1000.0)} Km",
+            info1 = "${String.format(Locale.US, "%.2f", trackingState.distanceDone / 1000.0)} Km",
             first2 = "Distance",
             second2 = "/ total",
-            info2 = "11.3 Km")
+            info2 = "11.32 Km")
         InfoRow(
             modifier = Modifier.weight(0.33f),
             first1 = "Avg. pace",
