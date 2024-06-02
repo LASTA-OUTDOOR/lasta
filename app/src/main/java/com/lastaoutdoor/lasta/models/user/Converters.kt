@@ -10,8 +10,8 @@ import com.lastaoutdoor.lasta.models.activity.Rating
 import java.util.Date
 
 /**
- * Class containing type converters for Room database. These converters help Room database
- * to understand how to convert complex data types to and from primitive types.
+ * Class containing type converters for Room database. These converters help Room database to
+ * understand how to convert complex data types to and from primitive types.
  */
 class Converters {
 

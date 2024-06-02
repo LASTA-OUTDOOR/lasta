@@ -9,13 +9,14 @@ import com.lastaoutdoor.lasta.repository.db.TokenDBRepository
 import kotlinx.coroutines.tasks.await
 
 /**
- * TokenDBRepositoryImpl is a class that provides methods to upload, retrieve, and delete user tokens in a Firebase Firestore database.
- *
- * @property tokenCollection The Firestore collection reference where user tokens are stored.
- * @constructor Creates an instance of TokenDBRepositoryImpl with the specified context and Firestore database.
+ * TokenDBRepositoryImpl is a class that provides methods to upload, retrieve, and delete user
+ * tokens in a Firebase Firestore database.
  *
  * @param context The application context, used to access resources.
  * @param database The FirebaseFirestore instance to interact with Firestore.
+ * @constructor Creates an instance of TokenDBRepositoryImpl with the specified context and
+ *   Firestore database.
+ * @property tokenCollection The Firestore collection reference where user tokens are stored.
  */
 class TokenDBRepositoryImpl(context: Context, database: FirebaseFirestore) : TokenDBRepository {
 
@@ -23,8 +24,8 @@ class TokenDBRepositoryImpl(context: Context, database: FirebaseFirestore) : Tok
   private val tokenCollection = database.collection(context.getString(R.string.token_db_name))
 
   /**
-   * Uploads a user token to the Firestore database.
-   * If the token or userId is empty, the method returns without performing any operation.
+   * Uploads a user token to the Firestore database. If the token or userId is empty, the method
+   * returns without performing any operation.
    *
    * @param userId The ID of the user.
    * @param token The token to be uploaded.
@@ -35,16 +36,13 @@ class TokenDBRepositoryImpl(context: Context, database: FirebaseFirestore) : Tok
 
     // Upload user token to database
     val document = tokenCollection.document(userId)
-    val data = hashMapOf(
-      "token" to token,
-      "timestamp" to FieldValue.serverTimestamp()
-    )
+    val data = hashMapOf("token" to token, "timestamp" to FieldValue.serverTimestamp())
     document.set(data, SetOptions.merge())
   }
 
   /**
-   * Retrieves a user token from the Firestore database by user ID.
-   * If the userId is empty or the document does not exist, the method returns null.
+   * Retrieves a user token from the Firestore database by user ID. If the userId is empty or the
+   * document does not exist, the method returns null.
    *
    * @param userId The ID of the user whose token is to be retrieved.
    * @return The token if it exists, or null if it does not.
@@ -59,8 +57,8 @@ class TokenDBRepositoryImpl(context: Context, database: FirebaseFirestore) : Tok
   }
 
   /**
-   * Deletes a user token from the Firestore database.
-   * If the userId is empty, the method returns without performing any operation.
+   * Deletes a user token from the Firestore database. If the userId is empty, the method returns
+   * without performing any operation.
    *
    * @param userId The ID of the user whose token is to be deleted.
    */

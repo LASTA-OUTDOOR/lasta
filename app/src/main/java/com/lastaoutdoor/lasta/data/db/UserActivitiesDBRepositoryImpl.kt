@@ -16,15 +16,16 @@ import javax.inject.Singleton
 import kotlinx.coroutines.tasks.await
 
 /**
- * UserActivitiesDBRepositoryImpl is a class that provides methods to manage user activities in a Firebase Firestore database.
- * It implements the UserActivitiesDBRepository interface.
- *
- * @property userActivitiesCollection The Firestore collection reference where user activities are stored.
- * @property activityConverter An instance of ActivityConverter to handle activity data conversion.
- * @constructor Creates an instance of UserActivitiesDBRepositoryImpl with the specified context and Firestore database.
+ * UserActivitiesDBRepositoryImpl is a class that provides methods to manage user activities in a
+ * Firebase Firestore database. It implements the UserActivitiesDBRepository interface.
  *
  * @param context The application context, used to access resources.
  * @param database The FirebaseFirestore instance to interact with Firestore.
+ * @constructor Creates an instance of UserActivitiesDBRepositoryImpl with the specified context and
+ *   Firestore database.
+ * @property userActivitiesCollection The Firestore collection reference where user activities are
+ *   stored.
+ * @property activityConverter An instance of ActivityConverter to handle activity data conversion.
  */
 @Singleton
 class UserActivitiesDBRepositoryImpl
@@ -33,7 +34,7 @@ constructor(context: Context, database: FirebaseFirestore) : UserActivitiesDBRep
 
   // Reference to the Firestore collection where user activities are stored
   private val userActivitiesCollection =
-    database.collection(context.getString(R.string.user_activities_db_name))
+      database.collection(context.getString(R.string.user_activities_db_name))
 
   // Converter to handle activity data conversion
   private val activityConverter = ActivityConverter()
@@ -54,7 +55,7 @@ constructor(context: Context, database: FirebaseFirestore) : UserActivitiesDBRep
         val activities = documentSnapshot.get(type.toString()) as? List<*>
         if (activities != null) {
           userActivities.addAll(
-            activityConverter.databaseToActivity(activities as List<HashMap<String, Any>>, type))
+              activityConverter.databaseToActivity(activities as List<HashMap<String, Any>>, type))
         }
       }
     }
@@ -89,7 +90,8 @@ constructor(context: Context, database: FirebaseFirestore) : UserActivitiesDBRep
   }
 
   /**
-   * Retrieves all hiking activities of a user from the Firestore database for the specified user ID.
+   * Retrieves all hiking activities of a user from the Firestore database for the specified user
+   * ID.
    *
    * @param userId The ID of the user.
    * @return A list of HikingUserActivity objects.
@@ -100,7 +102,8 @@ constructor(context: Context, database: FirebaseFirestore) : UserActivitiesDBRep
   }
 
   /**
-   * Retrieves all climbing activities of a user from the Firestore database for the specified user ID.
+   * Retrieves all climbing activities of a user from the Firestore database for the specified user
+   * ID.
    *
    * @param userId The ID of the user.
    * @return A list of ClimbingUserActivity objects.
@@ -111,7 +114,8 @@ constructor(context: Context, database: FirebaseFirestore) : UserActivitiesDBRep
   }
 
   /**
-   * Retrieves all biking activities of a user from the Firestore database for the specified user ID.
+   * Retrieves all biking activities of a user from the Firestore database for the specified user
+   * ID.
    *
    * @param userId The ID of the user.
    * @return A list of BikingUserActivity objects.
