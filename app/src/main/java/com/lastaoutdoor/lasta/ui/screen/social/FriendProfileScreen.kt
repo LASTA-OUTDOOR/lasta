@@ -11,6 +11,7 @@ import com.lastaoutdoor.lasta.models.user.UserActivity
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.screen.moreinfo.TopBarLogo
 import com.lastaoutdoor.lasta.ui.screen.profile.ProfileScreen
+import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.utils.TimeFrame
 
 // Display a simple page with all the information of a friend
@@ -24,7 +25,8 @@ fun FriendProfileScreen(
     setSport: (ActivityType) -> Unit,
     setTimeFrame: (TimeFrame) -> Unit,
     navigateToSettings: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    isOnline: ConnectionState
 ) {
 
   // Display the user's profile
@@ -37,17 +39,16 @@ fun FriendProfileScreen(
       updateDescription = {}, // will never be used
       setSport = setSport,
       setTimeFrame = setTimeFrame,
-  ) {
-    navigateToSettings()
-  }
-  Header(onBack)
+      isOnline = isOnline,
+      navigateToSettings = { navigateToSettings() })
+  Header(onBack, isOnline)
 }
 
 // back arrow to go back to the previous screen
 @Composable
-private fun Header(onBack: () -> Unit) {
+private fun Header(onBack: () -> Unit, isOnline: ConnectionState) {
   // display back arrow on blue background
   Row(modifier = Modifier.fillMaxWidth().testTag("FriendProfileHeader")) {
-    TopBarLogo(R.drawable.arrow_back, isFriendProf = true) { onBack() }
+    TopBarLogo(R.drawable.arrow_back, isFriendProf = true, { onBack() }, isOnline)
   }
 }

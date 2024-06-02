@@ -82,6 +82,7 @@ import com.lastaoutdoor.lasta.ui.theme.GreenDifficulty
 import com.lastaoutdoor.lasta.ui.theme.OrangeDifficulty
 import com.lastaoutdoor.lasta.ui.theme.PrimaryBlue
 import com.lastaoutdoor.lasta.ui.theme.RedDifficulty
+import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenCallBacks
 import com.lastaoutdoor.lasta.viewmodel.DiscoverScreenState
 import java.util.Locale
@@ -108,7 +109,8 @@ fun MoreInfoScreen(
     navigateBack: () -> Unit,
     navigateToTracking: () -> Unit,
     downloadActivity: (Activity) -> Unit,
-    setWeatherBackToUserLoc: () -> Unit
+    isOnline: ConnectionState,
+    setWeatherBackToUserLoc: () -> Unit,
 ) {
   val isMapDisplayed = remember { mutableStateOf(false) }
   val isReviewing = remember { mutableStateOf(false) }
@@ -142,7 +144,8 @@ fun MoreInfoScreen(
         isMapDisplayed,
         isReviewing,
         text,
-        writeNewRating)
+        writeNewRating,
+        isOnline)
   } else {
     MoreInfoMap(
         goToMarker,
@@ -156,7 +159,8 @@ fun MoreInfoScreen(
         friends,
         shareToFriend,
         navigateBack,
-        setWeatherBackToUserLoc)
+        setWeatherBackToUserLoc,
+        isOnline)
   }
 }
 
@@ -182,7 +186,8 @@ fun ActivityInfoDisplay(
     isMapDisplayed: MutableState<Boolean>,
     isReviewing: MutableState<Boolean>,
     text: MutableState<String>,
-    writeNewRating: (String, Rating, String) -> Unit
+    writeNewRating: (String, Rating, String) -> Unit,
+    isOnline: ConnectionState
 ) {
   Column(
       modifier = Modifier.fillMaxSize().testTag("MoreInfoComposable"),
@@ -199,12 +204,19 @@ fun ActivityInfoDisplay(
             flipFavorite,
             friends,
             shareToFriend,
-            updateDifficulty)
+            updateDifficulty,
+            isOnline)
         Column {
           WeatherReportBig(weather, true) { weatherDialog.value = true }
           // displays activity difficulty, ration and view on map button
           MiddleZone(
-              activityToDisplay, isMapDisplayed, isReviewing, text, writeNewRating, currentUser)
+              activityToDisplay,
+              isMapDisplayed,
+              isReviewing,
+              text,
+              writeNewRating,
+              currentUser,
+              isOnline)
         }
         Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
           LazyColumn(modifier = Modifier.weight(0.85f)) {
@@ -212,7 +224,7 @@ fun ActivityInfoDisplay(
           }
           Spacer(modifier = Modifier.height(5.dp))
           Box(modifier = Modifier.weight(0.15f), contentAlignment = Alignment.Center) {
-            StartButton(navigateToTracking)
+            StartButton(navigateToTracking, isOnline)
           }
         }
       }
@@ -231,7 +243,8 @@ fun UpperMoreInfo(
     flipFavorite: (String) -> Unit,
     friends: List<UserModel>,
     shareToFriend: (String, String) -> Unit,
-    updateDifficulty: (String) -> Unit
+    updateDifficulty: (String) -> Unit,
+    isOnline: ConnectionState
 ) {
   Box(modifier = Modifier.wrapContentHeight().fillMaxWidth()) {
     if (activityToDisplay.activityImageUrl != "") {
@@ -251,14 +264,22 @@ fun UpperMoreInfo(
       // contains the top icon buttons
       if (currentUser != null) {
         TopBar(
-            activityToDisplay, downloadActivity, favorites, flipFavorite, friends, shareToFriend) {
+            activityToDisplay,
+            downloadActivity,
+            favorites,
+            flipFavorite,
+            friends,
+            shareToFriend,
+            {
               discoverScreenCallBacks.fetchActivities()
               navigateBack()
               setWeatherBackToUserLoc()
-            }
+            },
+            isOnline)
       }
       // displays activity title and duration
-      ActivityTitleZone(activityToDisplay, updateDifficulty, discoverScreenState.centerPoint)
+      ActivityTitleZone(
+          activityToDisplay, updateDifficulty, isOnline, discoverScreenState.centerPoint)
     }
   }
 }
@@ -276,7 +297,8 @@ fun MoreInfoMap(
     friends: List<UserModel>,
     shareToFriend: (String, String) -> Unit,
     navigateBack: () -> Unit,
-    setWeatherBackToUserLoc: () -> Unit
+    setWeatherBackToUserLoc: () -> Unit,
+    isOnline: ConnectionState
 ) {
   Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoMap")) {
     LaunchedEffect(Unit) {
@@ -287,20 +309,26 @@ fun MoreInfoMap(
     if (currentUser != null) {
       Column(modifier = Modifier.padding(8.dp)) {
         TopBar(
-            activityToDisplay, downloadActivity, favorites, flipFavorite, friends, shareToFriend) {
+            activityToDisplay,
+            downloadActivity,
+            favorites,
+            flipFavorite,
+            friends,
+            shareToFriend,
+            {
               discoverScreenCallBacks.clearSelectedMarker()
               discoverScreenCallBacks.clearSelectedItinerary()
               discoverScreenCallBacks.fetchActivities()
               navigateBack()
               setWeatherBackToUserLoc()
-            }
+            },
+            isOnline)
       }
     }
     mapScreen(
         discoverScreenState.mapState,
         discoverScreenState.initialPosition,
         discoverScreenState.initialZoom,
-        discoverScreenCallBacks.updateMarkers,
         discoverScreenCallBacks.updateSelectedMarker,
         discoverScreenCallBacks.clearSelectedItinerary,
         discoverScreenState.selectedZoom,
@@ -313,14 +341,15 @@ fun MoreInfoMap(
 
 // Start button : once clicked, the activity tracking starts
 @Composable
-fun StartButton(navigateToTracking: () -> Unit) {
+fun StartButton(navigateToTracking: () -> Unit, isOnline: ConnectionState) {
   Row(
       modifier = Modifier.fillMaxWidth().testTag("MoreInfoStartButton"),
       horizontalArrangement = Arrangement.Center) {
         ElevatedButton(
             onClick = { navigateToTracking() },
             modifier = Modifier.fillMaxWidth(0.6f).height(48.dp), // takes up 80% of the width
-            colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
+            colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue),
+            enabled = isOnline == ConnectionState.CONNECTED) {
               Text(
                   LocalContext.current.getString(R.string.start),
                   style =
@@ -342,7 +371,8 @@ fun MiddleZone(
     isReviewing: MutableState<Boolean>,
     text: MutableState<String>,
     writeNewRating: (String, Rating, String) -> Unit,
-    currentUser: UserModel?
+    currentUser: UserModel?,
+    isOnline: ConnectionState
 ) {
   Row(
       modifier =
@@ -350,15 +380,15 @@ fun MiddleZone(
               .testTag("MoreInfoMiddleZone")
               .padding(vertical = 0.dp, horizontal = 16.dp),
       horizontalArrangement = Arrangement.SpaceBetween) {
-        RatingLine(activityToDisplay, isReviewing, text, writeNewRating, currentUser)
-        ViewOnMapButton(isMapDisplayed)
+        RatingLine(activityToDisplay, isReviewing, text, writeNewRating, currentUser, isOnline)
+        ViewOnMapButton(isMapDisplayed, isOnline)
       }
   SeparatorComponent()
 }
 
 // Button to view the activity on the map
 @Composable
-fun ViewOnMapButton(isMapDisplayed: MutableState<Boolean>) {
+fun ViewOnMapButton(isMapDisplayed: MutableState<Boolean>, isOnline: ConnectionState) {
   Column(
       modifier = Modifier.padding(vertical = 25.dp).testTag("viewOnMapButton"),
       horizontalAlignment = Alignment.End) {
@@ -366,7 +396,8 @@ fun ViewOnMapButton(isMapDisplayed: MutableState<Boolean>) {
             onClick = { isMapDisplayed.value = true },
             contentPadding = PaddingValues(all = 3.dp),
             modifier = Modifier.width(130.dp).height(40.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)) {
+            colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue),
+            enabled = isOnline == ConnectionState.CONNECTED) {
               Text(
                   LocalContext.current.getString(R.string.on_map),
                   style =
@@ -387,7 +418,8 @@ fun RatingLine(
     isReviewing: MutableState<Boolean>,
     text: MutableState<String>,
     writeNewRating: (String, Rating, String) -> Unit,
-    currentUser: UserModel?
+    currentUser: UserModel?,
+    isOnline: ConnectionState
 ) {
   Row(verticalAlignment = Alignment.CenterVertically) {
     DiffAndRating(activityToDisplay = activityToDisplay)
@@ -398,7 +430,8 @@ fun RatingLine(
         isReviewing,
         text,
         writeNewRating,
-        currentUser)
+        currentUser,
+        isOnline)
   }
 }
 
@@ -457,7 +490,11 @@ fun Star(iconId: Int) {
 
 // Displays the difficulty of the activity
 @Composable
-fun ElevatedDifficultyDisplay(activityToDisplay: Activity, updateDifficulty: (String) -> Unit) {
+fun ElevatedDifficultyDisplay(
+    activityToDisplay: Activity,
+    updateDifficulty: (String) -> Unit,
+    isOnline: ConnectionState
+) {
   val difficultyColor =
       when (activityToDisplay.difficulty) {
         Difficulty.EASY -> GreenDifficulty
@@ -468,7 +505,8 @@ fun ElevatedDifficultyDisplay(activityToDisplay: Activity, updateDifficulty: (St
       onClick = { updateDifficulty(activityToDisplay.activityId) },
       contentPadding = PaddingValues(all = 3.dp),
       modifier = Modifier.width(80.dp).height(24.dp).testTag("elevatedTestTag"),
-      colors = ButtonDefaults.buttonColors(containerColor = difficultyColor)) {
+      colors = ButtonDefaults.buttonColors(containerColor = difficultyColor),
+      enabled = isOnline == ConnectionState.CONNECTED) {
         Text(
             activityToDisplay.difficulty.toString(),
             style =
@@ -491,47 +529,67 @@ fun TopBar(
     flipFavorite: (String) -> Unit,
     friends: List<UserModel>,
     shareToFriend: (String, String) -> Unit,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    isOnline: ConnectionState
 ) {
   val openDialog = remember { mutableStateOf(false) }
   ShareOptionsDialog(activityToDisplay, openDialog, friends, shareToFriend)
 
   Row(modifier = Modifier.fillMaxWidth().testTag("Top Bar")) {
-    TopBarLogo(Icons.AutoMirrored.Outlined.ArrowBack) { navigateBack() }
+    TopBarLogo(Icons.AutoMirrored.Outlined.ArrowBack, { navigateBack() }, ConnectionState.CONNECTED)
     Spacer(modifier = Modifier.weight(1f))
-    TopBarLogo(R.drawable.download_button) { downloadActivity(activityToDisplay) }
-    TopBarLogo(Icons.Outlined.Share) { openDialog.value = true }
+    TopBarLogo(R.drawable.download_button, false, { downloadActivity(activityToDisplay) }, isOnline)
+    TopBarLogo(Icons.Outlined.Share, { openDialog.value = true }, isOnline)
     // if activity is in favorites, display the filled heart, else display the empty heart
     if (favorites.contains(activityToDisplay.activityId)) {
-      TopBarLogo(Icons.Filled.Favorite) { flipFavorite(activityToDisplay.activityId) }
+      TopBarLogo(Icons.Filled.Favorite, { flipFavorite(activityToDisplay.activityId) }, isOnline)
     } else {
-      TopBarLogo(Icons.Filled.FavoriteBorder) { flipFavorite(activityToDisplay.activityId) }
+      TopBarLogo(
+          Icons.Filled.FavoriteBorder, { flipFavorite(activityToDisplay.activityId) }, isOnline)
     }
   }
 }
 
 // Logo of the top bar
 @Composable
-fun TopBarLogo(logoPainterId: Int, isFriendProf: Boolean = false, f: () -> Unit) {
-  IconButton(modifier = Modifier.testTag("TopBarLogo"), onClick = { f() }) {
-    Icon(
-        painter = painterResource(id = logoPainterId),
-        contentDescription = "Top Bar logo $logoPainterId",
-        modifier = Modifier.width(26.dp).height(26.dp),
-        // put to white if bool else put to default color
-        tint = if (isFriendProf) Color.White else MaterialTheme.colorScheme.onSurface)
-  }
+fun TopBarLogo(
+    logoPainterId: Int,
+    isFriendProf: Boolean = false,
+    f: () -> Unit,
+    isOnline: ConnectionState
+) {
+  IconButton(
+      modifier = Modifier.testTag("TopBarLogo"),
+      onClick = { f() },
+      enabled = isOnline == ConnectionState.CONNECTED) {
+        Icon(
+            painter = painterResource(id = logoPainterId),
+            contentDescription = "Top Bar logo $logoPainterId",
+            modifier = Modifier.width(26.dp).height(26.dp),
+            // put to white if bool else put to default color
+            tint =
+                if (isFriendProf)
+                    if (isOnline == ConnectionState.CONNECTED) Color.White
+                    else MaterialTheme.colorScheme.inversePrimary
+                else if (isOnline == ConnectionState.CONNECTED) MaterialTheme.colorScheme.onSurface
+                else MaterialTheme.colorScheme.inversePrimary)
+      }
 }
 
 // Logo of the top bar for vector images
 @Composable
-fun TopBarLogo(logoPainterId: ImageVector, f: () -> Unit) {
+fun TopBarLogo(logoPainterId: ImageVector, f: () -> Unit, isOnline: ConnectionState) {
   IconButton(modifier = Modifier.testTag("TopBarLogo"), onClick = { f() }) {
     Icon(
         imageVector = logoPainterId,
         contentDescription = "Top Bar logo fav ${logoPainterId.name}",
         modifier = Modifier.width(26.dp).height(26.dp),
-        tint = MaterialTheme.colorScheme.onSurface)
+        tint =
+            if (isOnline == ConnectionState.CONNECTED) {
+              MaterialTheme.colorScheme.onSurface
+            } else {
+              MaterialTheme.colorScheme.inversePrimary
+            })
   }
 }
 
@@ -540,6 +598,7 @@ fun TopBarLogo(logoPainterId: ImageVector, f: () -> Unit) {
 fun ActivityTitleZone(
     activityToDisplay: Activity,
     updateDifficulty: (String) -> Unit,
+    isOnline: ConnectionState,
     centerPoint: LatLng
 ) {
   Row(
@@ -554,7 +613,8 @@ fun ActivityTitleZone(
               Spacer(modifier = Modifier.width(8.dp))
               ActivityTitleText(activityToDisplay, centerPoint)
             }
-        ElevatedDifficultyDisplay(activityToDisplay, updateDifficulty = updateDifficulty)
+        ElevatedDifficultyDisplay(
+            activityToDisplay, updateDifficulty = updateDifficulty, isOnline = isOnline)
       }
 }
 
@@ -628,12 +688,15 @@ fun AddRatingButton(
     isReviewing: MutableState<Boolean>,
     text: MutableState<String>,
     writeNewRating: (String, Rating, String) -> Unit,
-    currentUser: UserModel?
+    currentUser: UserModel?,
+    isOnline: ConnectionState
 ) {
   if (isReviewing.value) {
-    ModalRating(isReviewing, activityToDisplay, text, currentUser, writeNewRating)
+    ModalRating(isReviewing, activityToDisplay, text, currentUser, writeNewRating, isOnline)
   } else {
-    AddRatingButton(onShowReviewModal)
+    if (isOnline == ConnectionState.CONNECTED) {
+      AddRatingButton(onShowReviewModal)
+    }
   }
 }
 
@@ -644,7 +707,8 @@ fun ModalRating(
     activityToDisplay: Activity,
     text: MutableState<String>,
     currentUser: UserModel?,
-    writeNewRating: (String, Rating, String) -> Unit
+    writeNewRating: (String, Rating, String) -> Unit,
+    isOnline: ConnectionState
 ) {
   ModalBottomSheet(
       onDismissRequest = { isReviewing.value = false }, modifier = Modifier.fillMaxWidth()) {
@@ -668,7 +732,7 @@ fun ModalRating(
                     Text(
                         text = LocalContext.current.getString(R.string.ask_rating),
                         style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium))
-                    StarButtons(selectedStarCount = selectedStarCount)
+                    StarButtons(selectedStarCount = selectedStarCount, isOnline)
                   }
 
               OutlinedTextField(
@@ -732,27 +796,36 @@ fun AddRatingButton(onShowReviewModal: () -> Unit) {
 }
 
 @Composable
-fun StarButtons(selectedStarCount: MutableState<Int>) {
+fun StarButtons(selectedStarCount: MutableState<Int>, isOnline: ConnectionState) {
   Row(
       modifier = Modifier.padding(2.dp).testTag("StarButtons"),
       verticalAlignment = Alignment.CenterVertically) {
         for (i in 1..5) {
           val isSelected = i <= selectedStarCount.value
-          StarIconButton(selectedStarCount, i, isSelected)
+          StarIconButton(selectedStarCount, i, isSelected, isOnline)
         }
       }
 }
 
 @Composable
-fun StarIconButton(selectedStarCount: MutableState<Int>, i: Int, isSelected: Boolean) {
-  IconButton(onClick = { selectedStarCount.value = i }, modifier = Modifier.size(25.dp)) {
-    Icon(
-        painter =
-            painterResource(id = if (isSelected) R.drawable.filled_star else R.drawable.empty_star),
-        contentDescription = "Star $i",
-        modifier = Modifier.width(16.dp).height(16.dp),
-        tint = if (isSelected) MaterialTheme.colorScheme.primary else Color.Black)
-  }
+fun StarIconButton(
+    selectedStarCount: MutableState<Int>,
+    i: Int,
+    isSelected: Boolean,
+    isOnline: ConnectionState
+) {
+  IconButton(
+      onClick = { selectedStarCount.value = i },
+      modifier = Modifier.size(25.dp),
+      enabled = isOnline == ConnectionState.CONNECTED) {
+        Icon(
+            painter =
+                painterResource(
+                    id = if (isSelected) R.drawable.filled_star else R.drawable.empty_star),
+            contentDescription = "Star $i",
+            modifier = Modifier.width(16.dp).height(16.dp),
+            tint = if (isSelected) MaterialTheme.colorScheme.primary else Color.Black)
+      }
 }
 
 @Composable

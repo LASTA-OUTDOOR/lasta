@@ -23,7 +23,7 @@ fun NotificationsScreen(
   Column {
     // Top Bar
     Row(modifier = Modifier.fillMaxWidth().testTag("NotificationsScreen")) {
-      TopBarLogo(R.drawable.arrow_back) { navigateBack() }
+      TopBarLogo(R.drawable.arrow_back, false, { navigateBack() }, ConnectionState.CONNECTED)
     }
     FriendsRequestList(isConnected, friendRequests, acceptFriend, declineFriend)
   }

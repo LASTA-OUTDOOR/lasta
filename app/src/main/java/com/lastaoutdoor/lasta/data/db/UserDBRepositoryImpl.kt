@@ -199,7 +199,7 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
    * @param userId The ID of the user to delete.
    */
   override suspend fun deleteUser(userId: String) {
-    userCollection.document(userId).delete().await()
+    userCollection.document(userId).delete()
 
     // Delete friends from other users
     val query = userCollection.whereArrayContains("friends", userId).get().await()

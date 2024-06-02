@@ -8,6 +8,7 @@ import com.lastaoutdoor.lasta.di.AppModule
 import com.lastaoutdoor.lasta.models.activity.ActivityType
 import com.lastaoutdoor.lasta.models.user.UserModel
 import com.lastaoutdoor.lasta.ui.MainActivity
+import com.lastaoutdoor.lasta.utils.ConnectionState
 import com.lastaoutdoor.lasta.utils.TimeFrame
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -44,7 +45,8 @@ class FriendProfileScreenTest {
           setSport = {},
           setTimeFrame = {},
           navigateToSettings = {},
-          onBack = {})
+          onBack = {},
+          ConnectionState.CONNECTED)
     }
     composeRule.onNodeWithTag("FriendProfileHeader").assertIsDisplayed()
   }

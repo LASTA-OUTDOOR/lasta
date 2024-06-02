@@ -131,7 +131,6 @@ constructor(
           }
         }
       } catch (e: Exception) {
-        errorToast.showToast(ErrorType.ERROR_SIGN_OUT)
         e.printStackTrace()
       }
     }
