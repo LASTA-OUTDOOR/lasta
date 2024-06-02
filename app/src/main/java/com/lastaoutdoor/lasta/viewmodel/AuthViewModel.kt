@@ -60,6 +60,7 @@ constructor(
         }
       } catch (e: Exception) {
         errorToast.showToast(ErrorType.ERROR_SIGN_IN)
+        e.printStackTrace()
       }
     }
   }
@@ -81,6 +82,7 @@ constructor(
         }
       } catch (e: Exception) {
         errorToast.showToast(ErrorType.ERROR_SIGN_IN)
+        e.printStackTrace()
       }
     }
   }
@@ -105,6 +107,7 @@ constructor(
         }
       } catch (e: Exception) {
         errorToast.showToast(ErrorType.ERROR_SIGN_OUT)
+        e.printStackTrace()
       }
     }
   }
@@ -129,6 +132,7 @@ constructor(
         }
       } catch (e: Exception) {
         errorToast.showToast(ErrorType.ERROR_SIGN_OUT)
+        e.printStackTrace()
       }
     }
   }
@@ -140,6 +144,7 @@ constructor(
         userDBRepository.updateField(userId, field, value)
       } catch (e: Exception) {
         errorToast.showToast(ErrorType.ERROR_DATABASE)
+        e.printStackTrace()
       }
     }
   }
