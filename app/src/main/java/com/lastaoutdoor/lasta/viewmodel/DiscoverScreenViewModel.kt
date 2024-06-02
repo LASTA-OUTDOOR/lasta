@@ -46,7 +46,6 @@ data class DiscoverScreenCallBacks(
     val setScreen: (DiscoverDisplayType) -> Unit,
     val setSelectedLocality: (Pair<String, LatLng>) -> Unit,
     val updatePermission: (Boolean) -> Unit,
-    val updateMarkers: (LatLng, Double) -> Unit,
     val updateSelectedMarker: (Marker?) -> Unit,
     val clearSelectedItinerary: () -> Unit,
     val updateOrderingBy: (OrderingBy) -> Unit,
@@ -111,7 +110,6 @@ constructor(
           setScreen = { screen -> setScreen(screen) },
           setSelectedLocality = { locality -> setSelectedLocality(locality) },
           updatePermission = { value -> updatePermission(value) },
-          updateMarkers = { centerLocation, rad -> updateMarkers(centerLocation, rad) },
           updateSelectedMarker = { marker -> updateSelectedMarker(marker) },
           clearSelectedItinerary = { clearSelectedItinerary() },
           updateOrderingBy = { orderingBy -> updateOrderingBy(orderingBy) },
@@ -585,19 +583,6 @@ constructor(
   fun updateOrderingBy(orderingBy: OrderingBy) {
     _state.value = _state.value.copy(orderingBy = orderingBy)
     updateActivitiesByOrdering()
-  }
-
-  fun updateMarkers(centerLocation: LatLng, rad: Double) {
-
-    // get all the climbing activities in the radius
-    // fetchClimbingActivities(rad, centerLocation, activityRepository)
-
-    // get all the hiking activities in the radius (only displays first point of the itinerary)
-    // val hikingRelations = fetchHikingActivities(rad, centerLocation)
-    // getMarkersFromRelations(hikingRelations)
-
-    // Add the itineraries to a map -> can access them by relation id
-    // getItineraryFromRelations(hikingRelations)
   }
 
   fun updateRange(range: Double) {

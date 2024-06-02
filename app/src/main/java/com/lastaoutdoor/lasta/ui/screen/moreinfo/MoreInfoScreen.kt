@@ -300,7 +300,6 @@ fun MoreInfoMap(
         discoverScreenState.mapState,
         discoverScreenState.initialPosition,
         discoverScreenState.initialZoom,
-        discoverScreenCallBacks.updateMarkers,
         discoverScreenCallBacks.updateSelectedMarker,
         discoverScreenCallBacks.clearSelectedItinerary,
         discoverScreenState.selectedZoom,

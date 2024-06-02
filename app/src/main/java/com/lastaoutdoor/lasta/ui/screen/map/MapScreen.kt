@@ -85,7 +85,6 @@ fun mapScreen(
     state: MapState,
     initialPosition: LatLng,
     initialZoom: Float,
-    updateMarkers: (LatLng, Double) -> Unit,
     updateSelectedMarker: (Marker) -> Unit,
     clearSelectedItinerary: () -> Unit,
     selectedZoom: Float,
@@ -115,7 +114,6 @@ fun mapScreen(
   GoogleMapComposable(
       cameraPositionState,
       state,
-      updateMarkers,
       updateSelectedMarker,
       selectedZoom,
       { isSheetOpen = true },
@@ -138,7 +136,6 @@ fun mapScreen(
 private fun GoogleMapComposable(
     cameraPositionState: CameraPositionState,
     state: MapState,
-    updateMarkers: (LatLng, Double) -> Unit,
     updateSelectedMarker: (Marker) -> Unit,
     selectedZoom: Float,
     updateSheet: () -> Unit,
@@ -170,7 +167,6 @@ private fun GoogleMapComposable(
             cameraPositionState.projection?.visibleRegion?.farLeft
                 ?: cameraPositionState.position.target
         val rad = SphericalUtil.computeDistanceBetween(centerLocation, topLeftLocation)
-        updateMarkers(centerLocation, rad)
       },
   ) {
 

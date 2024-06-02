@@ -68,7 +68,6 @@ class DiscoverScreenTest {
             setScreen = {},
             setSelectedLocality = {},
             updatePermission = {},
-            updateMarkers = { _, _ -> },
             updateSelectedMarker = {},
             clearSelectedItinerary = {},
             updateOrderingBy = {},
