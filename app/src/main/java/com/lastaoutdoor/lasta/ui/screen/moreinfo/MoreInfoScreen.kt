@@ -121,104 +121,192 @@ fun MoreInfoScreen(
         WeatherForecastDisplay(weatherForecast = weatherForecast, date = dateWeatherForecast)
       }
     }
-    Column(
-        modifier = Modifier.fillMaxSize().testTag("MoreInfoComposable"),
-        verticalArrangement = Arrangement.SpaceBetween) {
-          Box(modifier = Modifier.wrapContentHeight().fillMaxWidth()) {
-            if (activityToDisplay.activityImageUrl != "") {
-              AsyncImage(
-                  model = activityToDisplay.activityImageUrl,
-                  contentDescription = "activity image",
-                  contentScale = ContentScale.Crop,
-                  modifier = Modifier.matchParentSize())
-            } else {
-              Image(
-                  painter = painterResource(id = R.drawable.default_activity_bg),
-                  contentDescription = "activity image not found",
-                  contentScale = ContentScale.Crop,
-                  modifier = Modifier.matchParentSize().alpha(0.3f))
-            }
-            Column(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
-              // contains the top icon buttons
-              if (currentUser != null) {
-                TopBar(
-                    activityToDisplay,
-                    downloadActivity,
-                    favorites,
-                    flipFavorite,
-                    friends,
-                    shareToFriend) {
-                      discoverScreenCallBacks.fetchActivities()
-                      navigateBack()
-                      setWeatherBackToUserLoc()
-                    }
-              }
-              // displays activity title and duration
-              ActivityTitleZone(
-                  activityToDisplay, updateDifficulty, discoverScreenState.centerPoint)
-            }
-          }
-          Column {
-            WeatherReportBig(weather, true) { weatherDialog.value = true }
-            // displays activity difficulty, ration and view on map button
-            MiddleZone(
-                activityToDisplay,
-                isMapDisplayed,
-                isReviewing,
-                text,
-                writeNewRating,
-                currentUser,
-                discoverScreenState.activities,
-                discoverScreenCallBacks.updateActivities,
-                discoverScreenCallBacks.fetchActivities)
-          }
-          Column(
-              modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
-                LazyColumn(modifier = Modifier.weight(0.85f)) {
-                  item { RatingCards(activityToDisplay.ratings, usersList, getUserModels) }
-                }
-                Spacer(modifier = Modifier.height(5.dp))
-                Box(modifier = Modifier.weight(0.15f), contentAlignment = Alignment.Center) {
-                  StartButton(navigateToTracking)
-                }
-              }
-        }
+    ActivityInfoDisplay(
+        activityToDisplay,
+        currentUser,
+        discoverScreenState,
+        discoverScreenCallBacks,
+        navigateBack,
+        setWeatherBackToUserLoc,
+        downloadActivity,
+        favorites,
+        flipFavorite,
+        friends,
+        shareToFriend,
+        weather,
+        weatherDialog,
+        navigateToTracking,
+        updateDifficulty,
+        usersList,
+        getUserModels,
+        isMapDisplayed,
+        isReviewing,
+        text,
+        writeNewRating)
   } else {
-    Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoMap")) {
-      LaunchedEffect(Unit) {
-        val marker = goToMarker(activityToDisplay)
-        discoverScreenCallBacks.updateSelectedMarker(marker)
-      }
+    MoreInfoMap(
+        goToMarker,
+        discoverScreenCallBacks,
+        discoverScreenState,
+        activityToDisplay,
+        currentUser,
+        downloadActivity,
+        favorites,
+        flipFavorite,
+        friends,
+        shareToFriend,
+        navigateBack,
+        setWeatherBackToUserLoc)
+  }
+}
 
-      if (currentUser != null) {
-        Column(modifier = Modifier.padding(8.dp)) {
-          TopBar(
-              activityToDisplay,
-              downloadActivity,
-              favorites,
-              flipFavorite,
-              friends,
-              shareToFriend) {
-                discoverScreenCallBacks.clearSelectedMarker()
-                discoverScreenCallBacks.clearSelectedItinerary()
-                discoverScreenCallBacks.fetchActivities()
-                navigateBack()
-                setWeatherBackToUserLoc()
-              }
+@Composable
+fun ActivityInfoDisplay(
+    activityToDisplay: Activity,
+    currentUser: UserModel?,
+    discoverScreenState: DiscoverScreenState,
+    discoverScreenCallBacks: DiscoverScreenCallBacks,
+    navigateBack: () -> Unit,
+    setWeatherBackToUserLoc: () -> Unit,
+    downloadActivity: (Activity) -> Unit,
+    favorites: List<String>,
+    flipFavorite: (String) -> Unit,
+    friends: List<UserModel>,
+    shareToFriend: (String, String) -> Unit,
+    weather: WeatherResponse?,
+    weatherDialog: MutableState<Boolean>,
+    navigateToTracking: () -> Unit,
+    updateDifficulty: (String) -> Unit,
+    usersList: List<UserModel?>,
+    getUserModels: (List<String>) -> Unit,
+    isMapDisplayed: MutableState<Boolean>,
+    isReviewing: MutableState<Boolean>,
+    text: MutableState<String>,
+    writeNewRating: (String, Rating, String) -> Unit
+) {
+  Column(
+      modifier = Modifier.fillMaxSize().testTag("MoreInfoComposable"),
+      verticalArrangement = Arrangement.SpaceBetween) {
+        UpperMoreInfo(
+            activityToDisplay,
+            currentUser,
+            discoverScreenState,
+            discoverScreenCallBacks,
+            navigateBack,
+            setWeatherBackToUserLoc,
+            downloadActivity,
+            favorites,
+            flipFavorite,
+            friends,
+            shareToFriend,
+            updateDifficulty)
+        Column {
+          WeatherReportBig(weather, true) { weatherDialog.value = true }
+          // displays activity difficulty, ration and view on map button
+          MiddleZone(
+              activityToDisplay, isMapDisplayed, isReviewing, text, writeNewRating, currentUser)
+        }
+        Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
+          LazyColumn(modifier = Modifier.weight(0.85f)) {
+            item { RatingCards(activityToDisplay.ratings, usersList, getUserModels) }
+          }
+          Spacer(modifier = Modifier.height(5.dp))
+          Box(modifier = Modifier.weight(0.15f), contentAlignment = Alignment.Center) {
+            StartButton(navigateToTracking)
+          }
         }
       }
-      mapScreen(
-          discoverScreenState.mapState,
-          discoverScreenState.initialPosition,
-          discoverScreenState.initialZoom,
-          discoverScreenCallBacks.updateSelectedMarker,
-          discoverScreenCallBacks.clearSelectedItinerary,
-          discoverScreenState.selectedZoom,
-          discoverScreenState.selectedMarker,
-          discoverScreenState.selectedItinerary,
-          discoverScreenState.markerList,
-          discoverScreenCallBacks.clearSelectedMarker)
+}
+
+@Composable
+fun UpperMoreInfo(
+    activityToDisplay: Activity,
+    currentUser: UserModel?,
+    discoverScreenState: DiscoverScreenState,
+    discoverScreenCallBacks: DiscoverScreenCallBacks,
+    navigateBack: () -> Unit,
+    setWeatherBackToUserLoc: () -> Unit,
+    downloadActivity: (Activity) -> Unit,
+    favorites: List<String>,
+    flipFavorite: (String) -> Unit,
+    friends: List<UserModel>,
+    shareToFriend: (String, String) -> Unit,
+    updateDifficulty: (String) -> Unit
+) {
+  Box(modifier = Modifier.wrapContentHeight().fillMaxWidth()) {
+    if (activityToDisplay.activityImageUrl != "") {
+      AsyncImage(
+          model = activityToDisplay.activityImageUrl,
+          contentDescription = "activity image",
+          contentScale = ContentScale.Crop,
+          modifier = Modifier.matchParentSize())
+    } else {
+      Image(
+          painter = painterResource(id = R.drawable.default_activity_bg),
+          contentDescription = "activity image not found",
+          contentScale = ContentScale.Crop,
+          modifier = Modifier.matchParentSize().alpha(0.3f))
     }
+    Column(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+      // contains the top icon buttons
+      if (currentUser != null) {
+        TopBar(
+            activityToDisplay, downloadActivity, favorites, flipFavorite, friends, shareToFriend) {
+              discoverScreenCallBacks.fetchActivities()
+              navigateBack()
+              setWeatherBackToUserLoc()
+            }
+      }
+      // displays activity title and duration
+      ActivityTitleZone(activityToDisplay, updateDifficulty, discoverScreenState.centerPoint)
+    }
+  }
+}
+
+@Composable
+fun MoreInfoMap(
+    goToMarker: (Activity) -> Marker,
+    discoverScreenCallBacks: DiscoverScreenCallBacks,
+    discoverScreenState: DiscoverScreenState,
+    activityToDisplay: Activity,
+    currentUser: UserModel?,
+    downloadActivity: (Activity) -> Unit,
+    favorites: List<String>,
+    flipFavorite: (String) -> Unit,
+    friends: List<UserModel>,
+    shareToFriend: (String, String) -> Unit,
+    navigateBack: () -> Unit,
+    setWeatherBackToUserLoc: () -> Unit
+) {
+  Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoMap")) {
+    LaunchedEffect(Unit) {
+      val marker = goToMarker(activityToDisplay)
+      discoverScreenCallBacks.updateSelectedMarker(marker)
+    }
+
+    if (currentUser != null) {
+      Column(modifier = Modifier.padding(8.dp)) {
+        TopBar(
+            activityToDisplay, downloadActivity, favorites, flipFavorite, friends, shareToFriend) {
+              discoverScreenCallBacks.clearSelectedMarker()
+              discoverScreenCallBacks.clearSelectedItinerary()
+              discoverScreenCallBacks.fetchActivities()
+              navigateBack()
+              setWeatherBackToUserLoc()
+            }
+      }
+    }
+    mapScreen(
+        discoverScreenState.mapState,
+        discoverScreenState.initialPosition,
+        discoverScreenState.initialZoom,
+        discoverScreenCallBacks.updateSelectedMarker,
+        discoverScreenCallBacks.clearSelectedItinerary,
+        discoverScreenState.selectedZoom,
+        discoverScreenState.selectedMarker,
+        discoverScreenState.selectedItinerary,
+        discoverScreenState.markerList,
+        discoverScreenCallBacks.clearSelectedMarker)
   }
 }
 
@@ -253,10 +341,7 @@ fun MiddleZone(
     isReviewing: MutableState<Boolean>,
     text: MutableState<String>,
     writeNewRating: (String, Rating, String) -> Unit,
-    currentUser: UserModel?,
-    activities: List<Activity>,
-    updateActivity: (List<Activity>) -> Unit,
-    fetchActivities: () -> Unit
+    currentUser: UserModel?
 ) {
   Row(
       modifier =
@@ -264,15 +349,7 @@ fun MiddleZone(
               .testTag("MoreInfoMiddleZone")
               .padding(vertical = 0.dp, horizontal = 16.dp),
       horizontalArrangement = Arrangement.SpaceBetween) {
-        RatingLine(
-            activityToDisplay,
-            isReviewing,
-            text,
-            writeNewRating,
-            currentUser,
-            activities,
-            updateActivity,
-        )
+        RatingLine(activityToDisplay, isReviewing, text, writeNewRating, currentUser)
         ViewOnMapButton(isMapDisplayed)
       }
   SeparatorComponent()
@@ -309,9 +386,7 @@ fun RatingLine(
     isReviewing: MutableState<Boolean>,
     text: MutableState<String>,
     writeNewRating: (String, Rating, String) -> Unit,
-    currentUser: UserModel?,
-    activities: List<Activity>,
-    updateActivity: (List<Activity>) -> Unit,
+    currentUser: UserModel?
 ) {
   Row(verticalAlignment = Alignment.CenterVertically) {
     DiffAndRating(activityToDisplay = activityToDisplay)
@@ -322,9 +397,7 @@ fun RatingLine(
         isReviewing,
         text,
         writeNewRating,
-        currentUser,
-        activities,
-        updateActivity)
+        currentUser)
   }
 }
 
@@ -512,19 +585,9 @@ fun ActivityTitleText(activityToDisplay: Activity, centerPoint: LatLng) {
   Row {
     Column {
       if (activityToDisplay.activityImageUrl != "") {
-        Text(
-            text = activityToDisplay.name,
-            color = Color.White,
-            fontWeight = FontWeight.ExtraBold,
-            style =
-                MaterialTheme.typography.headlineLarge.copy(
-                    shadow = Shadow(color = Color.Black, offset = Offset(x = 1f, y = 2f))))
+        ActivityTitleWithURl(activityToDisplay)
       } else {
-        Text(
-            text = activityToDisplay.name,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontWeight = FontWeight.ExtraBold,
-            style = MaterialTheme.typography.headlineLarge)
+        ActivityTitleNoURL(activityToDisplay)
       }
 
       Text(
@@ -537,7 +600,26 @@ fun ActivityTitleText(activityToDisplay: Activity, centerPoint: LatLng) {
   }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ActivityTitleNoURL(activityToDisplay: Activity) {
+  Text(
+      text = activityToDisplay.name,
+      color = MaterialTheme.colorScheme.onBackground,
+      fontWeight = FontWeight.ExtraBold,
+      style = MaterialTheme.typography.headlineLarge)
+}
+
+@Composable
+fun ActivityTitleWithURl(activityToDisplay: Activity) {
+  Text(
+      text = activityToDisplay.name,
+      color = Color.White,
+      fontWeight = FontWeight.ExtraBold,
+      style =
+          MaterialTheme.typography.headlineLarge.copy(
+              shadow = Shadow(color = Color.Black, offset = Offset(x = 1f, y = 2f))))
+}
+
 @Composable
 fun AddRatingButton(
     activityToDisplay: Activity,
@@ -545,94 +627,107 @@ fun AddRatingButton(
     isReviewing: MutableState<Boolean>,
     text: MutableState<String>,
     writeNewRating: (String, Rating, String) -> Unit,
-    currentUser: UserModel?,
-    activities: List<Activity>,
-    updateActivity: (List<Activity>) -> Unit,
+    currentUser: UserModel?
 ) {
   if (isReviewing.value) {
-    ModalBottomSheet(
-        onDismissRequest = { isReviewing.value = false }, modifier = Modifier.fillMaxWidth()) {
-          Column(
-              modifier = Modifier.padding(30.dp).testTag("ModalBottomSheet"),
-              horizontalAlignment = Alignment.CenterHorizontally) {
-                val selectedStarCount = remember { mutableIntStateOf(1) }
-                Text(
-                    text =
-                        LocalContext.current.getString(R.string.add_review) +
-                            " " +
-                            activityToDisplay.name,
-                    maxLines = 1,
-                    style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold))
-
-                Spacer(modifier = Modifier.height(30.dp))
-
-                Row(
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    verticalAlignment = Alignment.CenterVertically) {
-                      Text(
-                          text = LocalContext.current.getString(R.string.ask_rating),
-                          style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium))
-                      StarButtons(selectedStarCount = selectedStarCount)
-                    }
-
-                OutlinedTextField(
-                    value = text.value,
-                    label = { Text(text = LocalContext.current.getString(R.string.ask_comment)) },
-                    onValueChange = { text.value = it },
-                    maxLines = 3,
-                    modifier = Modifier.fillMaxWidth())
-
-                // Publish button
-                ElevatedButton(
-                    onClick = {
-                      var newMeanRating =
-                          activityToDisplay.ratings.sumOf { it.rating.toInt() } +
-                              selectedStarCount.intValue
-                      val division =
-                          newMeanRating.toDouble() / (activityToDisplay.ratings.size + 1.0)
-                      val string = String.format(Locale.US, "%.1f", division)
-
-                      if (currentUser != null) {
-                        writeNewRating(
-                            activityToDisplay.activityId,
-                            Rating(
-                                currentUser.userId,
-                                text.value,
-                                selectedStarCount.intValue.toString()),
-                            string)
-                      }
-
-                      isReviewing.value = false
-                    },
-                    modifier =
-                        Modifier.fillMaxWidth().padding(top = 10.dp).testTag("PublishButton"),
-                    colors =
-                        ButtonDefaults.buttonColors(
-                            containerColor = PrimaryBlue, contentColor = Color.White)) {
-                      Text(
-                          text = LocalContext.current.getString(R.string.publish),
-                          style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold))
-                    }
-              }
-        }
+    ModalRating(isReviewing, activityToDisplay, text, currentUser, writeNewRating)
   } else {
-    IconButton(
-        onClick = { onShowReviewModal() },
-        colors =
-            IconButtonColors(
-                containerColor = Color.Yellow,
-                contentColor = Color.Black,
-                disabledContentColor = Color.Yellow,
-                disabledContainerColor = Color.Black),
-        modifier = Modifier.size(25.dp).testTag("AddRatingButton")) {
-          Icon(
-              painter = painterResource(id = R.drawable.plus),
-              contentDescription = "Add Rating",
-              modifier = Modifier.width(16.dp).height(16.dp),
-              tint = Color.Black,
-          )
-        }
+    AddRatingButton(onShowReviewModal)
   }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ModalRating(
+    isReviewing: MutableState<Boolean>,
+    activityToDisplay: Activity,
+    text: MutableState<String>,
+    currentUser: UserModel?,
+    writeNewRating: (String, Rating, String) -> Unit
+) {
+  ModalBottomSheet(
+      onDismissRequest = { isReviewing.value = false }, modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.padding(30.dp).testTag("ModalBottomSheet"),
+            horizontalAlignment = Alignment.CenterHorizontally) {
+              val selectedStarCount = remember { mutableIntStateOf(1) }
+              Text(
+                  text =
+                      LocalContext.current.getString(R.string.add_review) +
+                          " " +
+                          activityToDisplay.name,
+                  maxLines = 1,
+                  style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold))
+
+              Spacer(modifier = Modifier.height(30.dp))
+
+              Row(
+                  horizontalArrangement = Arrangement.SpaceAround,
+                  verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = LocalContext.current.getString(R.string.ask_rating),
+                        style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium))
+                    StarButtons(selectedStarCount = selectedStarCount)
+                  }
+
+              OutlinedTextField(
+                  value = text.value,
+                  label = { Text(text = LocalContext.current.getString(R.string.ask_comment)) },
+                  onValueChange = { text.value = it },
+                  maxLines = 3,
+                  modifier = Modifier.fillMaxWidth())
+
+              // Publish button
+              ElevatedButton(
+                  onClick = {
+                    var newMeanRating =
+                        activityToDisplay.ratings.sumOf { it.rating.toInt() } +
+                            selectedStarCount.intValue
+                    val division = newMeanRating.toDouble() / (activityToDisplay.ratings.size + 1.0)
+                    val string = String.format(Locale.US, "%.1f", division)
+
+                    if (currentUser != null) {
+                      writeNewRating(
+                          activityToDisplay.activityId,
+                          Rating(
+                              currentUser.userId,
+                              text.value,
+                              selectedStarCount.intValue.toString()),
+                          string)
+                    }
+
+                    isReviewing.value = false
+                  },
+                  modifier = Modifier.fillMaxWidth().padding(top = 10.dp).testTag("PublishButton"),
+                  colors =
+                      ButtonDefaults.buttonColors(
+                          containerColor = PrimaryBlue, contentColor = Color.White)) {
+                    Text(
+                        text = LocalContext.current.getString(R.string.publish),
+                        style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold))
+                  }
+            }
+      }
+}
+
+@Composable
+fun AddRatingButton(onShowReviewModal: () -> Unit) {
+  IconButton(
+      onClick = { onShowReviewModal() },
+      colors =
+          IconButtonColors(
+              containerColor = Color.Yellow,
+              contentColor = Color.Black,
+              disabledContentColor = Color.Yellow,
+              disabledContainerColor = Color.Black),
+      modifier = Modifier.size(25.dp).testTag("AddRatingButton")) {
+        Icon(
+            painter = painterResource(id = R.drawable.plus),
+            contentDescription = "Add Rating",
+            modifier = Modifier.width(16.dp).height(16.dp),
+            tint = Color.Black,
+        )
+      }
 }
 
 @Composable
@@ -642,17 +737,21 @@ fun StarButtons(selectedStarCount: MutableState<Int>) {
       verticalAlignment = Alignment.CenterVertically) {
         for (i in 1..5) {
           val isSelected = i <= selectedStarCount.value
-          IconButton(onClick = { selectedStarCount.value = i }, modifier = Modifier.size(25.dp)) {
-            Icon(
-                painter =
-                    painterResource(
-                        id = if (isSelected) R.drawable.filled_star else R.drawable.empty_star),
-                contentDescription = "Star $i",
-                modifier = Modifier.width(16.dp).height(16.dp),
-                tint = if (isSelected) MaterialTheme.colorScheme.primary else Color.Black)
-          }
+          StarIconButton(selectedStarCount, i, isSelected)
         }
       }
+}
+
+@Composable
+fun StarIconButton(selectedStarCount: MutableState<Int>, i: Int, isSelected: Boolean) {
+  IconButton(onClick = { selectedStarCount.value = i }, modifier = Modifier.size(25.dp)) {
+    Icon(
+        painter =
+            painterResource(id = if (isSelected) R.drawable.filled_star else R.drawable.empty_star),
+        contentDescription = "Star $i",
+        modifier = Modifier.width(16.dp).height(16.dp),
+        tint = if (isSelected) MaterialTheme.colorScheme.primary else Color.Black)
+  }
 }
 
 @Composable
