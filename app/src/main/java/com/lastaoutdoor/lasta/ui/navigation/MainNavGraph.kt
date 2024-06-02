@@ -48,16 +48,32 @@ import com.lastaoutdoor.lasta.viewmodel.WeatherViewModel
 @SuppressLint("StateFlowValueCalledInComposition")
 fun NavGraphBuilder.addMainNavGraph(navController: NavHostController) {
 
-  navigation(startDestination = DestinationRoute.Discover.route, route = BaseRoute.Main.route) {
+  navigation(startDestination = DestinationRoute.Discover.route, route = BaseRoute.Main.route + "/{activityId}") {
+
+      argument("activityId") {
+          type = NavType.StringType
+      }
+
 
     // Discover Screen
     composable(DestinationRoute.Discover.route) { entry ->
+
+
+
       val discoverScreenViewModel: DiscoverScreenViewModel = entry.sharedViewModel(navController)
       val moreInfoScreenViewModel: MoreInfoScreenViewModel = entry.sharedViewModel(navController)
       val preferencesViewModel: PreferencesViewModel = entry.sharedViewModel(navController)
       val favorites = preferencesViewModel.favorites.collectAsState(initial = emptyList()).value
       val weatherViewModel: WeatherViewModel = entry.sharedViewModel(navController)
       val weather = weatherViewModel.weather.observeAsState().value
+
+      // Navigate to the more info screen if the app is launched with a deep link
+      val activityId = entry.arguments?.getString("activityId") ?: ""
+      if(activityId != "DEFAULT") {
+        moreInfoScreenViewModel.changeActivityToDisplayByID(activityId)
+        navController.navigate(DestinationRoute.MoreInfo.route)
+      }
+
 
       val discoverScreenState: DiscoverScreenState =
           discoverScreenViewModel.state.collectAsState().value

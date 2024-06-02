@@ -34,18 +34,12 @@ fun NavGraphBuilder.addLoadingNavGraph(navController: NavHostController) {
       LoadingScreen(
           isLoggedIn = preferencesViewModel.isLoggedIn.observeAsState(initial = null).value,
           navigateWhenLoggedIn = {
-              if(activityId.isEmpty())
 
-                  navController.navigate(BaseRoute.Main.route) {
-                      popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
-                  }
+              //If the app is launched with a deep link, we navigate to the activity screen with the activityId and then we transmit it to the more info screen
+              navController.navigate(BaseRoute.Main.route + if(activityId.isEmpty()) "/DEFAULT" else "/$activityId") {
+                  popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
+              }
 
-              else{
-
-                  navController.navigate(BaseRoute.Main.route){
-                      popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
-                  }
-            }
           },
           navigateWhenLoggedOut = {
             navController.navigate(BaseRoute.Login.route) {
