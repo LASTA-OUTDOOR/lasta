@@ -2,6 +2,7 @@ package com.lastaoutdoor.lasta.viewmodel
 
 import FakeSocialDB
 import android.content.Context
+import androidx.lifecycle.viewModelScope
 import com.lastaoutdoor.lasta.utils.ErrorToast
 import com.lastaoutdoor.lasta.utils.ErrorType
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeConnectivityviewRepo
@@ -11,6 +12,7 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
@@ -40,7 +42,8 @@ class ConversationViewModelTest {
             mockk(),
             fakeSocialDB,
             fakePreferencesRepository,
-            errorToast)
+            errorToast,
+            FakeConnectivityviewRepo())
 
     every { errorToast.showToast(ErrorType.ERROR_DATABASE) } returns Unit
   }
@@ -57,6 +60,7 @@ class ConversationViewModelTest {
   @After
   fun tearDownDispatcher() {
     Dispatchers.resetMain()
+    viewModel.viewModelScope.cancel()
     testDispatcher.cleanupTestCoroutines()
   }
 

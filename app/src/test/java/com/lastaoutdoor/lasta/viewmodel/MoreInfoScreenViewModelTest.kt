@@ -1,5 +1,6 @@
 package com.lastaoutdoor.lasta.viewmodel
 
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.lastaoutdoor.lasta.R
 import com.lastaoutdoor.lasta.data.offline.ActivityDatabaseImpl
@@ -16,12 +17,14 @@ import com.lastaoutdoor.lasta.utils.Response
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivitiesDBRepository
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivityDatabaseImpl
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeActivityRepository
+import com.lastaoutdoor.lasta.viewmodel.repo.FakeConnectivityviewRepo
 import com.lastaoutdoor.lasta.viewmodel.repo.FakeUserDB
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
@@ -47,6 +50,7 @@ class MoreInfoScreenViewModelTest {
   @After
   fun tearDownDispatcher() {
     Dispatchers.resetMain()
+
     testDispatcher.cleanupTestCoroutines()
   }
 
@@ -57,7 +61,13 @@ class MoreInfoScreenViewModelTest {
 
     val fakeUserDB = FakeUserDB()
     val moreInfoScreenViewModel: MoreInfoScreenViewModel =
-        MoreInfoScreenViewModel(fakeDb, fk, ActivityDatabaseImpl(mockk()), fakeUserDB, errorToast)
+        MoreInfoScreenViewModel(
+            fakeDb,
+            fk,
+            ActivityDatabaseImpl(mockk()),
+            fakeUserDB,
+            errorToast,
+            FakeConnectivityviewRepo())
     val fakeActivity =
         Activity("a", 10, activityType = ActivityType.CLIMBING, difficulty = Difficulty.EASY)
     val fakeActivity2 =
@@ -78,7 +88,13 @@ class MoreInfoScreenViewModelTest {
 
     val fakeUserDB = FakeUserDB()
     val moreInfoScreenViewModel: MoreInfoScreenViewModel =
-        MoreInfoScreenViewModel(fakeDb, fk, ActivityDatabaseImpl(mockk()), fakeUserDB, errorToast)
+        MoreInfoScreenViewModel(
+            fakeDb,
+            fk,
+            ActivityDatabaseImpl(mockk()),
+            fakeUserDB,
+            errorToast,
+            FakeConnectivityviewRepo())
     val fakeActivity =
         Activity("a", 10, activityType = ActivityType.CLIMBING, difficulty = Difficulty.EASY)
     val fakeActivity2 =
@@ -94,6 +110,7 @@ class MoreInfoScreenViewModelTest {
     assertEquals(
         moreInfoScreenViewModel.goToMarker(fakeActivity3),
         Marker(10, "", LatLng(0.0, 0.0), "", R.drawable.biking_icon, ActivityType.BIKING))
+    moreInfoScreenViewModel.viewModelScope.cancel()
   }
 
   @Test
@@ -102,7 +119,13 @@ class MoreInfoScreenViewModelTest {
     val fk = FakeActivitiesDBRepository()
     val fakeUserDB = FakeUserDB()
     val moreInfoScreenViewModel =
-        MoreInfoScreenViewModel(fakeDb, fk, ActivityDatabaseImpl(mockk()), fakeUserDB, errorToast)
+        MoreInfoScreenViewModel(
+            fakeDb,
+            fk,
+            ActivityDatabaseImpl(mockk()),
+            fakeUserDB,
+            errorToast,
+            FakeConnectivityviewRepo())
     val fakeActivity =
         Activity("id", 10, activityType = ActivityType.CLIMBING, difficulty = Difficulty.EASY)
     moreInfoScreenViewModel.changeActivityToDisplayByID("id")
@@ -115,7 +138,13 @@ class MoreInfoScreenViewModelTest {
     val fk = FakeActivitiesDBRepository()
     val fakeUserDB = FakeUserDB()
     val moreInfoScreenViewModel =
-        MoreInfoScreenViewModel(fakeDb, fk, ActivityDatabaseImpl(mockk()), fakeUserDB, errorToast)
+        MoreInfoScreenViewModel(
+            fakeDb,
+            fk,
+            ActivityDatabaseImpl(mockk()),
+            fakeUserDB,
+            errorToast,
+            FakeConnectivityviewRepo())
     fakeDb.currResponse = Response.Failure(Exception())
     fk.shouldThrowException = true
     try {
@@ -124,6 +153,7 @@ class MoreInfoScreenViewModelTest {
       coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
     }
     fk.shouldThrowException = false
+    moreInfoScreenViewModel.viewModelScope.cancel()
   }
 
   @Test
@@ -135,12 +165,19 @@ class MoreInfoScreenViewModelTest {
     fakeUserDB.updateUser(UserModel("2"))
     fakeUserDB.updateUser(UserModel("3"))
     val moreInfoScreenViewModel =
-        MoreInfoScreenViewModel(fakeDb, fk, ActivityDatabaseImpl(mockk()), fakeUserDB, errorToast)
+        MoreInfoScreenViewModel(
+            fakeDb,
+            fk,
+            ActivityDatabaseImpl(mockk()),
+            fakeUserDB,
+            errorToast,
+            FakeConnectivityviewRepo())
     moreInfoScreenViewModel.getUserModels(listOf("1", "2", "3"))
     assertEquals(moreInfoScreenViewModel.usersList.value.size, 3)
     assertEquals(moreInfoScreenViewModel.usersList.value[0]!!.userId, "1")
     assertEquals(moreInfoScreenViewModel.usersList.value[1]!!.userId, "2")
     assertEquals(moreInfoScreenViewModel.usersList.value[2]!!.userId, "3")
+    moreInfoScreenViewModel.viewModelScope.cancel()
   }
 
   @Test
@@ -150,12 +187,19 @@ class MoreInfoScreenViewModelTest {
     val fakeUserDB = FakeUserDB()
     fakeUserDB.updateUser(UserModel("1"))
     val moreInfoScreenViewModel =
-        MoreInfoScreenViewModel(fakeDb, fk, ActivityDatabaseImpl(mockk()), fakeUserDB, errorToast)
+        MoreInfoScreenViewModel(
+            fakeDb,
+            fk,
+            ActivityDatabaseImpl(mockk()),
+            fakeUserDB,
+            errorToast,
+            FakeConnectivityviewRepo())
     moreInfoScreenViewModel.writeNewRating("a", Rating("1", "genial", "5"), "5")
     assertEquals(moreInfoScreenViewModel.ratings.value.size, 1)
     assertEquals(moreInfoScreenViewModel.ratings.value[0].userId, "1")
     assertEquals(moreInfoScreenViewModel.ratings.value[0].comment, "genial")
     assertEquals(moreInfoScreenViewModel.ratings.value[0].rating, "5")
+    moreInfoScreenViewModel.viewModelScope.cancel()
   }
 
   /* Test update difficulty */
@@ -167,7 +211,8 @@ class MoreInfoScreenViewModelTest {
     val dao = mockk<ActivityDao>()
     val fakeActivityDaoImpl = FakeActivityDatabaseImpl(dao)
     val moreInfoScreenViewModel =
-        MoreInfoScreenViewModel(fakeDb, fk, fakeActivityDaoImpl, fakeUserDB, errorToast)
+        MoreInfoScreenViewModel(
+            fakeDb, fk, fakeActivityDaoImpl, fakeUserDB, errorToast, FakeConnectivityviewRepo())
     val fakeActivity =
         Activity("a", 10, activityType = ActivityType.CLIMBING, difficulty = Difficulty.EASY)
     moreInfoScreenViewModel.updateDifficulty(fakeActivity.activityId)
@@ -180,6 +225,7 @@ class MoreInfoScreenViewModelTest {
         Activity("a", 10, activityType = ActivityType.CLIMBING, difficulty = Difficulty.HARD)
     moreInfoScreenViewModel.updateDifficulty(fakeActivity3.activityId)
     assertEquals(fakeActivity3.difficulty, Difficulty.HARD)
+    moreInfoScreenViewModel.viewModelScope.cancel()
   }
 
   // Update difficulty with exception throws correctly
@@ -191,7 +237,8 @@ class MoreInfoScreenViewModelTest {
     val dao = mockk<ActivityDao>()
     val fakeActivityDaoImpl = FakeActivityDatabaseImpl(dao)
     val moreInfoScreenViewModel =
-        MoreInfoScreenViewModel(fakeDb, fk, fakeActivityDaoImpl, fakeUserDB, errorToast)
+        MoreInfoScreenViewModel(
+            fakeDb, fk, fakeActivityDaoImpl, fakeUserDB, errorToast, FakeConnectivityviewRepo())
     fakeActivityDaoImpl.shouldThrowException = true
     fk.shouldThrowException = true
     try {
@@ -201,6 +248,7 @@ class MoreInfoScreenViewModelTest {
     }
     fk.shouldThrowException = false
     fakeActivityDaoImpl.shouldThrowException = false
+    moreInfoScreenViewModel.viewModelScope.cancel()
   }
 
   @Test
@@ -209,7 +257,13 @@ class MoreInfoScreenViewModelTest {
     val fk = FakeActivitiesDBRepository()
     val fakeUserDB = FakeUserDB()
     val moreInfoScreenViewModel =
-        MoreInfoScreenViewModel(fakeDb, fk, ActivityDatabaseImpl(mockk()), fakeUserDB, errorToast)
+        MoreInfoScreenViewModel(
+            fakeDb,
+            fk,
+            ActivityDatabaseImpl(mockk()),
+            fakeUserDB,
+            errorToast,
+            FakeConnectivityviewRepo())
     val fakeActivity =
         Activity("a", 10, activityType = ActivityType.CLIMBING, difficulty = Difficulty.EASY)
     fakeDb.currResponse = Response.Success(null)
@@ -237,7 +291,8 @@ class MoreInfoScreenViewModelTest {
     val dao = mockk<ActivityDao>()
     val fakeActivityDaoImpl = FakeActivityDatabaseImpl(dao)
     val moreInfoScreenViewModel =
-        MoreInfoScreenViewModel(fakeDb, fk, fakeActivityDaoImpl, fakeUserDB, errorToast)
+        MoreInfoScreenViewModel(
+            fakeDb, fk, fakeActivityDaoImpl, fakeUserDB, errorToast, FakeConnectivityviewRepo())
     val fakeActivity =
         Activity("a", 10, activityType = ActivityType.CLIMBING, difficulty = Difficulty.EASY)
     fakeActivityDaoImpl.shouldThrowException = true
@@ -247,6 +302,7 @@ class MoreInfoScreenViewModelTest {
       coVerify { errorToast.showToast(ErrorType.ERROR_DAO) }
     }
     fk.shouldThrowException = false
+    moreInfoScreenViewModel.viewModelScope.cancel()
   }
 
   @Test
@@ -257,7 +313,8 @@ class MoreInfoScreenViewModelTest {
     val dao = mockk<ActivityDao>()
     val fakeActivityDaoImpl = FakeActivityDatabaseImpl(dao)
     val moreInfoScreenViewModel =
-        MoreInfoScreenViewModel(fakeDb, fk, fakeActivityDaoImpl, fakeUserDB, errorToast)
+        MoreInfoScreenViewModel(
+            fakeDb, fk, fakeActivityDaoImpl, fakeUserDB, errorToast, FakeConnectivityviewRepo())
     fakeUserDB.shouldThrowException = true
     try {
       moreInfoScreenViewModel.getUserModels(listOf("1", "2", "3"))
@@ -265,6 +322,7 @@ class MoreInfoScreenViewModelTest {
       coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
     }
     fk.shouldThrowException = false
+    moreInfoScreenViewModel.viewModelScope.cancel()
   }
 
   @Test
@@ -275,7 +333,8 @@ class MoreInfoScreenViewModelTest {
     val dao = mockk<ActivityDao>()
     val fakeActivityDaoImpl = FakeActivityDatabaseImpl(dao)
     val moreInfoScreenViewModel =
-        MoreInfoScreenViewModel(fakeDb, fk, fakeActivityDaoImpl, fakeUserDB, errorToast)
+        MoreInfoScreenViewModel(
+            fakeDb, fk, fakeActivityDaoImpl, fakeUserDB, errorToast, FakeConnectivityviewRepo())
     fk.shouldThrowException = true
     try {
       moreInfoScreenViewModel.writeNewRating("a", Rating("1", "genial", "5"), "5")
@@ -283,5 +342,6 @@ class MoreInfoScreenViewModelTest {
       coVerify { errorToast.showToast(ErrorType.ERROR_DATABASE) }
     }
     fk.shouldThrowException = false
+    moreInfoScreenViewModel.viewModelScope.cancel()
   }
 }
