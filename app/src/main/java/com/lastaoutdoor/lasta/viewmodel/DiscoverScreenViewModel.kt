@@ -172,26 +172,31 @@ constructor(
   // Fetch the suggestions from the radar API (called when the user types in the search bar)
   fun fetchSuggestions(query: String) {
     viewModelScope.launch {
-      val suggestions =
-          if (query.isNotEmpty()) {
-            when (val response = radarRepository.getSuggestions(query)) {
-              is Response.Failure -> {
-                errorToast.showToast(ErrorType.ERROR_RADAR_API)
-                return@launch
-              }
-              is Response.Success -> {
-                response.data ?: emptyList()
-              }
-              is Response.Loading -> {
-                emptyList<RadarSuggestion>()
-              }
-            }
-          } else {
-            emptyList()
-          }
+      val suggestions = getRadarSuggestions(query)
+      if (suggestions == 1) return@launch
+      suggestions as List<RadarSuggestion>
       _state.value =
           _state.value.copy(
               suggestions = suggestions.associate { it.getSuggestion() to it.getPosition() })
+    }
+  }
+
+  private suspend fun getRadarSuggestions(query: String): Any {
+    return if (query.isNotEmpty()) {
+      when (val response = radarRepository.getSuggestions(query)) {
+        is Response.Failure -> {
+          errorToast.showToast(ErrorType.ERROR_RADAR_API)
+          1
+        }
+        is Response.Success -> {
+          response.data ?: emptyList<RadarSuggestion>()
+        }
+        is Response.Loading -> {
+          emptyList<RadarSuggestion>()
+        }
+      }
+    } else {
+      emptyList<RadarSuggestion>()
     }
   }
 
