@@ -16,13 +16,27 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.tasks.await
 
+/**
+ * Implementation of the [UserDBRepository] interface, managing user data in a Firestore database.
+ *
+ * @param context The application context.
+ * @param database The Firebase Firestore database instance.
+ * @constructor Creates an instance of [UserDBRepositoryImpl] with the provided context and
+ *   Firestore database instance.
+ */
 @Suppress("UNCHECKED_CAST")
 @Singleton
 class UserDBRepositoryImpl @Inject constructor(context: Context, database: FirebaseFirestore) :
     UserDBRepository {
 
+  // Reference to the Firestore collection for users
   private val userCollection = database.collection(context.getString(R.string.user_db_name))
 
+  /**
+   * Updates the user's information in the Firestore database.
+   *
+   * @param user The [UserModel] object containing updated user information.
+   */
   override fun updateUser(user: UserModel) {
     val userData =
         hashMapOf(
@@ -43,7 +57,12 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
     userCollection.document(user.userId).set(userData, SetOptions.merge())
   }
 
-  // Helper function to convert a document to a UserModel
+  /**
+   * Helper function to convert a Firestore [DocumentSnapshot] to a [UserModel].
+   *
+   * @param document The Firestore document snapshot.
+   * @return The converted [UserModel].
+   */
   private fun documentToUserModel(document: DocumentSnapshot): UserModel {
     val userId = document.id
     val userName = document.getString("userName") ?: ""
@@ -77,6 +96,12 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
         favorites)
   }
 
+  /**
+   * Retrieves a user by their ID from the Firestore database.
+   *
+   * @param userId The ID of the user to retrieve.
+   * @return The [UserModel] object if the user exists, otherwise null.
+   */
   override suspend fun getUserById(userId: String): UserModel? {
     val user = userCollection.document(userId).get().await()
     return if (user.exists()) {
@@ -84,6 +109,12 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
     } else null
   }
 
+  /**
+   * Retrieves a user by their email from the Firestore database.
+   *
+   * @param email The email of the user to retrieve.
+   * @return The [UserModel] object if the user exists, otherwise null.
+   */
   override suspend fun getUserByEmail(email: String): UserModel? {
     val query = userCollection.whereEqualTo("email", email).get().await()
     return if (!query.isEmpty) {
@@ -92,17 +123,38 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
     } else null
   }
 
+  /**
+   * Updates a specific field for a user in the Firestore database.
+   *
+   * @param userId The ID of the user.
+   * @param field The field to update.
+   * @param value The new value for the field.
+   */
   override suspend fun updateField(userId: String, field: String, value: Any) {
     val userDocumentRef = userCollection.document(userId)
     val data = hashMapOf(field to value)
     userDocumentRef.update(data as Map<String, Any>).await()
   }
 
+  /**
+   * Adds a favorite activity to a user's list of favorites in the Firestore database.
+   *
+   * @param userId The ID of the user.
+   * @param activityId The ID of the activity to add to favorites.
+   */
   override suspend fun addFavorite(userId: String, activityId: String) {
     val userDocumentRef = userCollection.document(userId)
     userDocumentRef.update("favorites", FieldValue.arrayUnion(activityId)).await()
   }
 
+  /**
+   * Searches for users by a username substring that are not the current user or their friends.
+   *
+   * @param query The substring to search for in usernames.
+   * @param friends The list of the current user's friends.
+   * @param user The current user.
+   * @return A list of [UserModel] objects matching the search criteria.
+   */
   override suspend fun getUsersByUsernameWithSubstring(
       query: String,
       friends: List<UserModel>,
@@ -131,11 +183,22 @@ class UserDBRepositoryImpl @Inject constructor(context: Context, database: Fireb
     return usersToList
   }
 
+  /**
+   * Removes a favorite activity from a user's list of favorites in the Firestore database.
+   *
+   * @param userId The ID of the user.
+   * @param activityId The ID of the activity to remove from favorites.
+   */
   override suspend fun removeFavorite(userId: String, activityId: String) {
     val userDocumentRef = userCollection.document(userId)
     userDocumentRef.update("favorites", FieldValue.arrayRemove(activityId)).await()
   }
 
+  /**
+   * Deletes a user from the Firestore database and removes the user from their friends' lists.
+   *
+   * @param userId The ID of the user to delete.
+   */
   override suspend fun deleteUser(userId: String) {
     userCollection.document(userId).delete()
 
