@@ -151,16 +151,17 @@ fun MoreInfoScreen(
                     friends,
                     shareToFriend,
                     isOnline = isOnline,
-                  navigateBack = {
-                    discoverScreenCallBacks.fetchActivities()
-                    navigateBack()
-                    setWeatherBackToUserLoc()
-                  })
-            }
-            // displays activity title and duration
+                    navigateBack = {
+                      discoverScreenCallBacks.fetchActivities()
+                      navigateBack()
+                      setWeatherBackToUserLoc()
+                    })
+              }
+              // displays activity title and duration
 
-            ActivityTitleZone(
-                activityToDisplay, updateDifficulty, isOnline, discoverScreenState.centerPoint)}
+              ActivityTitleZone(
+                  activityToDisplay, updateDifficulty, isOnline, discoverScreenState.centerPoint)
+            }
           }
           Column {
             WeatherReportBig(weather, true) { weatherDialog.value = true }
@@ -203,13 +204,15 @@ fun MoreInfoScreen(
               favorites,
               flipFavorite,
               friends,
-              shareToFriend, {
+              shareToFriend,
+              {
                 discoverScreenCallBacks.clearSelectedMarker()
                 discoverScreenCallBacks.clearSelectedItinerary()
                 discoverScreenCallBacks.fetchActivities()
                 navigateBack()
                 setWeatherBackToUserLoc()
-              }, isOnline)
+              },
+              isOnline)
         }
       }
       mapScreen(
@@ -440,10 +443,10 @@ fun TopBar(
   ShareOptionsDialog(activityToDisplay, openDialog, friends, shareToFriend)
 
   Row(modifier = Modifier.fillMaxWidth().testTag("Top Bar")) {
-    TopBarLogo(Icons.AutoMirrored.Outlined.ArrowBack, false, { navigateBack() }, ConnectionState.CONNECTED)
+    TopBarLogo(Icons.AutoMirrored.Outlined.ArrowBack, { navigateBack() }, ConnectionState.CONNECTED)
     Spacer(modifier = Modifier.weight(1f))
     TopBarLogo(R.drawable.download_button, false, { downloadActivity(activityToDisplay) }, isOnline)
-    TopBarLogo(Icons.Outlined.Share, false, { openDialog.value = true }, isOnline)
+    TopBarLogo(Icons.Outlined.Share, { openDialog.value = true }, isOnline)
     // if activity is in favorites, display the filled heart, else display the empty heart
     if (favorites.contains(activityToDisplay.activityId)) {
       TopBarLogo(Icons.Filled.Favorite, { flipFavorite(activityToDisplay.activityId) }, isOnline)

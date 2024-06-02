@@ -448,13 +448,12 @@ fun ActivitiesDisplay(
                         onClick = { flipFavorite(a.activityId) },
                         modifier = Modifier.size(24.dp).testTag("${a.activityId}favoriteButton"),
                         enabled = isOnline == ConnectionState.CONNECTED) {
-                        Icon(
-                            imageVector =
-                                if (favorites.contains(a.activityId)) Icons.Filled.Favorite
-                                else Icons.Filled.FavoriteBorder,
-                            contentDescription = "Favorite Button",
-                            tint =
-                                 MaterialTheme.colorScheme.primary,
+                          Icon(
+                              imageVector =
+                                  if (favorites.contains(a.activityId)) Icons.Filled.Favorite
+                                  else Icons.Filled.FavoriteBorder,
+                              contentDescription = "Favorite Button",
+                              tint = MaterialTheme.colorScheme.primary,
                               modifier = Modifier.size(24.dp))
                         }
                   }
