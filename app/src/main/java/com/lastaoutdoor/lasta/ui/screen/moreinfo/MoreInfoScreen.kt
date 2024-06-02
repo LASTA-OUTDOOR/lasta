@@ -323,9 +323,7 @@ fun RatingLine(
         isReviewing,
         text,
         writeNewRating,
-        currentUser,
-        activities,
-        updateActivity)
+        currentUser)
   }
 }
 
@@ -513,19 +511,9 @@ fun ActivityTitleText(activityToDisplay: Activity, centerPoint: LatLng) {
   Row {
     Column {
       if (activityToDisplay.activityImageUrl != "") {
-        Text(
-            text = activityToDisplay.name,
-            color = Color.White,
-            fontWeight = FontWeight.ExtraBold,
-            style =
-                MaterialTheme.typography.headlineLarge.copy(
-                    shadow = Shadow(color = Color.Black, offset = Offset(x = 1f, y = 2f))))
+        ActivityTitleWithURl(activityToDisplay)
       } else {
-        Text(
-            text = activityToDisplay.name,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontWeight = FontWeight.ExtraBold,
-            style = MaterialTheme.typography.headlineLarge)
+        ActivityTitleNoURL(activityToDisplay)
       }
 
       Text(
@@ -538,7 +526,26 @@ fun ActivityTitleText(activityToDisplay: Activity, centerPoint: LatLng) {
   }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ActivityTitleNoURL(activityToDisplay: Activity) {
+  Text(
+      text = activityToDisplay.name,
+      color = MaterialTheme.colorScheme.onBackground,
+      fontWeight = FontWeight.ExtraBold,
+      style = MaterialTheme.typography.headlineLarge)
+}
+
+@Composable
+fun ActivityTitleWithURl(activityToDisplay: Activity) {
+  Text(
+      text = activityToDisplay.name,
+      color = Color.White,
+      fontWeight = FontWeight.ExtraBold,
+      style =
+          MaterialTheme.typography.headlineLarge.copy(
+              shadow = Shadow(color = Color.Black, offset = Offset(x = 1f, y = 2f))))
+}
+
 @Composable
 fun AddRatingButton(
     activityToDisplay: Activity,
@@ -546,94 +553,107 @@ fun AddRatingButton(
     isReviewing: MutableState<Boolean>,
     text: MutableState<String>,
     writeNewRating: (String, Rating, String) -> Unit,
-    currentUser: UserModel?,
-    activities: List<Activity>,
-    updateActivity: (List<Activity>) -> Unit,
+    currentUser: UserModel?
 ) {
   if (isReviewing.value) {
-    ModalBottomSheet(
-        onDismissRequest = { isReviewing.value = false }, modifier = Modifier.fillMaxWidth()) {
-          Column(
-              modifier = Modifier.padding(30.dp).testTag("ModalBottomSheet"),
-              horizontalAlignment = Alignment.CenterHorizontally) {
-                val selectedStarCount = remember { mutableIntStateOf(1) }
-                Text(
-                    text =
-                        LocalContext.current.getString(R.string.add_review) +
-                            " " +
-                            activityToDisplay.name,
-                    maxLines = 1,
-                    style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold))
-
-                Spacer(modifier = Modifier.height(30.dp))
-
-                Row(
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    verticalAlignment = Alignment.CenterVertically) {
-                      Text(
-                          text = LocalContext.current.getString(R.string.ask_rating),
-                          style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium))
-                      StarButtons(selectedStarCount = selectedStarCount)
-                    }
-
-                OutlinedTextField(
-                    value = text.value,
-                    label = { Text(text = LocalContext.current.getString(R.string.ask_comment)) },
-                    onValueChange = { text.value = it },
-                    maxLines = 3,
-                    modifier = Modifier.fillMaxWidth())
-
-                // Publish button
-                ElevatedButton(
-                    onClick = {
-                      var newMeanRating =
-                          activityToDisplay.ratings.sumOf { it.rating.toInt() } +
-                              selectedStarCount.intValue
-                      val division =
-                          newMeanRating.toDouble() / (activityToDisplay.ratings.size + 1.0)
-                      val string = String.format(Locale.US, "%.1f", division)
-
-                      if (currentUser != null) {
-                        writeNewRating(
-                            activityToDisplay.activityId,
-                            Rating(
-                                currentUser.userId,
-                                text.value,
-                                selectedStarCount.intValue.toString()),
-                            string)
-                      }
-
-                      isReviewing.value = false
-                    },
-                    modifier =
-                        Modifier.fillMaxWidth().padding(top = 10.dp).testTag("PublishButton"),
-                    colors =
-                        ButtonDefaults.buttonColors(
-                            containerColor = PrimaryBlue, contentColor = Color.White)) {
-                      Text(
-                          text = LocalContext.current.getString(R.string.publish),
-                          style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold))
-                    }
-              }
-        }
+    ModalRating(isReviewing, activityToDisplay, text, currentUser, writeNewRating)
   } else {
-    IconButton(
-        onClick = { onShowReviewModal() },
-        colors =
-            IconButtonColors(
-                containerColor = Color.Yellow,
-                contentColor = Color.Black,
-                disabledContentColor = Color.Yellow,
-                disabledContainerColor = Color.Black),
-        modifier = Modifier.size(25.dp).testTag("AddRatingButton")) {
-          Icon(
-              painter = painterResource(id = R.drawable.plus),
-              contentDescription = "Add Rating",
-              modifier = Modifier.width(16.dp).height(16.dp),
-              tint = Color.Black,
-          )
-        }
+    AddRatingButton(onShowReviewModal)
   }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ModalRating(
+    isReviewing: MutableState<Boolean>,
+    activityToDisplay: Activity,
+    text: MutableState<String>,
+    currentUser: UserModel?,
+    writeNewRating: (String, Rating, String) -> Unit
+) {
+  ModalBottomSheet(
+      onDismissRequest = { isReviewing.value = false }, modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.padding(30.dp).testTag("ModalBottomSheet"),
+            horizontalAlignment = Alignment.CenterHorizontally) {
+              val selectedStarCount = remember { mutableIntStateOf(1) }
+              Text(
+                  text =
+                      LocalContext.current.getString(R.string.add_review) +
+                          " " +
+                          activityToDisplay.name,
+                  maxLines = 1,
+                  style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold))
+
+              Spacer(modifier = Modifier.height(30.dp))
+
+              Row(
+                  horizontalArrangement = Arrangement.SpaceAround,
+                  verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = LocalContext.current.getString(R.string.ask_rating),
+                        style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium))
+                    StarButtons(selectedStarCount = selectedStarCount)
+                  }
+
+              OutlinedTextField(
+                  value = text.value,
+                  label = { Text(text = LocalContext.current.getString(R.string.ask_comment)) },
+                  onValueChange = { text.value = it },
+                  maxLines = 3,
+                  modifier = Modifier.fillMaxWidth())
+
+              // Publish button
+              ElevatedButton(
+                  onClick = {
+                    var newMeanRating =
+                        activityToDisplay.ratings.sumOf { it.rating.toInt() } +
+                            selectedStarCount.intValue
+                    val division = newMeanRating.toDouble() / (activityToDisplay.ratings.size + 1.0)
+                    val string = String.format(Locale.US, "%.1f", division)
+
+                    if (currentUser != null) {
+                      writeNewRating(
+                          activityToDisplay.activityId,
+                          Rating(
+                              currentUser.userId,
+                              text.value,
+                              selectedStarCount.intValue.toString()),
+                          string)
+                    }
+
+                    isReviewing.value = false
+                  },
+                  modifier = Modifier.fillMaxWidth().padding(top = 10.dp).testTag("PublishButton"),
+                  colors =
+                      ButtonDefaults.buttonColors(
+                          containerColor = PrimaryBlue, contentColor = Color.White)) {
+                    Text(
+                        text = LocalContext.current.getString(R.string.publish),
+                        style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold))
+                  }
+            }
+      }
+}
+
+@Composable
+fun AddRatingButton(onShowReviewModal: () -> Unit) {
+  IconButton(
+      onClick = { onShowReviewModal() },
+      colors =
+          IconButtonColors(
+              containerColor = Color.Yellow,
+              contentColor = Color.Black,
+              disabledContentColor = Color.Yellow,
+              disabledContainerColor = Color.Black),
+      modifier = Modifier.size(25.dp).testTag("AddRatingButton")) {
+        Icon(
+            painter = painterResource(id = R.drawable.plus),
+            contentDescription = "Add Rating",
+            modifier = Modifier.width(16.dp).height(16.dp),
+            tint = Color.Black,
+        )
+      }
 }
 
 @Composable
