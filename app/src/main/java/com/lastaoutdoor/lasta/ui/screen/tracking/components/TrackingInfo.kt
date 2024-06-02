@@ -42,55 +42,57 @@ fun TrackingInfo(
                     Text("$hours:$minutes:$seconds", style = MaterialTheme.typography.displayLarge)
                   }
             }
-        Row(
-            modifier = Modifier.weight(0.25f).fillMaxSize(),
-            horizontalArrangement = Arrangement.SpaceBetween) {
-              InfoColumn(
-                  modifier = Modifier.weight(0.5f),
-                  first = "Distance ",
-                  second = "/ done",
-                  info = "0.0 Km",
-                  greyColor = Grey)
-              InfoColumn(
-                  modifier = Modifier.weight(0.5f),
-                  first = "Distance ",
-                  second = "/ remaining",
-                  info = "11.3 Km",
-                  greyColor = Grey)
-            }
-        Row(
-            modifier = Modifier.weight(0.25f).fillMaxSize(),
-            horizontalArrangement = Arrangement.SpaceBetween) {
-              InfoColumn(
-                  modifier = Modifier.weight(0.5f),
-                  first = "Avg. pace",
-                  second = " min/km",
-                  info = "00:00",
-                  greyColor = Grey)
-              InfoColumn(
-                  modifier = Modifier.weight(0.5f),
-                  first = "Steps",
-                  second = " / total",
-                  info = trackingState.stepCount.toString(),
-                  greyColor = Grey)
-            }
-        Row(
-            modifier = Modifier.weight(0.25f).fillMaxSize(),
-            horizontalArrangement = Arrangement.SpaceBetween) {
-              InfoColumn(
-                  modifier = Modifier.weight(0.5f),
-                  first = "Elevation",
-                  second = " gain",
-                  info = "0 m",
-                  greyColor = Grey)
-              InfoColumn(
-                  modifier = Modifier.weight(0.5f),
-                  first = "Elevation",
-                  second = " / total",
-                  info = "1738 m",
-                  greyColor = Grey)
-            }
+        InfoRow(
+            modifier = Modifier.weight(0.25f),
+            first1 = "Distance ",
+            second1 = "/ done",
+            info1 = "0.0 Km",
+            first2 = "Distance",
+            second2 = "/ remaining",
+            info2 = "11.3 Km")
+        InfoRow(
+            modifier = Modifier.weight(0.25f),
+            first1 = "Avg. pace",
+            second1 = " min/km",
+            info1 = "00:00",
+            first2 = "Steps",
+            second2 = " / total",
+            info2 = trackingState.stepCount.toString())
+        InfoRow(
+            modifier = Modifier.weight(0.25f),
+            first1 = "Elevation",
+            second1 = " gain",
+            info1 = "0 m",
+            first2 = "Elevation",
+            second2 = " total",
+            info2 = "1738 m")
       }
+}
+
+@Composable
+fun InfoRow(
+    modifier: Modifier = Modifier,
+    first1: String,
+    second1: String,
+    info1: String,
+    first2: String,
+    second2: String,
+    info2: String
+) {
+  Row(modifier = modifier.fillMaxSize(), horizontalArrangement = Arrangement.SpaceBetween) {
+    InfoColumn(
+        modifier = Modifier.weight(0.5f),
+        first = first1,
+        second = second1,
+        info = info1,
+        greyColor = Grey)
+    InfoColumn(
+        modifier = Modifier.weight(0.5f),
+        first = first2,
+        second = second2,
+        info = info2,
+        greyColor = Grey)
+  }
 }
 
 @Composable
