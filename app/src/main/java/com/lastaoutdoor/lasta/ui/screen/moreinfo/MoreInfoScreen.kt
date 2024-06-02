@@ -121,105 +121,193 @@ fun MoreInfoScreen(
         WeatherForecastDisplay(weatherForecast = weatherForecast, date = dateWeatherForecast)
       }
     }
-    Column(
-        modifier = Modifier.fillMaxSize().testTag("MoreInfoComposable"),
-        verticalArrangement = Arrangement.SpaceBetween) {
-          Box(modifier = Modifier.wrapContentHeight().fillMaxWidth()) {
-            if (activityToDisplay.activityImageUrl != "") {
-              AsyncImage(
-                  model = activityToDisplay.activityImageUrl,
-                  contentDescription = "activity image",
-                  contentScale = ContentScale.Crop,
-                  modifier = Modifier.matchParentSize())
-            } else {
-              Image(
-                  painter = painterResource(id = R.drawable.default_activity_bg),
-                  contentDescription = "activity image not found",
-                  contentScale = ContentScale.Crop,
-                  modifier = Modifier.matchParentSize().alpha(0.3f))
-            }
-            Column(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
-              // contains the top icon buttons
-              if (currentUser != null) {
-                TopBar(
-                    activityToDisplay,
-                    downloadActivity,
-                    favorites,
-                    flipFavorite,
-                    friends,
-                    shareToFriend) {
-                      discoverScreenCallBacks.fetchActivities()
-                      navigateBack()
-                      setWeatherBackToUserLoc()
-                    }
-              }
-              // displays activity title and duration
-              ActivityTitleZone(
-                  activityToDisplay, updateDifficulty, discoverScreenState.centerPoint)
-            }
-          }
-          Column {
-            WeatherReportBig(weather, true) { weatherDialog.value = true }
-            // displays activity difficulty, ration and view on map button
-            MiddleZone(
-                activityToDisplay,
-                isMapDisplayed,
-                isReviewing,
-                text,
-                writeNewRating,
-                currentUser,
-                discoverScreenState.activities,
-                discoverScreenCallBacks.updateActivities,
-                discoverScreenCallBacks.fetchActivities)
-          }
-          Column(
-              modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
-                LazyColumn(modifier = Modifier.weight(0.85f)) {
-                  item { RatingCards(activityToDisplay.ratings, usersList, getUserModels) }
-                }
-                Spacer(modifier = Modifier.height(5.dp))
-                Box(modifier = Modifier.weight(0.15f), contentAlignment = Alignment.Center) {
-                  StartButton(navigateToTracking)
-                }
-              }
-        }
+    ActivityInfoDisplay(
+        activityToDisplay,
+        currentUser,
+        discoverScreenState,
+        discoverScreenCallBacks,
+        navigateBack,
+        setWeatherBackToUserLoc,
+        downloadActivity,
+        favorites,
+        flipFavorite,
+        friends,
+        shareToFriend,
+        weather,
+        weatherDialog,
+        navigateToTracking,
+        updateDifficulty,
+        usersList,
+        getUserModels,
+        isMapDisplayed,
+        isReviewing,
+        text,
+        writeNewRating)
   } else {
-    Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoMap")) {
-      LaunchedEffect(Unit) {
-        val marker = goToMarker(activityToDisplay)
-        discoverScreenCallBacks.updateSelectedMarker(marker)
-      }
+    MoreInfoMap(
+        goToMarker,
+        discoverScreenCallBacks,
+        discoverScreenState,
+        activityToDisplay,
+        currentUser,
+        downloadActivity,
+        favorites,
+        flipFavorite,
+        friends,
+        shareToFriend,
+        navigateBack,
+        setWeatherBackToUserLoc)
+  }
+}
 
-      if (currentUser != null) {
-        Column(modifier = Modifier.padding(8.dp)) {
-          TopBar(
-              activityToDisplay,
-              downloadActivity,
-              favorites,
-              flipFavorite,
-              friends,
-              shareToFriend) {
-                discoverScreenCallBacks.clearSelectedMarker()
-                discoverScreenCallBacks.clearSelectedItinerary()
-                discoverScreenCallBacks.fetchActivities()
-                navigateBack()
-                setWeatherBackToUserLoc()
-              }
+@Composable
+fun ActivityInfoDisplay(
+    activityToDisplay: Activity,
+    currentUser: UserModel?,
+    discoverScreenState: DiscoverScreenState,
+    discoverScreenCallBacks: DiscoverScreenCallBacks,
+    navigateBack: () -> Unit,
+    setWeatherBackToUserLoc: () -> Unit,
+    downloadActivity: (Activity) -> Unit,
+    favorites: List<String>,
+    flipFavorite: (String) -> Unit,
+    friends: List<UserModel>,
+    shareToFriend: (String, String) -> Unit,
+    weather: WeatherResponse?,
+    weatherDialog: MutableState<Boolean>,
+    navigateToTracking: () -> Unit,
+    updateDifficulty: (String) -> Unit,
+    usersList: List<UserModel?>,
+    getUserModels: (List<String>) -> Unit,
+    isMapDisplayed: MutableState<Boolean>,
+    isReviewing: MutableState<Boolean>,
+    text: MutableState<String>,
+    writeNewRating: (String, Rating, String) -> Unit
+) {
+  Column(
+      modifier = Modifier.fillMaxSize().testTag("MoreInfoComposable"),
+      verticalArrangement = Arrangement.SpaceBetween) {
+        UpperMoreInfo(
+            activityToDisplay,
+            currentUser,
+            discoverScreenState,
+            discoverScreenCallBacks,
+            navigateBack,
+            setWeatherBackToUserLoc,
+            downloadActivity,
+            favorites,
+            flipFavorite,
+            friends,
+            shareToFriend,
+            updateDifficulty)
+        Column {
+          WeatherReportBig(weather, true) { weatherDialog.value = true }
+          // displays activity difficulty, ration and view on map button
+          MiddleZone(
+              activityToDisplay, isMapDisplayed, isReviewing, text, writeNewRating, currentUser)
+        }
+        Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
+          LazyColumn(modifier = Modifier.weight(0.85f)) {
+            item { RatingCards(activityToDisplay.ratings, usersList, getUserModels) }
+          }
+          Spacer(modifier = Modifier.height(5.dp))
+          Box(modifier = Modifier.weight(0.15f), contentAlignment = Alignment.Center) {
+            StartButton(navigateToTracking)
+          }
         }
       }
-      mapScreen(
-          discoverScreenState.mapState,
-          discoverScreenState.initialPosition,
-          discoverScreenState.initialZoom,
-          discoverScreenCallBacks.updateMarkers,
-          discoverScreenCallBacks.updateSelectedMarker,
-          discoverScreenCallBacks.clearSelectedItinerary,
-          discoverScreenState.selectedZoom,
-          discoverScreenState.selectedMarker,
-          discoverScreenState.selectedItinerary,
-          discoverScreenState.markerList,
-          discoverScreenCallBacks.clearSelectedMarker)
+}
+
+@Composable
+fun UpperMoreInfo(
+    activityToDisplay: Activity,
+    currentUser: UserModel?,
+    discoverScreenState: DiscoverScreenState,
+    discoverScreenCallBacks: DiscoverScreenCallBacks,
+    navigateBack: () -> Unit,
+    setWeatherBackToUserLoc: () -> Unit,
+    downloadActivity: (Activity) -> Unit,
+    favorites: List<String>,
+    flipFavorite: (String) -> Unit,
+    friends: List<UserModel>,
+    shareToFriend: (String, String) -> Unit,
+    updateDifficulty: (String) -> Unit
+) {
+  Box(modifier = Modifier.wrapContentHeight().fillMaxWidth()) {
+    if (activityToDisplay.activityImageUrl != "") {
+      AsyncImage(
+          model = activityToDisplay.activityImageUrl,
+          contentDescription = "activity image",
+          contentScale = ContentScale.Crop,
+          modifier = Modifier.matchParentSize())
+    } else {
+      Image(
+          painter = painterResource(id = R.drawable.default_activity_bg),
+          contentDescription = "activity image not found",
+          contentScale = ContentScale.Crop,
+          modifier = Modifier.matchParentSize().alpha(0.3f))
     }
+    Column(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+      // contains the top icon buttons
+      if (currentUser != null) {
+        TopBar(
+            activityToDisplay, downloadActivity, favorites, flipFavorite, friends, shareToFriend) {
+              discoverScreenCallBacks.fetchActivities()
+              navigateBack()
+              setWeatherBackToUserLoc()
+            }
+      }
+      // displays activity title and duration
+      ActivityTitleZone(activityToDisplay, updateDifficulty, discoverScreenState.centerPoint)
+    }
+  }
+}
+
+@Composable
+fun MoreInfoMap(
+    goToMarker: (Activity) -> Marker,
+    discoverScreenCallBacks: DiscoverScreenCallBacks,
+    discoverScreenState: DiscoverScreenState,
+    activityToDisplay: Activity,
+    currentUser: UserModel?,
+    downloadActivity: (Activity) -> Unit,
+    favorites: List<String>,
+    flipFavorite: (String) -> Unit,
+    friends: List<UserModel>,
+    shareToFriend: (String, String) -> Unit,
+    navigateBack: () -> Unit,
+    setWeatherBackToUserLoc: () -> Unit
+) {
+  Column(modifier = Modifier.fillMaxSize().testTag("MoreInfoMap")) {
+    LaunchedEffect(Unit) {
+      val marker = goToMarker(activityToDisplay)
+      discoverScreenCallBacks.updateSelectedMarker(marker)
+    }
+
+    if (currentUser != null) {
+      Column(modifier = Modifier.padding(8.dp)) {
+        TopBar(
+            activityToDisplay, downloadActivity, favorites, flipFavorite, friends, shareToFriend) {
+              discoverScreenCallBacks.clearSelectedMarker()
+              discoverScreenCallBacks.clearSelectedItinerary()
+              discoverScreenCallBacks.fetchActivities()
+              navigateBack()
+              setWeatherBackToUserLoc()
+            }
+      }
+    }
+    mapScreen(
+        discoverScreenState.mapState,
+        discoverScreenState.initialPosition,
+        discoverScreenState.initialZoom,
+        discoverScreenCallBacks.updateMarkers,
+        discoverScreenCallBacks.updateSelectedMarker,
+        discoverScreenCallBacks.clearSelectedItinerary,
+        discoverScreenState.selectedZoom,
+        discoverScreenState.selectedMarker,
+        discoverScreenState.selectedItinerary,
+        discoverScreenState.markerList,
+        discoverScreenCallBacks.clearSelectedMarker)
   }
 }
 
@@ -254,10 +342,7 @@ fun MiddleZone(
     isReviewing: MutableState<Boolean>,
     text: MutableState<String>,
     writeNewRating: (String, Rating, String) -> Unit,
-    currentUser: UserModel?,
-    activities: List<Activity>,
-    updateActivity: (List<Activity>) -> Unit,
-    fetchActivities: () -> Unit
+    currentUser: UserModel?
 ) {
   Row(
       modifier =
@@ -265,15 +350,7 @@ fun MiddleZone(
               .testTag("MoreInfoMiddleZone")
               .padding(vertical = 0.dp, horizontal = 16.dp),
       horizontalArrangement = Arrangement.SpaceBetween) {
-        RatingLine(
-            activityToDisplay,
-            isReviewing,
-            text,
-            writeNewRating,
-            currentUser,
-            activities,
-            updateActivity,
-        )
+        RatingLine(activityToDisplay, isReviewing, text, writeNewRating, currentUser)
         ViewOnMapButton(isMapDisplayed)
       }
   SeparatorComponent()
@@ -310,9 +387,7 @@ fun RatingLine(
     isReviewing: MutableState<Boolean>,
     text: MutableState<String>,
     writeNewRating: (String, Rating, String) -> Unit,
-    currentUser: UserModel?,
-    activities: List<Activity>,
-    updateActivity: (List<Activity>) -> Unit,
+    currentUser: UserModel?
 ) {
   Row(verticalAlignment = Alignment.CenterVertically) {
     DiffAndRating(activityToDisplay = activityToDisplay)
@@ -663,17 +738,21 @@ fun StarButtons(selectedStarCount: MutableState<Int>) {
       verticalAlignment = Alignment.CenterVertically) {
         for (i in 1..5) {
           val isSelected = i <= selectedStarCount.value
-          IconButton(onClick = { selectedStarCount.value = i }, modifier = Modifier.size(25.dp)) {
-            Icon(
-                painter =
-                    painterResource(
-                        id = if (isSelected) R.drawable.filled_star else R.drawable.empty_star),
-                contentDescription = "Star $i",
-                modifier = Modifier.width(16.dp).height(16.dp),
-                tint = if (isSelected) MaterialTheme.colorScheme.primary else Color.Black)
-          }
+          StarIconButton(selectedStarCount, i, isSelected)
         }
       }
+}
+
+@Composable
+fun StarIconButton(selectedStarCount: MutableState<Int>, i: Int, isSelected: Boolean) {
+  IconButton(onClick = { selectedStarCount.value = i }, modifier = Modifier.size(25.dp)) {
+    Icon(
+        painter =
+            painterResource(id = if (isSelected) R.drawable.filled_star else R.drawable.empty_star),
+        contentDescription = "Star $i",
+        modifier = Modifier.width(16.dp).height(16.dp),
+        tint = if (isSelected) MaterialTheme.colorScheme.primary else Color.Black)
+  }
 }
 
 @Composable
