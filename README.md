@@ -5,6 +5,7 @@
 
 
 
+
 # LASTA Project
 
 Lasta is an Android app whose goal is mainly to help people find and discover nicely suited spots for outdoor activities, such as hiking, skiing, rock climbing, trail running, biking, etc.
